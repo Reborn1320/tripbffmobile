@@ -8,8 +8,8 @@ export default {
   },
   item: {
     padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc'
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#ccc'
   },
   imageContainer: {
     flex: 1,
