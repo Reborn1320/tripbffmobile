@@ -15,8 +15,14 @@ class Home extends Component {
   }
 
   renderItem = ({ item }) => (
-    <ListItem>
-      <Text style={styles.item} onPress={() => this.props.navigation.navigate("TripDetail", { tripDetail: item.name })}>{item.name}</Text>
+    <ListItem noIndent
+    onPress={() => this.props.navigation.navigate("TripDetail", { tripDetail: item.name })}>
+      <Text
+        style={styles.item}
+        
+      >
+        {item.name}
+      </Text>
     </ListItem>
   );
 
@@ -32,6 +38,7 @@ class Home extends Component {
             styles={styles.container}
             data={repos}
             renderItem={this.renderItem}
+            keyExtractor={(item, index) => String(index)}
           />
         </Content>
         <Footer>
