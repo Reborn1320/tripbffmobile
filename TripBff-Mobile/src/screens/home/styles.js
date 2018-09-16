@@ -3,6 +3,14 @@ const { Dimensions, Platform } = React;
 const deviceHeight = Dimensions.get("window").height;
 
 export default {
+  container: {
+    flex: 1
+  },
+  item: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc'
+  },
   imageContainer: {
     flex: 1,
     width: null,
