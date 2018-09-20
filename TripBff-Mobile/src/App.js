@@ -45,7 +45,8 @@ const AppNavigator = createStackNavigator(
 
     BasicFab: { screen: BasicFab },
     TripDetail: {screen: TripDetail },
-    TripCreation: {screen: TripCreation }
+    TripCreation: {screen: TripCreation },
+    TripImportation: {screen: TripImportationScreen }
   },
   {
     initialRouteName: "Drawer",
