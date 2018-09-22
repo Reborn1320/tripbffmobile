@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { FlatList } from "react-native";
 import { Container, Header, Content, Button, Text, Footer } from 'native-base';
 import { Form, Item, Label, Input, DatePicker } from 'native-base';
-import ImportImageList from "./components/ImportImageList";
-import ImportImageScreenData from "./fake_data";
+import { ImportImageList } from "./components/ImportImageList";
+import { ImportImageScreenData } from "./fake_data";
 
 class TripImportationScreen extends Component {
 
@@ -20,12 +20,12 @@ class TripImportationScreen extends Component {
             >
                 {item.location.address}
             </Text>
-            <ImportImageList />
+            <ImportImageList images={item.images} />
         </ListItem>
     );
 
     render() {
-        const { repos } = this.props;
+        const { locations } = this.props;
         return (
             <Container>
                 <Header>
@@ -33,14 +33,14 @@ class TripImportationScreen extends Component {
                 <Content>
                     <FlatList
                         // styles={styles.container}
-                        data={repos}
+                        data={locations}
                         renderItem={this.renderItem}
                         keyExtractor={(item, index) => String(index)}
                     />
                 </Content>
                 <Footer>
                     <Button
-                        >
+                    >
                         <Text>Skip</Text>
                     </Button>
 

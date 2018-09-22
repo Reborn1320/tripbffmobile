@@ -14,6 +14,7 @@ import Home from "./screens/home";
 import NHFab from "./screens/fab";
 import TripDetail from "./screens/trip/detail";
 import TripCreation from "./screens/trip/create";
+import TripImportationScreen from "./screens/trip/import";
 
 import reducer from './screens/home/reducer';
 
