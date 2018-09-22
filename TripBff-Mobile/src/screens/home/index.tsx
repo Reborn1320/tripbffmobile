@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { FlatList } from "react-native";
 import { Container, Header, Content, Button, Icon, Text, ListItem } from 'native-base';
 import { Footer, FooterTab } from 'native-base';
@@ -7,8 +7,15 @@ import { connect } from 'react-redux';
 
 import styles from "./styles";
 import { listRepos } from './reducer';
+import * as RNa from "react-navigation";
 
-class Home extends Component {
+export interface Props {
+  navigation: RNa.NavigationScreenProp<any, any>
+  repos: Array<any>
+  listRepos: (name: string) => void //TODO: improvement
+}
+
+class Home extends React.Component<Props, object>  {
 
   componentDidMount() {
     this.props.listRepos('relferreira');
@@ -35,7 +42,7 @@ class Home extends Component {
         <Header />
         <Content>
           <FlatList
-            styles={styles.container}
+            style={styles.container}
             data={repos}
             renderItem={this.renderItem}
             keyExtractor={(item, index) => String(index)}
