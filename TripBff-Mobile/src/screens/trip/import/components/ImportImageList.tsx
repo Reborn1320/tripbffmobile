@@ -3,6 +3,7 @@ import React from "react";
 import { FlatList } from "react-native";
 import { ListItem } from "native-base";
 import ImportImage from "./ImportImage";
+import styled from "styled-components/native";
 
 export interface Props {
     images: Array<any>
@@ -12,11 +13,10 @@ class ImportImageList extends React.Component<Props> {
 
     renderItem(itemInfo) {
         return (
-            
-            <ListItem noIndent
+            <StyledListItem noIndent
             >
                 <ImportImage imageUrl={itemInfo.item.url}></ImportImage>
-            </ListItem>
+            </StyledListItem>
             );
     }
     render() {
@@ -27,11 +27,15 @@ class ImportImageList extends React.Component<Props> {
                 data={images}
                 renderItem={this.renderItem}
                 keyExtractor={(item, index) => String(index)}
-                style={{flexDirection: "row"}}
+                style={{flexDirection: "row", flexWrap: "wrap"}}
             >
             </FlatList>
         );
     }
 }
+
+const StyledListItem = styled(ListItem)`
+    border-bottom-width: 0;
+`
 
 export default ImportImageList;
