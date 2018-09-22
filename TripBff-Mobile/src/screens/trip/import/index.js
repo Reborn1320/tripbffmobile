@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { FlatList } from "react-native";
 import { Container, Header, Content, Button, Text, Footer } from 'native-base';
-import { Form, Item, Label, Input, DatePicker } from 'native-base';
 import { ImportImageList } from "./components/ImportImageList";
 import { ImportImageScreenData } from "./fake_data";
 
 class TripImportationScreen extends Component {
 
-    componentDidMount() {
+    constructor(props) {
+        super(props);
         this.props.locations = ImportImageScreenData;
     }
 
@@ -15,12 +15,13 @@ class TripImportationScreen extends Component {
         <ListItem noIndent
         >
             <Text
-            // style={styles.item}
+            style={{backgroundColor: orange, color: white}}
 
             >
+                aaa
                 {item.location.address}
             </Text>
-            <ImportImageList images={item.images} />
+            {/* <ImportImageList images={item.images} /> */}
         </ListItem>
     );
 
@@ -39,12 +40,13 @@ class TripImportationScreen extends Component {
                     />
                 </Content>
                 <Footer>
-                    <Button
+                    <Button transparent success
                     >
                         <Text>Skip</Text>
                     </Button>
 
-                    <Button>
+                    <Button transparent success
+                    >
                         <Text>Import</Text>
                     </Button>
                 </Footer>
