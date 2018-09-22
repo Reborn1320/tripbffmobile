@@ -1,32 +1,43 @@
 import React, { Component } from "react";
-import { FlatList } from "react-native";
-import { Container, Header, Content, Button, Text, Footer } from 'native-base';
-import { ImportImageList } from "./components/ImportImageList";
-import { ImportImageScreenData } from "./fake_data";
+import { FlatList, View } from "react-native";
+import { Container, Header, Content, Button, Text, Footer, ListItem } from 'native-base';
+import ImportImageList from "./components/ImportImageList";
+import ImportImageScreenData from "./fake_data";
 
-class TripImportationScreen extends Component {
+export interface Props {
+    // locations: Array<any> //TODO
+}
+
+interface State {
+    locations: Array<any> //TODO
+}
+class TripImportationScreen extends Component<Props, State> {
 
     constructor(props) {
         super(props);
-        this.props.locations = ImportImageScreenData;
+        this.state = {
+            locations: ImportImageScreenData
+        }
     }
 
     renderItem = ({ item }) => (
         <ListItem noIndent
         >
-            <Text
-            style={{backgroundColor: orange, color: white}}
-
+            <View
+                style={{flexDirection: "column"}}
             >
-                aaa
-                {item.location.address}
-            </Text>
-            {/* <ImportImageList images={item.images} /> */}
+                <Text
+                    style={{ }}
+                >
+                    {item.location.address}
+                </Text>
+                <ImportImageList images={item.images} />
+            </View>
         </ListItem>
     );
 
     render() {
-        const { locations } = this.props;
+        const { locations } = this.state
         return (
             <Container>
                 <Header>
