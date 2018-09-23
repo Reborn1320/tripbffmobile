@@ -15,7 +15,7 @@ export interface Props {
   listRepos: (name: string) => void //TODO: improvement
 }
 
-class Home extends React.Component<Props, object>  {
+class Home extends React.Component<Props>  {
 
   componentDidMount() {
     this.props.listRepos('relferreira');

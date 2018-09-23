@@ -62,7 +62,9 @@ class TripCreation extends Component {
                         </Item>
                         <Item
                         style={{justifyContent: 'center'}}>
-                            <Button><Text>Import</Text></Button>
+                            <Button
+                                onPress={() => this.props.navigation.navigate("TripImportation")}
+                            ><Text>Import</Text></Button>
                         </Item>
                     </Form>
                 </Content>

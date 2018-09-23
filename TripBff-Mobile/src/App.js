@@ -14,6 +14,7 @@ import Home from "./screens/home";
 import NHFab from "./screens/fab";
 import TripDetail from "./screens/trip/detail";
 import TripCreation from "./screens/trip/create";
+import TripImportationScreen from "./screens/trip/import";
 
 import reducer from './screens/home/reducer';
 
@@ -30,6 +31,7 @@ const Drawer = createDrawerNavigator(
   {
     Home: { screen: Home },
     NHFab: { screen: NHFab },
+    TripImportation: { screen: TripImportationScreen },
   },
   {
     initialRouteName: "Home",
@@ -45,7 +47,8 @@ const AppNavigator = createStackNavigator(
 
     BasicFab: { screen: BasicFab },
     TripDetail: {screen: TripDetail },
-    TripCreation: {screen: TripCreation }
+    TripCreation: {screen: TripCreation },
+    TripImportation: {screen: TripImportationScreen }
   },
   {
     initialRouteName: "Drawer",
