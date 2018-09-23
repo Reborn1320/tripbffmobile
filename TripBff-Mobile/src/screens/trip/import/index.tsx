@@ -4,9 +4,11 @@ import { Container, Header, Content, Button, Text, Footer, ListItem, CheckBox } 
 import ImportImageList from "./components/ImportImageList";
 import ImportImageScreenData from "./fake_data";
 import styled from "styled-components/native";
+import { NavigationScreenProp } from "react-navigation";
 
 export interface Props {
     // locations: Array<any> //TODO
+    navigation: NavigationScreenProp<any, any>
 }
 
 interface State {
@@ -67,6 +69,7 @@ class TripImportationScreen extends Component<Props, State> {
                     }}
                 >
                     <Button transparent success
+                        onPress={() => this.props.navigation.navigate("TripDetail", { locations: [] })}
                         style={{
                             alignSelf: "stretch", margin: 5,
                         }}
@@ -77,6 +80,7 @@ class TripImportationScreen extends Component<Props, State> {
                     </Button>
 
                     <Button transparent success
+                        onPress={() => this.props.navigation.navigate("TripDetail", { locations: locations })}
                         style={{ alignSelf: "stretch", margin: 5, }}
                     >
                         <Text style={{ color: "orange" }}>Import</Text>

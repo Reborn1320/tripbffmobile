@@ -34,7 +34,7 @@ const Drawer = createDrawerNavigator(
     TripImportation: { screen: TripImportationScreen },
   },
   {
-    initialRouteName: "TripImportation",
+    initialRouteName: "Home",
     contentOptions: {
       activeTintColor: "#e91e63"
     }
