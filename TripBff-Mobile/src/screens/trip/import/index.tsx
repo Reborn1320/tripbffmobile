@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { FlatList, View } from "react-native";
-import { Container, Header, Content, Button, Text, Footer, ListItem, CheckBox, Card } from 'native-base';
+import { Container, Header, Content, Button, Text, Footer, ListItem, CheckBox } from 'native-base';
 import ImportImageList from "./components/ImportImageList";
 import ImportImageScreenData from "./fake_data";
 import styled from "styled-components/native";
@@ -28,15 +28,15 @@ class TripImportationScreen extends Component<Props, State> {
                 style={{ position: "absolute", right: 10, top: 10 }}
             >
                 <CheckBox checked
-                    style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", shadowRadius: 5 }}
+                    style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 2 }}
                 ></CheckBox>
 
             </View>
             <View
-                style={{ flexDirection: "column" }}
+                style={{ flexDirection: "column", padding: 0, }}
             >
                 <Text
-                    style={{ alignSelf: "stretch" }}
+                    style={{ alignSelf: "stretch", marginTop: 5, }}
                 >
                     {item.location.address}
                 </Text>
@@ -59,15 +59,27 @@ class TripImportationScreen extends Component<Props, State> {
                         keyExtractor={(item, index) => String(index)}
                     />
                 </Content>
-                <Footer>
+                <Footer
+                    style={{
+                        justifyContent: "space-between", alignItems: "stretch", padding: 0,
+                        shadowColor: "black", elevation: 10,
+                        backgroundColor: "white"
+                    }}
+                >
                     <Button transparent success
+                        style={{
+                            alignSelf: "stretch", margin: 5,
+                        }}
                     >
-                        <Text>Skip</Text>
+                        <Text
+                            style={{ color: "grey" }}
+                        >Skip</Text>
                     </Button>
 
                     <Button transparent success
+                        style={{ alignSelf: "stretch", margin: 5, }}
                     >
-                        <Text>Import</Text>
+                        <Text style={{ color: "orange" }}>Import</Text>
                     </Button>
                 </Footer>
             </Container>
@@ -81,10 +93,9 @@ const StyledFlatList = styled(FlatList)`
 
 const StyledListItem = styled(ListItem)`
   border-bottom-width: 0;
-  border-color: red;
-  border-width: 1;
 
   flex: 1;
+  padding: 0;
 `
 
 export default TripImportationScreen;

@@ -13,29 +13,37 @@ class ImportImageList extends React.Component<Props> {
 
     renderItem(itemInfo) {
         return (
-            <StyledListItem noIndent
+            <StyledListItemImageItem noIndent
             >
                 <ImportImage imageUrl={itemInfo.item.url}></ImportImage>
-            </StyledListItem>
+            </StyledListItemImageItem>
             );
     }
     render() {
 
         const { images } = this.props;
         return (
-            <FlatList
+            <StyledFlatListImageContainer
                 data={images}
                 renderItem={this.renderItem}
                 keyExtractor={(item, index) => String(index)}
-                style={{flexDirection: "row", flexWrap: "wrap"}}
             >
-            </FlatList>
+            </StyledFlatListImageContainer>
         );
     }
 }
 
-const StyledListItem = styled(ListItem)`
+const StyledFlatListImageContainer = styled(FlatList)`
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 2px;
+    margin-top: 5px;
+`
+
+const StyledListItemImageItem = styled(ListItem)`
     border-bottom-width: 0;
+    margin: 2px;
+    padding: 0;
 `
 
 export default ImportImageList;
