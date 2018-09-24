@@ -19,23 +19,16 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.1.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
-    "@babel/preset-env": "^7.1.0",
-    "@babel/preset-typescript": "^7.1.0",
     "axios": "0.18.0",
     "expo": "^30.0.1",
     "native-base": "2.8.0",
     "react": "16.3.1",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
+    "react-native": "0.55.2",
     "react-native-elements": "^0.19.1",
     "react-navigation": "2.13.0",
     "react-redux": "5.0.7",
     "redux": "4.0.0",
     "redux-axios-middleware": "4.0.0",
     "styled-components": "^3.4.9"
-  },
-  "resolutions": {
-    "babel-core": "7.0.0"
-}
+  }
 }
