@@ -82,5 +82,6 @@ const mapDispatchToProps = {
   listRepos
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+const HomeScreen = connect(mapStateToProps, mapDispatchToProps)(Home);
+export default HomeScreen;
 // export default Home;

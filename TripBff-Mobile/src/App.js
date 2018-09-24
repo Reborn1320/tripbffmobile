@@ -7,10 +7,9 @@ import axiosMiddleware from 'redux-axios-middleware';
 
 import { Root } from "native-base";
 import { createDrawerNavigator, createStackNavigator } from "react-navigation";
-import { SideBar, Container, Button, Header, Content, Text } from "native-base";
 
 import BasicFab from "./screens/fab/basic";
-import Home from "./screens/home";
+import HomeScreen from "./screens/home/index";
 import NHFab from "./screens/fab";
 import TripDetail from "./screens/trip/detail";
 import TripCreation from "./screens/trip/create";
@@ -29,7 +28,7 @@ const store = createStore(reducer, applyMiddleware(axiosMiddleware(client)));
 
 const Drawer = createDrawerNavigator(
   {
-    Home: { screen: Home },
+    Home: { screen: HomeScreen },
     NHFab: { screen: NHFab },
     TripImportation: { screen: TripImportationScreen },
   },

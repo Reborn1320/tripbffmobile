@@ -1,6 +1,5 @@
 {
-  "name": "AwesomeProject",
-  "version": "0.1.0",
+  "name": "empty-project-template",
   "private": true,
   "devDependencies": {
     "@types/react": "^16.4.14",
@@ -9,34 +8,34 @@
     "@types/react-redux": "^6.0.9",
     "@types/styled-components": "^3.0.1",
     "babel-plugin-styled-components": "^1.7.1",
-    "jest-expo": "~27.0.0",
-    "react-native-scripts": "1.14.0",
     "react-native-typescript-transformer": "^1.2.10",
-    "react-test-renderer": "16.3.1",
     "typescript": "^3.0.3"
   },
-  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "react-native-scripts start",
-    "eject": "react-native-scripts eject",
-    "android": "react-native-scripts android",
-    "ios": "react-native-scripts ios",
-    "test": "jest"
-  },
-  "jest": {
-    "preset": "jest-expo"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "eject": "expo eject"
   },
   "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-typescript": "^7.1.0",
     "axios": "0.18.0",
-    "expo": "27.0.1",
+    "expo": "^30.0.1",
     "native-base": "2.8.0",
     "react": "16.3.1",
-    "react-native": "0.55.2",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
     "react-native-elements": "^0.19.1",
     "react-navigation": "2.13.0",
     "react-redux": "5.0.7",
     "redux": "4.0.0",
     "redux-axios-middleware": "4.0.0",
     "styled-components": "^3.4.9"
-  }
+  },
+  "resolutions": {
+    "babel-core": "7.0.0"
+}
 }
