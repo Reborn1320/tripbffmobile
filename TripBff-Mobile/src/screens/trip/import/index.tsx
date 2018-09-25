@@ -5,6 +5,7 @@ import ImportImageList from "./components/ImportImageList";
 import ImportImageScreenData from "./fake_data";
 import styled from "styled-components/native";
 import { NavigationScreenProp } from "react-navigation";
+import { LocationVM } from "./Interfaces";
 
 export interface Props {
     // locations: Array<any> //TODO
@@ -12,7 +13,7 @@ export interface Props {
 }
 
 interface State {
-    locations: Array<any> //TODO
+    locations: Array<LocationVM>
 }
 class TripImportationScreen extends Component<Props, State> {
 
@@ -23,29 +24,32 @@ class TripImportationScreen extends Component<Props, State> {
         }
     }
 
-    renderItem = ({ item }) => (
-        <StyledListItem noIndent
-        >
-            <View
-                style={{ position: "absolute", right: 10, top: 10 }}
+    renderItem(itemInfo) {
+        var item: LocationVM = itemInfo.item;
+        return (
+            <StyledListItem noIndent
             >
-                <CheckBox checked
-                    style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 2 }}
-                ></CheckBox>
-
-            </View>
-            <View
-                style={{ flexDirection: "column", padding: 0, }}
-            >
-                <Text
-                    style={{ alignSelf: "stretch", marginTop: 5, }}
+                <View
+                    style={{ position: "absolute", right: 10, top: 10 }}
                 >
-                    {item.location.address}
-                </Text>
-                <ImportImageList images={item.images} />
-            </View>
-        </StyledListItem>
-    );
+                    <CheckBox checked
+                        style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 2 }}
+                    ></CheckBox>
+
+                </View>
+                <View
+                    style={{ flexDirection: "column", padding: 0, }}
+                >
+                    <Text
+                        style={{ alignSelf: "stretch", marginTop: 5, }}
+                    >
+                        {item.location.address}
+                    </Text>
+                    <ImportImageList images={item.images} />
+                </View>
+            </StyledListItem>
+        );
+    }
 
     render() {
         const { locations } = this.state

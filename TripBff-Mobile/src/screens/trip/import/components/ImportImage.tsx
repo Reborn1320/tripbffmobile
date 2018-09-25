@@ -4,9 +4,27 @@ import styled from "styled-components/native";
 
 export interface Props {
     imageUrl: string
+    isChecked: boolean
 }
 
-class ImportImage extends React.Component<Props> {
+export interface State {
+    isChecked: boolean
+}
+
+class ImportImage extends React.Component<Props, State> {
+
+    constructor(props: Props) {
+        super(props)
+        this.state = {
+            isChecked: props.isChecked
+        }
+    }
+
+    onPressCheckbox() {
+        this.setState({
+            isChecked: !this.state.isChecked
+        })
+    }
 
     render() {
         return (
@@ -16,9 +34,9 @@ class ImportImage extends React.Component<Props> {
                 <View
                     style={{ position: "absolute", zIndex: 2, right: 5, top: 5, width: 20 + 10, elevation: 3 }}
                 >
-                    <CheckBox checked
+                    <CheckBox checked={this.state.isChecked}
                         style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 1 }}
-
+                        onPress={() => this.onPressCheckbox()}
                     ></CheckBox>
                 </View>
                 <StyledThumbnail square large
