@@ -1,6 +1,7 @@
 import React from "react";
 import { Thumbnail, CheckBox, View } from "native-base";
 import styled from "styled-components/native";
+import { TouchableHighlightComponent, TouchableHighlight } from "react-native";
 
 export interface Props {
     imageUrl: string
@@ -20,7 +21,7 @@ class ImportImage extends React.Component<Props, State> {
         }
     }
 
-    onPressCheckbox() {
+    onPress() {
         this.setState({
             isChecked: !this.state.isChecked
         })
@@ -36,12 +37,16 @@ class ImportImage extends React.Component<Props, State> {
                 >
                     <CheckBox checked={this.state.isChecked}
                         style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 1 }}
-                        onPress={() => this.onPressCheckbox()}
+                        onPress={() => this.onPress()}
                     ></CheckBox>
                 </View>
-                <StyledThumbnail square large
-                    source={require("./redcat.jpg")}
-                />
+                <TouchableHighlight
+                    onPress={() => this.onPress()}
+                >
+                    <StyledThumbnail square large
+                        source={require("./redcat.jpg")}
+                    />
+                </TouchableHighlight>
             </View>
         );
     }
