@@ -72,7 +72,7 @@ class Home extends React.Component<Props>  {
 }
 
 const mapStateToProps = state => {
-  let storedRepositories = state.repos.map(repo => ({ key: repo.id, ...repo }));
+  let storedRepositories = state.repo.repos.map(repo => ({ key: repo.id, ...repo }));
   return {
     repos: storedRepositories
   };

@@ -5,7 +5,8 @@ import ImportImageList from "./components/ImportImageList";
 import ImportImageScreenData from "./fake_data";
 import styled from "styled-components/native";
 import { NavigationScreenProp } from "react-navigation";
-import { LocationVM } from "./Interfaces";
+import { LocationVM } from "../../../Interfaces";
+import { cloneDeep } from "lodash";
 
 export interface Props {
     // locations: Array<any> //TODO
@@ -24,8 +25,26 @@ class TripImportationScreen extends Component<Props, State> {
         }
     }
 
-    renderItem(itemInfo) {
+    _onSelectAll = (index: number) => {
+        const newLocations = cloneDeep(this.state.locations);
+        var newIsSelected = false;
+        var nSelected = newLocations[index].images.filter((item) => item.isSelected == true).length;
+
+        if (nSelected == 0) {
+            newIsSelected = true;
+        } 
+        newLocations[index].images.forEach((item) => item.isSelected = newIsSelected)
+
+        this.setState({
+            locations: newLocations
+        });
+    }
+
+    _renderItem = (itemInfo) => {
+        console.log(itemInfo);
         var item: LocationVM = itemInfo.item;
+        var idx: number = itemInfo.index;
+
         return (
             <StyledListItem noIndent
             >
@@ -33,6 +52,7 @@ class TripImportationScreen extends Component<Props, State> {
                     style={{ position: "absolute", right: 10, top: 10 }}
                 >
                     <CheckBox checked
+                        onPress={() => this._onSelectAll(idx)}
                         style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 2 }}
                     ></CheckBox>
 
@@ -61,7 +81,7 @@ class TripImportationScreen extends Component<Props, State> {
                     <StyledFlatList
                         // styles={styles.container}
                         data={locations}
-                        renderItem={this.renderItem}
+                        renderItem={this._renderItem}
                         keyExtractor={(item, index) => String(index)}
                     />
                 </Content>
