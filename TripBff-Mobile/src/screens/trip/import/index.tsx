@@ -17,11 +17,12 @@ export interface Props extends IMapDispatchToProps {
 }
 
 interface IMapDispatchToProps {
-    importImageSelectUnselectImage: (locationIdx: number, imageIdx: number) => void
-    importImageSelectUnselectAllImages: (locationIdx: number) => void
+    importImageSelectUnselectImage: (tripId: number, locationIdx: number, imageIdx: number) => void
+    importImageSelectUnselectAllImages: (tripId: number, locationIdx: number) => void
 }
 
 interface State {
+    tripId: number
     name: string
     locations: Array<LocationVM>
 }
@@ -32,6 +33,7 @@ class TripImportation extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
+            tripId: props.trip.id,
             name: props.trip.name,
             locations: props.trip.locations,
         }
@@ -54,7 +56,7 @@ class TripImportation extends Component<Props, State> {
 
     _renderItem = (itemInfo) => {
         var item: LocationVM = itemInfo.item;
-        var idx: number = itemInfo.index;
+        var locationIdx: number = itemInfo.index;
 
         return (
             <StyledListItem noIndent
@@ -63,7 +65,7 @@ class TripImportation extends Component<Props, State> {
                     style={{ position: "absolute", right: 10, top: 10 }}
                 >
                     <CheckBox checked
-                        onPress={() => this._onSelectAll(idx)}
+                        onPress={() => this._onSelectAll(locationIdx)}
                         style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 2 }}
                     ></CheckBox>
 
@@ -76,14 +78,15 @@ class TripImportation extends Component<Props, State> {
                     >
                         {item.location.address}
                     </Text>
-                    <ImportImageList images={item.images} />
+                    <ImportImageList images={item.images}
+                        handleSelect={(imageIdx) => this.props.importImageSelectUnselectImage(this.state.tripId, locationIdx, imageIdx) } />
                 </View>
             </StyledListItem>
         );
     }
 
     render() {
-        const { name, locations } = this.state
+        const { name, locations } = this.props.trip
         return (
             <Container>
                 <Header>

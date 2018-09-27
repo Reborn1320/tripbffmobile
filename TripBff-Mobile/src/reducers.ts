@@ -1,11 +1,8 @@
-import { cloneDeep } from 'lodash';
+import _, { cloneDeep } from 'lodash';
 import { BffStoreData, UserVM, TripVM, LocationVM } from "./Interfaces";
 import importImagesReducer from "./screens/trip/import/reducers";
 import homeScreenReducer from "./screens/home/reducer";
 import ImportImageScreenData from "./fake_data";
-
-const initState: BffStoreData = {
-}
 
 const userInitState: UserVM = {
     username: "asdf",
@@ -15,7 +12,6 @@ const userInitState: UserVM = {
     email: "asdf@gmail.com",
     token: "ASdf"
 }
-
 const locationInitState: LocationVM[] = ImportImageScreenData
 const tripsInitState: TripVM[] = []
 for (let idx = 0; idx < 5; idx++) {
@@ -25,12 +21,36 @@ for (let idx = 0; idx < 5; idx++) {
         locations: cloneDeep(locationInitState)
     })
 }
+const initState: BffStoreData = {
+    user: userInitState,
+    trips: tripsInitState
+}
 
-function userReducer(state = userInitState, action) {
+
+
+function userReducer(state, action) {
     return state;
 }
 
-function tripReducer(state = tripsInitState, action) {
+function tripReducer(state, action) {
+    return importImagesReducer(state, action)
+}
+
+function tripsReducer(state, action) {
+    const actionType: String = action.type
+    if (actionType.search(/^TRIP\//i) !== -1) {
+        //handle single trip
+        var trip = _.find(state, (item) => item.id == action.tripId)
+
+        var newState = [
+            ...state.slice(0, action.tripId),
+            tripReducer(trip, action),
+            ...state.slice(action.tripId + 1)
+        ];
+
+        return newState
+    }
+
     return state;
 }
 
@@ -38,6 +58,6 @@ export default function bffApp(state: BffStoreData = initState, action): BffStor
     return {
         repo: homeScreenReducer(state.repo, action),
         user: userReducer(state.user, action),
-        trips: tripReducer(state.trips, action)
+        trips: tripsReducer(state.trips, action)
     }
 }

@@ -8,17 +8,21 @@ import { ImportImageVM } from "../../../../Interfaces";
 
 export interface Props {
     images: Array<ImportImageVM>
+    handleSelect: (idx: number) => void
 }
 
 class ImportImageList extends React.Component<Props> {
 
-    renderItem(itemInfo) {
-        const item: ImportImageVM = itemInfo.item;
+    _renderItem = (itemInfo) => {
+        const item: ImportImageVM = itemInfo.item
+        const idx: number = itemInfo.index
 
         return (
             <StyledListItemImageItem noIndent
             >
-                <ImportImage imageUrl={item.url} isChecked={item.isSelected}></ImportImage>
+                <ImportImage imageUrl={item.url} isChecked={item.isSelected} id={idx}
+                    handleClick={(imageIdx) => this.props.handleSelect(imageIdx)}
+                ></ImportImage>
             </StyledListItemImageItem>
             );
     }
@@ -28,7 +32,7 @@ class ImportImageList extends React.Component<Props> {
         return (
             <StyledFlatListImageContainer
                 data={images}
-                renderItem={this.renderItem}
+                renderItem={this._renderItem}
                 keyExtractor={(item, index) => String(index)}
             >
             </StyledFlatListImageContainer>

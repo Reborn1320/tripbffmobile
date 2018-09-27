@@ -1,26 +1,28 @@
-import { combineReducers } from "redux";
+import { cloneDeep } from 'lodash';
+import { TripVM } from './../../../Interfaces';
 import { IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES } from "./actions";
-import ImportImageScreenData from "../../../fake_data";
-import { LocationVM } from "../../../Interfaces";
 
-const initialData = ImportImageScreenData;
+function selectUnselectImage(state: TripVM, action) {
+    const {locationIdx, imageIdx} = action
 
-//TODO: sub-store state
-//TODO: define 
-function selectUnselectImage(state: Array<LocationVM>) {
+    var newState = cloneDeep(state)
+    var img = newState.locations[locationIdx].images[imageIdx]
+    
+    img.isSelected = !img.isSelected
+    
+    return newState;
+}
+
+function selectUnselectAllImages(state: TripVM, action) {
     return state;
 }
 
-function selectUnselectAllImages(state: Array<LocationVM>) {
-    return state;
-}
-
-function importImagesReducer(state: Array<LocationVM> = [], action) {
+function importImagesReducer(state: TripVM, action) {
     switch (action.type) {
         case IMPORT_IMAGE_SELECT_UNSELECT_IMAGE:
-            return selectUnselectImage(state)
+            return selectUnselectImage(state, action)
         case IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES:
-            return selectUnselectAllImages(state)
+            return selectUnselectAllImages(state, action)
         default:
             return state;
     }

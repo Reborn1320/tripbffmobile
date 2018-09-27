@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { LocationVM } from './Interfaces';
 const singleItem: LocationVM =    {
     location: {
@@ -17,7 +18,7 @@ const singleItem: LocationVM =    {
 
 const ImportImageScreenData = new Array<LocationVM>();
 for (let idx = 0; idx < 10; idx++) {
-    ImportImageScreenData.push(singleItem);
+    ImportImageScreenData.push(cloneDeep(singleItem));
 }
 
 export default ImportImageScreenData;
