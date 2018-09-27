@@ -1,4 +1,4 @@
-import { LocationVM } from '../../../Interfaces';
+import { LocationVM } from './Interfaces';
 const singleItem: LocationVM =    {
     location: {
         long: 0,

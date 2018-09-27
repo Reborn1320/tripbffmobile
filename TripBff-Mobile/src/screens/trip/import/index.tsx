@@ -2,26 +2,38 @@ import React, { Component } from "react";
 import { FlatList, View } from "react-native";
 import { Container, Header, Content, Button, Text, Footer, ListItem, CheckBox } from 'native-base';
 import ImportImageList from "./components/ImportImageList";
-import ImportImageScreenData from "./fake_data";
+import ImportImageScreenData from "../../../fake_data";
 import styled from "styled-components/native";
 import { NavigationScreenProp } from "react-navigation";
-import { LocationVM } from "../../../Interfaces";
-import { cloneDeep } from "lodash";
+import { LocationVM, BffStoreData, TripVM } from "../../../Interfaces";
+import _, { cloneDeep } from "lodash";
+import { connect } from "react-redux";
+import { importImageSelectUnselectImage, importImageSelectUnselectAllImages } from "./actions";
 
-export interface Props {
+export interface Props extends IMapDispatchToProps {
     // locations: Array<any> //TODO
     navigation: NavigationScreenProp<any, any>
+    trip: TripVM
+}
+
+interface IMapDispatchToProps {
+    importImageSelectUnselectImage: (locationIdx: number, imageIdx: number) => void
+    importImageSelectUnselectAllImages: (locationIdx: number) => void
 }
 
 interface State {
+    name: string
     locations: Array<LocationVM>
 }
-class TripImportationScreen extends Component<Props, State> {
 
-    constructor(props) {
+
+class TripImportation extends Component<Props, State> {
+
+    constructor(props: Props) {
         super(props);
         this.state = {
-            locations: ImportImageScreenData
+            name: props.trip.name,
+            locations: props.trip.locations,
         }
     }
 
@@ -32,7 +44,7 @@ class TripImportationScreen extends Component<Props, State> {
 
         if (nSelected == 0) {
             newIsSelected = true;
-        } 
+        }
         newLocations[index].images.forEach((item) => item.isSelected = newIsSelected)
 
         this.setState({
@@ -41,7 +53,6 @@ class TripImportationScreen extends Component<Props, State> {
     }
 
     _renderItem = (itemInfo) => {
-        console.log(itemInfo);
         var item: LocationVM = itemInfo.item;
         var idx: number = itemInfo.index;
 
@@ -72,10 +83,13 @@ class TripImportationScreen extends Component<Props, State> {
     }
 
     render() {
-        const { locations } = this.state
+        const { name, locations } = this.state
         return (
             <Container>
                 <Header>
+                    <View style={{height: 100, paddingTop: 30, flex: 1}}>
+                        <Text style={{color: "white"}}>{name}</Text>
+                    </View>
                 </Header>
                 <Content>
                     <StyledFlatList
@@ -125,5 +139,22 @@ const StyledListItem = styled(ListItem)`
   flex: 1;
   padding: 0;
 `
+
+
+const mapStateToProps = (storeState: BffStoreData, ownProps: Props) => {
+    console.log(ownProps.navigation.state.params)
+    const { tripId } = ownProps.navigation.state.params
+    var trip = _.find(storeState.trips, (item) => item.id == tripId)
+    return {
+        trip
+    };
+};
+
+const mapDispatchToProps: IMapDispatchToProps = {
+    importImageSelectUnselectImage,
+    importImageSelectUnselectAllImages
+};
+
+const TripImportationScreen = connect(mapStateToProps, mapDispatchToProps)(TripImportation);
 
 export default TripImportationScreen;

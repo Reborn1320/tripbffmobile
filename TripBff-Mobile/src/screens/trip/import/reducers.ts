@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES } from "./actions";
-import ImportImageScreenData from "./fake_data";
+import ImportImageScreenData from "../../../fake_data";
 import { LocationVM } from "../../../Interfaces";
 
 const initialData = ImportImageScreenData;

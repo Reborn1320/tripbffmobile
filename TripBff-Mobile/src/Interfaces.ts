@@ -17,6 +17,7 @@ export interface LocationVM {
 
 export interface TripVM {
     id: number
+    name: string
     locations: Array<LocationVM>
 }
 
