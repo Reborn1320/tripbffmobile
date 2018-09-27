@@ -10,6 +10,11 @@ export interface LocationDetailVM {
 }
 
 export interface LocationVM {
-    location: LocationDetailVM
+    location: LocationDetailVM //TODO: change to details
     images: Array<ImportImageVM>
+}
+
+export interface TripVM {
+    id: number
+    locations: Array<LocationVM>
 }

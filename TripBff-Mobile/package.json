@@ -19,8 +19,10 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.116",
     "axios": "0.18.0",
     "expo": "^30.0.1",
+    "lodash": "^4.17.11",
     "native-base": "2.8.0",
     "react": "16.3.1",
     "react-native": "0.55.2",

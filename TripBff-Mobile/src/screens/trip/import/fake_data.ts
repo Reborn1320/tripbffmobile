@@ -1,4 +1,4 @@
-import { LocationVM } from './Interfaces';
+import { LocationVM } from '../../../Interfaces';
 const singleItem: LocationVM =    {
     location: {
         long: 0,
@@ -15,7 +15,7 @@ const singleItem: LocationVM =    {
     ]
 };
 
-const ImportImageScreenData = [];
+const ImportImageScreenData = new Array<LocationVM>();
 for (let idx = 0; idx < 10; idx++) {
     ImportImageScreenData.push(singleItem);
 }

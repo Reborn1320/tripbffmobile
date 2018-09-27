@@ -4,7 +4,7 @@ import { FlatList } from "react-native";
 import { ListItem } from "native-base";
 import ImportImage from "./ImportImage";
 import styled from "styled-components/native";
-import { ImportImageVM } from "../Interfaces";
+import { ImportImageVM } from "../../../../Interfaces";
 
 export interface Props {
     images: Array<ImportImageVM>
