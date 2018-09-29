@@ -10,6 +10,7 @@ import _, { cloneDeep } from "lodash";
 import { connect } from "react-redux";
 import { importImageSelectUnselectImage, importImageSelectUnselectAllImages, IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES } from "./actions";
 import importImagesReducer from "./reducers";
+import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
 
 export interface Props extends IMapDispatchToProps {
     // locations: Array<any> //TODO
@@ -38,6 +39,10 @@ class TripImportation extends Component<Props, State> {
             name: props.trip.name,
             locations: props.trip.locations,
         }
+    }
+
+    componentDidMount() {
+        checkAndRequestPhotoPermissionAsync()
     }
 
     _importImageSelectUnselectImage = (tripId: number, locationIdx: number, imageIdx: number) => {
