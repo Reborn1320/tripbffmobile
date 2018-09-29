@@ -2,43 +2,38 @@ import React, { Component } from 'react'
 import { View, Button, Container, Header, Content, Text } from 'native-base';
 import { ScrollView, Image, CameraRoll, Alert } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
-import Permissions from 'react-native-permissions'
 import * as Expo from "expo"
+import loadPhotosWithinAsync from './PhotosLoader';
+import moment from "moment";
 
-
-enum PermissionResponseEnum {
-    authorized = 'authorized',
-    denied = 'denied',
-    restricted = 'restricted',
-    undetermined = 'undetermined'
-}
 export interface Props {
     navigation: NavigationScreenProp<any, any>
 }
 
 interface State {
     //copy from react-native type definition
-    photos: {
-        node: {
-            type: string;
-            group_name: string;
-            image: {
-                uri: string;
-                height: number;
-                width: number;
-                isStored?: boolean;
-            };
-            timestamp: number;
-            location: {
-                latitude: number;
-                longitude: number;
-                altitude: number;
-                heading: number;
-                speed: number;
-            };
-        };
-    }[],
-    photoPermission?: PermissionResponseEnum
+    // photos: {
+    //     node: {
+    //         type: string;
+    //         group_name: string;
+    //         image: {
+    //             uri: string;
+    //             height: number;
+    //             width: number;
+    //             isStored?: boolean;
+    //         };
+    //         timestamp: number;
+    //         location: {
+    //             latitude: number;
+    //             longitude: number;
+    //             altitude: number;
+    //             heading: number;
+    //             speed: number;
+    //         };
+    //     };
+    // }[],
+    photos: string[]
+    photoPermission?: boolean
 }
 
 export default class PhotoScreen extends Component<Props, State> {
@@ -52,30 +47,24 @@ export default class PhotoScreen extends Component<Props, State> {
 
     //https://github.com/yonahforst/react-native-permissions
     componentDidMount() {
-        Permissions.check('photo').then((response: PermissionResponseEnum) => {
-            // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
-            this.setState({ photoPermission: response })
-            console.log("photo permission: " + response)
-
-            if (response == PermissionResponseEnum.undetermined) {
-                this._requestPermission()
-            }
-        })
+        //TODO: use async
+        Expo.Permissions.getAsync(Expo.Permissions.CAMERA_ROLL)
+            .then(({ status }) => {
+                if (status != "granted") {
+                    this._requestPermission()
+                }
+            })
     }
 
     // Request permission to access photos
     _requestPermission = () => {
         Expo.Permissions.askAsync(Expo.Permissions.CAMERA_ROLL)
-        .then(({status}) => {
-            console.log(`Expo.Permissions ${status}`)
-        });
-
-        // Permissions.request('photo').then(response => {
-        //     // Returns once the user has chosen to 'allow' or to 'not allow' access
-        //     // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
-        //     this.setState({ photoPermission: response })
-        //     console.log("photo permission: " + response)
-        // })
+            .then(({ status }) => {
+                if (status == "granted") {
+                    this.setState({ photoPermission: true })
+                }
+                console.log(`Expo.Permissions ${status}`)
+            });
     }
 
     // This is a common pattern when asking for permissions.
@@ -94,25 +83,30 @@ export default class PhotoScreen extends Component<Props, State> {
                     onPress: () => console.log('Permission denied'),
                     style: 'cancel',
                 },
-                this.state.photoPermission == 'undetermined'
+                this.state.photoPermission
                     ? { text: 'OK', onPress: this._requestPermission }
-                    : { text: 'Open Settings', onPress: Permissions.openSettings },
+                    : { text: 'Open Settings', onPress: () => Expo.Linking.openURL('app-settings:') },
             ],
         )
     }
 
     //https://facebook.github.io/react-native/docs/cameraroll#getphotos
     _handleButtonPress = () => {
-        CameraRoll.getPhotos({
-            first: 20,
-            assetType: 'Photos',
+        loadPhotosWithinAsync(moment("2018-09-27").unix(), moment("2018-09-29").add(1, "day").unix())
+        .then((photos) => {
+            console.log(`photos result = ${photos.length} photos`)
+            this.setState({ photos: photos });
         })
-            .then(r => {
-                this.setState({ photos: r.edges });
-            })
-            .catch((err) => {
-                //Error Loading Images
-            });
+        // CameraRoll.getPhotos({
+        //     first: 20,
+        //     assetType: 'Photos',
+        // })
+        // .then(r => {
+        //     this.setState({ photos: r.edges });
+        // })
+        // .catch((err) => {
+        //     //Error Loading Images
+        // });
     };
 
     render() {
@@ -129,10 +123,10 @@ export default class PhotoScreen extends Component<Props, State> {
                                     <Image
                                         key={i}
                                         style={{
-                                            width: 300,
-                                            height: 100,
+                                            width: 80,
+                                            height: 80,
                                         }}
-                                        source={{ uri: p.node.image.uri }}
+                                        source={{ uri: p }}
                                     />
                                 );
                             })}
