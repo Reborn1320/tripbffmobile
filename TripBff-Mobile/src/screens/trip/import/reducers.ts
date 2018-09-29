@@ -3,18 +3,31 @@ import { TripVM } from './../../../Interfaces';
 import { IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES } from "./actions";
 
 function selectUnselectImage(state: TripVM, action) {
-    const {locationIdx, imageIdx} = action
+    //TODO: improve type definition for action
+    const { locationIdx, imageIdx } = action
 
     var newState = cloneDeep(state)
     var img = newState.locations[locationIdx].images[imageIdx]
-    
+
     img.isSelected = !img.isSelected
-    
+
     return newState;
 }
 
 function selectUnselectAllImages(state: TripVM, action) {
-    return state;
+    const { locationIdx } = action
+
+    var newState = cloneDeep(state)
+
+    var newIsSelected = false;
+    var nSelected = newState.locations[locationIdx].images.filter((item) => item.isSelected).length;
+
+    if (nSelected == 0) {
+        newIsSelected = true;
+    }
+    newState.locations[locationIdx].images.forEach((item) => item.isSelected = newIsSelected)
+
+    return newState;
 }
 
 function importImagesReducer(state: TripVM, action) {

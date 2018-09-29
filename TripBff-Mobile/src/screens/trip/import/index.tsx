@@ -39,24 +39,13 @@ class TripImportation extends Component<Props, State> {
         }
     }
 
-    _onSelectAll = (index: number) => {
-        const newLocations = cloneDeep(this.state.locations);
-        var newIsSelected = false;
-        var nSelected = newLocations[index].images.filter((item) => item.isSelected == true).length;
-
-        if (nSelected == 0) {
-            newIsSelected = true;
-        }
-        newLocations[index].images.forEach((item) => item.isSelected = newIsSelected)
-
-        this.setState({
-            locations: newLocations
-        });
-    }
+    com
 
     _renderItem = (itemInfo) => {
         var item: LocationVM = itemInfo.item;
         var locationIdx: number = itemInfo.index;
+
+        const location = this.props.trip.locations[locationIdx]
 
         return (
             <StyledListItem noIndent
@@ -64,8 +53,8 @@ class TripImportation extends Component<Props, State> {
                 <View
                     style={{ position: "absolute", right: 10, top: 10 }}
                 >
-                    <CheckBox checked
-                        onPress={() => this._onSelectAll(locationIdx)}
+                    <CheckBox checked={location.images.filter((item) => item.isSelected).length == location.images.length}
+                        onPress={() => this.props.importImageSelectUnselectAllImages(this.state.tripId, locationIdx)}
                         style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 2 }}
                     ></CheckBox>
 
@@ -79,7 +68,7 @@ class TripImportation extends Component<Props, State> {
                         {item.location.address}
                     </Text>
                     <ImportImageList images={item.images}
-                        handleSelect={(imageIdx) => this.props.importImageSelectUnselectImage(this.state.tripId, locationIdx, imageIdx) } />
+                        handleSelect={(imageIdx) => this.props.importImageSelectUnselectImage(this.state.tripId, locationIdx, imageIdx)} />
                 </View>
             </StyledListItem>
         );
@@ -90,8 +79,8 @@ class TripImportation extends Component<Props, State> {
         return (
             <Container>
                 <Header>
-                    <View style={{height: 100, paddingTop: 30, flex: 1}}>
-                        <Text style={{color: "white"}}>{name}</Text>
+                    <View style={{ height: 100, paddingTop: 30, flex: 1 }}>
+                        <Text style={{ color: "white" }}>{name}</Text>
                     </View>
                 </Header>
                 <Content>
@@ -145,7 +134,6 @@ const StyledListItem = styled(ListItem)`
 
 
 const mapStateToProps = (storeState: BffStoreData, ownProps: Props) => {
-    console.log(ownProps.navigation.state.params)
     const { tripId } = ownProps.navigation.state.params
     var trip = _.find(storeState.trips, (item) => item.id == tripId)
     return {

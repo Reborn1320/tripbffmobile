@@ -33,6 +33,7 @@ function userReducer(state, action) {
 }
 
 function tripReducer(state, action) {
+    //TODO: combine with other reducer if needed
     return importImagesReducer(state, action)
 }
 

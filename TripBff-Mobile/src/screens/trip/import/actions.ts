@@ -2,7 +2,6 @@ export const IMPORT_IMAGE_SELECT_UNSELECT_IMAGE = "TRIP/IMPORT_IMAGE_SELECT_UNSE
 export const IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES = "TRIP/IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES"
 
 export function importImageSelectUnselectImage(tripId: number, locationIdx: number, imageIdx: number) {
-    console.log(arguments)
     return {
         type: IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, tripId, locationIdx, imageIdx
     }
