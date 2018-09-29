@@ -12,12 +12,11 @@ const singleItem: LocationVM =    {
         { url: "asd", isSelected: true },
         { url: "asd", isSelected: true },
         { url: "asd", isSelected: true },
-        { url: "asd", isSelected: true },
     ]
 };
 
 const ImportImageScreenData = new Array<LocationVM>();
-for (let idx = 0; idx < 10; idx++) {
+for (let idx = 0; idx < 5; idx++) {
     ImportImageScreenData.push(cloneDeep(singleItem));
 }
 

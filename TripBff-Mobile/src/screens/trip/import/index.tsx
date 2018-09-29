@@ -8,7 +8,8 @@ import { NavigationScreenProp } from "react-navigation";
 import { LocationVM, BffStoreData, TripVM } from "../../../Interfaces";
 import _, { cloneDeep } from "lodash";
 import { connect } from "react-redux";
-import { importImageSelectUnselectImage, importImageSelectUnselectAllImages } from "./actions";
+import { importImageSelectUnselectImage, importImageSelectUnselectAllImages, IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES } from "./actions";
+import importImagesReducer from "./reducers";
 
 export interface Props extends IMapDispatchToProps {
     // locations: Array<any> //TODO
@@ -17,8 +18,8 @@ export interface Props extends IMapDispatchToProps {
 }
 
 interface IMapDispatchToProps {
-    importImageSelectUnselectImage: (tripId: number, locationIdx: number, imageIdx: number) => void
-    importImageSelectUnselectAllImages: (tripId: number, locationIdx: number) => void
+    // importImageSelectUnselectImage: (tripId: number, locationIdx: number, imageIdx: number) => void
+    // importImageSelectUnselectAllImages: (tripId: number, locationIdx: number) => void
 }
 
 interface State {
@@ -39,13 +40,37 @@ class TripImportation extends Component<Props, State> {
         }
     }
 
-    com
+    _importImageSelectUnselectImage = (tripId: number, locationIdx: number, imageIdx: number) => {
+        var newTrip = importImagesReducer({
+            id: tripId,
+            name: this.state.name,
+            locations: this.state.locations
+        }, 
+        { type: IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, tripId, locationIdx, imageIdx })
+
+        this.setState({
+            locations: newTrip.locations
+        })
+    }
+
+    _importImageSelectUnselectAllImages = (tripId: number, locationIdx: number) => {
+        var newTrip = importImagesReducer({
+            id: tripId,
+            name: this.state.name,
+            locations: this.state.locations
+        }, 
+        { type: IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES, tripId, locationIdx })
+
+        this.setState({
+            locations: newTrip.locations
+        })
+    }
 
     _renderItem = (itemInfo) => {
         var item: LocationVM = itemInfo.item;
         var locationIdx: number = itemInfo.index;
 
-        const location = this.props.trip.locations[locationIdx]
+        const location = this.state.locations[locationIdx]
 
         return (
             <StyledListItem noIndent
@@ -54,7 +79,7 @@ class TripImportation extends Component<Props, State> {
                     style={{ position: "absolute", right: 10, top: 10 }}
                 >
                     <CheckBox checked={location.images.filter((item) => item.isSelected).length == location.images.length}
-                        onPress={() => this.props.importImageSelectUnselectAllImages(this.state.tripId, locationIdx)}
+                        onPress={() => this._importImageSelectUnselectAllImages(this.state.tripId, locationIdx)}
                         style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 2 }}
                     ></CheckBox>
 
@@ -68,14 +93,14 @@ class TripImportation extends Component<Props, State> {
                         {item.location.address}
                     </Text>
                     <ImportImageList images={item.images}
-                        handleSelect={(imageIdx) => this.props.importImageSelectUnselectImage(this.state.tripId, locationIdx, imageIdx)} />
+                        handleSelect={(imageIdx) => this._importImageSelectUnselectImage(this.state.tripId, locationIdx, imageIdx)} />
                 </View>
             </StyledListItem>
         );
     }
 
     render() {
-        const { name, locations } = this.props.trip
+        const { name, locations } = this.state
         return (
             <Container>
                 <Header>
@@ -142,8 +167,8 @@ const mapStateToProps = (storeState: BffStoreData, ownProps: Props) => {
 };
 
 const mapDispatchToProps: IMapDispatchToProps = {
-    importImageSelectUnselectImage,
-    importImageSelectUnselectAllImages
+    // importImageSelectUnselectImage,
+    // importImageSelectUnselectAllImages
 };
 
 const TripImportationScreen = connect(mapStateToProps, mapDispatchToProps)(TripImportation);
