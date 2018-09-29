@@ -1,7 +1,7 @@
 import React from "react";
 import { Thumbnail, CheckBox, View } from "native-base";
 import styled from "styled-components/native";
-import { TouchableHighlightComponent, TouchableHighlight, Image } from "react-native";
+import { TouchableHighlight } from "react-native";
 
 export interface Props {
     id: number
@@ -12,7 +12,6 @@ export interface Props {
 
 export interface State {
 }
-const cachedRedcat = require("./redcat.jpg")
 
 class ImportImage extends React.Component<Props, State> {
 
@@ -39,7 +38,7 @@ class ImportImage extends React.Component<Props, State> {
                     onPress={() => this.props.handleClick(this.props.id)}
                 >
                     <StyledThumbnail square large
-                        source={cachedRedcat}
+                        source={{ uri: this.props.imageUrl }}
                     />
                 </TouchableHighlight>
             </View>
@@ -53,6 +52,6 @@ export default ImportImage;
 const StyledThumbnail = styled(Thumbnail)`
     z-index: 1;
     /* box-shadow: 10px 5px 5px black; */
-    border-color: black;
-    border-width: 1px;
+    /* border-color: black;
+    border-width: 1px; */
 `

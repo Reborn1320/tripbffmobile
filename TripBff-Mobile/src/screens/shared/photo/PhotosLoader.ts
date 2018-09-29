@@ -1,3 +1,4 @@
+import { PhotoMetaData } from './PhotoInterface';
 import { CameraRoll, GetPhotosReturnType } from 'react-native';
 
 const PHOTOS_PER_BATCH = 20
@@ -5,7 +6,7 @@ const ASSET_TYPE = 'Photos'
 async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number) {
     try {
 
-        var photos: string[] = []
+        var photos: PhotoMetaData[] = []
         var result: GetPhotosReturnType
         var oldestTimeStamp = fromTimestamp + 1
         //fromTimeStamp -------------- oldestTimeStamp -------------- latestTimeStamp ------------- toTimeStamp
@@ -26,7 +27,7 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
                 //add photos
                 result.edges.forEach(element => {
                     if (element.node.timestamp >= fromTimestamp) {
-                        photos.push(element.node.image.uri)
+                        photos.push(element.node)
                     }
                 });
             }

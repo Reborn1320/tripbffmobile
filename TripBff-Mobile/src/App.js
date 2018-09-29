@@ -33,10 +33,10 @@ const Drawer = createDrawerNavigator(
     Photos: { screen: PhotoScreen },
   },
   {
-    initialRouteName: "Photos",
-    // initialRouteParams: {
-    //   tripId: 3
-    // },
+    initialRouteName: "TripImportation",
+    initialRouteParams: {
+      tripId: 3
+    },
     contentOptions: {
       activeTintColor: "#e91e63"
     }

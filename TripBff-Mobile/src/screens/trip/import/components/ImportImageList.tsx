@@ -43,13 +43,13 @@ class ImportImageList extends React.Component<Props> {
 const StyledFlatListImageContainer = styled(FlatList)`
     flex-direction: row;
     flex-wrap: wrap;
-    padding: 2px;
+    /* padding: 2px; */
     margin-top: 5px;
 `
 
 const StyledListItemImageItem = styled(ListItem)`
     border-bottom-width: 0;
-    margin: 2px;
+    /* margin: 2px; */
     padding: 0;
 `
 

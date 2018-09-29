@@ -11,6 +11,9 @@ import { connect } from "react-redux";
 import { importImageSelectUnselectImage, importImageSelectUnselectAllImages, IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES } from "./actions";
 import importImagesReducer from "./reducers";
 import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
+import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
+import moment from "moment";
+import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 
 export interface Props extends IMapDispatchToProps {
     // locations: Array<any> //TODO
@@ -43,7 +46,20 @@ class TripImportation extends Component<Props, State> {
 
     componentDidMount() {
         checkAndRequestPhotoPermissionAsync()
+        .then((value) => {
+            console.log("request photo permission completed")
+            // this.setState({ photoPermission: true })
+
+            loadPhotosWithinAsync(moment("2018-09-27").unix(), moment("2018-09-29").add(1, "day").unix())
+            .then((photos) => {
+                console.log(`photos result = ${photos.length} photos`)
+
+                var result = GroupPhotosIntoLocations(photos)
+                this.setState({ locations: result });
+            })
+        })
     }
+
 
     _importImageSelectUnselectImage = (tripId: number, locationIdx: number, imageIdx: number) => {
         var newTrip = importImagesReducer({

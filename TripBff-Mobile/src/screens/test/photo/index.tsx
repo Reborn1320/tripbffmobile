@@ -5,34 +5,14 @@ import { NavigationScreenProp } from 'react-navigation';
 import loadPhotosWithinAsync from '../../shared/photo/PhotosLoader';
 import moment from "moment";
 import checkAndRequestPhotoPermissionAsync from '../../shared/photo/PhotoPermission';
+import { PhotoMetaData } from '../../shared/photo/PhotoInterface';
 
 export interface Props {
     navigation: NavigationScreenProp<any, any>
 }
 
 interface State {
-    //copy from react-native type definition
-    // photos: {
-    //     node: {
-    //         type: string;
-    //         group_name: string;
-    //         image: {
-    //             uri: string;
-    //             height: number;
-    //             width: number;
-    //             isStored?: boolean;
-    //         };
-    //         timestamp: number;
-    //         location: {
-    //             latitude: number;
-    //             longitude: number;
-    //             altitude: number;
-    //             heading: number;
-    //             speed: number;
-    //         };
-    //     };
-    // }[],
-    photos: string[]
+    photos: PhotoMetaData[]
     photoPermission?: boolean
 }
 
@@ -45,7 +25,6 @@ export default class PhotoScreen extends Component<Props, State> {
         }
     }
 
-    //https://github.com/yonahforst/react-native-permissions
     componentDidMount() {
         checkAndRequestPhotoPermissionAsync()
         .then((value) => {
@@ -80,7 +59,7 @@ export default class PhotoScreen extends Component<Props, State> {
                                             width: 80,
                                             height: 80,
                                         }}
-                                        source={{ uri: p }}
+                                        source={{ uri: p.image.uri }}
                                     />
                                 );
                             })}
