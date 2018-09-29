@@ -9,10 +9,13 @@ import styles from "./styles";
 import { listRepos } from './reducer';
 import * as RNa from "react-navigation";
 
-export interface Props {
+export interface Props extends IMapDispatchToProps {
   navigation: RNa.NavigationScreenProp<any, any>
   repos: Array<any>
-  listRepos: (name: string) => void //TODO: improvement
+}
+
+interface IMapDispatchToProps {
+  listRepos: (name: string) => void
 }
 
 class Home extends React.Component<Props>  {
@@ -72,15 +75,16 @@ class Home extends React.Component<Props>  {
 }
 
 const mapStateToProps = state => {
-  let storedRepositories = state.repos.map(repo => ({ key: repo.id, ...repo }));
+  let storedRepositories = state.repo.repos.map(repo => ({ key: repo.id, ...repo }));
   return {
     repos: storedRepositories
   };
 };
 
-const mapDispatchToProps = {
+const mapDispatchToProps: IMapDispatchToProps = {
   listRepos
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+const HomeScreen = connect(mapStateToProps, mapDispatchToProps)(Home);
+export default HomeScreen;
 // export default Home;

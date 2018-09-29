@@ -1,40 +1,40 @@
 import React from "react";
 
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider, connect } from 'react-redux';
 import axios from 'axios';
 import axiosMiddleware from 'redux-axios-middleware';
 
 import { Root } from "native-base";
 import { createDrawerNavigator, createStackNavigator } from "react-navigation";
-import { SideBar, Container, Button, Header, Content, Text } from "native-base";
 
 import BasicFab from "./screens/fab/basic";
-import Home from "./screens/home";
+import HomeScreen from "./screens/home/index";
 import NHFab from "./screens/fab";
 import TripDetail from "./screens/trip/detail";
 import TripCreation from "./screens/trip/create";
 import TripImportationScreen from "./screens/trip/import";
 
-import reducer from './screens/home/reducer';
+import bffApp from "./reducers"
 
 const client = axios.create({
   baseURL: 'https://api.github.com',
   responseType: 'json'
 });
 
-const store = createStore(reducer, applyMiddleware(axiosMiddleware(client)));
-
-
+const store = createStore(bffApp, applyMiddleware(axiosMiddleware(client)));
 
 const Drawer = createDrawerNavigator(
   {
-    Home: { screen: Home },
+    Home: { screen: HomeScreen },
     NHFab: { screen: NHFab },
     TripImportation: { screen: TripImportationScreen },
   },
   {
-    initialRouteName: "Home",
+    initialRouteName: "TripImportation",
+    initialRouteParams: {
+      tripId: 3
+    },
     contentOptions: {
       activeTintColor: "#e91e63"
     }

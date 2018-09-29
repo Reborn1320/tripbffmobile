@@ -2,62 +2,117 @@ import React, { Component } from "react";
 import { FlatList, View } from "react-native";
 import { Container, Header, Content, Button, Text, Footer, ListItem, CheckBox } from 'native-base';
 import ImportImageList from "./components/ImportImageList";
-import ImportImageScreenData from "./fake_data";
+import ImportImageScreenData from "../../../fake_data";
 import styled from "styled-components/native";
 import { NavigationScreenProp } from "react-navigation";
+import { LocationVM, BffStoreData, TripVM } from "../../../Interfaces";
+import _, { cloneDeep } from "lodash";
+import { connect } from "react-redux";
+import { importImageSelectUnselectImage, importImageSelectUnselectAllImages, IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES } from "./actions";
+import importImagesReducer from "./reducers";
 
-export interface Props {
+export interface Props extends IMapDispatchToProps {
     // locations: Array<any> //TODO
     navigation: NavigationScreenProp<any, any>
+    trip: TripVM
+}
+
+interface IMapDispatchToProps {
+    // importImageSelectUnselectImage: (tripId: number, locationIdx: number, imageIdx: number) => void
+    // importImageSelectUnselectAllImages: (tripId: number, locationIdx: number) => void
 }
 
 interface State {
-    locations: Array<any> //TODO
+    tripId: number
+    name: string
+    locations: Array<LocationVM>
 }
-class TripImportationScreen extends Component<Props, State> {
 
-    constructor(props) {
+
+class TripImportation extends Component<Props, State> {
+
+    constructor(props: Props) {
         super(props);
         this.state = {
-            locations: ImportImageScreenData
+            tripId: props.trip.id,
+            name: props.trip.name,
+            locations: props.trip.locations,
         }
     }
 
-    renderItem = ({ item }) => (
-        <StyledListItem noIndent
-        >
-            <View
-                style={{ position: "absolute", right: 10, top: 10 }}
-            >
-                <CheckBox checked
-                    style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 2 }}
-                ></CheckBox>
+    _importImageSelectUnselectImage = (tripId: number, locationIdx: number, imageIdx: number) => {
+        var newTrip = importImagesReducer({
+            id: tripId,
+            name: this.state.name,
+            locations: this.state.locations
+        }, 
+        { type: IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, tripId, locationIdx, imageIdx })
 
-            </View>
-            <View
-                style={{ flexDirection: "column", padding: 0, }}
+        this.setState({
+            locations: newTrip.locations
+        })
+    }
+
+    _importImageSelectUnselectAllImages = (tripId: number, locationIdx: number) => {
+        var newTrip = importImagesReducer({
+            id: tripId,
+            name: this.state.name,
+            locations: this.state.locations
+        }, 
+        { type: IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES, tripId, locationIdx })
+
+        this.setState({
+            locations: newTrip.locations
+        })
+    }
+
+    _renderItem = (itemInfo) => {
+        var item: LocationVM = itemInfo.item;
+        var locationIdx: number = itemInfo.index;
+
+        const location = this.state.locations[locationIdx]
+
+        return (
+            <StyledListItem noIndent
             >
-                <Text
-                    style={{ alignSelf: "stretch", marginTop: 5, }}
+                <View
+                    style={{ position: "absolute", right: 10, top: 10 }}
                 >
-                    {item.location.address}
-                </Text>
-                <ImportImageList images={item.images} />
-            </View>
-        </StyledListItem>
-    );
+                    <CheckBox checked={location.images.filter((item) => item.isSelected).length == location.images.length}
+                        onPress={() => this._importImageSelectUnselectAllImages(this.state.tripId, locationIdx)}
+                        style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 2 }}
+                    ></CheckBox>
+
+                </View>
+                <View
+                    style={{ flexDirection: "column", padding: 0, }}
+                >
+                    <Text
+                        style={{ alignSelf: "stretch", marginTop: 5, }}
+                    >
+                        {item.location.address}
+                    </Text>
+                    <ImportImageList images={item.images}
+                        handleSelect={(imageIdx) => this._importImageSelectUnselectImage(this.state.tripId, locationIdx, imageIdx)} />
+                </View>
+            </StyledListItem>
+        );
+    }
 
     render() {
-        const { locations } = this.state
+        const { name, locations } = this.state
         return (
             <Container>
                 <Header>
+                    <View style={{ height: 100, paddingTop: 30, flex: 1 }}>
+                        <Text style={{ color: "white" }}>{name}</Text>
+                    </View>
                 </Header>
                 <Content>
                     <StyledFlatList
                         // styles={styles.container}
                         data={locations}
-                        renderItem={this.renderItem}
+                        renderItem={this._renderItem}
                         keyExtractor={(item, index) => String(index)}
                     />
                 </Content>
@@ -101,5 +156,21 @@ const StyledListItem = styled(ListItem)`
   flex: 1;
   padding: 0;
 `
+
+
+const mapStateToProps = (storeState: BffStoreData, ownProps: Props) => {
+    const { tripId } = ownProps.navigation.state.params
+    var trip = _.find(storeState.trips, (item) => item.id == tripId)
+    return {
+        trip
+    };
+};
+
+const mapDispatchToProps: IMapDispatchToProps = {
+    // importImageSelectUnselectImage,
+    // importImageSelectUnselectAllImages
+};
+
+const TripImportationScreen = connect(mapStateToProps, mapDispatchToProps)(TripImportation);
 
 export default TripImportationScreen;
