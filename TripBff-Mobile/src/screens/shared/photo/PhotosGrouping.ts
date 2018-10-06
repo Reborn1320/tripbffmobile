@@ -52,9 +52,10 @@ function addImageInNewLocation(locations: LocationVM[], element: PhotoMetaData):
     return location;
 }
 
+const SAMETIME_DURATION = moment.duration(3600 * 2, "seconds")
 function isApproximatelyTheSameTime(previousMetaDatas: PhotoMetaData, element: PhotoMetaData): boolean {
     var deltaSeconds = moment.duration(Math.abs(previousMetaDatas.timestamp - element.timestamp), "seconds");
-    return deltaSeconds < moment.duration(3600 * 2, "seconds");
+    return deltaSeconds < SAMETIME_DURATION;
 }
 
 function isApproximatelyTheSamePlace(previousMetaDatas: PhotoMetaData, element: PhotoMetaData): boolean {
