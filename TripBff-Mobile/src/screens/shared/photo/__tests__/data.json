@@ -1,0 +1,314 @@
+[{
+    "timestamp": 1538193854,
+    "group_name": "Messenger",
+    "type": "image/jpeg",
+    "image": {
+        "height": 1836,
+        "width": 3264,
+        "uri": "content://media/external/images/media/1634"
+    }
+}, {
+    "location": {
+        "latitude": 10.789258003234863,
+        "longitude": 106.64063262939453
+    },
+    "timestamp": 1538173659.732,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1632"
+    }
+}, {
+    "location": {
+        "latitude": 10.789258003234863,
+        "longitude": 106.64063262939453
+    },
+    "timestamp": 1538173644.387,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1631"
+    }
+}, {
+    "location": {
+        "latitude": 10.789169311523438,
+        "longitude": 106.64035034179688
+    },
+    "timestamp": 1538173637.752,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1630"
+    }
+}, {
+    "location": {
+        "latitude": 10.789169311523438,
+        "longitude": 106.64035034179688
+    },
+    "timestamp": 1538173636.486,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1629"
+    }
+}, {
+    "timestamp": 1538143928,
+    "group_name": "Messenger",
+    "type": "image/jpeg",
+    "image": {
+        "height": 996,
+        "width": 1334,
+        "uri": "content://media/external/images/media/1628"
+    }
+}, {
+    "location": {
+        "latitude": 10.789827346801758,
+        "longitude": 106.6397476196289
+    },
+    "timestamp": 1538141663.459,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1627"
+    }
+}, {
+    "location": {
+        "latitude": 10.789827346801758,
+        "longitude": 106.6397476196289
+    },
+    "timestamp": 1538141397.796,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1626"
+    }
+}, {
+    "location": {
+        "latitude": 10.788954734802246,
+        "longitude": 106.64012908935547
+    },
+    "timestamp": 1538137806.418,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1625"
+    }
+}, {
+    "location": {
+        "latitude": 10.788954734802246,
+        "longitude": 106.64012908935547
+    },
+    "timestamp": 1538137800.22,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1624"
+    }
+}, {
+    "location": {
+        "latitude": 10.788954734802246,
+        "longitude": 106.64012908935547
+    },
+    "timestamp": 1538137798.121,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1623"
+    }
+}, {
+    "location": {
+        "latitude": 10.781861305236816,
+        "longitude": 106.70631408691406
+    },
+    "timestamp": 1538128076.949,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1622"
+    }
+}, {
+    "location": {
+        "latitude": 10.781861305236816,
+        "longitude": 106.70631408691406
+    },
+    "timestamp": 1538128073.61,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1621"
+    }
+}, {
+    "location": {
+        "latitude": 10.781936645507812,
+        "longitude": 106.70620727539062
+    },
+    "timestamp": 1538119030.818,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1620"
+    }
+}, {
+    "location": {
+        "latitude": 10.781936645507812,
+        "longitude": 106.70620727539062
+    },
+    "timestamp": 1538119027.663,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1619"
+    }
+}, {
+    "location": {
+        "latitude": 10.781923294067383,
+        "longitude": 106.70621490478516
+    },
+    "timestamp": 1538114591.868,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1618"
+    }
+}, {
+    "location": {
+        "latitude": 10.781923294067383,
+        "longitude": 106.70621490478516
+    },
+    "timestamp": 1538114584.984,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1617"
+    }
+}, {
+    "timestamp": 1538112799,
+    "group_name": "Messenger",
+    "type": "image/jpeg",
+    "image": {
+        "height": 1836,
+        "width": 3264,
+        "uri": "content://media/external/images/media/1616"
+    }
+}, {
+    "location": {
+        "latitude": 10.789027214050293,
+        "longitude": 106.64054870605469
+    },
+    "timestamp": 1538090882.157,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1614"
+    }
+}, {
+    "location": {
+        "latitude": 10.783645629882812,
+        "longitude": 106.654541015625
+    },
+    "timestamp": 1538046050.039,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1612"
+    }
+}, {
+    "location": {
+        "latitude": 10.780386924743652,
+        "longitude": 106.70095825195312
+    },
+    "timestamp": 1538044251.857,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1611"
+    }
+}, {
+    "location": {
+        "latitude": 10.781929969787598,
+        "longitude": 106.70623779296875
+    },
+    "timestamp": 1538043457.46,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1610"
+    }
+}, {
+    "location": {
+        "latitude": 10.781929969787598,
+        "longitude": 106.70623779296875
+    },
+    "timestamp": 1538043455.696,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1609"
+    }
+}, {
+    "location": {
+        "latitude": 10.781929969787598,
+        "longitude": 106.70623779296875
+    },
+    "timestamp": 1538043443.489,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1608"
+    }
+}, {
+    "location": {
+        "latitude": 10.789119720458984,
+        "longitude": 106.64054107666016
+    },
+    "timestamp": 1538003107.879,
+    "group_name": "Camera",
+    "type": "image/jpeg",
+    "image": {
+        "height": 2160,
+        "width": 2880,
+        "uri": "content://media/external/images/media/1601"
+    }
+}]

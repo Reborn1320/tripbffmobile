@@ -1,43 +1,69 @@
 import { PhotoMetaData } from './PhotoInterface';
-import { CameraRoll, GetPhotosReturnType } from 'react-native';
+import { MediaLibrary } from 'expo';
+import _ from "lodash";
 
 const PHOTOS_PER_BATCH = 20
-const ASSET_TYPE = 'Photos'
+const mediaType = MediaLibrary.MediaType.photo
+//TODO: import filter by camera only
 async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number) {
+
+    //timestamp from assets in expo use unix to miliseconds
+    fromTimestamp = fromTimestamp * 1000;
+    toTimestamp = toTimestamp * 1000;
     try {
 
         var photos: PhotoMetaData[] = []
-        var result: GetPhotosReturnType
+        var result: MediaLibrary.GetAssetsResult
         var oldestTimeStamp = fromTimestamp + 1
         //fromTimeStamp -------------- oldestTimeStamp -------------- latestTimeStamp ------------- toTimeStamp
         while (fromTimestamp < oldestTimeStamp) {
 
-            var afterCursor = result == undefined ? undefined : result.page_info.end_cursor
-            result = await CameraRoll.getPhotos({
+            var afterCursor = result == undefined ? undefined : result.endCursor
+            result = await MediaLibrary.getAssetsAsync({
                 first: PHOTOS_PER_BATCH,
-                assetType: ASSET_TYPE,
-                after: afterCursor
+                mediaType: mediaType,
+                sortBy: MediaLibrary.SortBy.creationTime,
+                after: afterCursor,
             })
-            console.log(`get ${result.edges.length} photo(s)`)
+            console.log(`get ${result.assets.length} photo(s)`)
+            // console.log(result.assets)
 
-            oldestTimeStamp = result.edges[result.edges.length - 1].node.timestamp
-            var latestTimeStamp = result.edges[0].node.timestamp
+            oldestTimeStamp = result.assets[result.assets.length - 1].creationTime
+            var latestTimeStamp = result.assets[0].creationTime
 
             if (latestTimeStamp <= toTimestamp) {
                 //add photos
-                result.edges.forEach(element => {
-                    if (element.node.timestamp >= fromTimestamp) {
-                        photos.push(element.node)
+                for (let idx = 0; idx < result.assets.length; idx++) {
+                    const element = result.assets[idx];
+                    
+                    if (element.creationTime >= fromTimestamp) {
+                        var fullElement = await MediaLibrary.getAssetInfoAsync(element)
+
+                        if (fullElement.localUri.indexOf("Camera") == -1) continue;
+                        console.log(fullElement)
+                        photos.push({
+                            image: {
+                                uri: fullElement.uri,
+                                width: fullElement.width,
+                                height: fullElement.height,
+                            },
+                            timestamp: fullElement.creationTime / 1000,
+                            location: {
+                                latitude: fullElement.location.latitude,
+                                longitude: fullElement.location.longitude
+                            }
+                        });
                     }
-                });
+                }
             }
 
-            if (result.edges.length == 0) break;
-            if (!result.page_info.has_next_page) break;
+            if (result.assets.length == 0) break;
+            if (!result.hasNextPage) break;
 
         }
 
-        return photos
+        return photos;
+        // return _.orderBy(photos, 'timestamp', 'desc')
 
     } catch (error) {
         console.error(error)
