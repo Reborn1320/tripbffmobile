@@ -44,17 +44,15 @@ class TripImportation extends Component<Props, State> {
         }
     }
 
-    componentDidMount() {
-        checkAndRequestPhotoPermissionAsync()
-            .then(() => {
-                    console.log("request photo permission completed");
-                    loadPhotosWithinAsync(moment("2018-09-27").unix(), moment("2018-09-29").add(1, "day").unix())
-                        .then((photos) => {
-                            console.log(`photos result = ${photos.length} photos`);
-                            var result = GroupPhotosIntoLocations(photos);
-                            this.setState({ locations: result, isLoaded: true });
-                        });
-                })
+    async componentDidMount() {
+        await checkAndRequestPhotoPermissionAsync();
+
+        console.log("request photo permission completed");
+        var photos = await loadPhotosWithinAsync(moment("2018-09-27").unix(), moment("2018-09-29").add(1, "day").unix())
+        console.log(`photos result = ${photos.length} photos`);
+
+        var result = GroupPhotosIntoLocations(photos);
+        this.setState({ locations: result, isLoaded: true });
     }
 
 

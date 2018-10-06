@@ -11,8 +11,6 @@ export default function GroupPhotosIntoLocations(photoMetadatas: PhotoMetaData[]
     for (let idx = 0; idx < photoMetadatas.length; idx++) {
         const element = photoMetadatas[idx];
 
-        if (element.group_name != "Camera") continue;
-
         var isSameGroup = false
 
         if (previousMetaDatas != undefined) {
@@ -56,7 +54,7 @@ function addImageInNewLocation(locations: LocationVM[], element: PhotoMetaData):
 
 function isApproximatelyTheSameTime(previousMetaDatas: PhotoMetaData, element: PhotoMetaData): boolean {
     var deltaSeconds = moment.duration(Math.abs(previousMetaDatas.timestamp - element.timestamp), "seconds");
-    return deltaSeconds < moment.duration(2, "hours");
+    return deltaSeconds < moment.duration(3600 * 2, "seconds");
 }
 
 function isApproximatelyTheSamePlace(previousMetaDatas: PhotoMetaData, element: PhotoMetaData): boolean {

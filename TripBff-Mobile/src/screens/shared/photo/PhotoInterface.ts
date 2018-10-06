@@ -1,18 +1,14 @@
 export interface PhotoMetaData {
-    type: string;
-    group_name: string;
     image: {
         uri: string;
         height: number;
         width: number;
-        isStored?: boolean;
+        based64?: string;
     };
-    timestamp: number;
+    timestamp: number; //in seconds, for eaxample: 1537981200
     location: {
         latitude: number;
         longitude: number;
-        altitude: number;
-        heading: number;
-        speed: number;
+        altitude?: number; //not sure if we have anything
     };
 }
