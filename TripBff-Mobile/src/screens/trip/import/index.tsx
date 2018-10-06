@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import { FlatList, View } from "react-native";
-import { Container, Header, Content, Button, Text, Footer, ListItem, CheckBox } from 'native-base';
+import { Container, Header, Content, Button, Text, Footer, ListItem, CheckBox, Spinner } from 'native-base';
 import ImportImageList from "./components/ImportImageList";
-import ImportImageScreenData from "../../../fake_data";
 import styled from "styled-components/native";
 import { NavigationScreenProp } from "react-navigation";
 import { LocationVM, BffStoreData, TripVM } from "../../../Interfaces";
-import _, { cloneDeep } from "lodash";
+import _ from "lodash";
 import { connect } from "react-redux";
-import { importImageSelectUnselectImage, importImageSelectUnselectAllImages, IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES } from "./actions";
+import { IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES } from "./actions";
 import importImagesReducer from "./reducers";
 import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
 import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
@@ -16,7 +15,6 @@ import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 
 export interface Props extends IMapDispatchToProps {
-    // locations: Array<any> //TODO
     navigation: NavigationScreenProp<any, any>
     trip: TripVM
 }
@@ -30,6 +28,7 @@ interface State {
     tripId: number
     name: string
     locations: Array<LocationVM>
+    isLoaded: boolean
 }
 
 
@@ -40,24 +39,22 @@ class TripImportation extends Component<Props, State> {
         this.state = {
             tripId: props.trip.id,
             name: props.trip.name,
-            locations: props.trip.locations,
+            locations: [],
+            isLoaded: false,
         }
     }
 
     componentDidMount() {
         checkAndRequestPhotoPermissionAsync()
-        .then((value) => {
-            console.log("request photo permission completed")
-            // this.setState({ photoPermission: true })
-
-            loadPhotosWithinAsync(moment("2018-09-27").unix(), moment("2018-09-29").add(1, "day").unix())
-            .then((photos) => {
-                console.log(`photos result = ${photos.length} photos`)
-
-                var result = GroupPhotosIntoLocations(photos)
-                this.setState({ locations: result });
-            })
-        })
+            .then(() => {
+                    console.log("request photo permission completed");
+                    loadPhotosWithinAsync(moment("2018-09-27").unix(), moment("2018-09-29").add(1, "day").unix())
+                        .then((photos) => {
+                            console.log(`photos result = ${photos.length} photos`);
+                            var result = GroupPhotosIntoLocations(photos);
+                            this.setState({ locations: result, isLoaded: true });
+                        });
+                })
     }
 
 
@@ -66,8 +63,8 @@ class TripImportation extends Component<Props, State> {
             id: tripId,
             name: this.state.name,
             locations: this.state.locations
-        }, 
-        { type: IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, tripId, locationIdx, imageIdx })
+        },
+            { type: IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, tripId, locationIdx, imageIdx })
 
         this.setState({
             locations: newTrip.locations
@@ -79,8 +76,8 @@ class TripImportation extends Component<Props, State> {
             id: tripId,
             name: this.state.name,
             locations: this.state.locations
-        }, 
-        { type: IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES, tripId, locationIdx })
+        },
+            { type: IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES, tripId, locationIdx })
 
         this.setState({
             locations: newTrip.locations
@@ -121,7 +118,7 @@ class TripImportation extends Component<Props, State> {
     }
 
     render() {
-        const { name, locations } = this.state
+        const { name, locations, isLoaded } = this.state
         return (
             <Container>
                 <Header>
@@ -130,12 +127,14 @@ class TripImportation extends Component<Props, State> {
                     </View>
                 </Header>
                 <Content>
-                    <StyledFlatList
-                        // styles={styles.container}
-                        data={locations}
-                        renderItem={this._renderItem}
-                        keyExtractor={(item, index) => String(index)}
-                    />
+                    {!isLoaded && <Spinner color='green' />}
+                    {isLoaded &&
+                        <StyledFlatList
+                            data={locations}
+                            renderItem={this._renderItem}
+                            keyExtractor={(item, index) => String(index)}
+                        />
+                    }
                 </Content>
                 <Footer
                     style={{
