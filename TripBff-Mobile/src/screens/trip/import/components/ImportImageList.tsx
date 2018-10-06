@@ -4,17 +4,18 @@ import { FlatList } from "react-native";
 import { ListItem } from "native-base";
 import ImportImage from "./ImportImage";
 import styled from "styled-components/native";
-import { ImportImageVM } from "../../../../Interfaces";
+import { StoreData } from "../../../../Interfaces";
+import { TripImportImageVM } from "..";
 
 export interface Props {
-    images: Array<ImportImageVM>
+    images: Array<TripImportImageVM>
     handleSelect: (idx: number) => void
 }
 
 class ImportImageList extends React.Component<Props> {
 
     _renderItem = (itemInfo) => {
-        const item: ImportImageVM = itemInfo.item
+        const item: TripImportImageVM = itemInfo.item
         const idx: number = itemInfo.index
 
         return (

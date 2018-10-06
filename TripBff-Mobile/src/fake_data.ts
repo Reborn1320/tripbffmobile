@@ -1,21 +1,21 @@
 import { cloneDeep } from 'lodash';
-import { LocationVM } from './Interfaces';
-const singleItem: LocationVM =    {
+import { StoreData} from './Interfaces';
+const singleItem: StoreData.LocationVM = {
     location: {
         long: 0,
         lat: 0,
         address: "Ho Chi Minh city"
     },
     images: [
-        { url: "asd", isSelected: true },
-        { url: "asd", isSelected: true },
-        { url: "asd", isSelected: true },
-        { url: "asd", isSelected: true },
-        { url: "asd", isSelected: true },
+        { url: "asd" },
+        { url: "asd" },
+        { url: "asd" },
+        { url: "asd" },
+        { url: "asd" },
     ]
 };
 
-const ImportImageScreenData = new Array<LocationVM>();
+const ImportImageScreenData = new Array<StoreData.LocationVM>();
 for (let idx = 0; idx < 5; idx++) {
     ImportImageScreenData.push(cloneDeep(singleItem));
 }

@@ -4,11 +4,12 @@ import { Container, Header, Content, Button, Text, Footer, ListItem, CheckBox, S
 import ImportImageList from "./components/ImportImageList";
 import styled from "styled-components/native";
 import { NavigationScreenProp } from "react-navigation";
-import { LocationVM, BffStoreData, TripVM } from "../../../Interfaces";
+import { StoreData } from "../../../Interfaces";
 import _ from "lodash";
 import { connect } from "react-redux";
+import { cloneDeep } from 'lodash';
 import { IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES } from "./actions";
-import importImagesReducer from "./reducers";
+// import importImagesReducer from "./reducers";
 import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
 import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
 import moment from "moment";
@@ -16,7 +17,7 @@ import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 
 export interface Props extends IMapDispatchToProps {
     navigation: NavigationScreenProp<any, any>
-    trip: TripVM
+    trip: StoreData.TripVM
 }
 
 interface IMapDispatchToProps {
@@ -27,10 +28,27 @@ interface IMapDispatchToProps {
 interface State {
     tripId: number
     name: string
-    locations: Array<LocationVM>
+    fromDate: moment.Moment
+    toDate: moment.Moment
+    locations: TripImportLocationVM[]
     isLoaded: boolean
 }
 
+interface TripImportLocationVM {
+    location: TripImportLocationDetailVM
+    images: Array<TripImportImageVM>
+}
+
+export interface TripImportImageVM {
+    url: string
+    isSelected: boolean
+}
+
+export interface TripImportLocationDetailVM {
+    long: number
+    lat: number
+    address: string
+}
 
 class TripImportation extends Component<Props, State> {
 
@@ -39,6 +57,8 @@ class TripImportation extends Component<Props, State> {
         this.state = {
             tripId: props.trip.id,
             name: props.trip.name,
+            fromDate: props.trip.fromDate,
+            toDate: props.trip.toDate,
             locations: [],
             isLoaded: false,
         }
@@ -52,38 +72,60 @@ class TripImportation extends Component<Props, State> {
         console.log(`photos result = ${photos.length} photos`);
 
         var result = GroupPhotosIntoLocations(photos);
-        this.setState({ locations: result, isLoaded: true });
+
+        var adapterResult: TripImportLocationVM[] = []
+        result.forEach((element) => {
+            var location: TripImportLocationVM = {
+                location: element.location,
+                images: []
+            }
+
+            element.images.forEach((img) => {
+                location.images.push({
+                    url: img.url,
+                    isSelected: true
+                })
+            })
+            adapterResult.push(location)
+        })
+        
+        this.setState({ locations: adapterResult, isLoaded: true });
     }
 
 
     _importImageSelectUnselectImage = (tripId: number, locationIdx: number, imageIdx: number) => {
-        var newTrip = importImagesReducer({
-            id: tripId,
-            name: this.state.name,
-            locations: this.state.locations
-        },
-            { type: IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, tripId, locationIdx, imageIdx })
+
+        //TODO: optimize
+        var newLocations = cloneDeep(this.state.locations)
+        var img = newLocations[locationIdx].images[imageIdx]
+
+        img.isSelected = !img.isSelected
 
         this.setState({
-            locations: newTrip.locations
+            locations: newLocations
         })
     }
 
     _importImageSelectUnselectAllImages = (tripId: number, locationIdx: number) => {
-        var newTrip = importImagesReducer({
-            id: tripId,
-            name: this.state.name,
-            locations: this.state.locations
-        },
-            { type: IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES, tripId, locationIdx })
+
+        //TODO: optimize
+        var newLocations = cloneDeep(this.state.locations)
+
+        var newIsSelected = false;
+        var nSelected = newLocations[locationIdx].images.filter((item) => item.isSelected).length;
+
+        if (nSelected == 0) {
+            newIsSelected = true;
+        }
+        newLocations[locationIdx].images.forEach((item) => item.isSelected = newIsSelected)
 
         this.setState({
-            locations: newTrip.locations
+            locations: newLocations
         })
     }
 
     _renderItem = (itemInfo) => {
-        var item: LocationVM = itemInfo.item;
+        var item: TripImportLocationVM = itemInfo.item;
         var locationIdx: number = itemInfo.index;
 
         const location = this.state.locations[locationIdx]
@@ -131,6 +173,7 @@ class TripImportation extends Component<Props, State> {
                             data={locations}
                             renderItem={this._renderItem}
                             keyExtractor={(item, index) => String(index)}
+                            removeClippedSubviews = {false}
                         />
                     }
                 </Content>
@@ -176,7 +219,7 @@ const StyledListItem = styled(ListItem)`
 `
 
 
-const mapStateToProps = (storeState: BffStoreData, ownProps: Props) => {
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId } = ownProps.navigation.state.params
     var trip = _.find(storeState.trips, (item) => item.id == tripId)
     return {

@@ -1,12 +1,12 @@
-import { LocationVM } from './../../../Interfaces';
+import { StoreData } from './../../../Interfaces';
 import { PhotoMetaData } from './PhotoInterface';
 import moment from "moment";
 
-export default function GroupPhotosIntoLocations(photoMetadatas: PhotoMetaData[]): LocationVM[] {
+export default function GroupPhotosIntoLocations(photoMetadatas: PhotoMetaData[]): StoreData.LocationVM[] {
     console.log(photoMetadatas);
-    var locations: LocationVM[] = []
+    var locations: StoreData.LocationVM[] = []
 
-    var location: LocationVM
+    var location: StoreData.LocationVM
     var previousMetaDatas = undefined;
     for (let idx = 0; idx < photoMetadatas.length; idx++) {
         const element = photoMetadatas[idx];
@@ -16,7 +16,8 @@ export default function GroupPhotosIntoLocations(photoMetadatas: PhotoMetaData[]
         if (previousMetaDatas != undefined) {
             if (isApproximatelyTheSamePlace(previousMetaDatas, element)) {
                 if (isApproximatelyTheSameTime(previousMetaDatas, element)) {
-                    isSameGroup = true
+                    // if ( location.images.length < 3) 
+                        isSameGroup = true
                 }
             }
 
@@ -34,19 +35,17 @@ export default function GroupPhotosIntoLocations(photoMetadatas: PhotoMetaData[]
     return locations
 }
 
-function addImage(location: LocationVM, element: PhotoMetaData) {
+function addImage(location: StoreData.LocationVM, element: PhotoMetaData) {
     location.images.push({
         url: element.image.uri,
-        isSelected: true
     })
 }
 
-function addImageInNewLocation(locations: LocationVM[], element: PhotoMetaData): LocationVM {
+function addImageInNewLocation(locations: StoreData.LocationVM[], element: PhotoMetaData): StoreData.LocationVM {
     var location = newLocation(element.location.latitude, element.location.longitude, "Ho Chi Minh city")
     locations.push(location)
     location.images.push({
         url: element.image.uri,
-        isSelected: true
     })
 
     return location;
@@ -63,7 +62,7 @@ function isApproximatelyTheSamePlace(previousMetaDatas: PhotoMetaData, element: 
         element.location.latitude, element.location.longitude) < 0.5;
 }
 
-function newLocation(lat: number, long: number, address: string): LocationVM {
+function newLocation(lat: number, long: number, address: string): StoreData.LocationVM {
     return {
         location: {
             lat: lat,
