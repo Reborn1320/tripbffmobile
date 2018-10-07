@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Button, Text, View, CheckBox, ListItem } from 'native-base';
-import ImportImageList from "./components/ImportImageList";
-import styled from "styled-components";
+import { Container, Header, Content } from 'native-base';
 import { NavigationScreenProp } from "react-navigation";
 import { FlatList } from "react-native";
+import ImportImageLocationItem from "./components/ImportImageLocationItem";
 
 export interface Props {
     navigation: NavigationScreenProp<any, any>
@@ -13,32 +12,43 @@ export interface Props {
 interface State {
 }
 
+export interface TripImportLocationVM {
+    id: number
+    location: TripImportLocationDetailVM
+    images: Array<TripImportImageVM>
+}
+
+export interface TripImportImageVM {
+    url: string
+    isSelected: boolean
+}
+
+export interface TripImportLocationDetailVM {
+    long: number
+    lat: number
+    address: string
+}
+
 class TripDetail extends Component<Props, State> {
 
-    renderItem = ({ item }) => (
-        <StyledListItem noIndent
-        >
-            <View
-                style={{ flexDirection: "column", padding: 0, }}
-            >
-                <Text
-                    style={{ alignSelf: "stretch", marginTop: 5, }}
-                >
-                    {item.location.address}
-                </Text>
-                <ImportImageList images={item.images} />
-            </View>
-        </StyledListItem>
-    );
+    renderItem = (itemInfo) => {
+        
+        var location: TripImportLocationVM = itemInfo.item;
+        return (
+
+        <ImportImageLocationItem
+            location={location}
+        />
+    )};
 
     render() {
-        const { locations } = this.props.navigation.state.params
+        const { locations } = this.props.navigation.state.params //TODO: locations should come from storeData
         return (
             <Container>
                 <Header>
                 </Header>
                 <Content>
-                    <StyledFlatList
+                    <FlatList
                         // styles={styles.container}
                         data={locations}
                         renderItem={this.renderItem}
@@ -52,13 +62,3 @@ class TripDetail extends Component<Props, State> {
 
 export default TripDetail;
 
-const StyledFlatList = styled(FlatList)`
-  border-bottom-width: 0;
-`
-
-const StyledListItem = styled(ListItem)`
-  border-bottom-width: 0;
-
-  flex: 1;
-  padding: 0;
-`

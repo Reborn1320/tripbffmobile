@@ -1,12 +1,22 @@
 import React from "react";
-import { Thumbnail, CheckBox, View } from "native-base";
+import { Thumbnail, View } from "native-base";
 import styled from "styled-components/native";
 
 export interface Props {
+    id: number
     imageUrl: string
 }
 
-class ImportImage extends React.Component<Props> {
+export interface State {
+}
+
+class ImportImage extends React.Component<Props, State> {
+
+    constructor(props: Props) {
+        super(props)
+        this.state = {
+        }
+    }
 
     render() {
         return (
@@ -14,7 +24,8 @@ class ImportImage extends React.Component<Props> {
                 style={{ shadowColor: "black", elevation: 5 }}
             >
                 <StyledThumbnail square large
-                    source={require("./redcat.jpg")}
+                    style={{ width: 120, height: 120 }} //TODO: use screen dimension to scale differently :D
+                    source={{ uri: this.props.imageUrl }}
                 />
             </View>
         );
@@ -27,6 +38,6 @@ export default ImportImage;
 const StyledThumbnail = styled(Thumbnail)`
     z-index: 1;
     /* box-shadow: 10px 5px 5px black; */
-    border-color: black;
-    border-width: 1px;
+    /* border-color: black;
+    border-width: 1px; */
 `
