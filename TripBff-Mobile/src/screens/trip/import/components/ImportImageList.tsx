@@ -1,46 +1,48 @@
 import React from "react";
 
-import { FlatList } from "react-native";
+import { View } from "react-native";
 import { ListItem } from "native-base";
 import ImportImage from "./ImportImage";
 import styled from "styled-components/native";
-import { ImportImageVM } from "../../../../Interfaces";
+import { TripImportImageVM } from "..";
 
 export interface Props {
-    images: Array<ImportImageVM>
+    images: Array<TripImportImageVM>
     handleSelect: (idx: number) => void
 }
 
 class ImportImageList extends React.Component<Props> {
 
     _renderItem = (itemInfo) => {
-        const item: ImportImageVM = itemInfo.item
+        const item: TripImportImageVM = itemInfo.item
         const idx: number = itemInfo.index
 
         return (
             <StyledListItemImageItem noIndent
+                key={idx}
             >
                 <ImportImage imageUrl={item.url} isChecked={item.isSelected} id={idx}
                     handleClick={(imageIdx) => this.props.handleSelect(imageIdx)}
                 ></ImportImage>
             </StyledListItemImageItem>
-            );
+        );
     }
     render() {
-
+        console.log("render image list")
         const { images } = this.props;
         return (
             <StyledFlatListImageContainer
-                data={images}
-                renderItem={this._renderItem}
-                keyExtractor={(item, index) => String(index)}
+            // data={images}
+            // renderItem={this._renderItem}
+            // keyExtractor={(item, index) => String(index)}
             >
+                {images.map((item, index) => this._renderItem({ item, index }))}
             </StyledFlatListImageContainer>
         );
     }
 }
 
-const StyledFlatListImageContainer = styled(FlatList)`
+const StyledFlatListImageContainer = styled(View)`
     flex-direction: row;
     flex-wrap: wrap;
     /* padding: 2px; */

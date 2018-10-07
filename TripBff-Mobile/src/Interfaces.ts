@@ -1,46 +1,49 @@
-//TODO: make sure screen don't necessary depend on this data
-export interface ImportImageVM {
-    url: string
-    isSelected: boolean
-}
+import * as moment from 'moment';
+export module StoreData {
+    export interface ImportImageVM {
+        url: string
+    }
 
-export interface LocationDetailVM {
-    long: number
-    lat: number
-    address: string
-}
+    export interface LocationDetailVM {
+        long: number
+        lat: number
+        address: string
+    }
 
-export interface LocationVM {
-    location: LocationDetailVM //TODO: change to details
-    images: Array<ImportImageVM>
-}
+    export interface LocationVM {
+        location: LocationDetailVM //TODO: change to details
+        images: Array<ImportImageVM>
+    }
 
-export interface TripVM {
-    id: number
-    name: string
-    locations: Array<LocationVM>
-}
+    export interface TripVM {
+        id: number
+        name: string
+        fromDate: moment.Moment
+        toDate: moment.Moment
+        locations: Array<LocationVM>
+    }
 
-export interface UserVM {
-    username: string
-    email: string
-    firstName: string
-    lastName: string
-    fullName: string
+    export interface UserVM {
+        username: string
+        email: string
+        firstName: string
+        lastName: string
+        fullName: string
 
-    token: string
-    //TODO: expired time...
-}
+        token: string
+        //TODO: expired time...
+    }
 
-//testing home screen
-export interface RepoVM {
-    loading?: boolean
-    repos: Array<string>
-    error?: string
-}
+    //testing home screen
+    export interface RepoVM {
+        loading?: boolean
+        repos: Array<string>
+        error?: string
+    }
 
-export interface BffStoreData {
-    repo?: RepoVM
-    user?: UserVM
-    trips?: Array<TripVM>
+    export interface BffStoreData {
+        repo?: RepoVM
+        user?: UserVM
+        trips?: Array<TripVM>
+    }
 }

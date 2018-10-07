@@ -1,22 +1,24 @@
 import React, { Component } from "react";
 import { FlatList, View } from "react-native";
-import { Container, Header, Content, Button, Text, Footer, ListItem, CheckBox, Spinner } from 'native-base';
-import ImportImageList from "./components/ImportImageList";
+import { Container, Header, Content, Button, Text, Footer, Spinner } from 'native-base';
 import styled from "styled-components/native";
 import { NavigationScreenProp } from "react-navigation";
-import { LocationVM, BffStoreData, TripVM } from "../../../Interfaces";
+import { StoreData } from "../../../Interfaces";
 import _ from "lodash";
 import { connect } from "react-redux";
-import { IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES } from "./actions";
-import importImagesReducer from "./reducers";
+import { cloneDeep } from 'lodash';
+import 'react-native-console-time-polyfill';
+
+// import importImagesReducer from "./reducers";
 import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
 import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
 import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
+import ImportImageLocationItem from "./components/ImportImageLocationItem";
 
 export interface Props extends IMapDispatchToProps {
     navigation: NavigationScreenProp<any, any>
-    trip: TripVM
+    trip: StoreData.TripVM
 }
 
 interface IMapDispatchToProps {
@@ -27,10 +29,30 @@ interface IMapDispatchToProps {
 interface State {
     tripId: number
     name: string
-    locations: Array<LocationVM>
+    fromDate: moment.Moment
+    toDate: moment.Moment
+    locations: TripImportLocationVM[]
     isLoaded: boolean
+    forceUpdateOnlyItemIdx?: number
+
 }
 
+export interface TripImportLocationVM {
+    id: number
+    location: TripImportLocationDetailVM
+    images: Array<TripImportImageVM>
+}
+
+export interface TripImportImageVM {
+    url: string
+    isSelected: boolean
+}
+
+export interface TripImportLocationDetailVM {
+    long: number
+    lat: number
+    address: string
+}
 
 class TripImportation extends Component<Props, State> {
 
@@ -39,6 +61,8 @@ class TripImportation extends Component<Props, State> {
         this.state = {
             tripId: props.trip.id,
             name: props.trip.name,
+            fromDate: props.trip.fromDate,
+            toDate: props.trip.toDate,
             locations: [],
             isLoaded: false,
         }
@@ -48,70 +72,79 @@ class TripImportation extends Component<Props, State> {
         await checkAndRequestPhotoPermissionAsync();
 
         console.log("request photo permission completed");
-        var photos = await loadPhotosWithinAsync(moment("2018-09-27").unix(), moment("2018-09-29").add(1, "day").unix())
+        var photos = await loadPhotosWithinAsync(this.state.fromDate.unix(), this.state.toDate.unix())
         console.log(`photos result = ${photos.length} photos`);
 
         var result = GroupPhotosIntoLocations(photos);
-        this.setState({ locations: result, isLoaded: true });
+
+        var adapterResult: TripImportLocationVM[] = []
+        for (let idx = 0; idx < result.length; idx++) {
+            const element = result[idx];
+
+            var location: TripImportLocationVM = {
+                id: idx,
+                location: element.location,
+                images: []
+            }
+
+            element.images.forEach((img) => {
+                location.images.push({
+                    url: img.url,
+                    isSelected: true
+                })
+            })
+            adapterResult.push(location)
+        }
+
+        // console.log(adapterResult)
+
+        this.setState({ locations: adapterResult, isLoaded: true });
     }
 
 
     _importImageSelectUnselectImage = (tripId: number, locationIdx: number, imageIdx: number) => {
-        var newTrip = importImagesReducer({
-            id: tripId,
-            name: this.state.name,
-            locations: this.state.locations
-        },
-            { type: IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, tripId, locationIdx, imageIdx })
+
+        console.time("_importImageSelectUnselectImage")
+        var newLocations = cloneDeep(this.state.locations)
+        var img = newLocations[locationIdx].images[imageIdx]
+
+        img.isSelected = !img.isSelected
+        console.timeEnd("_importImageSelectUnselectImage")
 
         this.setState({
-            locations: newTrip.locations
+            locations: newLocations,
+            forceUpdateOnlyItemIdx: locationIdx,
         })
     }
 
     _importImageSelectUnselectAllImages = (tripId: number, locationIdx: number) => {
-        var newTrip = importImagesReducer({
-            id: tripId,
-            name: this.state.name,
-            locations: this.state.locations
-        },
-            { type: IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES, tripId, locationIdx })
+
+        var newLocations = cloneDeep(this.state.locations)
+
+        var newIsSelected = false;
+        var nSelected = newLocations[locationIdx].images.filter((item) => item.isSelected).length;
+
+        if (nSelected == 0) {
+            newIsSelected = true;
+        }
+        newLocations[locationIdx].images.forEach((item) => item.isSelected = newIsSelected)
 
         this.setState({
-            locations: newTrip.locations
+            locations: newLocations,
+            forceUpdateOnlyItemIdx: locationIdx,
         })
     }
 
     _renderItem = (itemInfo) => {
-        var item: LocationVM = itemInfo.item;
-        var locationIdx: number = itemInfo.index;
-
-        const location = this.state.locations[locationIdx]
+        var location: TripImportLocationVM = itemInfo.item;
 
         return (
-            <StyledListItem noIndent
-            >
-                <View
-                    style={{ position: "absolute", right: 10, top: 10 }}
-                >
-                    <CheckBox checked={location.images.filter((item) => item.isSelected).length == location.images.length}
-                        onPress={() => this._importImageSelectUnselectAllImages(this.state.tripId, locationIdx)}
-                        style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 2 }}
-                    ></CheckBox>
-
-                </View>
-                <View
-                    style={{ flexDirection: "column", padding: 0, }}
-                >
-                    <Text
-                        style={{ alignSelf: "stretch", marginTop: 5, }}
-                    >
-                        {item.location.address}
-                    </Text>
-                    <ImportImageList images={item.images}
-                        handleSelect={(imageIdx) => this._importImageSelectUnselectImage(this.state.tripId, locationIdx, imageIdx)} />
-                </View>
-            </StyledListItem>
+            <ImportImageLocationItem
+                location={location}
+                handleSelectAll={(locationIdx) => this._importImageSelectUnselectAllImages(this.state.tripId, locationIdx)}
+                handleSelect={(locationIdx, imageIdx) => this._importImageSelectUnselectImage(this.state.tripId, locationIdx, imageIdx)}
+                isForceUpdate={location.id == this.state.forceUpdateOnlyItemIdx}
+            />
         );
     }
 
@@ -131,6 +164,7 @@ class TripImportation extends Component<Props, State> {
                             data={locations}
                             renderItem={this._renderItem}
                             keyExtractor={(item, index) => String(index)}
+                            removeClippedSubviews = {false}
                         />
                     }
                 </Content>
@@ -164,19 +198,12 @@ class TripImportation extends Component<Props, State> {
     }
 }
 
+
 const StyledFlatList = styled(FlatList)`
   border-bottom-width: 0;
 `
 
-const StyledListItem = styled(ListItem)`
-  border-bottom-width: 0;
-
-  flex: 1;
-  padding: 0;
-`
-
-
-const mapStateToProps = (storeState: BffStoreData, ownProps: Props) => {
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId } = ownProps.navigation.state.params
     var trip = _.find(storeState.trips, (item) => item.id == tripId)
     return {

@@ -38,7 +38,7 @@ class ImportImage extends React.Component<Props, State> {
                     onPress={() => this.props.handleClick(this.props.id)}
                 >
                     <StyledThumbnail square large
-                        style={{width: 120, height: 120}} //TODO: use screen dimension to scale differently :D
+                        style={{ width: 120, height: 120 }} //TODO: use screen dimension to scale differently :D
                         source={{ uri: this.props.imageUrl }}
                     />
                 </TouchableHighlight>
