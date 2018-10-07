@@ -16,6 +16,7 @@ import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermiss
 import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
 import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
+import ImportImageLocationItem from "./components/ImportImageLocationItem";
 
 export interface Props extends IMapDispatchToProps {
     navigation: NavigationScreenProp<any, any>
@@ -34,9 +35,11 @@ interface State {
     toDate: moment.Moment
     locations: TripImportLocationVM[]
     isLoaded: boolean
+    forceUpdateOnlyItemIdx?: number
+
 }
 
-interface TripImportLocationVM {
+export interface TripImportLocationVM {
     id: number
     location: TripImportLocationDetailVM
     images: Array<TripImportImageVM>
@@ -71,7 +74,7 @@ class TripImportation extends Component<Props, State> {
         await checkAndRequestPhotoPermissionAsync();
 
         console.log("request photo permission completed");
-        var photos = await loadPhotosWithinAsync(moment("2018-09-27").unix(), moment("2018-09-29").add(1, "day").unix())
+        var photos = await loadPhotosWithinAsync(moment("2018-08-27").unix(), moment("2018-09-29").add(1, "day").unix())
         console.log(`photos result = ${photos.length} photos`);
 
         var result = GroupPhotosIntoLocations(photos);
@@ -112,7 +115,8 @@ class TripImportation extends Component<Props, State> {
         console.timeEnd("_importImageSelectUnselectImage")
 
         this.setState({
-            locations: newLocations
+            locations: newLocations,
+            forceUpdateOnlyItemIdx: locationIdx,
         })
     }
 
@@ -130,39 +134,47 @@ class TripImportation extends Component<Props, State> {
         newLocations[locationIdx].images.forEach((item) => item.isSelected = newIsSelected)
 
         this.setState({
-            locations: newLocations
+            locations: newLocations,
+            forceUpdateOnlyItemIdx: locationIdx,
         })
     }
 
     _renderItem = (itemInfo) => {
         var location: TripImportLocationVM = itemInfo.item;
-        var locationIdx: number = location.id;
+        // var locationIdx: number = location.id;
 
         return (
-            <ListItem noIndent
-                style={{borderBottomWidth: 0, flex: 1, padding: 0, paddingLeft: 0, paddingRight: 0 }}
-            >
-                <View
-                    style={{ position: "absolute", right: 10, top: 10 }}
-                >
-                    <CheckBox checked={location.images.filter((item) => item.isSelected).length == location.images.length}
-                        onPress={() => this._importImageSelectUnselectAllImages(this.state.tripId, locationIdx)}
-                        style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 2 }}
-                    ></CheckBox>
+            <ImportImageLocationItem
+                location={location}
+                handleSelectAll={(locationIdx) => this._importImageSelectUnselectAllImages(this.state.tripId, locationIdx)}
+                handleSelect={(locationIdx, imageIdx) => this._importImageSelectUnselectImage(this.state.tripId, locationIdx, imageIdx)}
+                isForceUpdate={location.id == this.state.forceUpdateOnlyItemIdx}
+            />
 
-                </View>
-                <View
-                    style={{ flexDirection: "column", padding: 0 }}
-                >
-                    <Text
-                        style={{ alignSelf: "stretch", marginTop: 5, paddingLeft: 5 }}
-                    >
-                        {location.location.address}
-                    </Text>
-                    <ImportImageList images={location.images}
-                        handleSelect={(imageIdx) => this._importImageSelectUnselectImage(this.state.tripId, locationIdx, imageIdx)} />
-                </View>
-            </ListItem>
+            // <ListItem noIndent
+            //     style={{borderBottomWidth: 0, flex: 1, padding: 0, paddingLeft: 0, paddingRight: 0 }}
+            // >
+            //     <View
+            //         style={{ position: "absolute", right: 10, top: 10 }}
+            //     >
+            //         <CheckBox checked={location.images.filter((item) => item.isSelected).length == location.images.length}
+            //             onPress={() => this._importImageSelectUnselectAllImages(this.state.tripId, locationIdx)}
+            //             style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 2 }}
+            //         ></CheckBox>
+
+            //     </View>
+            //     <View
+            //         style={{ flexDirection: "column", padding: 0 }}
+            //     >
+            //         <Text
+            //             style={{ alignSelf: "stretch", marginTop: 5, paddingLeft: 5 }}
+            //         >
+            //             {location.location.address}
+            //         </Text>
+            //         <ImportImageList images={location.images}
+            //             handleSelect={(imageIdx) => this._importImageSelectUnselectImage(this.state.tripId, locationIdx, imageIdx)} />
+            //     </View>
+            // </ListItem>
         );
     }
 
