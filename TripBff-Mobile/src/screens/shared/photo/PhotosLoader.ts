@@ -40,7 +40,7 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
                         var fullElement = await MediaLibrary.getAssetInfoAsync(element)
 
                         if (fullElement.localUri.indexOf("Camera") == -1) continue;
-                        console.log(fullElement)
+                        // console.log(fullElement)
                         if (fullElement.location == null || fullElement.location == undefined) {
                             fullElement.location = { latitude: 0, longitude: 0 }
                         }

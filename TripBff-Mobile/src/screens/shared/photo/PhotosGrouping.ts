@@ -3,7 +3,7 @@ import { PhotoMetaData } from './PhotoInterface';
 import moment from "moment";
 
 export default function GroupPhotosIntoLocations(photoMetadatas: PhotoMetaData[]): StoreData.LocationVM[] {
-    console.log(photoMetadatas);
+    // console.log(photoMetadatas);
     var locations: StoreData.LocationVM[] = []
 
     var location: StoreData.LocationVM

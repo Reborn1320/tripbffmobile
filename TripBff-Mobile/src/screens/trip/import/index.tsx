@@ -8,6 +8,8 @@ import { StoreData } from "../../../Interfaces";
 import _ from "lodash";
 import { connect } from "react-redux";
 import { cloneDeep } from 'lodash';
+import 'react-native-console-time-polyfill';
+
 import { IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES } from "./actions";
 // import importImagesReducer from "./reducers";
 import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
@@ -35,6 +37,7 @@ interface State {
 }
 
 interface TripImportLocationVM {
+    id: number
     location: TripImportLocationDetailVM
     images: Array<TripImportImageVM>
 }
@@ -74,8 +77,11 @@ class TripImportation extends Component<Props, State> {
         var result = GroupPhotosIntoLocations(photos);
 
         var adapterResult: TripImportLocationVM[] = []
-        result.forEach((element) => {
+        for (let idx = 0; idx < result.length; idx++) {
+            const element = result[idx];
+
             var location: TripImportLocationVM = {
+                id: idx,
                 location: element.location,
                 images: []
             }
@@ -87,19 +93,23 @@ class TripImportation extends Component<Props, State> {
                 })
             })
             adapterResult.push(location)
-        })
-        
+        }
+
+        // console.log(adapterResult)
+
         this.setState({ locations: adapterResult, isLoaded: true });
     }
 
 
     _importImageSelectUnselectImage = (tripId: number, locationIdx: number, imageIdx: number) => {
 
+        console.time("_importImageSelectUnselectImage")
         //TODO: optimize
         var newLocations = cloneDeep(this.state.locations)
         var img = newLocations[locationIdx].images[imageIdx]
 
         img.isSelected = !img.isSelected
+        console.timeEnd("_importImageSelectUnselectImage")
 
         this.setState({
             locations: newLocations
@@ -125,13 +135,12 @@ class TripImportation extends Component<Props, State> {
     }
 
     _renderItem = (itemInfo) => {
-        var item: TripImportLocationVM = itemInfo.item;
-        var locationIdx: number = itemInfo.index;
-
-        const location = this.state.locations[locationIdx]
+        var location: TripImportLocationVM = itemInfo.item;
+        var locationIdx: number = location.id;
 
         return (
-            <StyledListItem noIndent
+            <ListItem noIndent
+                style={{borderBottomWidth: 0, flex: 1, padding: 0, paddingLeft: 0, paddingRight: 0 }}
             >
                 <View
                     style={{ position: "absolute", right: 10, top: 10 }}
@@ -143,17 +152,17 @@ class TripImportation extends Component<Props, State> {
 
                 </View>
                 <View
-                    style={{ flexDirection: "column", padding: 0, }}
+                    style={{ flexDirection: "column", padding: 0 }}
                 >
                     <Text
-                        style={{ alignSelf: "stretch", marginTop: 5, }}
+                        style={{ alignSelf: "stretch", marginTop: 5, paddingLeft: 5 }}
                     >
-                        {item.location.address}
+                        {location.location.address}
                     </Text>
-                    <ImportImageList images={item.images}
+                    <ImportImageList images={location.images}
                         handleSelect={(imageIdx) => this._importImageSelectUnselectImage(this.state.tripId, locationIdx, imageIdx)} />
                 </View>
-            </StyledListItem>
+            </ListItem>
         );
     }
 
@@ -207,17 +216,11 @@ class TripImportation extends Component<Props, State> {
     }
 }
 
+const ITEM_HEIGHT = 151.3
+
 const StyledFlatList = styled(FlatList)`
   border-bottom-width: 0;
 `
-
-const StyledListItem = styled(ListItem)`
-  border-bottom-width: 0;
-
-  flex: 1;
-  padding: 0;
-`
-
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId } = ownProps.navigation.state.params
