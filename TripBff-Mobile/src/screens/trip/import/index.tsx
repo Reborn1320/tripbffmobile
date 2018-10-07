@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { FlatList, View } from "react-native";
-import { Container, Header, Content, Button, Text, Footer, ListItem, CheckBox, Spinner } from 'native-base';
-import ImportImageList from "./components/ImportImageList";
+import { Container, Header, Content, Button, Text, Footer, Spinner } from 'native-base';
 import styled from "styled-components/native";
 import { NavigationScreenProp } from "react-navigation";
 import { StoreData } from "../../../Interfaces";
@@ -10,7 +9,6 @@ import { connect } from "react-redux";
 import { cloneDeep } from 'lodash';
 import 'react-native-console-time-polyfill';
 
-import { IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES } from "./actions";
 // import importImagesReducer from "./reducers";
 import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
 import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
@@ -107,7 +105,6 @@ class TripImportation extends Component<Props, State> {
     _importImageSelectUnselectImage = (tripId: number, locationIdx: number, imageIdx: number) => {
 
         console.time("_importImageSelectUnselectImage")
-        //TODO: optimize
         var newLocations = cloneDeep(this.state.locations)
         var img = newLocations[locationIdx].images[imageIdx]
 
@@ -122,7 +119,6 @@ class TripImportation extends Component<Props, State> {
 
     _importImageSelectUnselectAllImages = (tripId: number, locationIdx: number) => {
 
-        //TODO: optimize
         var newLocations = cloneDeep(this.state.locations)
 
         var newIsSelected = false;
@@ -141,7 +137,6 @@ class TripImportation extends Component<Props, State> {
 
     _renderItem = (itemInfo) => {
         var location: TripImportLocationVM = itemInfo.item;
-        // var locationIdx: number = location.id;
 
         return (
             <ImportImageLocationItem
@@ -150,31 +145,6 @@ class TripImportation extends Component<Props, State> {
                 handleSelect={(locationIdx, imageIdx) => this._importImageSelectUnselectImage(this.state.tripId, locationIdx, imageIdx)}
                 isForceUpdate={location.id == this.state.forceUpdateOnlyItemIdx}
             />
-
-            // <ListItem noIndent
-            //     style={{borderBottomWidth: 0, flex: 1, padding: 0, paddingLeft: 0, paddingRight: 0 }}
-            // >
-            //     <View
-            //         style={{ position: "absolute", right: 10, top: 10 }}
-            //     >
-            //         <CheckBox checked={location.images.filter((item) => item.isSelected).length == location.images.length}
-            //             onPress={() => this._importImageSelectUnselectAllImages(this.state.tripId, locationIdx)}
-            //             style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 2 }}
-            //         ></CheckBox>
-
-            //     </View>
-            //     <View
-            //         style={{ flexDirection: "column", padding: 0 }}
-            //     >
-            //         <Text
-            //             style={{ alignSelf: "stretch", marginTop: 5, paddingLeft: 5 }}
-            //         >
-            //             {location.location.address}
-            //         </Text>
-            //         <ImportImageList images={location.images}
-            //             handleSelect={(imageIdx) => this._importImageSelectUnselectImage(this.state.tripId, locationIdx, imageIdx)} />
-            //     </View>
-            // </ListItem>
         );
     }
 
@@ -228,7 +198,6 @@ class TripImportation extends Component<Props, State> {
     }
 }
 
-const ITEM_HEIGHT = 151.3
 
 const StyledFlatList = styled(FlatList)`
   border-bottom-width: 0;

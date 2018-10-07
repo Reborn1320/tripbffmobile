@@ -1,9 +1,7 @@
 import React from "react";
-import { Thumbnail, CheckBox, View, ListItem, Text } from "native-base";
-import styled from "styled-components/native";
-import { TouchableHighlight } from "react-native";
+import { CheckBox, View, ListItem, Text } from "native-base";
 import ImportImageList from "./ImportImageList";
-import { TripImportLocationDetailVM, TripImportLocationVM } from "..";
+import { TripImportLocationVM } from "..";
 
 export interface Props {
     location: TripImportLocationVM
@@ -36,7 +34,7 @@ class ImportImageLocationItem extends React.Component<Props, State> {
 
         return (
             <ListItem noIndent
-                style={{borderBottomWidth: 0, flex: 1, padding: 0, paddingLeft: 0, paddingRight: 0 }}
+                style={{ borderBottomWidth: 0, flex: 1, padding: 0, paddingLeft: 0, paddingRight: 0 }}
             >
                 <View
                     style={{ position: "absolute", right: 20, top: 10 }}
@@ -52,12 +50,13 @@ class ImportImageLocationItem extends React.Component<Props, State> {
                 >
                     <Text
                         style={{ alignSelf: "stretch", marginTop: 5, paddingLeft: 5 }}
+                        onPress={() => this.props.handleSelectAll(locationIdx)}
                     >
                         {location.location.address}
                     </Text>
                     <ImportImageList images={location.images}
-                        handleSelect={(imageIdx) => this.props.handleSelect(this.state.locationIdx, imageIdx)} 
-                        />
+                        handleSelect={(imageIdx) => this.props.handleSelect(this.state.locationIdx, imageIdx)}
+                    />
                 </View>
             </ListItem>
         );

@@ -35,7 +35,7 @@ const Drawer = createDrawerNavigator(
   {
     initialRouteName: "TripImportation",
     initialRouteParams: {
-      tripId: 3
+      tripId: 5
     },
     contentOptions: {
       activeTintColor: "#e91e63"

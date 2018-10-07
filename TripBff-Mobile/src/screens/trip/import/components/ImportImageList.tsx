@@ -1,10 +1,9 @@
 import React from "react";
 
-import { FlatList, ListView, View } from "react-native";
+import { View } from "react-native";
 import { ListItem } from "native-base";
 import ImportImage from "./ImportImage";
 import styled from "styled-components/native";
-import { StoreData } from "../../../../Interfaces";
 import { TripImportImageVM } from "..";
 
 export interface Props {
@@ -20,7 +19,7 @@ class ImportImageList extends React.Component<Props> {
 
         return (
             <StyledListItemImageItem noIndent
-            key={idx}
+                key={idx}
             >
                 <ImportImage imageUrl={item.url} isChecked={item.isSelected} id={idx}
                     handleClick={(imageIdx) => this.props.handleSelect(imageIdx)}
