@@ -9,12 +9,13 @@ import { connect } from "react-redux";
 import { cloneDeep } from 'lodash';
 import 'react-native-console-time-polyfill';
 
-// import importImagesReducer from "./reducers";
+import importImagesReducer from "./reducers";
 import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
 import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
 import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
+import { importSelectedLocations } from "./actions";
 
 export interface Props extends IMapDispatchToProps {
     navigation: NavigationScreenProp<any, any>
@@ -24,6 +25,7 @@ export interface Props extends IMapDispatchToProps {
 interface IMapDispatchToProps {
     // importImageSelectUnselectImage: (tripId: number, locationIdx: number, imageIdx: number) => void
     // importImageSelectUnselectAllImages: (tripId: number, locationIdx: number) => void
+    importSelectedLocations: (tripId: number, locations: StoreData.LocationVM[]) => void
 }
 
 interface State {
@@ -135,6 +137,34 @@ class TripImportation extends Component<Props, State> {
         })
     }
 
+
+    _toLocationVM = () => {
+        var selectedLocations: StoreData.LocationVM[] = []
+        this.state.locations.forEach((element) => {
+            var isLocationSelected = element.images.filter((img) => img.isSelected).length > 0;
+
+            if (isLocationSelected) {
+                var locationVM: StoreData.LocationVM = {
+                    location: element.location,
+                    images: element.images.filter((img) => img.isSelected)
+                }
+                return selectedLocations.push(locationVM);
+            }
+        })
+
+        return selectedLocations
+    }
+
+    _skip = () => {
+        this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId })
+    }
+    _import = () => {
+
+        var selectedLocations = this._toLocationVM()
+        this.props.importSelectedLocations(this.state.tripId, selectedLocations)
+        this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId })
+    }
+
     _renderItem = (itemInfo) => {
         var location: TripImportLocationVM = itemInfo.item;
 
@@ -164,7 +194,7 @@ class TripImportation extends Component<Props, State> {
                             data={locations}
                             renderItem={this._renderItem}
                             keyExtractor={(item, index) => String(index)}
-                            removeClippedSubviews = {false}
+                            removeClippedSubviews={false}
                         />
                     }
                 </Content>
@@ -187,7 +217,7 @@ class TripImportation extends Component<Props, State> {
                     </Button>
 
                     <Button transparent success
-                        onPress={() => this.props.navigation.navigate("TripDetail", { locations: locations })}
+                        onPress={this._import}
                         style={{ alignSelf: "stretch", margin: 5, }}
                     >
                         <Text style={{ color: "orange" }}>Import</Text>
@@ -214,6 +244,7 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 const mapDispatchToProps: IMapDispatchToProps = {
     // importImageSelectUnselectImage,
     // importImageSelectUnselectAllImages
+    importSelectedLocations
 };
 
 const TripImportationScreen = connect(mapStateToProps, mapDispatchToProps)(TripImportation);

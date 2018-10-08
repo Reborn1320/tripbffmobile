@@ -3,10 +3,17 @@ import { Container, Header, Content } from 'native-base';
 import { NavigationScreenProp } from "react-navigation";
 import { FlatList } from "react-native";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
+import { StoreData } from "../../../Interfaces";
+import { connect } from "react-redux";
+import _ from "lodash";
 
-export interface Props {
+export interface Props extends IMapDispatchToProps {
     navigation: NavigationScreenProp<any, any>
-    locations: Array<any> //TODO
+    // locations: Array<any> //TODO
+    trip: StoreData.TripVM
+}
+
+interface IMapDispatchToProps {
 }
 
 interface State {
@@ -42,7 +49,7 @@ class TripDetail extends Component<Props, State> {
     )};
 
     render() {
-        const { locations } = this.props.navigation.state.params //TODO: locations should come from storeData
+        const { locations } = this.props.trip
         return (
             <Container>
                 <Header>
@@ -60,5 +67,21 @@ class TripDetail extends Component<Props, State> {
     }
 }
 
-export default TripDetail;
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+    const { tripId } = ownProps.navigation.state.params
+    var trip = _.find(storeState.trips, (item) => item.id == tripId)
+    return {
+        trip
+    };
+};
+
+const mapDispatchToProps: IMapDispatchToProps = {
+    // importImageSelectUnselectImage,
+    // importImageSelectUnselectAllImages
+    // importSelectedLocations
+};
+
+const TripDetailScreen = connect(mapStateToProps, mapDispatchToProps)(TripDetail);
+
+export default TripDetailScreen;
 
