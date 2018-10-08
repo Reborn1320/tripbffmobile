@@ -1,48 +1,52 @@
 import React from "react";
 
-import { FlatList } from "react-native";
+import { View } from "react-native";
 import { ListItem } from "native-base";
 import ImportImage from "./ImportImage";
 import styled from "styled-components/native";
+import { TripImportImageVM } from "..";
 
 export interface Props {
-    images: Array<any>
+    images: Array<TripImportImageVM>
 }
 
 class ImportImageList extends React.Component<Props> {
 
-    renderItem(itemInfo) {
+    _renderItem = (itemInfo) => {
+        const item: TripImportImageVM = itemInfo.item
+        const idx: number = itemInfo.index
+
         return (
             <StyledListItemImageItem noIndent
+                key={idx}
             >
-                <ImportImage imageUrl={itemInfo.item.url}></ImportImage>
+                <ImportImage imageUrl={item.url} id={idx}
+                ></ImportImage>
             </StyledListItemImageItem>
-            );
+        );
     }
     render() {
-
+        console.log("render image list")
         const { images } = this.props;
         return (
             <StyledFlatListImageContainer
-                data={images}
-                renderItem={this.renderItem}
-                keyExtractor={(item, index) => String(index)}
             >
+                {images.map((item, index) => this._renderItem({ item, index }))}
             </StyledFlatListImageContainer>
         );
     }
 }
 
-const StyledFlatListImageContainer = styled(FlatList)`
+const StyledFlatListImageContainer = styled(View)`
     flex-direction: row;
     flex-wrap: wrap;
-    padding: 2px;
+    /* padding: 2px; */
     margin-top: 5px;
 `
 
 const StyledListItemImageItem = styled(ListItem)`
     border-bottom-width: 0;
-    margin: 2px;
+    /* margin: 2px; */
     padding: 0;
 `
 

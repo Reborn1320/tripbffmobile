@@ -4,6 +4,7 @@ import { StoreData } from "./Interfaces";
 // import importImagesReducer from "./screens/trip/import/reducers";
 import homeScreenReducer from "./screens/home/reducer";
 import ImportImageScreenData from "./fake_data";
+import importImagesReducer from './screens/trip/import/reducers';
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -46,8 +47,8 @@ function userReducer(state, action) {
 
 function tripReducer(state, action) {
     //TODO: combine with other reducer if needed
-    return state;
-    // return importImagesReducer(state, action)
+    // return state;
+    return importImagesReducer(state, action)
 }
 
 function tripsReducer(state, action) {

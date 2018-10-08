@@ -35,7 +35,7 @@ const Drawer = createDrawerNavigator(
   {
     initialRouteName: "TripImportation",
     initialRouteParams: {
-      tripId: 5
+      tripId: 3
     },
     contentOptions: {
       activeTintColor: "#e91e63"
@@ -65,3 +65,5 @@ export default () =>
       <AppNavigator />
     </Root>
   </Provider>;
+
+console.disableYellowBox = true;

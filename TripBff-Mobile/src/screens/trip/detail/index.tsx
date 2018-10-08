@@ -1,44 +1,61 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Button, Text, View, CheckBox, ListItem } from 'native-base';
-import ImportImageList from "./components/ImportImageList";
-import styled from "styled-components";
+import { Container, Header, Content } from 'native-base';
 import { NavigationScreenProp } from "react-navigation";
 import { FlatList } from "react-native";
+import ImportImageLocationItem from "./components/ImportImageLocationItem";
+import { StoreData } from "../../../Interfaces";
+import { connect } from "react-redux";
+import _ from "lodash";
 
-export interface Props {
+export interface Props extends IMapDispatchToProps {
     navigation: NavigationScreenProp<any, any>
-    locations: Array<any> //TODO
+    // locations: Array<any> //TODO
+    trip: StoreData.TripVM
+}
+
+interface IMapDispatchToProps {
 }
 
 interface State {
 }
 
+export interface TripImportLocationVM {
+    id: number
+    location: TripImportLocationDetailVM
+    images: Array<TripImportImageVM>
+}
+
+export interface TripImportImageVM {
+    url: string
+    isSelected: boolean
+}
+
+export interface TripImportLocationDetailVM {
+    long: number
+    lat: number
+    address: string
+}
+
 class TripDetail extends Component<Props, State> {
 
-    renderItem = ({ item }) => (
-        <StyledListItem noIndent
-        >
-            <View
-                style={{ flexDirection: "column", padding: 0, }}
-            >
-                <Text
-                    style={{ alignSelf: "stretch", marginTop: 5, }}
-                >
-                    {item.location.address}
-                </Text>
-                <ImportImageList images={item.images} />
-            </View>
-        </StyledListItem>
-    );
+    renderItem = (itemInfo) => {
+        
+        var location: TripImportLocationVM = itemInfo.item;
+        return (
+
+        <ImportImageLocationItem
+            location={location}
+        />
+    )};
 
     render() {
-        const { locations } = this.props.navigation.state.params
+        const { locations } = this.props.trip
         return (
             <Container>
                 <Header>
                 </Header>
                 <Content>
-                    <StyledFlatList
+                    <FlatList
                         // styles={styles.container}
                         data={locations}
                         renderItem={this.renderItem}
@@ -50,15 +67,21 @@ class TripDetail extends Component<Props, State> {
     }
 }
 
-export default TripDetail;
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+    const { tripId } = ownProps.navigation.state.params
+    var trip = _.find(storeState.trips, (item) => item.id == tripId)
+    return {
+        trip
+    };
+};
 
-const StyledFlatList = styled(FlatList)`
-  border-bottom-width: 0;
-`
+const mapDispatchToProps: IMapDispatchToProps = {
+    // importImageSelectUnselectImage,
+    // importImageSelectUnselectAllImages
+    // importSelectedLocations
+};
 
-const StyledListItem = styled(ListItem)`
-  border-bottom-width: 0;
+const TripDetailScreen = connect(mapStateToProps, mapDispatchToProps)(TripDetail);
 
-  flex: 1;
-  padding: 0;
-`
+export default TripDetailScreen;
+
