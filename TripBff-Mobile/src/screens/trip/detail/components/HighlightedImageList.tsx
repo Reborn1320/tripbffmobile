@@ -28,16 +28,16 @@ class HighlightedImageList extends React.Component<Props> {
     render() {
         console.log("render image list")
         const { images } = this.props;
-        const item: ImageVM = images[0]
+        // const item: ImageVM = images[0]
 
         return (
-            <HighlightedImage imageUrl={item.url} id={0}
-                ></HighlightedImage>
+            // <HighlightedImage imageUrl={item.url} id={0}
+            //     ></HighlightedImage>
 
-            // <StyledFlatListImageContainer
-            // >
-            //     {images.map((item, index) => this._renderItem({ item, index }))}
-            // </StyledFlatListImageContainer>
+            <StyledFlatListImageContainer
+            >
+                {images.map((item, index) => this._renderItem({ item, index }))}
+            </StyledFlatListImageContainer>
         );
     }
 }

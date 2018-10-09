@@ -32,6 +32,7 @@ export interface DayVM {
 
 export interface LocationVM {
     id: number
+    address: string
     images: Array<ImageVM>
 }
 
@@ -55,6 +56,7 @@ class TripDetail extends Component<Props, State> {
                     .map((e, locationIdx) => {
                         return {
                             id: locationIdx,
+                            address: e.location.address,
                             images: e.images.map(img => { return { url: img.url, highlight: false } })
                         }
                     })
