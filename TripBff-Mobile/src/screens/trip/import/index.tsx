@@ -42,6 +42,9 @@ interface State {
 export interface TripImportLocationVM {
     id: number
     location: TripImportLocationDetailVM
+    fromTime: moment.Moment
+    toTime: moment.Moment
+
     images: Array<TripImportImageVM>
 }
 
@@ -77,21 +80,29 @@ class TripImportation extends Component<Props, State> {
         var photos = await loadPhotosWithinAsync(this.state.fromDate.unix(), this.state.toDate.unix())
         console.log(`photos result = ${photos.length} photos`);
 
-        var result = GroupPhotosIntoLocations(photos);
+        var groupedPhotos = GroupPhotosIntoLocations(photos);
 
         var adapterResult: TripImportLocationVM[] = []
-        for (let idx = 0; idx < result.length; idx++) {
-            const element = result[idx];
+        for (let idx = 0; idx < groupedPhotos.length; idx++) {
+            const element = groupedPhotos[idx];
 
+            var maxTimestamp = _.max(element.map(e => e.timestamp))
+            var minTimestamp = _.min(element.map(e => e.timestamp))
             var location: TripImportLocationVM = {
                 id: idx,
-                location: element.location,
+                location: {
+                    lat: element[0].location.latitude,
+                    long: element[0].location.longitude,
+                    address: "Ho Chi Minh City"
+                },
+                fromTime: moment(minTimestamp, "X"),
+                toTime: moment(maxTimestamp, "X"),
                 images: []
             }
 
-            element.images.forEach((img) => {
+            element.forEach((img) => {
                 location.images.push({
-                    url: img.url,
+                    url: img.image.uri,
                     isSelected: true
                 })
             })
@@ -137,7 +148,6 @@ class TripImportation extends Component<Props, State> {
         })
     }
 
-
     _toLocationVM = () => {
         var selectedLocations: StoreData.LocationVM[] = []
         this.state.locations.forEach((element) => {
@@ -146,6 +156,8 @@ class TripImportation extends Component<Props, State> {
             if (isLocationSelected) {
                 var locationVM: StoreData.LocationVM = {
                     location: element.location,
+                    fromTime: element.fromTime,
+                    toTime: element.toTime,
                     images: element.images.filter((img) => img.isSelected)
                 }
                 return selectedLocations.push(locationVM);

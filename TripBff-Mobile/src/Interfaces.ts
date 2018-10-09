@@ -11,7 +11,9 @@ export module StoreData {
     }
 
     export interface LocationVM {
-        location: LocationDetailVM //TODO: change to details
+        location: LocationDetailVM //TODO: simplify this by removing the interface
+        fromTime: moment.Moment
+        toTime: moment.Moment
         images: Array<ImportImageVM>
     }
 

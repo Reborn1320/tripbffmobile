@@ -2,37 +2,42 @@ import React from "react";
 
 import { View } from "react-native";
 import { ListItem } from "native-base";
-import ImportImage from "./ImportImage";
+import HighlightedImage from "./HighlightedImage";
 import styled from "styled-components/native";
-import { TripImportImageVM } from "..";
+import { ImageVM } from "..";
 
 export interface Props {
-    images: Array<TripImportImageVM>
+    images: Array<ImageVM>
 }
 
-class ImportImageList extends React.Component<Props> {
+class HighlightedImageList extends React.Component<Props> {
 
     _renderItem = (itemInfo) => {
-        const item: TripImportImageVM = itemInfo.item
+        const item: ImageVM = itemInfo.item
         const idx: number = itemInfo.index
 
         return (
             <StyledListItemImageItem noIndent
                 key={idx}
             >
-                <ImportImage imageUrl={item.url} id={idx}
-                ></ImportImage>
+                <HighlightedImage imageUrl={item.url} id={idx}
+                ></HighlightedImage>
             </StyledListItemImageItem>
         );
     }
     render() {
         console.log("render image list")
         const { images } = this.props;
+        const item: ImageVM = images[0]
+
         return (
-            <StyledFlatListImageContainer
-            >
-                {images.map((item, index) => this._renderItem({ item, index }))}
-            </StyledFlatListImageContainer>
+            <HighlightedImage imageUrl={item.url} id={0}
+                ></HighlightedImage>
+
+            // <StyledFlatListImageContainer
+            // >
+            //     {images.map((item, index) => this._renderItem({ item, index }))}
+            // </StyledFlatListImageContainer>
         );
     }
 }
@@ -50,4 +55,4 @@ const StyledListItemImageItem = styled(ListItem)`
     padding: 0;
 `
 
-export default ImportImageList;
+export default HighlightedImageList;

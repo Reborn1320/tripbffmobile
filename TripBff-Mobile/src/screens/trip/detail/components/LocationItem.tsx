@@ -1,17 +1,17 @@
 import React from "react";
 import { CheckBox, View, ListItem, Text } from "native-base";
-import ImportImageList from "./ImportImageList";
-import { TripImportLocationVM } from "..";
+import HighlightedImageList from "./HighlightedImageList";
+import { LocationVM } from "..";
 
 export interface Props {
-    location: TripImportLocationVM
+    location: LocationVM
 }
 
 export interface State {
     locationIdx: number
 }
 
-class ImportImageLocationItem extends React.Component<Props, State> {
+class LocationItem extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -22,7 +22,7 @@ class ImportImageLocationItem extends React.Component<Props, State> {
 
     render() {
 
-        var location: TripImportLocationVM = this.props.location;
+        var location: LocationVM = this.props.location;
         var locationIdx: number = location.id;
 
         return (
@@ -45,7 +45,7 @@ class ImportImageLocationItem extends React.Component<Props, State> {
                     >
                         {location.location.address}
                     </Text>
-                    <ImportImageList images={location.images}
+                    <HighlightedImageList images={location.images}
                     />
                 </View>
             </ListItem>
@@ -54,4 +54,4 @@ class ImportImageLocationItem extends React.Component<Props, State> {
 
 }
 
-export default ImportImageLocationItem;
+export default LocationItem;

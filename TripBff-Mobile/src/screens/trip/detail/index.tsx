@@ -2,54 +2,89 @@ import React, { Component } from "react";
 import { Container, Header, Content } from 'native-base';
 import { NavigationScreenProp } from "react-navigation";
 import { FlatList } from "react-native";
-import ImportImageLocationItem from "./components/ImportImageLocationItem";
+import LocationItem from "./components/LocationItem";
 import { StoreData } from "../../../Interfaces";
 import { connect } from "react-redux";
-import _ from "lodash";
-
-export interface Props extends IMapDispatchToProps {
-    navigation: NavigationScreenProp<any, any>
-    // locations: Array<any> //TODO
-    trip: StoreData.TripVM
-}
+import _, { } from "lodash";
+import moment from "moment";
+import DayItem from "./components/DayItem";
 
 interface IMapDispatchToProps {
 }
 
+export interface Props extends IMapDispatchToProps {
+    navigation: NavigationScreenProp<any, any>
+    trip: StoreData.TripVM
+}
+
 interface State {
+    tripId: number
+    fromDate: moment.Moment
+    toDate: moment.Moment
+    name: string
+    days: DayVM[]
 }
 
-export interface TripImportLocationVM {
+export interface DayVM {
+    idx: number
+    locations: LocationVM[]
+}
+
+export interface LocationVM {
     id: number
-    location: TripImportLocationDetailVM
-    images: Array<TripImportImageVM>
+    images: Array<ImageVM>
 }
 
-export interface TripImportImageVM {
+export interface ImageVM {
     url: string
-    isSelected: boolean
-}
-
-export interface TripImportLocationDetailVM {
-    long: number
-    lat: number
-    address: string
+    highlight: boolean
 }
 
 class TripDetail extends Component<Props, State> {
 
-    renderItem = (itemInfo) => {
-        
-        var location: TripImportLocationVM = itemInfo.item;
+    constructor(props: Props) {
+        super(props)
+        var dayVMs: DayVM[] = []
+        const nDays = props.trip.toDate.diff(props.trip.fromDate, "days") + 1
+        console.log(props.trip)
+        for (let idx = 0; idx < nDays; idx++) {
+            dayVMs.push({
+                idx: idx,
+                locations: props.trip.locations
+                    .filter((element) => element.fromTime.diff(props.trip.fromDate, "days") == idx)
+                    .map((e, locationIdx) => {
+                        return {
+                            id: locationIdx,
+                            images: e.images.map(img => { return { url: img.url, highlight: false } })
+                        }
+                    })
+
+            })
+        }
+
+        console.log(dayVMs)
+
+        this.state = {
+            tripId: props.trip.id,
+            fromDate: props.trip.fromDate,
+            toDate: props.trip.toDate,
+            name: props.trip.name,
+            days: dayVMs
+        }
+    }
+
+    _renderItem = (itemInfo) => {
+        const day: DayVM = itemInfo.item;
         return (
 
-        <ImportImageLocationItem
-            location={location}
-        />
-    )};
+            <DayItem
+                locations={day.locations} dayIdx={day.idx}
+            />
+        )
+    };
 
     render() {
-        const { locations } = this.props.trip
+        const { days } = this.state
         return (
             <Container>
                 <Header>
@@ -57,8 +92,8 @@ class TripDetail extends Component<Props, State> {
                 <Content>
                     <FlatList
                         // styles={styles.container}
-                        data={locations}
-                        renderItem={this.renderItem}
+                        data={days}
+                        renderItem={this._renderItem}
                         keyExtractor={(item, index) => String(index)}
                     />
                 </Content>

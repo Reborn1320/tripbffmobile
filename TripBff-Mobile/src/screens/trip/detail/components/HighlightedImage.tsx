@@ -10,7 +10,7 @@ export interface Props {
 export interface State {
 }
 
-class ImportImage extends React.Component<Props, State> {
+class HighlightedImage extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -33,7 +33,7 @@ class ImportImage extends React.Component<Props, State> {
 
 }
 
-export default ImportImage;
+export default HighlightedImage;
 
 const StyledThumbnail = styled(Thumbnail)`
     z-index: 1;
