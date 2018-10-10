@@ -15,15 +15,15 @@ export interface State {
 export default class DayItem extends React.Component<Props, State> {
     render() {
         const { dayIdx, locations } = this.props
-        console.log("DayItem")
-        console.log(locations)
         return (
             <View>
-                <Text>Day {dayIdx}</Text>
-                <Button small rounded>
-                    <Icon type={"FontAwesome"} name="plus" />
+                <View style={{display: "flex", alignItems: "stretch", flexDirection: "row", paddingLeft: 10, paddingRight: 10}}>
+                    <Text style={{color: "darkred", fontSize: 20}}>Day {dayIdx}</Text>
+                    <Button small transparent>
+                        <Icon type={"FontAwesome"} name="plus" />
+                    </Button>
+                </View>
 
-                </Button>
                 {locations.map(e => <LocationItem location={e} key={e.id} ></LocationItem>)}
             </View>
         )

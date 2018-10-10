@@ -117,12 +117,10 @@ class TripImportation extends Component<Props, State> {
 
     _importImageSelectUnselectImage = (tripId: number, locationIdx: number, imageIdx: number) => {
 
-        console.time("_importImageSelectUnselectImage")
         var newLocations = cloneDeep(this.state.locations)
         var img = newLocations[locationIdx].images[imageIdx]
 
         img.isSelected = !img.isSelected
-        console.timeEnd("_importImageSelectUnselectImage")
 
         this.setState({
             locations: newLocations,

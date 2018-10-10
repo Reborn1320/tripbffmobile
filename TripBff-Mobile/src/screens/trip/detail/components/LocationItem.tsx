@@ -1,8 +1,8 @@
 import React from "react";
-import { CheckBox, View, ListItem, Text } from "native-base";
-import HighlightedImageList from "./HighlightedImageList";
+import { Text, Card, CardItem, Left, Thumbnail, Body, Button, Icon, Right } from "native-base";
 import { LocationVM } from "..";
 
+import { Image } from "react-native";
 export interface Props {
     location: LocationVM
 }
@@ -23,24 +23,30 @@ class LocationItem extends React.Component<Props, State> {
     render() {
 
         var location: LocationVM = this.props.location;
-        var locationIdx: number = location.id;
-
+        const firstImage = location.images[0].url;
         return (
-            <ListItem noIndent
-                style={{ borderBottomWidth: 0, flex: 1, padding: 0, paddingLeft: 0, paddingRight: 0 }}
-            >
-                <View
-                    style={{ flexDirection: "column", padding: 0 }}
-                >
-                    <Text
-                        style={{ alignSelf: "stretch", marginTop: 5, paddingLeft: 5 }}
-                    >
-                        {location.address}
-                    </Text>
-                    <HighlightedImageList images={location.images}
-                    />
-                </View>
-            </ListItem>
+            <Card style={{marginLeft: 10, marginRight: 10}}>
+                <CardItem cardBody>
+                    <Image source={{ uri: firstImage }} style={{ height: 200, width: null, flex: 1 }} />
+                </CardItem>
+                <CardItem>
+                    <Left>
+                        <Button transparent>
+                            <Icon active name="thumbs-up" />
+                            <Text>12 Likes</Text>
+                        </Button>
+                    </Left>
+                    <Body>
+                        <Button transparent>
+                            <Icon active name="chatbubbles" />
+                            <Text>4 cm(s)</Text>
+                        </Button>
+                    </Body>
+                    <Right>
+                        <Text>11h ago</Text>
+                    </Right>
+                </CardItem>
+            </Card>
         );
     }
 

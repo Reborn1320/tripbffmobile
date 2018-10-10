@@ -47,7 +47,7 @@ class TripDetail extends Component<Props, State> {
         super(props)
         var dayVMs: DayVM[] = []
         const nDays = props.trip.toDate.diff(props.trip.fromDate, "days") + 1
-        console.log(props.trip)
+
         for (let idx = 0; idx < nDays; idx++) {
             dayVMs.push({
                 idx: idx,
@@ -63,8 +63,6 @@ class TripDetail extends Component<Props, State> {
 
             })
         }
-
-        console.log(dayVMs)
 
         this.state = {
             tripId: props.trip.id,
