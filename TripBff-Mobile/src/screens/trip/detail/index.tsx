@@ -79,27 +79,29 @@ class TripDetail extends Component<Props, State> {
 
             <DayItem
                 locations={day.locations} dayIdx={day.idx}
+                toLocationDetailHandler={(locationId) => {
+                    this.props.navigation.navigate("LocationDetail", { tripId: this.state.tripId, locationId })}}
             />
         )
     };
 
-    render() {
-        const { days } = this.state
-        return (
-            <Container>
-                <Header>
-                </Header>
-                <Content>
-                    <FlatList
-                        // styles={styles.container}
-                        data={days}
-                        renderItem={this._renderItem}
-                        keyExtractor={(item, index) => String(index)}
-                    />
-                </Content>
-            </Container>
-        );
-    }
+render() {
+    const { days } = this.state
+    return (
+        <Container>
+            <Header>
+            </Header>
+            <Content>
+                <FlatList
+                    // styles={styles.container}
+                    data={days}
+                    renderItem={this._renderItem}
+                    keyExtractor={(item, index) => String(index)}
+                />
+            </Content>
+        </Container>
+    );
+}
 }
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {

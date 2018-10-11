@@ -6,6 +6,7 @@ import LocationItem from './LocationItem';
 export interface Props {
     dayIdx: number
     locations: LocationVM[]
+    toLocationDetailHandler: (locationId: number) => void
 }
 
 export interface State {
@@ -24,7 +25,7 @@ export default class DayItem extends React.Component<Props, State> {
                     </Button>
                 </View>
 
-                {locations.map(e => <LocationItem location={e} key={e.id} ></LocationItem>)}
+                {locations.map(e => <LocationItem location={e} key={e.id} toLocationDetailHandler={(locationId) => this.props.toLocationDetailHandler(locationId)} ></LocationItem>)}
             </View>
         )
     }

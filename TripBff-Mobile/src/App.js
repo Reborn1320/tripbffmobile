@@ -15,6 +15,7 @@ import PhotoScreen from "./screens/test/photo";
 import TripDetail from "./screens/trip/detail";
 import TripCreation from "./screens/trip/create";
 import TripImportationScreen from "./screens/trip/import";
+import LocationDetailScreen from "./screens/location/detail";
 
 import bffApp from "./reducers"
 
@@ -49,9 +50,10 @@ const AppNavigator = createStackNavigator(
 
     BasicFab: { screen: BasicFab },
     TripDetail: {screen: TripDetail },
+    LocationDetail: {screen: LocationDetailScreen },
     TripCreation: {screen: TripCreation },
     TripImportation: {screen: TripImportationScreen },
-    Photos: {screen: PhotoScreen }
+    Photos: {screen: PhotoScreen },
   },
   {
     initialRouteName: "Drawer",
