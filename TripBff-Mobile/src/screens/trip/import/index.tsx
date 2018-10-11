@@ -148,11 +148,12 @@ class TripImportation extends Component<Props, State> {
 
     _toLocationVM = () => {
         var selectedLocations: StoreData.LocationVM[] = []
-        this.state.locations.forEach((element) => {
+        this.state.locations.forEach((element, idx) => {
             var isLocationSelected = element.images.filter((img) => img.isSelected).length > 0;
 
             if (isLocationSelected) {
                 var locationVM: StoreData.LocationVM = {
+                    locationId: idx,
                     location: element.location,
                     fromTime: element.fromTime,
                     toTime: element.toTime,

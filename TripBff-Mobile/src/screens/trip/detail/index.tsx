@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Container, Header, Content } from 'native-base';
 import { NavigationScreenProp } from "react-navigation";
 import { FlatList } from "react-native";
-import LocationItem from "./components/LocationItem";
 import { StoreData } from "../../../Interfaces";
 import { connect } from "react-redux";
 import _, { } from "lodash";

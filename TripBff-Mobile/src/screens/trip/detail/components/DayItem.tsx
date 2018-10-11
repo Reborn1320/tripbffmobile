@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { View, Text, Button, Icon, Thumbnail } from 'native-base';
+import React from 'react'
+import { View, Text, Button, Icon } from 'native-base';
 import { LocationVM } from '..';
 import LocationItem from './LocationItem';
 

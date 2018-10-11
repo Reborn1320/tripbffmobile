@@ -11,6 +11,7 @@ export module StoreData {
     }
 
     export interface LocationVM {
+        locationId: number
         location: LocationDetailVM //TODO: simplify this by removing the interface
         fromTime: moment.Moment
         toTime: moment.Moment

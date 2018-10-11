@@ -1,11 +1,10 @@
 import React from "react";
-import { Text, Card, CardItem, Left, Thumbnail, Body, Button, Icon, Right, View } from "native-base";
+import { Text, Card, CardItem, Left, Body, Button, Icon, Right } from "native-base";
 import { LocationVM } from "..";
 
-import { Image, TouchableHighlight, Dimensions } from "react-native";
+import { TouchableHighlight, Dimensions } from "react-native";
 import Location3Images from "./Location3Images";
 import LocationImage from "./LocationImage";
-import Location2Images from "./Location2Images";
 export interface Props {
     location: LocationVM
     toLocationDetailHandler: (locationId: number) => void
