@@ -42,6 +42,9 @@ interface State {
 export interface TripImportLocationVM {
     id: number
     location: TripImportLocationDetailVM
+    fromTime: moment.Moment
+    toTime: moment.Moment
+
     images: Array<TripImportImageVM>
 }
 
@@ -77,21 +80,29 @@ class TripImportation extends Component<Props, State> {
         var photos = await loadPhotosWithinAsync(this.state.fromDate.unix(), this.state.toDate.unix())
         console.log(`photos result = ${photos.length} photos`);
 
-        var result = GroupPhotosIntoLocations(photos);
+        var groupedPhotos = GroupPhotosIntoLocations(photos);
 
         var adapterResult: TripImportLocationVM[] = []
-        for (let idx = 0; idx < result.length; idx++) {
-            const element = result[idx];
+        for (let idx = 0; idx < groupedPhotos.length; idx++) {
+            const element = groupedPhotos[idx];
 
+            var maxTimestamp = _.max(element.map(e => e.timestamp))
+            var minTimestamp = _.min(element.map(e => e.timestamp))
             var location: TripImportLocationVM = {
                 id: idx,
-                location: element.location,
+                location: {
+                    lat: element[0].location.latitude,
+                    long: element[0].location.longitude,
+                    address: "Ho Chi Minh City"
+                },
+                fromTime: moment(minTimestamp, "X"),
+                toTime: moment(maxTimestamp, "X"),
                 images: []
             }
 
-            element.images.forEach((img) => {
+            element.forEach((img) => {
                 location.images.push({
-                    url: img.url,
+                    url: img.image.uri,
                     isSelected: true
                 })
             })
@@ -106,12 +117,10 @@ class TripImportation extends Component<Props, State> {
 
     _importImageSelectUnselectImage = (tripId: number, locationIdx: number, imageIdx: number) => {
 
-        console.time("_importImageSelectUnselectImage")
         var newLocations = cloneDeep(this.state.locations)
         var img = newLocations[locationIdx].images[imageIdx]
 
         img.isSelected = !img.isSelected
-        console.timeEnd("_importImageSelectUnselectImage")
 
         this.setState({
             locations: newLocations,
@@ -137,15 +146,18 @@ class TripImportation extends Component<Props, State> {
         })
     }
 
-
     _toLocationVM = () => {
         var selectedLocations: StoreData.LocationVM[] = []
-        this.state.locations.forEach((element) => {
+        
+        _.reverse(this.state.locations).forEach((element, idx) => {
             var isLocationSelected = element.images.filter((img) => img.isSelected).length > 0;
 
             if (isLocationSelected) {
                 var locationVM: StoreData.LocationVM = {
+                    locationId: idx + 7, //TODO: random number to detect idx 
                     location: element.location,
+                    fromTime: element.fromTime,
+                    toTime: element.toTime,
                     images: element.images.filter((img) => img.isSelected)
                 }
                 return selectedLocations.push(locationVM);

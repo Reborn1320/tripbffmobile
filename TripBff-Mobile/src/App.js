@@ -11,10 +11,10 @@ import { createDrawerNavigator, createStackNavigator } from "react-navigation";
 import BasicFab from "./screens/fab/basic";
 import HomeScreen from "./screens/home/index";
 import NHFab from "./screens/fab";
-import PhotoScreen from "./screens/test/photo";
 import TripDetail from "./screens/trip/detail";
 import TripCreation from "./screens/trip/create";
 import TripImportationScreen from "./screens/trip/import";
+import LocationDetailScreen from "./screens/location/detail";
 
 import bffApp from "./reducers"
 
@@ -30,7 +30,6 @@ const Drawer = createDrawerNavigator(
     Home: { screen: HomeScreen },
     NHFab: { screen: NHFab },
     TripImportation: { screen: TripImportationScreen },
-    Photos: { screen: PhotoScreen },
   },
   {
     initialRouteName: "TripImportation",
@@ -49,9 +48,9 @@ const AppNavigator = createStackNavigator(
 
     BasicFab: { screen: BasicFab },
     TripDetail: {screen: TripDetail },
+    LocationDetail: {screen: LocationDetailScreen },
     TripCreation: {screen: TripCreation },
     TripImportation: {screen: TripImportationScreen },
-    Photos: {screen: PhotoScreen }
   },
   {
     initialRouteName: "Drawer",

@@ -31,7 +31,6 @@ import { IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IM
 // }
 
 function importSelectedLocations(state: StoreData.TripVM, action) {
-    console.log("importSelectedLocations")
     const { locations } = action
 
     var newState = cloneDeep(state)
@@ -41,7 +40,6 @@ function importSelectedLocations(state: StoreData.TripVM, action) {
 }
 
 function importImagesReducer(state: StoreData.TripVM, action) {
-    console.log("importImagesReducer")
     switch (action.type) {
         // case IMPORT_IMAGE_SELECT_UNSELECT_IMAGE:
         //     return selectUnselectImage(state, action)
