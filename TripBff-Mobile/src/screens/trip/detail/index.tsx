@@ -51,10 +51,10 @@ class TripDetail extends Component<Props, State> {
             dayVMs.push({
                 idx: idx,
                 locations: props.trip.locations
-                    .filter((element) => element.fromTime.diff(props.trip.fromDate, "days") == idx)
-                    .map((e, locationIdx) => {
+                    .filter(element => element.fromTime.diff(props.trip.fromDate, "days") == idx)
+                    .map(e => {
                         return {
-                            id: locationIdx,
+                            id: e.locationId,
                             address: e.location.address,
                             images: e.images.map(img => { return { url: img.url, highlight: false } })
                         }
