@@ -1,8 +1,11 @@
 import React from "react";
-import { Text, Card, CardItem, Left, Thumbnail, Body, Button, Icon, Right } from "native-base";
+import { Text, Card, CardItem, Left, Thumbnail, Body, Button, Icon, Right, View } from "native-base";
 import { LocationVM } from "..";
 
-import { Image, TouchableHighlight } from "react-native";
+import { Image, TouchableHighlight, Dimensions } from "react-native";
+import Location3Images from "./Location3Images";
+import LocationImage from "./LocationImage";
+import Location2Images from "./Location2Images";
 export interface Props {
     location: LocationVM
     toLocationDetailHandler: (locationId: number) => void
@@ -24,21 +27,26 @@ class LocationItem extends React.Component<Props, State> {
     render() {
 
         var location: LocationVM = this.props.location;
-        const firstImage = location.images[0].url;
+        const nImages = location.images.length;
+
+        const MARGIN_LEFT = 10
+        const MARGIN_RIGHT = 10
+        const SIZE = Dimensions.get('window').width - MARGIN_LEFT - MARGIN_RIGHT;
+        const SIZE23 = SIZE * 2 / 3
+
         return (
-            <Card style={{ marginLeft: 10, marginRight: 10 }}
+            <Card style={{ marginLeft: MARGIN_LEFT, marginRight: MARGIN_RIGHT }}
             >
                 <CardItem cardBody
+                    style={{ backgroundColor: "white" }}
                 >
                     <TouchableHighlight
-                        style={{ height: 200, width: null, flex: 1 }}
-                        onPress={() => this.props.toLocationDetailHandler(location.id) }
+                        style={{ width: SIZE, height: SIZE23, flex: 1 }}
+                        onPress={() => this.props.toLocationDetailHandler(location.id)}
 
                     >
-
-                        <Image source={{ uri: firstImage }} style={{ height: 200, width: null, flex: 1 }}
-
-                        />
+                        {nImages == 1 ? (<LocationImage images={location.images} />)
+                            : (nImages == 2) ? (<LocationImage images={location.images} />) : (<Location3Images images={location.images} />)}
                     </TouchableHighlight>
                 </CardItem>
                 <CardItem>
