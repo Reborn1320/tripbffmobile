@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Button, Text } from 'native-base';
+import { Container, Header, Content, Button, Text, View } from 'native-base';
 import { Form, Item, Label, Input, DatePicker } from 'native-base';
 import { StoreData } from "../../../Interfaces";
 import { NavigationScreenProp } from "react-navigation";
@@ -53,52 +53,53 @@ class TripCreation extends Component<Props, any> {
                     <Text>Create new trip</Text>
                 </Header>
                 <Content>
-                    <Form>
-                        <Item floatingLabel>
-                            <Label>Trip name</Label>
-                            <Input onChangeText={(tripName) => {this.setState({tripName})}} />
+                    <Form> 
+                         <Item fixedLabel>
+                           <Label>Trip Name</Label>
+                            <Input
+                                  onChangeText={(tripName) => {this.setState({tripName})}} />
                         </Item>
-                        <Item
-                            style={{ flexDirection: 'row' }}>
-                            <Item last
-                                style={{ flexGrow: 1 }}>
-                                <Label>From</Label>
+                        <Item>
+                                <Label>From Date</Label>
                                 <DatePicker
                                     locale={"en"}
                                     timeZoneOffsetInMinutes={undefined}
                                     modalTransparent={false}
                                     animationType={"fade"}
                                     androidMode={"default"}
-                                    placeHolderText="Date"
+                                    placeHolderText="Select Date"
                                     textStyle={{ color: "orange" }}
-                                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                                    placeHolderTextStyle={{ color: "#a6a6a6" }}
                                     onDateChange={(fromDate: any) => this.setState({fromDate})}
-                                    style={{ width: '50%' }}
+                                    
                                 />
                             </Item>
-                            <Item last
-                                style={{ flexGrow: 1 }}>
-                                <Label>To</Label>
+                            <Item>
+                                <Label>End Date</Label>
                                 <DatePicker
                                     locale={"en"}
                                     timeZoneOffsetInMinutes={undefined}
                                     modalTransparent={false}
                                     animationType={"fade"}
                                     androidMode={"default"}
-                                    placeHolderText="Date"
+                                    placeHolderText="Select Date"
                                     textStyle={{ color: "orange" }}
-                                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                                    placeHolderTextStyle={{ color: "#a6a6a6" }}
                                     onDateChange={(toDate: any) => this.setState({toDate})}
-                                    style={{ width: '50%' }}
+                                    
                                 />
                             </Item>
-                        </Item>
-                        <Item
-                        style={{justifyContent: 'center'}}>
+                        <View style={{width: '100%',
+                                        height: '30%',
+                                        justifyContent: 'center',
+                                        alignItems: 'center'}}>
                             <Button
-                                onPress={() => this.onClickCreateTrip()}
-                            ><Text>Import</Text></Button>
-                        </Item>
+                                style={{alignSelf: 'center'}}
+                                onPress={() => this.onClickCreateTrip()}>
+                                <Text>Import</Text>
+                            </Button>
+                        </View>                 
+                        
                     </Form>
                 </Content>
             </Container>
