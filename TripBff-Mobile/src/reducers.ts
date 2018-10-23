@@ -5,6 +5,7 @@ import { StoreData } from "./Interfaces";
 import homeScreenReducer from "./screens/home/reducer";
 import ImportImageScreenData from "./fake_data";
 import importImagesReducer from './screens/trip/import/reducers';
+import { TRIP_ADD } from './screens/trip/create/actions';
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -64,6 +65,9 @@ function tripsReducer(state, action) {
         ];
 
         return newState
+    }
+    else if (actionType == TRIP_ADD) {
+        return [...state, action.trip];
     }
 
     return state;
