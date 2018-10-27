@@ -76,6 +76,9 @@ class TripImportation extends Component<Props, State> {
     async componentDidMount() {
         await checkAndRequestPhotoPermissionAsync();
 
+        console.log("from date: " + this.state.fromDate.toDate());
+        console.log("to date: " + this.state.toDate.toDate());
+
         console.log("request photo permission completed");
         var photos = await loadPhotosWithinAsync(this.state.fromDate.unix(), this.state.toDate.unix())
         console.log(`photos result = ${photos.length} photos`);

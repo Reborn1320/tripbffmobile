@@ -1,12 +1,13 @@
 import { PhotoMetaData } from './PhotoInterface';
 import { MediaLibrary } from 'expo';
 import _ from "lodash";
+import { Platform } from "react-native";
+import moment from "moment";
 
 const PHOTOS_PER_BATCH = 20
 const mediaType = MediaLibrary.MediaType.photo
 //TODO: import filter by camera only
 async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number) {
-
     //timestamp from assets in expo use unix to miliseconds
     fromTimestamp = fromTimestamp * 1000;
     toTimestamp = toTimestamp * 1000;
@@ -14,9 +15,9 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
 
         var photos: PhotoMetaData[] = []
         var result: MediaLibrary.GetAssetsResult
-        var oldestTimeStamp = fromTimestamp + 1
-        //fromTimeStamp -------------- oldestTimeStamp -------------- latestTimeStamp ------------- toTimeStamp
-        while (fromTimestamp < oldestTimeStamp) {
+
+        getphotos:
+        while (fromTimestamp <= toTimestamp) {
 
             var afterCursor = result == undefined ? undefined : result.endCursor
             result = await MediaLibrary.getAssetsAsync({
@@ -25,24 +26,30 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
                 sortBy: MediaLibrary.SortBy.creationTime,
                 after: afterCursor,
             })
-            console.log(`get ${result.assets.length} photo(s)`)
-            // console.log(result.assets)
 
-            oldestTimeStamp = result.assets[result.assets.length - 1].creationTime
-            var latestTimeStamp = result.assets[0].creationTime
+            console.log(`get ${result.assets.length} photo(s)`);         
 
-            if (latestTimeStamp <= toTimestamp) {
-                //add photos
+            if (result.assets.length == 0) break;
+
+            var oldestTimeStamp = result.assets[result.assets.length - 1].creationTime;
+            var latestTimeStamp = result.assets[0].creationTime;
+
+            if (oldestTimeStamp <= fromTimestamp || toTimestamp <= latestTimeStamp) {
                 for (let idx = 0; idx < result.assets.length; idx++) {
                     const element = result.assets[idx];
-                    
-                    if (element.creationTime >= fromTimestamp) {
-                        var fullElement = await MediaLibrary.getAssetInfoAsync(element)
 
-                        if (fullElement.localUri.indexOf("Camera") == -1) continue;
-                        // console.log(fullElement)
+                    //console.log('photo created date: ' + moment(element.creationTime).format("YYYY-MM-DD HH:mm"));
+                    
+                    if (fromTimestamp <= element.creationTime && element.creationTime <= toTimestamp) {
+                        var fullElement = await MediaLibrary.getAssetInfoAsync(element)                        
+
+                        //console.log('full element: ' + fullElement.localUri);
+
+                        if ((fullElement.localUri.indexOf("Camera") == -1 && Platform.OS === "android") || 
+                            (fullElement.localUri.indexOf("Media") == -1 && Platform.OS === "ios")) continue;                   
+                        
                         if (fullElement.location == null || fullElement.location == undefined) {
-                            fullElement.location = { latitude: 0, longitude: 0 }
+                            fullElement.location = { latitude: 0, longitude: 0 } 
                         }
                         photos.push({
                             image: {
@@ -57,12 +64,12 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
                             }
                         });
                     }
+                    else if (element.creationTime < fromTimestamp) break getphotos;
                 }
             }
+            else if (latestTimeStamp < fromTimestamp) break;
 
-            if (result.assets.length == 0) break;
             if (!result.hasNextPage) break;
-
         }
 
         return photos;

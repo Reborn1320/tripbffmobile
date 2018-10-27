@@ -21,8 +21,8 @@ for (let idx = 0; idx < 5; idx++) {
     tripsInitState.push({
         id: idx,
         name: `trip name ${idx}`,
-        fromDate: moment("2018-09-27"), 
-        toDate: moment("2018-09-29").add(1, "day").add(-1, "second"),
+        fromDate: moment("2018-10-10"), 
+        toDate: moment("2018-10-18").add(1, "day").add(-1, "second"),
         locations: [] // cloneDeep(locationInitState)
     })
 }
@@ -30,8 +30,8 @@ for (let idx = 0; idx < 5; idx++) {
 tripsInitState.push({
     id: 5,
     name: `trip name ${5}`,
-    fromDate: moment("2018-08-01"), 
-    toDate: moment("2018-09-29").add(1, "day").add(-1, "second"),
+    fromDate: moment("2018-10-04"), 
+    toDate: moment("2018-10-29").add(1, "day").add(-1, "second"),
     locations: [] // cloneDeep(locationInitState)
 })
 
