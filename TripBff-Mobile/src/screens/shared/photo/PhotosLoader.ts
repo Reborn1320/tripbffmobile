@@ -74,7 +74,6 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
             if (!result.hasNextPage) break;
         }
 
-        result = undefined;
         return photos;
         // return _.orderBy(photos, 'timestamp', 'desc')
 

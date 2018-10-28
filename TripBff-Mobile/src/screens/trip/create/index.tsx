@@ -36,13 +36,23 @@ class TripCreation extends Component<Props, any> {
             id: 1000,
             name: this.state.tripName,
             fromDate: moment(this.state.fromDate).startOf('day'),
-            toDate: moment(this.state.toDate.Date).endOf('day'),
+            toDate: moment(this.state.toDate).endOf('day'),
             locations: []
         };
         this.props.createTrip(trip);
 
         // navigate to Trip Import page
         this.props.navigation.navigate("TripImportation", {tripId: trip.id});
+    }
+
+    renderImportBtn() {
+        return (
+            <Button
+                style={{alignSelf: 'center'}}
+                onPress={() => this.onClickCreateTrip()}>
+                <Text>Import</Text>
+          </Button>
+        );
     }
 
     render() {
@@ -57,7 +67,7 @@ class TripCreation extends Component<Props, any> {
                          <Item fixedLabel>
                            <Label>Trip Name</Label>
                             <Input
-                                  onChangeText={(tripName) => {this.setState({tripName})}} />
+                                  onChangeText={(tripName) => this.setState({tripName})} />
                         </Item>
                         <Item>
                                 <Label>From Date</Label>
@@ -93,11 +103,7 @@ class TripCreation extends Component<Props, any> {
                                         height: '30%',
                                         justifyContent: 'center',
                                         alignItems: 'center'}}>
-                            <Button
-                                style={{alignSelf: 'center'}}
-                                onPress={() => this.onClickCreateTrip()}>
-                                <Text>Import</Text>
-                            </Button>
+                            {!(this.state.tripName && this.state.fromDate && this.state.toDate) || this.renderImportBtn()}
                         </View>                 
                         
                     </Form>
