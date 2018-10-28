@@ -33,18 +33,20 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
 
             var oldestTimeStamp = result.assets[result.assets.length - 1].creationTime;
             var latestTimeStamp = result.assets[0].creationTime;
-
-            if (oldestTimeStamp <= fromTimestamp || toTimestamp <= latestTimeStamp) {
+            
+            if (fromTimestamp > latestTimeStamp) break;
+            else if (toTimestamp < oldestTimeStamp) continue;
+            else {
                 for (let idx = 0; idx < result.assets.length; idx++) {
                     const element = result.assets[idx];
-
+    
                     //console.log('photo created date: ' + moment(element.creationTime).format("YYYY-MM-DD HH:mm"));
                     
                     if (fromTimestamp <= element.creationTime && element.creationTime <= toTimestamp) {
                         var fullElement = await MediaLibrary.getAssetInfoAsync(element)                        
-
+    
                         //console.log('full element: ' + fullElement.localUri);
-
+    
                         if ((fullElement.localUri.indexOf("Camera") == -1 && Platform.OS === "android") || 
                             (fullElement.localUri.indexOf("Media") == -1 && Platform.OS === "ios")) continue;                   
                         
@@ -67,11 +69,12 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
                     else if (element.creationTime < fromTimestamp) break getphotos;
                 }
             }
-            else if (latestTimeStamp < fromTimestamp) break;
 
+            
             if (!result.hasNextPage) break;
         }
 
+        result = undefined;
         return photos;
         // return _.orderBy(photos, 'timestamp', 'desc')
 

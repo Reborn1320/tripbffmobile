@@ -35,8 +35,8 @@ class TripCreation extends Component<Props, any> {
         var trip: StoreData.TripVM = {
             id: 1000,
             name: this.state.tripName,
-            fromDate: moment(this.state.fromDate),
-            toDate: moment(this.state.toDate),
+            fromDate: moment(this.state.fromDate).startOf('day'),
+            toDate: moment(this.state.toDate.Date).endOf('day'),
             locations: []
         };
         this.props.createTrip(trip);
@@ -70,7 +70,7 @@ class TripCreation extends Component<Props, any> {
                                     placeHolderText="Select Date"
                                     textStyle={{ color: "orange" }}
                                     placeHolderTextStyle={{ color: "#a6a6a6" }}
-                                    onDateChange={(fromDate: any) => this.setState({fromDate})}
+                                    onDateChange={(fromDate: Date) => this.setState({fromDate})}
                                     
                                 />
                             </Item>
@@ -85,7 +85,7 @@ class TripCreation extends Component<Props, any> {
                                     placeHolderText="Select Date"
                                     textStyle={{ color: "orange" }}
                                     placeHolderTextStyle={{ color: "#a6a6a6" }}
-                                    onDateChange={(toDate: any) => this.setState({toDate})}
+                                    onDateChange={(toDate: Date) => this.setState({toDate})}
                                     
                                 />
                             </Item>
