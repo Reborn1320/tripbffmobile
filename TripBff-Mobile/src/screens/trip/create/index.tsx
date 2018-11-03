@@ -6,14 +6,19 @@ import { NavigationScreenProp } from "react-navigation";
 import { connect } from "react-redux";
 import { createTrip } from './actions';
 import moment from "moment";
+import loginApi from '../../apiBase/loginApi';
+import tripApi from '../../apiBase/tripApi';
+import { addToken } from '../../auth/actions';
 
 export interface Props extends IMapDispatchToProps {
     navigation: NavigationScreenProp<any, any>
-    trip: StoreData.TripVM
+    trip: StoreData.TripVM,
+    user: StoreData.UserVM
 }
 
 interface IMapDispatchToProps {
-    createTrip: (trip: StoreData.TripVM) => void
+    createTrip: (trip: StoreData.TripVM) => void,
+    addToken: (user: StoreData.UserVM) => void
 }
 
 class TripCreation extends Component<Props, any> {
@@ -24,12 +29,47 @@ class TripCreation extends Component<Props, any> {
         this.setDate = this.setDate.bind(this);
     }
 
+    componentDidMount() {
+        // demo call api to login and get token
+        var postUser = {
+            email: 'bbb',
+            password: '123456'
+        };
+        loginApi.post(`/login`, postUser)
+          .then(res => {
+            // store token into Store
+            console.log('token ' + res.data.token);
+            const user: StoreData.UserVM = {
+                username: "asdf",
+                lastName: "asdf",
+                firstName: "asdf",
+                fullName: "adffff",
+                email: postUser.email,
+                token: res.data.token
+            };
+            this.props.addToken(user);         
+            // set global token for all request to trip-api
+            tripApi.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;   
+          })
+          .catch((error) => {
+            console.log('error: ' + JSON.stringify(error));
+          })
+    }
+
     setDate(newDate) {
         this.setState({ chosenDate: newDate });
     }
 
-    onClickCreateTrip() {
-        //TODO: call ajax to create trip and get tripId
+    onClickCreateTrip() {     
+        // demo call API to trip-api server   
+        tripApi.get('/hello/5').then((res) => {
+            console.log('response when call trip api: ' + res.data);
+        })
+        .catch((error) => {
+            console.log('error call trip api: ' + JSON.stringify(error));
+        });
+
+        // TODO: call ajax to create trip and get tripId
 
         // map trip info into Store
         var trip: StoreData.TripVM = {
@@ -114,7 +154,8 @@ class TripCreation extends Component<Props, any> {
 }
 
 const mapDispatchToProps: IMapDispatchToProps = {
-    createTrip
+    createTrip, 
+    addToken
 };
 
 const TripCreationScreen = connect(null, mapDispatchToProps)(TripCreation);

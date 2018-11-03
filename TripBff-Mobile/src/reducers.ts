@@ -6,6 +6,7 @@ import homeScreenReducer from "./screens/home/reducer";
 import ImportImageScreenData from "./fake_data";
 import importImagesReducer from './screens/trip/import/reducers';
 import { TRIP_ADD } from './screens/trip/create/actions';
+import { AUTH_ADD_TOKEN } from './screens/auth/actions';
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -40,9 +41,11 @@ const initState: StoreData.BffStoreData = {
     trips: tripsInitState
 }
 
-
-
 function userReducer(state, action) {
+    if (action.type == AUTH_ADD_TOKEN) {
+        return action.user;
+    }
+
     return state;
 }
 

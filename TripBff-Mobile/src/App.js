@@ -2,7 +2,6 @@ import React from "react";
 
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider, connect } from 'react-redux';
-import axios from 'axios';
 import axiosMiddleware from 'redux-axios-middleware';
 
 import { Root } from "native-base";
@@ -15,15 +14,12 @@ import TripDetail from "./screens/trip/detail";
 import TripCreation from "./screens/trip/create";
 import TripImportationScreen from "./screens/trip/import";
 import LocationDetailScreen from "./screens/location/detail";
+import loginApi from './screens/apiBase/loginApi';
+import tripApi from './screens/apiBase/tripApi';
 
 import bffApp from "./reducers"
 
-const client = axios.create({
-  baseURL: 'https://api.github.com',
-  responseType: 'json'
-});
-
-const store = createStore(bffApp, applyMiddleware(axiosMiddleware(client)));
+const store = createStore(bffApp, applyMiddleware(axiosMiddleware(loginApi), axiosMiddleware(tripApi)));
 
 const Drawer = createDrawerNavigator(
   {
@@ -32,7 +28,7 @@ const Drawer = createDrawerNavigator(
     TripImportation: { screen: TripImportationScreen },
   },
   {
-    initialRouteName: "TripImportation",
+    initialRouteName: "Home",
     initialRouteParams: {
       tripId: 3
     },

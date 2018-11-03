@@ -44,16 +44,17 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
                     
                     if (fromTimestamp <= element.creationTime && element.creationTime <= toTimestamp) {
                         var fullElement = await MediaLibrary.getAssetInfoAsync(element)                        
-    
-                        //console.log('full element: ' + fullElement.localUri);
-    
-                        if ((fullElement.localUri.indexOf("Camera") == -1 && Platform.OS === "android") || 
+
+                        if (fullElement) {
+                            //console.log('full element: ' + fullElement.localUri);
+                                
+                            if ((fullElement.localUri.indexOf("Camera") == -1 && Platform.OS === "android") || 
                             (fullElement.localUri.indexOf("Media") == -1 && Platform.OS === "ios")) continue;                   
-                        
-                        if (fullElement.location == null || fullElement.location == undefined) {
+
+                            if (fullElement.location == null || fullElement.location == undefined) {
                             fullElement.location = { latitude: 0, longitude: 0 } 
-                        }
-                        photos.push({
+                            }
+                            photos.push({
                             image: {
                                 uri: fullElement.uri,
                                 width: fullElement.width,
@@ -64,7 +65,8 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
                                 latitude: fullElement.location.latitude,
                                 longitude: fullElement.location.longitude
                             }
-                        });
+                            });
+                        }                        
                     }
                     else if (element.creationTime < fromTimestamp) break getphotos;
                 }
