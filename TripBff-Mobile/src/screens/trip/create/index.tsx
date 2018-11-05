@@ -69,7 +69,6 @@ class TripCreation extends Component<Props, any> {
             console.log('error call trip api: ' + JSON.stringify(error));
         });
 
-        var tripId;
         // call ajax to create trip and get tripId
         var tripPost = {
             name: this.state.tripName,
@@ -77,26 +76,25 @@ class TripCreation extends Component<Props, any> {
             toDate: moment(this.state.toDate).endOf('day')
         };
         tripApi.post('/trips', tripPost).then((res) => {
-            console.log('trip id: ' + res.data);
-            tripId = res.data;
-            
+            var tripId = res.data;          
+            console.log('trip id: ' + tripId);
+
+            // map trip info into Store
+            var trip: StoreData.TripVM = {
+                id: tripId,
+                name: this.state.tripName,
+                fromDate: moment(this.state.fromDate).startOf('day'),
+                toDate: moment(this.state.toDate).endOf('day'),
+                locations: []
+            };
+            this.props.createTrip(trip);
+
+            // navigate to Trip Import page
+            this.props.navigation.navigate("TripImportation", {tripId: tripId});  
         })
         .catch((err) => {
             console.log('error create trip api: ' + JSON.stringify(err));
-        });
-
-        // map trip info into Store
-        var trip: StoreData.TripVM = {
-            id: tripId,
-            name: this.state.tripName,
-            fromDate: moment(this.state.fromDate).startOf('day'),
-            toDate: moment(this.state.toDate).endOf('day'),
-            locations: []
-        };
-        this.props.createTrip(trip);
-
-        // navigate to Trip Import page
-        this.props.navigation.navigate("TripImportation", {tripId: trip.id});
+        });        
     }
 
     renderImportBtn() {

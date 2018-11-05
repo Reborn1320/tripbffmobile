@@ -16,6 +16,7 @@ import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
 import { importSelectedLocations } from "./actions";
+import tripApi from '../../apiBase/tripApi';
 
 export interface Props extends IMapDispatchToProps {
     navigation: NavigationScreenProp<any, any>
@@ -173,11 +174,23 @@ class TripImportation extends Component<Props, State> {
     _skip = () => {
         this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId })
     }
+
     _import = () => {
 
-        var selectedLocations = this._toLocationVM()
-        this.props.importSelectedLocations(this.state.tripId, selectedLocations)
-        this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId })
+        var selectedLocations = this._toLocationVM();
+
+        // call API to import locations and images
+        var url = '/trips/' + this.state.tripId +'/locations';
+        tripApi.post(url, selectedLocations)
+                .then((res) => {
+                    console.log('result after import trip: ' + res.data);
+
+                    this.props.importSelectedLocations(this.state.tripId, selectedLocations)
+                    this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId })
+                })
+                .catch((err) => {
+                    console.log('error: ' + JSON.stringify(err));
+                });        
     }
 
     _renderItem = (itemInfo) => {
@@ -249,7 +262,7 @@ const StyledFlatList = styled(FlatList)`
 `
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
-    const { tripId } = ownProps.navigation.state.params
+    const { tripId } = ownProps.navigation.state.params;
     var trip = _.find(storeState.trips, (item) => item.id == tripId)
     return {
         trip
