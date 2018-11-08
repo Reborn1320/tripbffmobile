@@ -183,10 +183,9 @@ class TripImportation extends Component<Props, State> {
         var url = '/trips/' + this.state.tripId +'/locations';
         tripApi.post(url, selectedLocations)
                 .then((res) => {
-                    console.log('result after import trip: ' + res.data);
-
-                    this.props.importSelectedLocations(this.state.tripId, selectedLocations)
-                    this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId })
+                    console.log('result after import trip: ' + res.data);      
+                    // this.props.importSelectedLocations(this.state.tripId, selectedLocations);              
+                    this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId });
                 })
                 .catch((err) => {
                     console.log('error: ' + JSON.stringify(err));

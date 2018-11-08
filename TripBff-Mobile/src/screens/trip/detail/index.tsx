@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Header, Content } from 'native-base';
+import { Container, Header, Content, Spinner } from 'native-base';
 import { NavigationScreenProp } from "react-navigation";
 import { FlatList } from "react-native";
 import { StoreData } from "../../../Interfaces";
@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import _, { } from "lodash";
 import moment from "moment";
 import DayItem from "./components/DayItem";
+import tripApi from '../../apiBase/tripApi';
 
 interface IMapDispatchToProps {
 }
@@ -21,7 +22,8 @@ interface State {
     fromDate: moment.Moment
     toDate: moment.Moment
     name: string
-    days: DayVM[]
+    days: DayVM[],
+    isLoaded: boolean
 }
 
 export interface DayVM {
@@ -44,31 +46,16 @@ class TripDetail extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
+        
         var dayVMs: DayVM[] = []
-        const nDays = props.trip.toDate.diff(props.trip.fromDate, "days") + 1
-
-        for (let idx = 0; idx < nDays; idx++) {
-            dayVMs.push({
-                idx: idx,
-                locations: props.trip.locations
-                    .filter(element => element.fromTime.diff(props.trip.fromDate, "days") == idx)
-                    .map(e => {
-                        return {
-                            id: e.locationId,
-                            address: e.location.address,
-                            images: e.images.map(img => { return { url: img.url, highlight: false } })
-                        }
-                    })
-
-            })
-        }
 
         this.state = {
             tripId: props.trip.id,
             fromDate: props.trip.fromDate,
             toDate: props.trip.toDate,
             name: props.trip.name,
-            days: dayVMs
+            days: dayVMs,
+            isLoaded: false
         }
     }
 
@@ -84,19 +71,57 @@ class TripDetail extends Component<Props, State> {
         )
     };
 
+    async componentDidMount() {
+         // get locations of trip from server
+         var url = '/trips/' + this.props.trip.id +'/locations';
+         tripApi.get(url)
+                 .then((res) => {
+                     var trip = res.data;
+                     var dayVMs: DayVM[] = [];
+                     //console.log('after get trip: ' + JSON.stringify(trip));
+
+                     const nDays = this.state.toDate.diff(this.state.fromDate, "days") + 1                      
+ 
+                     for (let idx = 0; idx < nDays; idx++) {
+                         dayVMs.push({
+                             idx: idx,
+                             locations: trip.locations
+                                 .filter(element => moment(element.fromTime).diff(this.state.fromDate, "days") == idx)
+                                 .map(e => {
+                                     return {
+                                         id: e.locationId,
+                                         address: e.location.address,
+                                         images: e.images.map(img => { return { url: img.url, highlight: false } })
+                                     }
+                                 })
+             
+                         })
+                     }
+                     
+                     //console.log('dayVMs: ' + JSON.stringify(dayVMs));    
+                     this.setState({ days: dayVMs, isLoaded: true });
+ 
+                 })
+                 .catch((err) => {
+                     console.log('error: ' + JSON.stringify(err));
+                 }); 
+    }
+
 render() {
-    const { days } = this.state
+    const { days, isLoaded } = this.state
     return (
         <Container>
             <Header>
             </Header>
             <Content>
-                <FlatList
+                {!isLoaded && <Spinner color='green' />}
+               {isLoaded && 
+                    <FlatList
                     // styles={styles.container}
                     data={days}
                     renderItem={this._renderItem}
                     keyExtractor={(item, index) => String(index)}
-                />
+                />} 
             </Content>
         </Container>
     );
