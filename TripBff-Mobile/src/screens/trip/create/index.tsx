@@ -61,13 +61,19 @@ class TripCreation extends Component<Props, any> {
     }
 
     onClickCreateTrip() {     
-        // demo call API to trip-api server   
-        tripApi.get('/hello/5').then((res) => {
-            console.log('response when call trip api: ' + res.data);
-        })
-        .catch((error) => {
-            console.log('error call trip api: ' + JSON.stringify(error));
-        });
+        // // demo call API to trip-api server   
+        console.log('cliked')
+        // try {
+
+        //     tripApi.get('/hello/5').then((res) => {
+        //         console.log('response when call trip api: ' + res.data);
+        //     })
+        //     .catch((error) => {
+        //         console.log('error call trip api: ' + JSON.stringify(error));
+        //     });
+        // } catch (error) {
+        //     console.log(error);
+        // }
 
         // call ajax to create trip and get tripId
         var tripPost = {

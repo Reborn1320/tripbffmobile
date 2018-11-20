@@ -17,6 +17,7 @@ import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
 import { importSelectedLocations } from "./actions";
 import tripApi from '../../apiBase/tripApi';
+import Loading from "../../_components/Loading";
 
 export interface Props extends IMapDispatchToProps {
     navigation: NavigationScreenProp<any, any>
@@ -35,9 +36,10 @@ interface State {
     fromDate: moment.Moment
     toDate: moment.Moment
     locations: TripImportLocationVM[]
-    isLoaded: boolean
+    isLoading: boolean
+    loadingMessage: string
     forceUpdateOnlyItemIdx?: number
-
+    UIState: UIState
 }
 
 export interface TripImportLocationVM {
@@ -60,6 +62,8 @@ export interface TripImportLocationDetailVM {
     address: string
 }
 
+type UIState = "loading" | "select images" | "uploading images"
+
 class TripImportation extends Component<Props, State> {
 
     constructor(props: Props) {
@@ -70,7 +74,9 @@ class TripImportation extends Component<Props, State> {
             fromDate: props.trip.fromDate,
             toDate: props.trip.toDate,
             locations: [],
-            isLoaded: false,
+            isLoading: true,
+            loadingMessage: "Loading image from your gallery",
+            UIState: "loading"
         }
     }
 
@@ -115,9 +121,8 @@ class TripImportation extends Component<Props, State> {
 
         // console.log(adapterResult)
 
-        this.setState({ locations: adapterResult, isLoaded: true });
+        this.setState({ locations: adapterResult, isLoading: false });
     }
-
 
     _importImageSelectUnselectImage = (tripId: number, locationIdx: number, imageIdx: number) => {
 
@@ -183,12 +188,12 @@ class TripImportation extends Component<Props, State> {
         var url = '/trips/' + this.state.tripId +'/locations';
         tripApi.post(url, selectedLocations)
                 .then((res) => {
-                    console.log('result after import trip: ' + res.data);      
+                    console.log('result after import trip: ' + JSON.stringify(res.data));      
                     // this.props.importSelectedLocations(this.state.tripId, selectedLocations);              
                     this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId });
                 })
                 .catch((err) => {
-                    console.log('error: ' + JSON.stringify(err));
+                    console.log('error after import trip: ' + JSON.stringify(err));
                 });        
     }
 
@@ -205,8 +210,10 @@ class TripImportation extends Component<Props, State> {
         );
     }
 
+    _computeUIState = () => {
+    }
     render() {
-        const { name, locations, isLoaded } = this.state
+        const { name, locations, isLoading, loadingMessage } = this.state
         return (
             <Container>
                 <Header>
@@ -215,8 +222,8 @@ class TripImportation extends Component<Props, State> {
                     </View>
                 </Header>
                 <Content>
-                    {!isLoaded && <Spinner color='green' />}
-                    {isLoaded &&
+                    {isLoading && <Loading message={loadingMessage} />}
+                    {!isLoading &&
                         <StyledFlatList
                             data={locations}
                             renderItem={this._renderItem}

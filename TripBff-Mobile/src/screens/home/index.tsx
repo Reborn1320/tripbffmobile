@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import styles from "./styles";
 import { listRepos } from './reducer';
 import * as RNa from "react-navigation";
+import Loading from "../_components/Loading";
 
 export interface Props extends IMapDispatchToProps {
   navigation: RNa.NavigationScreenProp<any, any>
@@ -44,12 +45,13 @@ class Home extends React.Component<Props>  {
       <Container>
         <Header />
         <Content>
-          <FlatList
+          <Loading message="aaaaaasdad asd asd asd asda sdas da sdas dasd as" />
+          {/* <FlatList
             style={styles.container}
             data={repos}
             renderItem={this.renderItem}
             keyExtractor={(item, index) => String(index)}
-          />
+          /> */}
         </Content>
         <Footer>
           <FooterTab>
