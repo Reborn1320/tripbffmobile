@@ -15,7 +15,7 @@ import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
 import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
-import { importSelectedLocations } from "./actions";
+import { importSelectedLocations, makeASandwich } from "./actions";
 import tripApi from '../../apiBase/tripApi';
 import Loading from "../../_components/Loading";
 
@@ -195,6 +195,24 @@ class TripImportation extends Component<Props, State> {
                 .catch((err) => {
                     console.log('error after import trip: ' + JSON.stringify(err));
                 });        
+    }
+
+
+
+    _postLocations = (selectedLocations) => {
+        return function(dispatch) {
+            // call API to import locations and images
+            var url = '/trips/' + this.state.tripId +'/locations';
+            tripApi.post(url, selectedLocations)
+                    .then((res) => {
+                        console.log('result after import trip: ' + JSON.stringify(res.data));      
+                        dispatch(makeASandwich(res.data));
+                    })
+                    .catch((err) => {
+                        console.log('error after import trip: ' + JSON.stringify(err));
+                    });      
+
+        }
     }
 
     _renderItem = (itemInfo) => {

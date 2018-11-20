@@ -39,39 +39,6 @@ function importSelectedLocations(state: StoreData.TripVM, action) {
     return newState;
 }
 
-
-// export const IMPORT_LOCATIONS = 'TRIP/IMPORT/IMPORT_LOCATIONS';
-// export const IMPORT_LOCATIONS_SUCCESS = 'TRIP/IMPORT/IMPORT_LOCATIONS_SUCCESS';
-// export const IMPORT_LOCATIONS_FAIL = 'TRIP/IMPORT/IMPORT_LOCATIONS_FAIL';
-
-// export default function importLocationsReducer(state: StoreData.TripVM, action): StoreData.TripVM {
-//   switch (action.type) {
-//     case IMPORT_LOCATIONS:
-//       return { ...state, loading: true };
-//     case IMPORT_LOCATIONS_SUCCESS:
-//       return { ...state, loading: false, repos: action.payload.data };
-//     case IMPORT_LOCATIONS_FAIL:
-//       return {
-//         ...state,
-//         loading: false,
-//         error: 'Error while fetching repositories'
-//       };
-//     default:
-//       return state;
-//   }
-// }
-
-// export function listRepos(user) {
-//   return {
-//     type: GET_REPOS,
-//     payload: {
-//       request: {
-//         url: `/users/${user}/repos`
-//       }
-//     }
-//   };
-// }
-
 function importImagesReducer(state: StoreData.TripVM, action) {
     switch (action.type) {
         // case IMPORT_IMAGE_SELECT_UNSELECT_IMAGE:
