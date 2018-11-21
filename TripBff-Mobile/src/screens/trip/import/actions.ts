@@ -21,10 +21,3 @@ export function importSelectedLocations(tripId: number, locations: StoreData.Loc
         type: IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, tripId, locations,
     }
 }
-
-export function makeASandwich(data) {
-    return {
-      type: 'MAKE_SANDWICH',
-      data
-    };
-  }

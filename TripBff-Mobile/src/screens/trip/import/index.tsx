@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { FlatList, View } from "react-native";
 import { Container, Header, Content, Button, Text, Footer, Spinner } from 'native-base';
 import styled from "styled-components/native";
-import { NavigationScreenProp } from "react-navigation";
+import { NavigationScreenProp, NavigationProp } from "react-navigation";
 import { StoreData } from "../../../Interfaces";
 import _ from "lodash";
-import { connect } from "react-redux";
+import { connect, DispatchProp } from "react-redux";
 import { cloneDeep } from 'lodash';
 import 'react-native-console-time-polyfill';
 
@@ -15,11 +15,17 @@ import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
 import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
-import { importSelectedLocations, makeASandwich } from "./actions";
+import { importSelectedLocations } from "./actions";
 import tripApi from '../../apiBase/tripApi';
 import Loading from "../../_components/Loading";
+import { AxiosInstance } from "axios";
+import thunk, {ThunkAction, ThunkDispatch} from 'redux-thunk';
+import { TripImportLocationVM } from "./TripImportViewModels";
 
+// type Actions = importloca;
+type ThunkResult<R> = ThunkAction<R, State, { api: AxiosInstance }, any>;
 export interface Props extends IMapDispatchToProps {
+    dispatch: ThunkDispatch<State, null, any>
     navigation: NavigationScreenProp<any, any>
     trip: StoreData.TripVM
 }
@@ -42,24 +48,23 @@ interface State {
     UIState: UIState
 }
 
-export interface TripImportLocationVM {
-    id: number
-    location: TripImportLocationDetailVM
-    fromTime: moment.Moment
-    toTime: moment.Moment
 
-    images: Array<TripImportImageVM>
-}
 
-export interface TripImportImageVM {
-    url: string
-    isSelected: boolean
-}
+function postLocations(tripId, selectedLocations): ThunkResult<void> {
+    return function(dispatch, getState, extraArgument) {
+        // call API to import locations and images
+        var url = '/trips/' + tripId +'/locations';
+        extraArgument.api
+        .post(url, selectedLocations)
+        .then((res) => {
+            console.log('result after import trip: ' + JSON.stringify(res.data));      
+            dispatch(importSelectedLocations(tripId, res.data));
+        })
+        .catch((err) => {
+            console.log('error after import trip: ' + JSON.stringify(err));
+        });      
 
-export interface TripImportLocationDetailVM {
-    long: number
-    lat: number
-    address: string
+    }
 }
 
 type UIState = "loading" | "select images" | "uploading images"
@@ -183,6 +188,7 @@ class TripImportation extends Component<Props, State> {
     _import = () => {
 
         var selectedLocations = this._toLocationVM();
+        this.props.dispatch(this._postLocations(this.state.tripId, selectedLocations));
 
         // call API to import locations and images
         var url = '/trips/' + this.state.tripId +'/locations';
@@ -194,24 +200,25 @@ class TripImportation extends Component<Props, State> {
                 })
                 .catch((err) => {
                     console.log('error after import trip: ' + JSON.stringify(err));
-                });        
+                });    
+                
+        
     }
 
-
-
-    _postLocations = (selectedLocations) => {
-        return function(dispatch) {
+    _postLocations = function postLocations(tripId, selectedLocations): ThunkResult<void> {
+        return function(dispatch, getState, extraArgument) {
             // call API to import locations and images
-            var url = '/trips/' + this.state.tripId +'/locations';
-            tripApi.post(url, selectedLocations)
-                    .then((res) => {
-                        console.log('result after import trip: ' + JSON.stringify(res.data));      
-                        dispatch(makeASandwich(res.data));
-                    })
-                    .catch((err) => {
-                        console.log('error after import trip: ' + JSON.stringify(err));
-                    });      
-
+            var url = '/trips/' + tripId +'/locations';
+            extraArgument.api
+            .post(url, selectedLocations)
+            .then((res) => {
+                console.log('result after import trip: ' + JSON.stringify(res.data));      
+                dispatch(importSelectedLocations(tripId, res.data));
+            })
+            .catch((err) => {
+                console.log('error after import trip: ' + JSON.stringify(err));
+            });      
+    
         }
     }
 
