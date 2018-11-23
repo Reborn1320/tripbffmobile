@@ -1,7 +1,7 @@
 
 import moment from "moment";
 export interface TripImportLocationVM {
-  id: number
+  id: string
   location: TripImportLocationDetailVM
   fromTime: moment.Moment
   toTime: moment.Moment
@@ -10,7 +10,9 @@ export interface TripImportLocationVM {
 }
 
 export interface TripImportImageVM {
-  url: string
+  imageId: string,
+  url: string, //url stored in local mobile
+  externalStorageId?: string,
   isSelected: boolean
 }
 

@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { ListItem } from "native-base";
 import ImportImage from "./ImportImage";
 import styled from "styled-components/native";
-import { TripImportImageVM } from "..";
+import { TripImportImageVM } from "../TripImportViewModels";
 
 export interface Props {
     images: Array<TripImportImageVM>
