@@ -85,7 +85,7 @@ class TripImportation extends Component<Props, State> {
             var maxTimestamp = _.max(element.map(e => e.timestamp))
             var minTimestamp = _.min(element.map(e => e.timestamp))
             var location: TripImportLocationVM = {
-                id: null,
+                id: "",
                 location: {
                     lat: element[0].location.latitude,
                     long: element[0].location.longitude,
@@ -143,18 +143,17 @@ class TripImportation extends Component<Props, State> {
     }
 
     _toLocationVM = () => {
-        var selectedLocations: StoreData.LocationVM[] = []
+        var selectedLocations = []
         
         _.reverse(this.state.locations).forEach((element, idx) => {
             var isLocationSelected = element.images.filter((img) => img.isSelected).length > 0;
 
             if (isLocationSelected) {
-                var locationVM: StoreData.LocationVM = {
-                    locationId: element.id,
+                var locationVM = {
                     location: element.location,
                     fromTime: element.fromTime,
                     toTime: element.toTime,
-                    images: element.images.filter((img) => img.isSelected)
+                    images: element.images.filter((img) => img.isSelected).map(img => {return {url: img.url}})
                 }
                 return selectedLocations.push(locationVM);
             }
@@ -184,9 +183,25 @@ class TripImportation extends Component<Props, State> {
                 console.log('result after import trip: ' + JSON.stringify(res.data));      
                 dispatch(importSelectedLocations(tripId, res.data));
             })
-            .catch((err) => {
-                console.log('error after import trip: ' + JSON.stringify(err));
-            });      
+            .catch(function (error) {
+                // console.log(JSON.stringify(error));
+                if (error.response) {
+                  // The request was made and the server responded with a status code
+                  // that falls out of the range of 2xx
+                //   console.log(error.response.data);
+                  console.log(error.response.status);
+                  console.log(error.response.headers);
+                } else if (error.request) {
+                  // The request was made but no response was received
+                  // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                  // http.ClientRequest in node.js
+                  console.log(error.request);
+                } else {
+                  // Something happened in setting up the request that triggered an Error
+                  console.log('Error', error.message);
+                }
+                console.log(error.config);
+              });  
             
             return 
         }
