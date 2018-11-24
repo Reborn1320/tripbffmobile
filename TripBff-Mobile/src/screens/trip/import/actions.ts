@@ -2,6 +2,7 @@ import { StoreData } from './../../../Interfaces';
 export const IMPORT_IMAGE_SELECT_UNSELECT_IMAGE = "TRIP/IMPORT_IMAGE_SELECT_UNSELECT_IMAGE"
 export const IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES = "TRIP/IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES"
 export const IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS = "TRIP/IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS"
+export const IMPORT_UPLOADED_IMAGE = "TRIP/IMPORT_UPLOADED_IMAGE"
 
 
 export function importImageSelectUnselectImage(tripId: number, locationIdx: number, imageIdx: number) {
@@ -19,5 +20,11 @@ export function importImageSelectUnselectAllImages(tripId: number, locationIdx: 
 export function importSelectedLocations(tripId: number, locations: StoreData.LocationVM[]) {
     return {
         type: IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, tripId, locations,
+    }
+}
+
+export function uploadedImage(tripId: number, locationId: string, imageId: string, externalStorageId: string) {
+    return {
+        type: IMPORT_UPLOADED_IMAGE, tripId, locationId, imageId, externalStorageId,
     }
 }

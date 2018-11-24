@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { StoreData } from './../../../Interfaces';
-import { IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES, IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS } from "./actions";
+import _ from 'lodash'
+import { IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES, IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "./actions";
 
 // function selectUnselectImage(state: StoreData.TripVM, action) {
 //     //TODO: improve type definition for action
@@ -39,6 +40,17 @@ function importSelectedLocations(state: StoreData.TripVM, action) {
     return newState;
 }
 
+function uploadedImage(state: StoreData.TripVM, action) {
+    const { locationId, imageId, externalStorageId } = action
+
+    var newState = cloneDeep(state)
+    var location = _.find(newState.locations, loc => loc.locationId == locationId)
+    var image = _.find(location.images, img => img.imageId == imageId);
+    image.externalStorageId = externalStorageId;
+    
+    return newState;
+}
+
 function importImagesReducer(state: StoreData.TripVM, action) {
     switch (action.type) {
         // case IMPORT_IMAGE_SELECT_UNSELECT_IMAGE:
@@ -47,6 +59,8 @@ function importImagesReducer(state: StoreData.TripVM, action) {
         //     return selectUnselectAllImages(state, action)
         case IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS:
             return importSelectedLocations(state, action)
+            case IMPORT_UPLOADED_IMAGE:
+            return uploadedImage(state, action)
         default:
             return state;
     }
