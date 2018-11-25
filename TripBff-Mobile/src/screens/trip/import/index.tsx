@@ -9,6 +9,7 @@ import { connect, DispatchProp } from "react-redux";
 import { cloneDeep } from 'lodash';
 import 'react-native-console-time-polyfill';
 import uuid1 from 'uuid/v1';
+import {FileSystem} from 'expo';
 
 import importImagesReducer from "./reducers";
 import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
@@ -49,7 +50,7 @@ interface State {
     UIState: UIState
 }
 
-type UIState = "loading" | "select images" | "uploading images"
+type UIState = "select image" | "import images" | "uploading image" 
 
 class TripImportation extends Component<Props, State> {
 
@@ -63,8 +64,10 @@ class TripImportation extends Component<Props, State> {
             locations: [],
             isLoading: true,
             loadingMessage: "Loading image from your gallery",
-            UIState: "loading"
+            UIState: "select image"
         }
+
+        console.log("constructor")
     }
 
     async componentDidMount() {
@@ -170,6 +173,7 @@ class TripImportation extends Component<Props, State> {
     _import = () => {
 
         var selectedLocations = this._toLocationVM();
+        this.setState({ UIState: "import images" })
         this.props.dispatch(this._postLocations(this.state.tripId, selectedLocations));
     }
 
@@ -208,24 +212,36 @@ class TripImportation extends Component<Props, State> {
         }
     }
 
-    _uploadImage = function uploadImage(tripId, locationId, imgId, imgUrl): ThunkResult<void> {
-        return function(dispatch, getState, extraArgument) {
-            var externalStorageId = uuid1();
-            return dispatch(uploadedImage(tripId, locationId, imgId, externalStorageId))
+    _uploadImage = function uploadImage(tripId, locationId, imageId, imgUrl): ThunkResult<Promise<any>> {
+        return async function(dispatch, getState, extraArgument) {
 
-            //todo real implementation
-            // // call API to import locations and images
-            // var url = '/trips/' + tripId +'/locations';
-            // extraArgument.api
-            // .post(url, selectedLocations)
-            // .then((res) => {
-            //     console.log('result after import trip: ' + JSON.stringify(res.data));      
-            //     dispatch(importSelectedLocations(tripId, res.data));
-            // })
-            // .catch((err) => {
-            //     console.log('error after import trip: ' + JSON.stringify(err));
-            // });      
-    
+            var fileInfo = await FileSystem.getInfoAsync(imgUrl);
+            console.log(`imge url: ${imgUrl}`)
+            console.log(fileInfo);
+            var file = await FileSystem.readAsStringAsync(imgUrl)
+
+            var data = {
+                locationId,
+                imageId,
+                fileName: imgUrl,
+                file,
+            }
+
+            var url = '/trips/' + tripId +'/uploadImage';
+            return extraArgument.api
+            .post(url, data)
+            .then((res) => {
+                console.log('result after upload image: ' + JSON.stringify(res.data));
+                var externalStorageId: string = res.data;      
+                dispatch(uploadedImage(tripId, locationId, imageId, externalStorageId))
+
+            })
+            .catch((err) => {
+                console.log('error after import trip: ' + JSON.stringify(err));
+            });   
+
+            // var externalStorageId = uuid1();
+            // return dispatch(uploadedImage(tripId, locationId, imageId, externalStorageId))
         }
     }
     
@@ -248,51 +264,61 @@ class TripImportation extends Component<Props, State> {
 
         console.log("component will update");
         
-        var totalImages = 0;
-        var uploadedImages = 0;
-        var isStartUploadImage = false;
-        var locId = "";
-        var imageIdToUpload: string;
-        var imageUrlToUpload = "";
-        _.each(this.props.trip.locations, loc => {
-            _.each(loc.images, img => {
-                totalImages++;
-                if (img.imageId) {
-                    isStartUploadImage = true;
-                    if (img.externalStorageId) {
-                        uploadedImages++;
-                    }
-                    else {
-                        if (!imageIdToUpload)
-                        {
-                            locId = loc.locationId;
-                            imageIdToUpload = img.imageId;
-                            imageUrlToUpload = img.url;
+        if (this.state.UIState == "import images") {
+        console.log("component will update with import images");
+
+            var totalImages = 0;
+            var uploadedImages = 0;
+            var isStartUploadImage = false;
+            var locId = "";
+            var imageIdToUpload: string;
+            var imageUrlToUpload = "";
+            _.each(this.props.trip.locations, loc => {
+                _.each(loc.images, img => {
+                    totalImages++;
+                    if (img.imageId) {
+                        isStartUploadImage = true;
+                        if (img.externalStorageId) {
+                            uploadedImages++;
+                        }
+                        else {
+                            if (!imageIdToUpload)
+                            {
+                                locId = loc.locationId;
+                                imageIdToUpload = img.imageId;
+                                imageUrlToUpload = img.url;
+                            }
                         }
                     }
+                })
+            });
+    
+            if (uploadedImages == totalImages && uploadedImages > 0) {
+                isStartUploadImage = false;
+                console.log("now I can move to next page");
+                //todo navigate to next page
+            }
+    
+            // console.log("check status");
+            // console.log(`trip id = ${this.state.tripId}, location id = ${locId}, imageId = ${imageIdToUpload}, url = ${imageUrlToUpload}`)
+            // console.log(`uploading images ${uploadedImages}/${totalImages}`)
+    
+    
+            if (isStartUploadImage) {
+                console.log(`uploading image: trip id = ${this.state.tripId}, location id = ${locId}, imageId = ${imageIdToUpload}, url = ${imageUrlToUpload}`)
+                this.setState({ UIState: "uploading image", isLoading: true, loadingMessage: `uploading images ${uploadedImages}/${totalImages}`});
+                console.log("component will update with uploading image");
+
+
+                this.props.dispatch(this._uploadImage(this.state.tripId, locId, imageIdToUpload, imageUrlToUpload))
+                .then(() => {
+                    this.setState({UIState: "import images"});
+                })
+            }
+            else {
+                if (this.state.isLoading) {
+                    this.setState({ isLoading: false, loadingMessage: ""})
                 }
-            })
-        });
-
-        if (uploadedImages == totalImages) {
-            isStartUploadImage = false;
-            console.log("now I can move to next page");
-            //todo navigate to next page
-        }
-
-        // console.log("check status");
-        // console.log(`trip id = ${this.state.tripId}, location id = ${locId}, imageId = ${imageIdToUpload}, url = ${imageUrlToUpload}`)
-        // console.log(`uploading images ${uploadedImages}/${totalImages}`)
-
-
-        if (isStartUploadImage) {
-            console.log(`uploading image: trip id = ${this.state.tripId}, location id = ${locId}, imageId = ${imageIdToUpload}, url = ${imageUrlToUpload}`)
-            this.setState({ isLoading: true, loadingMessage: `uploading images ${uploadedImages}/${totalImages}`});
-            this.props.dispatch(this._uploadImage(this.state.tripId, locId, imageIdToUpload, imageUrlToUpload))
-        }
-        else {
-            if (this.state.isLoading) {
-                this.setState({ isLoading: false, loadingMessage: ""})
             }
         }
 
