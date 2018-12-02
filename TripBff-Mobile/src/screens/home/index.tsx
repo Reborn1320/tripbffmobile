@@ -160,11 +160,11 @@ class Home extends React.Component<Props>  {
         <Content>
             <View>
                 <Button
-                  onPress={() => this.loginFacebook()}>>                 
+                  onPress={() => this.loginFacebook()}>                 
                   <Text>Login Facebook</Text> 
                 </Button>
                 <Button
-                  onPress={() => this.loginLocal()}>>                 
+                  onPress={() => this.loginLocal()}>               
                   <Text>Login Local</Text> 
                 </Button>
             </View>
