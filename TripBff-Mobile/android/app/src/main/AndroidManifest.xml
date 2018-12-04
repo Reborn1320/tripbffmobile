@@ -17,6 +17,7 @@
   <uses-permission android:name="android.permission.WAKE_LOCK" />
 
   <!-- ADD PERMISSIONS HERE -->
+    <uses-permission android:name="android.permission.INTERNET"/>
   <!-- BEGIN OPTIONAL PERMISSIONS -->
   <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
   <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
@@ -342,9 +343,11 @@
     <!-- ADD BRANCH CONFIG HERE -->
 
     <!-- The Facebook SDK runs FacebookInitProvider on startup and crashes if there isn't an ID here -->
-    <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="fb0"/>
+      <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 
     <meta-data android:name="standaloneStripeScheme" android:value="bfbdfa65-65ad-4f7c-bf67-0be93a517be3" />
+
+
   </application>
 
 </manifest>
