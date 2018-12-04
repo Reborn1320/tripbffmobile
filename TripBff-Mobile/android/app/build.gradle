@@ -100,6 +100,8 @@ apply from: 'expo.gradle'
 
 
 dependencies {
+  implementation project(':react-native-fbsdk')
+
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
   implementation 'com.android.support:multidex:1.0.1'

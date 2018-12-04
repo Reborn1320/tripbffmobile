@@ -12,8 +12,15 @@ import java.util.List;
 import expo.core.interfaces.Package;
 import host.exp.exponent.generated.DetachBuildConstants;
 import host.exp.exponent.experience.DetachActivity;
+import android.content.Intent;
 
 public class MainActivity extends DetachActivity {
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    MainApplication.getCallbackManager().onActivityResult(requestCode, resultCode, data);
+  }
 
   @Override
   public String publishedUrl() {
