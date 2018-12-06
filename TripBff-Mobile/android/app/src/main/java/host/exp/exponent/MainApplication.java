@@ -14,30 +14,16 @@ import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.FacebookSdk;
 
 // Needed for `react-native link`
-// import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactApplication;
+import com.facebook.reactnative.androidsdk.FBSDKPackage;
 
-public class MainApplication extends ExpoApplication {
+public class MainApplication extends ExpoApplication implements ReactApplication {
 
   private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
 
   protected static CallbackManager getCallbackManager() {
     return mCallbackManager;
   }
-
-  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-      @Override
-      public boolean getUseDeveloperSupport() {
-        return BuildConfig.DEBUG;
-      }
-
-      @Override
-      protected List<ReactPackage> getPackages() {
-        return Arrays.<ReactPackage>asList(
-            new MainReactPackage(),
-            new FBSDKPackage(mCallbackManager)
-        );
-      }
-  };
 
   @Override
   public boolean isDebug() {
@@ -51,7 +37,7 @@ public class MainApplication extends ExpoApplication {
         // TODO: add native modules!
 
         // Needed for `react-native link`
-        // new MainReactPackage()
+        //new MainReactPackage()
     );
   }
 
@@ -69,4 +55,25 @@ public class MainApplication extends ExpoApplication {
     // Customize/override OkHttp client here
     return builder;
   }
+
+  @Override
+  public ReactNativeHost getReactNativeHost() {
+    return mReactNativeHost;
+  }
+
+  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+    @Override
+    public boolean getUseDeveloperSupport() {
+      return BuildConfig.DEBUG;
+    }
+
+    @Override
+    protected List<ReactPackage> getPackages() {
+      return Arrays.<ReactPackage>asList(
+              new MainReactPackage(),
+              //**  ADD THE FOLLOWING LINE **//
+              new FBSDKPackage(mCallbackManager)
+      );
+    }
+  };
 }

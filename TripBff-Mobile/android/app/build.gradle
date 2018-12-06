@@ -101,7 +101,6 @@ apply from: 'expo.gradle'
 
 dependencies {
   implementation project(':react-native-fbsdk')
-
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
   implementation 'com.android.support:multidex:1.0.1'
@@ -185,8 +184,7 @@ dependencies {
     exclude group: 'com.squareup.okhttp3', module: 'okhttp-urlconnection'
   }
 
-  implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
-
+   implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
   /* REMOVED_WHEN_DISTRIBUTING_FROM_HERE
 
   // BEGIN_SDK_UNVERSIONED
