@@ -36,8 +36,18 @@ class Home extends React.Component<Props, any>  {
       contentUrl: 'https://www.facebook.com/',
     };
 
+    const photoUri01 = 'file:///storage/emulated/0/Download/waiting-for-android-5a8833.jpg',
+          photoUri02 = 'file:///storage/emulated/0/Download/Image03.jpg',
+          photoUri03 = 'file:///storage/emulated/0/Download/Image04.jpg';
+
+    const sharePhotoContent = {
+        contentType: 'photo',
+        photos: [{ imageUrl: photoUri01 }, { imageUrl: photoUri02 }, { imageUrl: photoUri03 }],
+      }
+
     this.state = {
       shareLinkContent: shareLinkContent,
+      sharePhotoContent: sharePhotoContent
     };
   }
 
@@ -167,12 +177,33 @@ class Home extends React.Component<Props, any>  {
   shareLinkWithShareDialog() {
     var tmp = this;
 
-    console.log('share link content: ' + JSON.stringify(this.state.shareLinkContent));
-
     ShareDialog.canShow(this.state.shareLinkContent)
       .then(function(canShow) {
         if (canShow) {
           return ShareDialog.show(tmp.state.shareLinkContent);
+        }
+      })
+      .then(
+        function(result) {
+          if (result.isCancelled) {
+            console.log('Share cancelled');
+          } else {
+            console.log('Share success');
+          }
+        },
+        function(error) {
+          console.log('Share fail with error: ' + error);
+        },
+      );
+  }
+
+  sharePhotoWithShareDialog() {
+    var tmp = this;
+
+    ShareDialog.canShow(this.state.sharePhotoContent)
+      .then(function(canShow) {
+        if (canShow) {
+          return ShareDialog.show(tmp.state.sharePhotoContent);
         }
       })
       .then(
@@ -205,6 +236,10 @@ class Home extends React.Component<Props, any>  {
                 <Button
                   onPress={() => this.shareLinkWithShareDialog()}>                 
                   <Text>Share Link on Facebook</Text> 
+                </Button>
+                <Button
+                  onPress={() => this.sharePhotoWithShareDialog()}>                 
+                  <Text>Share Photos on Facebook</Text> 
                 </Button>
                 <Button
                   onPress={() => this.loginLocal()}>               
