@@ -14,6 +14,8 @@ import tripApi from '../apiBase/tripApi';
 import { StoreData } from "../../Interfaces";
 import { addToken } from '../auth/actions';
 import { AsyncStorage } from "react-native";
+import { ShareDialog } from 'react-native-fbsdk'
+
 
 export interface Props extends IMapDispatchToProps {
   navigation: RNa.NavigationScreenProp<any, any>
@@ -25,7 +27,19 @@ interface IMapDispatchToProps {
   addToken: (user: StoreData.UserVM) => void
 }
 
-class Home extends React.Component<Props>  {
+class Home extends React.Component<Props, any>  {
+
+  constructor(props) {
+    super(props);
+    const shareLinkContent = {
+      contentType: 'link',
+      contentUrl: 'https://www.facebook.com/',
+    };
+
+    this.state = {
+      shareLinkContent: shareLinkContent,
+    };
+  }
 
   componentDidMount() {
     this.props.listRepos('relferreira');
@@ -150,6 +164,31 @@ class Home extends React.Component<Props>  {
     })       
   }
 
+  shareLinkWithShareDialog() {
+    var tmp = this;
+
+    console.log('share link content: ' + JSON.stringify(this.state.shareLinkContent));
+
+    ShareDialog.canShow(this.state.shareLinkContent)
+      .then(function(canShow) {
+        if (canShow) {
+          return ShareDialog.show(tmp.state.shareLinkContent);
+        }
+      })
+      .then(
+        function(result) {
+          if (result.isCancelled) {
+            console.log('Share cancelled');
+          } else {
+            console.log('Share success');
+          }
+        },
+        function(error) {
+          console.log('Share fail with error: ' + error);
+        },
+      );
+  }
+
   render() {
 
     const { repos } = this.props;
@@ -162,6 +201,10 @@ class Home extends React.Component<Props>  {
                 <Button
                   onPress={() => this.loginFacebook()}>                 
                   <Text>Login Facebook</Text> 
+                </Button>
+                <Button
+                  onPress={() => this.shareLinkWithShareDialog()}>                 
+                  <Text>Share Link on Facebook</Text> 
                 </Button>
                 <Button
                   onPress={() => this.loginLocal()}>               
