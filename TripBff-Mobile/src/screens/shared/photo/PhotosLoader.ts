@@ -46,10 +46,10 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
                         var fullElement = await MediaLibrary.getAssetInfoAsync(element)                        
 
                         if (fullElement) {
-                            //console.log('full element: ' + fullElement.localUri);
+                            console.log('full element: ' + fullElement.localUri);
                             
-                            if ((fullElement.localUri.indexOf("Camera") == -1 && Platform.OS === "android") || 
-                            (fullElement.localUri.indexOf("Media") == -1 && Platform.OS === "ios")) continue;                   
+                            // if ((fullElement.localUri.indexOf("Camera") == -1 && Platform.OS === "android") || 
+                            // (fullElement.localUri.indexOf("Media") == -1 && Platform.OS === "ios")) continue;                   
 
                             if (fullElement.location == null || fullElement.location == undefined) {
                                 fullElement.location = { latitude: 0, longitude: 0 } 

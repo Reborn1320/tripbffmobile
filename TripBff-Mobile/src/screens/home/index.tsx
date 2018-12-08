@@ -16,6 +16,7 @@ import { StoreData } from "../../Interfaces";
 import { addToken } from '../auth/actions';
 import { AsyncStorage } from "react-native";
 import RNFetchBlob from 'rn-fetch-blob'
+import { ShareDialog } from 'react-native-fbsdk'
 
 export interface Props extends IMapDispatchToProps, DispatchProp {
   navigation: RNa.NavigationScreenProp<any, any>
@@ -27,7 +28,29 @@ interface IMapDispatchToProps {
   addToken: (user: StoreData.UserVM) => void
 }
 
-class Home extends React.Component<Props>  {
+class Home extends React.Component<Props, any>  {
+
+  constructor(props) {
+    super(props);
+    const shareLinkContent = {
+      contentType: 'link',
+      contentUrl: 'https://www.facebook.com/',
+    };
+
+    const photoUri01 = 'file:///storage/emulated/0/Download/waiting-for-android-5a8833.jpg',
+          photoUri02 = 'file:///storage/emulated/0/Download/Image03.jpg',
+          photoUri03 = 'file:///storage/emulated/0/Download/Image04.jpg';
+
+    const sharePhotoContent = {
+        contentType: 'photo',
+        photos: [{ imageUrl: photoUri01 }, { imageUrl: photoUri02 }, { imageUrl: photoUri03 }],
+      }
+
+    this.state = {
+      shareLinkContent: shareLinkContent,
+      sharePhotoContent: sharePhotoContent
+    };
+  }
 
   async componentDidMount() {
     this.props.listRepos('relferreira');
@@ -192,6 +215,52 @@ class Home extends React.Component<Props>  {
     })       
   }
 
+  shareLinkWithShareDialog() {
+    var tmp = this;
+
+    ShareDialog.canShow(this.state.shareLinkContent)
+      .then(function(canShow) {
+        if (canShow) {
+          return ShareDialog.show(tmp.state.shareLinkContent);
+        }
+      })
+      .then(
+        function(result) {
+          if (result.isCancelled) {
+            console.log('Share cancelled');
+          } else {
+            console.log('Share success');
+          }
+        },
+        function(error) {
+          console.log('Share fail with error: ' + error);
+        },
+      );
+  }
+
+  sharePhotoWithShareDialog() {
+    var tmp = this;
+
+    ShareDialog.canShow(this.state.sharePhotoContent)
+      .then(function(canShow) {
+        if (canShow) {
+          return ShareDialog.show(tmp.state.sharePhotoContent);
+        }
+      })
+      .then(
+        function(result) {
+          if (result.isCancelled) {
+            console.log('Share cancelled');
+          } else {
+            console.log('Share success');
+          }
+        },
+        function(error) {
+          console.log('Share fail with error: ' + error);
+        },
+      );
+  }
+
   render() {
 
     const { repos } = this.props;
@@ -204,6 +273,14 @@ class Home extends React.Component<Props>  {
                 <Button
                   onPress={() => this.loginFacebook()}>                 
                   <Text>Login Facebook</Text> 
+                </Button>
+                <Button
+                  onPress={() => this.shareLinkWithShareDialog()}>                 
+                  <Text>Share Link on Facebook</Text> 
+                </Button>
+                <Button
+                  onPress={() => this.sharePhotoWithShareDialog()}>                 
+                  <Text>Share Photos on Facebook</Text> 
                 </Button>
                 <Button
                   onPress={() => this.loginLocal()}>               

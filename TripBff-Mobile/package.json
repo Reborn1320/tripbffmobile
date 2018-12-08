@@ -23,6 +23,7 @@
   "dependencies": {
     "@types/expo": "^31.0.1",
     "@types/lodash": "^4.14.116",
+    "@types/react-native-fbsdk": "^0.6.2",
     "axios": "0.18.0",
     "expo": "31.0.6",
     "expokit": "^31.0.2",

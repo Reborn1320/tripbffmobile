@@ -16,11 +16,30 @@ import com.facebook.FacebookSdk;
 // Needed for `react-native link`
 import com.facebook.react.ReactApplication;
 import com.RNFetchBlob.RNFetchBlobPackage;
-import com.facebook.reactnative.androidsdk.FBSDKPackage;
 
 public class MainApplication extends ExpoApplication implements ReactApplication {
 
   private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
+
+  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+    @Override
+    public boolean getUseDeveloperSupport() {
+      return BuildConfig.DEBUG;
+    }
+
+    @Override
+    protected List<ReactPackage> getPackages() {
+      return Arrays.<ReactPackage>asList(
+              // Add your own packages here!
+              // TODO: add native modules!
+
+              // Needed for `react-native link`
+              new MainReactPackage(),
+              //**  ADD THE FOLLOWING LINE **//
+              new FBSDKPackage(mCallbackManager)
+      );
+    }
+  };
 
   protected static CallbackManager getCallbackManager() {
     return mCallbackManager;
@@ -39,8 +58,9 @@ public class MainApplication extends ExpoApplication implements ReactApplication
 
         // Needed for `react-native link`
         //new MainReactPackage(),
-            new RNFetchBlobPackage(),
-            new FBSDKPackage()
+        //**  ADD THE FOLLOWING LINE **//
+        new FBSDKPackage(mCallbackManager),
+        new RNFetchBlobPackage()
     );
   }
 
@@ -64,20 +84,9 @@ public class MainApplication extends ExpoApplication implements ReactApplication
     return mReactNativeHost;
   }
 
-  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-    @Override
-    public boolean getUseDeveloperSupport() {
-      return BuildConfig.DEBUG;
-    }
+  @Override
+  public void onCreate() {
+    super.onCreate();
+  }
 
-    @Override
-    protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-              new MainReactPackage(),
-              //**  ADD THE FOLLOWING LINE **//
-              new FBSDKPackage(mCallbackManager),
-              new RNFetchBlobPackage()
-      );
-    }
-  };
 }
