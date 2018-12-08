@@ -15,6 +15,7 @@ import tripApi from '../apiBase/tripApi';
 import { StoreData } from "../../Interfaces";
 import { addToken } from '../auth/actions';
 import { AsyncStorage } from "react-native";
+import RNFetchBlob from 'rn-fetch-blob'
 
 export interface Props extends IMapDispatchToProps, DispatchProp {
   navigation: RNa.NavigationScreenProp<any, any>
@@ -28,8 +29,48 @@ interface IMapDispatchToProps {
 
 class Home extends React.Component<Props>  {
 
-  componentDidMount() {
+  async componentDidMount() {
     this.props.listRepos('relferreira');
+
+    
+        //   let photos = await CameraRoll.getPhotos({ first: 4 });
+        //   var u = photos.edges[0].node.image.uri
+        //   console.log(u);
+        //   var file = RNFS.readFile(u);
+
+        var u = "file:///storage/emulated/0/DCIM/Camera/20181106_082919.jpg"
+        const res = await fetch(u)
+        const blob = await res.blob();
+        const reader = new FileReader();
+
+        reader.readAsDataURL(blob);
+
+        reader.onloadend = () => {
+          let base64 = reader.result;
+          console.log(base64);
+        }
+
+        RNFetchBlob.fetch('GET', 'http://localhost:8000/api/trips/72b6d430-f50b-11e8-9944-bdbbcdcc7955/uploadImage', {
+            Authorization : 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJiYiIsIm5hbWUiOiJiYmIiLCJpZCI6MSwiaWF0IjoxNTQzNjI3OTU1fQ.ifZa3FR5lDKsBlV7sdO9WqBSpce_AJ0NptZca_c5RK0',
+        }, RNFetchBlob.wrap(u))
+        .then((res) => {
+            let status = res.info().status;
+            
+            if(status == 200) {
+            // the conversion is done in native code
+            let base64Str = res.base64()
+            // the following conversions are done in js, it's SYNC
+            let text = res.text()
+            let json = res.json()
+            } else {
+            // handle other status codes
+            }
+        })
+        // Something went wrong:
+        .catch((errorMessage, statusCode) => {
+            // error handling
+        })
+          
   }
 
   renderItem = ({ item }) => (

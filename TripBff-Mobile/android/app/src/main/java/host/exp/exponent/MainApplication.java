@@ -15,6 +15,7 @@ import com.facebook.FacebookSdk;
 
 // Needed for `react-native link`
 import com.facebook.react.ReactApplication;
+import com.RNFetchBlob.RNFetchBlobPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 
 public class MainApplication extends ExpoApplication implements ReactApplication {
@@ -37,7 +38,9 @@ public class MainApplication extends ExpoApplication implements ReactApplication
         // TODO: add native modules!
 
         // Needed for `react-native link`
-        //new MainReactPackage()
+        //new MainReactPackage(),
+            new RNFetchBlobPackage(),
+            new FBSDKPackage()
     );
   }
 
@@ -72,7 +75,8 @@ public class MainApplication extends ExpoApplication implements ReactApplication
       return Arrays.<ReactPackage>asList(
               new MainReactPackage(),
               //**  ADD THE FOLLOWING LINE **//
-              new FBSDKPackage(mCallbackManager)
+              new FBSDKPackage(mCallbackManager),
+              new RNFetchBlobPackage()
       );
     }
   };
