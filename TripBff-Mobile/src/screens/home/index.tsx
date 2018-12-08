@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList } from "react-native";
+import { FlatList, CameraRoll } from "react-native";
 import { Container, Header, Content, Button, Icon, Text, ListItem, View } from 'native-base';
 import { Footer, FooterTab } from 'native-base';
 
@@ -9,13 +9,15 @@ import styles from "./styles";
 import { listRepos } from './reducer';
 import * as RNa from "react-navigation";
 import Loading from "../_components/Loading";
-import Expo from "expo";
+import Expo, { FileSystem, MediaLibrary } from "expo";
 import loginApi from '../apiBase/loginApi';
 import tripApi from '../apiBase/tripApi';
 import { StoreData } from "../../Interfaces";
 import { addToken } from '../auth/actions';
 import { AsyncStorage } from "react-native";
 import { ShareDialog } from 'react-native-fbsdk'
+import checkAndRequestPhotoPermissionAsync from "../shared/photo/PhotoPermission";
+import { uploadImageAsync } from "../_services/BlobUploader";
 
 export interface Props extends IMapDispatchToProps, DispatchProp {
   navigation: RNa.NavigationScreenProp<any, any>
@@ -52,48 +54,69 @@ class Home extends React.Component<Props, any>  {
   }
 
   async componentDidMount() {
-    this.props.listRepos('relferreira');
+    await checkAndRequestPhotoPermissionAsync();
+    //content://media/external/images/media/2312
+    // var u = "file:///storage/emulated/0/DCIM/Camera/20181106_082919.jpg";
 
-    
-        //   let photos = await CameraRoll.getPhotos({ first: 4 });
-        //   var u = photos.edges[0].node.image.uri
-        //   console.log(u);
-        //   var file = RNFS.readFile(u);
+    let photos = await CameraRoll.getPhotos({ first: 4 });
+    var img = photos.edges[0].node.image
+    var u = photos.edges[0].node.image.uri
+    // console.log(img);
+    console.log(u);
 
-        var u = "file:///storage/emulated/0/DCIM/Camera/20181106_082919.jpg"
-        // const res = await fetch(u)
-        // const blob = await res.blob();
-        // const reader = new FileReader();
-
-        // reader.readAsDataURL(blob);
-
-        // reader.onloadend = () => {
-        //   let base64 = reader.result;
-        //   console.log(base64);
-        // }
-
-        // RNFetchBlob.fetch('GET', 'http://localhost:8000/api/trips/72b6d430-f50b-11e8-9944-bdbbcdcc7955/uploadImage', {
-        //     Authorization : 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJiYiIsIm5hbWUiOiJiYmIiLCJpZCI6MSwiaWF0IjoxNTQzNjI3OTU1fQ.ifZa3FR5lDKsBlV7sdO9WqBSpce_AJ0NptZca_c5RK0',
-        // }, RNFetchBlob.wrap(u))
-        // .then((res) => {
-        //     let status = res.info().status;
-            
-        //     if(status == 200) {
-        //     // the conversion is done in native code
-        //     let base64Str = res.base64()
-        //     // the following conversions are done in js, it's SYNC
-        //     let text = res.text()
-        //     let json = res.json()
-        //     } else {
-        //     // handle other status codes
-        //     }
-        // })
-        // // Something went wrong:
-        // .catch((errorMessage, statusCode) => {
-        //     // error handling
-        // })
-          
+    const info = await FileSystem.getInfoAsync(u);
+    console.log(info)
+    // const fileData = await FileSystem.readAsStringAsync(u);
+    // console.log(fileData)
+    uploadImageAsync("/uploadImage", u)
+    .then(() => {
+      console.log("uploaded");
+    })
+    .catch((err) => {
+      console.log(err);
+      
+    })
+    // //does not fucking work, curse u expo sdk
+    // const mediaType = MediaLibrary.MediaType.photo
+    // const result = await MediaLibrary.getAssetsAsync({
+    //   first: 4,
+    //   mediaType: mediaType,
+    //   sortBy: MediaLibrary.SortBy.creationTime,
+    // })    
+    // console.log(result.assets[0].uri);
+    // const u = result.assets[0].uri;
+    // uploadImageAsync("/uploadImage", u)
+    // .then(() => {
+    //   console.log("uploaded");
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // })
   }
+
+  // async uploadImageAsync(uri) {
+  //   const blob = await new Promise((resolve, reject) => {
+  //     const xhr = new XMLHttpRequest();
+  //     xhr.responseType = 'blob'; // use BlobModule's UriHandler
+  //     xhr.onload = function() {
+  //       console.log("onload")
+  //       console.log(xhr.response);
+  //       resolve(xhr.response); // when BlobModule finishes reading, resolve with the blob
+  //    };
+  //    xhr.onerror = function() {
+  //      console.log(arguments);
+  //      reject(new TypeError('Network request failed')); // error occurred, rejecting
+  //    };
+  //    xhr.open('GET', uri, true); // fetch the blob from uri in async mode
+  //    xhr.send(null); // no initial data
+  //  });
+  
+  //   // when we're done sending it, close and release the blob
+  //   // blob.close();
+  
+  //   // return the result, eg. remote URI to the image
+  //   // return remoteUri;
+  // }
 
   renderItem = ({ item }) => (
     <ListItem noIndent
