@@ -15,7 +15,6 @@ import com.facebook.FacebookSdk;
 
 // Needed for `react-native link`
 import com.facebook.react.ReactApplication;
-import com.RNFetchBlob.RNFetchBlobPackage;
 
 public class MainApplication extends ExpoApplication implements ReactApplication {
 
@@ -59,8 +58,7 @@ public class MainApplication extends ExpoApplication implements ReactApplication
         // Needed for `react-native link`
         //new MainReactPackage(),
         //**  ADD THE FOLLOWING LINE **//
-        new FBSDKPackage(mCallbackManager),
-        new RNFetchBlobPackage()
+        new FBSDKPackage(mCallbackManager)
     );
   }
 

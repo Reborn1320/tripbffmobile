@@ -100,10 +100,10 @@ apply from: 'expo.gradle'
 
 
 dependencies {
-    compile project(':rn-fetch-blob')
+    // compile project(':rn-fetch-blob')
     // compile project(':react-native-fbsdk')
   // implementation project(':react-native-fbsdk')
-  implementation project(':rn-fetch-blob')
+  // implementation project(':rn-fetch-blob')
 
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
