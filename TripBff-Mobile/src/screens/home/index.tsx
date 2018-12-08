@@ -35,9 +35,13 @@ class Home extends React.Component<Props, any>  {
       contentUrl: 'https://www.facebook.com/',
     };
 
-    const photoUri01 = 'file:///storage/emulated/0/Download/waiting-for-android-5a8833.jpg',
-          photoUri02 = 'file:///storage/emulated/0/Download/Image03.jpg',
-          photoUri03 = 'file:///storage/emulated/0/Download/Image04.jpg';
+    // const photoUri01 = 'file:///storage/emulated/0/Download/waiting-for-android-5a8833.jpg',
+    //       photoUri02 = 'file:///storage/emulated/0/Download/Image03.jpg',
+    //       photoUri03 = 'file:///storage/emulated/0/Download/Image04.jpg';
+
+    const photoUri01 = 'file:///storage/emulated/0/DCIM/Camera/IMG_20181208_202705.jpg',
+          photoUri02 = 'file:///storage/emulated/0/DCIM/Camera/IMG_20181208_202700.jpg',
+          photoUri03 = 'file:///storage/emulated/0/DCIM/Camera/IMG_20181208_203212.jpg';
 
     const sharePhotoContent = {
         contentType: 'photo',
@@ -64,77 +68,6 @@ class Home extends React.Component<Props, any>  {
       </Text>
     </ListItem>
   );
-
-  // async loginFacebook() {
-  //     try {
-  //       const {
-  //         type,
-  //         token,
-  //         expires       
-  //       } = await Expo.Facebook.logInWithReadPermissionsAsync('2341289862566899', {
-  //         permissions: ['public_profile', 'user_photos', 'user_posts', 'publish_to_groups'],
-  //       });
-  //       if (type === 'success') {
-  //         console.log('facebook token: ' + token);
-
-  //         // get user info
-  //         const responseBasicUser = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
-  //         let user = await responseBasicUser.json();
-
-  //         // store user credential(facebook id, name and token) into AsyncStorage
-  //         var fbInformation = {
-  //             id: user.id,
-  //             name: user.name,
-  //             token: token,
-  //             expires: expires
-  //         };
-  //         this._storeData("UserFbInfo", JSON.stringify(fbInformation));
-
-  //         this._retrieveData("UserFbInfo").then((value) => {
-  //           console.log("fb stored value: " + value);
-  //         });
-          
-  //         //TODO: call api server to create our user based on facebook user (id and name) and get our app token
-
-  //         var postUser = {
-  //           email: user.id,
-  //           password: '123456',
-  //           username: user.name,
-  //           lastName: "",
-  //           firstName: "",
-  //           fullName: user.name,
-  //           fbToken: token
-  //           };
-  //           this.loginDetails(postUser);
-          
-  //       } else {
-  //         // type === 'cancel'
-  //       }
-  //     } catch (ex) {
-  //       console.log(`Facebook Login Error: ` + ex);
-  //     }
-  // }
-
-  // _storeData = async (key, value) => {
-  //   try {
-  //     await AsyncStorage.setItem(key, value);
-  //   } catch (error) {
-  //     // Error saving data
-  //   }
-  // }
-
-    // _retrieveData = async (key) => {
-  //   try {
-  //     const value = await AsyncStorage.getItem(key);
-  //     if (value !== null) {
-  //       // We have data!!
-  //       //console.log(value);
-  //       return value;
-  //     }
-  //    } catch (error) {
-  //      // Error retrieving data
-  //    }
-  // }
 
   loginFacebookSdk(error, result) {
     if (error) {
@@ -252,55 +185,6 @@ class Home extends React.Component<Props, any>  {
       );
   }
 
-  // async shareLinkOnGroupByGraphApi() {
-  //   var groupId = 2140844709315900;
-  //   var linkContent ={
-  //     message: "Test: create post on group",
-  //     link: 'https://www.facebook.com/'
-  //   };
-
-  //   AccessToken.getCurrentAccessToken().then(
-  //     async (data) => {
-  //       await fetch(`https://graph.facebook.com/${groupId}/feed_token=${data.accessToken}`, {
-  //         method: 'POST',
-  //         headers: {
-  //           Accept: 'application/json',
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify(linkContent)
-  //       }).then(response => {
-  //         console.log("created link on group")
-  //       }).catch(err => {
-  //         console.log(err)
-  //       });
-  //     }
-  //   );    
-  // }
-
-  // async sharePhotoOnGroupByGraphApi() {
-  //   var groupId = 2140844709315900;
-  //   let photo = { uri: 'file:///storage/emulated/0/Download/waiting-for-android-5a8833.jpg'};
-  //   let formdata = new FormData();
-  //   formdata.append("caption", 'test');
-  //   formdata.append("source", { uri: photo.uri, name: 'image.jpg', type: 'multipart/form-data'} );
-
-  //   AccessToken.getCurrentAccessToken().then(
-  //     async (data) => {
-  //       await fetch(`https://graph.facebook.com/${groupId}/photos_token=${token}`, {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'multipart/form-data',
-  //         },
-  //         body: formdata
-  //       }).then(response => {
-  //         console.log("image uploaded")
-  //       }).catch(err => {
-  //         console.log(err)
-  //       });
-  //     }
-  //   );     
-  // }
-
   render() {
 
     const { repos } = this.props;
@@ -332,14 +216,6 @@ class Home extends React.Component<Props, any>  {
                   onPress={() => this.sharePhotoWithShareDialog()}>                 
                   <Text>Share Photos on Facebook</Text> 
                 </Button>
-                {/* <Button
-                  onPress={() => this.shareLinkOnGroupByGraphApi()}>                 
-                  <Text>Share Link on Group of Facebook</Text> 
-                </Button>
-                <Button
-                  onPress={() => this.sharePhotoOnGroupByGraphApi()}>                 
-                  <Text>Share Photos on Group of Facebook</Text> 
-                </Button> */}
                 <Button
                   onPress={() => this.loginLocal()}>               
                   <Text>Login Local</Text> 
