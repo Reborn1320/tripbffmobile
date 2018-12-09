@@ -71,7 +71,10 @@ android {
   }
   signingConfigs {
     debug {
-      storeFile file('../debug.keystore')
+      storeFile file('../debug.keystore.jks')
+      storePassword DEBUG_STORE_PASSWORD
+      keyAlias DEBUG_KEY_ALIAS
+      keyPassword DEBUG_KEY_PASSWORD
     }
   }
   lintOptions {
@@ -97,6 +100,7 @@ apply from: 'expo.gradle'
 
 
 dependencies {
+
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
   implementation 'com.android.support:multidex:1.0.1'
@@ -107,7 +111,7 @@ dependencies {
   // Our dependencies from ExpoView
   // DON'T ADD ANYTHING HERE THAT ISN'T IN EXPOVIEW. ONLY COPY THINGS FROM EXPOVIEW TO HERE.
   implementation 'com.android.support:appcompat-v7:27.1.1'
-  implementation 'com.facebook.android:facebook-android-sdk:4.37.0'
+
   implementation('com.facebook.android:audience-network-sdk:4.99.0') {
     exclude module: 'play-services-ads'
   }
@@ -179,8 +183,9 @@ dependencies {
     exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     exclude group: 'com.squareup.okhttp3', module: 'okhttp-urlconnection'
   }
-  
 
+  implementation 'com.facebook.android:facebook-android-sdk:4.34.0'
+  implementation project(':react-native-fbsdk')
   /* REMOVED_WHEN_DISTRIBUTING_FROM_HERE
 
   // BEGIN_SDK_UNVERSIONED

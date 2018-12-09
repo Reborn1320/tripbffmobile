@@ -14,6 +14,7 @@ import tripApi from '../apiBase/tripApi';
 import { StoreData } from "../../Interfaces";
 import { addToken } from '../auth/actions';
 import { AsyncStorage } from "react-native";
+import { ShareDialog, LoginButton, AccessToken, LoginManager } from 'react-native-fbsdk';
 
 export interface Props extends IMapDispatchToProps {
   navigation: RNa.NavigationScreenProp<any, any>
@@ -25,7 +26,33 @@ interface IMapDispatchToProps {
   addToken: (user: StoreData.UserVM) => void
 }
 
-class Home extends React.Component<Props>  {
+class Home extends React.Component<Props, any>  {
+
+  constructor(props) {
+    super(props);
+    const shareLinkContent = {
+      contentType: 'link',
+      contentUrl: 'https://www.facebook.com/',
+    };
+
+    // const photoUri01 = 'file:///storage/emulated/0/Download/waiting-for-android-5a8833.jpg',
+    //       photoUri02 = 'file:///storage/emulated/0/Download/Image03.jpg',
+    //       photoUri03 = 'file:///storage/emulated/0/Download/Image04.jpg';
+
+    const photoUri01 = 'file:///storage/emulated/0/DCIM/Camera/IMG_20181208_202705.jpg',
+          photoUri02 = 'file:///storage/emulated/0/DCIM/Camera/IMG_20181208_202700.jpg',
+          photoUri03 = 'file:///storage/emulated/0/DCIM/Camera/IMG_20181208_203212.jpg';
+
+    const sharePhotoContent = {
+        contentType: 'photo',
+        photos: [{ imageUrl: photoUri01 }, { imageUrl: photoUri02 }, { imageUrl: photoUri03 }],
+      }
+
+    this.state = {
+      shareLinkContent: shareLinkContent,
+      sharePhotoContent: sharePhotoContent
+    };
+  }
 
   componentDidMount() {
     this.props.listRepos('relferreira');
@@ -42,75 +69,37 @@ class Home extends React.Component<Props>  {
     </ListItem>
   );
 
-  async loginFacebook() {
-      try {
-        const {
-          type,
-          token,
-          expires       
-        } = await Expo.Facebook.logInWithReadPermissionsAsync('2341289862566899', {
-          permissions: ['public_profile', 'user_photos', 'user_posts'],
-        });
-        if (type === 'success') {
-          console.log('facebook token: ' + token);
-
-          // get user info
-          const responseBasicUser = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
-          let user = await responseBasicUser.json();
-
-          // store user credential(facebook id, name and token) into AsyncStorage
-          var fbInformation = {
-              id: user.id,
-              name: user.name,
-              token: token,
-              expires: expires
-          };
-          this._storeData("UserFbInfo", JSON.stringify(fbInformation));
-
-          this._retrieveData("UserFbInfo").then((value) => {
-            console.log("fb stored value: " + value);
-          });
-          
-          //TODO: call api server to create our user based on facebook user (id and name) and get our app token
-
-          var postUser = {
-            email: user.id,
-            password: '123456',
-            username: user.name,
-            lastName: "",
-            firstName: "",
-            fullName: user.name,
-            fbToken: token
-            };
-            this.loginDetails(postUser);
-          
-        } else {
-          // type === 'cancel'
+  loginFacebookSdk(error, result) {
+    if (error) {
+      console.log("login has error: " + result.error);
+    } else if (result.isCancelled) {
+      console.log("login is cancelled.");
+    } else {
+      AccessToken.getCurrentAccessToken().then(
+        (data) => {
+          console.log(data.accessToken.toString());          
         }
-      } catch ({ message }) {
-        alert(`Facebook Login Error: ${message}`);
-      }
-  }
-
-  _storeData = async (key, value) => {
-    try {
-      await AsyncStorage.setItem(key, value);
-    } catch (error) {
-      // Error saving data
+      );
     }
   }
 
-  _retrieveData = async (key) => {
-    try {
-      const value = await AsyncStorage.getItem(key);
-      if (value !== null) {
-        // We have data!!
-        //console.log(value);
-        return value;
+  requestPublishPermissions() {
+    LoginManager.logInWithPublishPermissions(["publish_to_groups"]).then(
+      function(result) {
+        if (result.isCancelled) {
+          console.log("Login cancelled");
+        } else {
+          console.log(
+            "Login success with permissions: " +
+              result.grantedPermissions.toString()
+          );
+         
+        }
+      },
+      function(error) {
+        console.log("Login fail with error: " + error);
       }
-     } catch (error) {
-       // Error retrieving data
-     }
+    );
   }
 
   loginLocal() {
@@ -150,6 +139,52 @@ class Home extends React.Component<Props>  {
     })       
   }
 
+  shareLinkWithShareDialog() {
+    var tmp = this;
+
+    ShareDialog.canShow(this.state.shareLinkContent)
+      .then(function(canShow) {
+        if (canShow) {
+          return ShareDialog.show(tmp.state.shareLinkContent);
+        }
+      })
+      .then(
+        function(result) {
+          if (result.isCancelled) {
+            console.log('Share cancelled');
+          } else {
+            console.log('Share success');
+          }
+        },
+        function(error) {
+          console.log('Share fail with error: ' + error);
+        },
+      );
+  }
+
+  sharePhotoWithShareDialog() {
+    var tmp = this;
+
+    ShareDialog.canShow(this.state.sharePhotoContent)
+      .then(function(canShow) {
+        if (canShow) {
+          return ShareDialog.show(tmp.state.sharePhotoContent);
+        }
+      })
+      .then(
+        function(result) {
+          if (result.isCancelled) {
+            console.log('Share cancelled');
+          } else {
+            console.log('Share success');
+          }
+        },
+        function(error) {
+          console.log('Share fail with error: ' + error);
+        },
+      );
+  }
+
   render() {
 
     const { repos } = this.props;
@@ -159,9 +194,27 @@ class Home extends React.Component<Props>  {
         <Header />
         <Content>
             <View>
-                <Button
+                {/* <Button
                   onPress={() => this.loginFacebook()}>                 
                   <Text>Login Facebook</Text> 
+                </Button> */}
+                <LoginButton         
+                  readPermissions={['public_profile', 'user_photos', 'user_posts']}
+                  onLoginFinished={
+                    (error, result) => this.loginFacebookSdk(error, result)
+                  }
+                  onLogoutFinished={() => console.log("logout.")}/>
+                <Button
+                  onPress={() => this.requestPublishPermissions()}>                 
+                  <Text>Request publish permissions on FB</Text> 
+                </Button>
+                <Button
+                  onPress={() => this.shareLinkWithShareDialog()}>                 
+                  <Text>Share Link on Facebook</Text> 
+                </Button>
+                <Button
+                  onPress={() => this.sharePhotoWithShareDialog()}>                 
+                  <Text>Share Photos on Facebook</Text> 
                 </Button>
                 <Button
                   onPress={() => this.loginLocal()}>               
