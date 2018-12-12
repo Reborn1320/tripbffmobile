@@ -1,4 +1,5 @@
 import Axios from "axios";
+import { TRIP_URL } from "./constants";
 
 export var uploadImageAsync: (uploadUrl: string, uri: string) => Promise<any> = uploadImageXmlHttpRequestAsync;
 
@@ -8,7 +9,7 @@ async function uploadImageXmlHttpRequestAsync(uploadUrl: string, uri: string) {
   let fileType = uriParts[uriParts.length - 1];
 
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', "http://192.168.1.5:8000" + uploadUrl);
+  xhr.open('POST', TRIP_URL + uploadUrl);
     xhr.onload = () => {
       console.log(xhr.status)
       console.log(xhr.responseText)
