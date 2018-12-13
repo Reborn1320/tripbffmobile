@@ -23,6 +23,7 @@ import Loading from "../../_components/Loading";
 import { AxiosInstance } from "axios";
 import thunk, {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import { TripImportLocationVM } from "./TripImportViewModels";
+import { uploadImageAsync } from "../../_services/BlobUploader";
 
 // type Actions = importloca;
 type ThunkResult<R> = ThunkAction<R, State, { api: AxiosInstance }, any>;
@@ -213,24 +214,24 @@ class TripImportation extends Component<Props, State> {
     }
 
     _uploadImage = function uploadImage(tripId, locationId, imageId, imgUrl): ThunkResult<Promise<any>> {
-        return async function(dispatch, getState, extraArgument) {
+        return async function(dispatch, getState, { api }) {
 
             var fileInfo = await FileSystem.getInfoAsync(imgUrl);
             console.log(`imge url: ${imgUrl}`)
             console.log(fileInfo);
             var file = await FileSystem.readAsStringAsync(imgUrl)
 
-            var data = {
+            var additionalData = {
                 locationId,
                 imageId,
                 fileName: imgUrl,
-                file,
             }
 
             var url = '/trips/' + tripId +'/uploadImage';
-            return extraArgument.api
-            .post(url, data)
+
+            return uploadImageAsync(url, imgUrl, additionalData)
             .then((res) => {
+                console.log('result after upload image: ' + JSON.stringify(res));
                 console.log('result after upload image: ' + JSON.stringify(res.data));
                 var externalStorageId: string = res.data;      
                 dispatch(uploadedImage(tripId, locationId, imageId, externalStorageId))
@@ -238,7 +239,19 @@ class TripImportation extends Component<Props, State> {
             })
             .catch((err) => {
                 console.log('error after import trip: ' + JSON.stringify(err));
-            });   
+            });
+
+            // return api
+            // .post(url, data)
+            // .then((res) => {
+            //     console.log('result after upload image: ' + JSON.stringify(res.data));
+            //     var externalStorageId: string = res.data;      
+            //     dispatch(uploadedImage(tripId, locationId, imageId, externalStorageId))
+
+            // })
+            // .catch((err) => {
+            //     console.log('error after import trip: ' + JSON.stringify(err));
+            // });   
 
             // var externalStorageId = uuid1();
             // return dispatch(uploadedImage(tripId, locationId, imageId, externalStorageId))

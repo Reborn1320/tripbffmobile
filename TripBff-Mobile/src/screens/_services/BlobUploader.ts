@@ -1,32 +1,46 @@
 import Axios from "axios";
 import { TRIP_URL } from "./constants";
 
-export var uploadImageAsync: (uploadUrl: string, uri: string) => Promise<any> = uploadImageXmlHttpRequestAsync;
+export var uploadImageAsync: (
+  uploadUrl: string,
+  uri: string,
+  data?: any
+) => Promise<any> = uploadImageXmlHttpRequestAsync;
 
 //https://github.com/facebook/react-native/blob/fe42a28de12926c7b3254420ccb85bef5f46327f/Examples/UIExplorer/XHRExample.ios.js#L215-L230
-async function uploadImageXmlHttpRequestAsync(uploadUrl: string, uri: string) {
-  let uriParts = uri.split('.');
+async function uploadImageXmlHttpRequestAsync(
+  uploadUrl: string,
+  uri: string,
+  data: any = undefined
+) {
+  let uriParts = uri.split(".");
   let fileType = uriParts[uriParts.length - 1];
 
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', TRIP_URL + uploadUrl);
+  //todo authorization ??
+  xhr.setRequestHeader("Authorization", `Bearer abc`);
+
+  var promise = new Promise((resolve, reject) => {
+    xhr.open("POST", TRIP_URL + uploadUrl);
     xhr.onload = () => {
-      console.log(xhr.status)
-      console.log(xhr.responseText)
-      // if (xhr.status !== 200) {
-      //   AlertIOS.alert(
-      //     'Upload failed',
-      //     'Expected HTTP 200 OK response, got ' + xhr.status
-      //   );
-      //   return;
-      // }
-      // if (!xhr.responseText) {
-      //   AlertIOS.alert(
-      //     'Upload failed',
-      //     'No response payload.'
-      //   );
-      //   return;
-      // }
+      console.log(xhr.status);
+      console.log(xhr.responseText);
+      if (xhr.status !== 200) {
+        reject(xhr);
+        // AlertIOS.alert(
+        //   'Upload failed',
+        //   'Expected HTTP 200 OK response, got ' + xhr.status
+        // );
+        return;
+      }
+      if (!xhr.responseText) {
+        reject(xhr);
+        // AlertIOS.alert(
+        //   'Upload failed',
+        //   'No response payload.'
+        // );
+        return;
+      }
       // var index = xhr.responseText.indexOf('http://www.posttestserver.com/');
       // if (index === -1) {
       //   AlertIOS.alert(
@@ -37,19 +51,27 @@ async function uploadImageXmlHttpRequestAsync(uploadUrl: string, uri: string) {
       // }
       // var url = xhr.responseText.slice(index).split('\n')[0];
       // LinkingIOS.openURL(url);
+
+      resolve(xhr);
+      return;
     };
 
     let formData = new FormData();
-    formData.append('file', {
+    formData.append("file", {
       uri,
-      name: 'image.jpg',
-      type: 'image/jpg'
-    });
-    formData.append('fileName', 'image.jpg')
+      name: "image.jpg",
+      type: "image/jpg"
+    } as any); //todo now bypass skip error
+    formData.append("fileName", "image.jpg");
+    if (data) {
+      for (var propertyName in data) {
+        formData.append(propertyName, data[propertyName]);
+      }
+    }
     // console.log(formData)
-    
+
     if (xhr.upload) {
-      xhr.upload.onprogress = (event) => {
+      xhr.upload.onprogress = event => {
         // console.log('upload onprogress', event);
         if (event.lengthComputable) {
           console.log(event.loaded / event.total);
@@ -57,77 +79,78 @@ async function uploadImageXmlHttpRequestAsync(uploadUrl: string, uri: string) {
       };
     }
     xhr.send(formData);
+  });
 
+  return promise;
 }
 
 async function uploadImageFetchAsync(uploadUrl: string, uri: string) {
-  let uriParts = uri.split('.');
+  let uriParts = uri.split(".");
   let fileType = uriParts[uriParts.length - 1];
 
   // const blob = await getBlobFromUri(uri);
   let formData = new FormData();
-  formData.append('photo', {
+  formData.append("photo", {
     uri,
-    name: 'image.jpg',
-    type: 'image/jpg'
+    name: "image.jpg",
+    type: "image/jpg"
   });
-  console.log(formData)
+  console.log(formData);
 
   let options = {
-    method: 'POST',
+    method: "POST",
     body: formData,
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'multipart/form-data',
-    },
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data"
+    }
   };
 
   return fetch("http://192.168.1.5:8000" + uploadUrl, options);
 }
 
 async function uploadImageAxiosAsync(uploadUrl: string, uri: string) {
-
-  let uriParts = uri.split('.');
+  let uriParts = uri.split(".");
   let fileType = uriParts[uriParts.length - 1];
 
   const blob = await getBlobFromUri(uri);
   console.log(blob);
 
   const formData = new FormData();
-  formData.append('photo', uri, `photo.${fileType}`);
-  formData.append('file', new Blob(['test payload'], { type: 'text/csv' }));
+  formData.append("photo", uri, `photo.${fileType}`);
+  formData.append("file", new Blob(["test payload"], { type: "text/csv" }));
 
   const axios = Axios.create({
     //baseURL: `http://192.168.2.101:8000` // local: should use IP4 of current local computer to allow call API from native app
-    baseURL: `http://192.168.1.5:8000`  
+    baseURL: `http://192.168.1.5:8000`
   });
 
-  console.log("uploadImageAxiosAsync")
+  console.log("uploadImageAxiosAsync");
 
   return axios.post(uploadUrl, formData, {
     headers: {
-      'Content-Type': `multipart/form-data`,
+      "Content-Type": `multipart/form-data`
     }
   });
-};
+}
 
 async function getBlobFromUri(uri: string) {
   const blob = await new Promise<Blob>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.responseType = 'blob'; // use BlobModule's UriHandler
+    xhr.responseType = "blob"; // use BlobModule's UriHandler
     xhr.onload = function() {
-      console.log("onload")
-     console.log(arguments);
-     console.log(xhr.response);
+      console.log("onload");
+      console.log(arguments);
+      console.log(xhr.response);
       resolve(xhr.response); // when BlobModule finishes reading, resolve with the blob
-   };
-   xhr.onerror = function() {
-     console.log(arguments);
-     reject(new TypeError('Network request failed')); // error occurred, rejecting
-   };
-   xhr.open('GET', uri, true); // fetch the blob from uri in async mode
-   xhr.send(null); // no initial data
- });
+    };
+    xhr.onerror = function() {
+      console.log(arguments);
+      reject(new TypeError("Network request failed")); // error occurred, rejecting
+    };
+    xhr.open("GET", uri, true); // fetch the blob from uri in async mode
+    xhr.send(null); // no initial data
+  });
 
   // when we're done sending it, close and release the blob
   // blob.close();
