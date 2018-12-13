@@ -35,6 +35,7 @@ class TripCreation extends Component<Props, any> {
     }
 
     onClickCreateTrip() {     
+        console.log('cliked')
 
         // call ajax to create trip and get tripId
         var tripPost = {

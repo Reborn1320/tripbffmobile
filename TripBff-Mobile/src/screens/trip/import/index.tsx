@@ -2,12 +2,14 @@ import React, { Component } from "react";
 import { FlatList, View } from "react-native";
 import { Container, Header, Content, Button, Text, Footer, Spinner } from 'native-base';
 import styled from "styled-components/native";
-import { NavigationScreenProp } from "react-navigation";
+import { NavigationScreenProp, NavigationProp } from "react-navigation";
 import { StoreData } from "../../../Interfaces";
 import _ from "lodash";
-import { connect } from "react-redux";
+import { connect, DispatchProp } from "react-redux";
 import { cloneDeep } from 'lodash';
 import 'react-native-console-time-polyfill';
+import uuid1 from 'uuid/v1';
+import {FileSystem} from 'expo';
 
 import importImagesReducer from "./reducers";
 import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
@@ -15,10 +17,18 @@ import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
 import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
-import { importSelectedLocations } from "./actions";
+import { importSelectedLocations, uploadedImage } from "./actions";
 import tripApi from '../../apiBase/tripApi';
+import Loading from "../../_components/Loading";
+import { AxiosInstance } from "axios";
+import thunk, {ThunkAction, ThunkDispatch} from 'redux-thunk';
+import { TripImportLocationVM } from "./TripImportViewModels";
+import { uploadImageAsync } from "../../_services/BlobUploader";
 
+// type Actions = importloca;
+type ThunkResult<R> = ThunkAction<R, State, { api: AxiosInstance }, any>;
 export interface Props extends IMapDispatchToProps {
+    dispatch: ThunkDispatch<State, null, any>
     navigation: NavigationScreenProp<any, any>
     trip: StoreData.TripVM
 }
@@ -30,35 +40,18 @@ interface IMapDispatchToProps {
 }
 
 interface State {
-    tripId: number
+    tripId: string
     name: string
     fromDate: moment.Moment
     toDate: moment.Moment
     locations: TripImportLocationVM[]
-    isLoaded: boolean
+    isLoading: boolean
+    loadingMessage: string
     forceUpdateOnlyItemIdx?: number
-
+    UIState: UIState
 }
 
-export interface TripImportLocationVM {
-    id: number
-    location: TripImportLocationDetailVM
-    fromTime: moment.Moment
-    toTime: moment.Moment
-
-    images: Array<TripImportImageVM>
-}
-
-export interface TripImportImageVM {
-    url: string
-    isSelected: boolean
-}
-
-export interface TripImportLocationDetailVM {
-    long: number
-    lat: number
-    address: string
-}
+type UIState = "select image" | "import images" | "uploading image" 
 
 class TripImportation extends Component<Props, State> {
 
@@ -70,8 +63,12 @@ class TripImportation extends Component<Props, State> {
             fromDate: props.trip.fromDate,
             toDate: props.trip.toDate,
             locations: [],
-            isLoaded: false,
+            isLoading: true,
+            loadingMessage: "Loading image from your gallery",
+            UIState: "select image"
         }
+
+        console.log("constructor")
     }
 
     async componentDidMount() {
@@ -93,7 +90,7 @@ class TripImportation extends Component<Props, State> {
             var maxTimestamp = _.max(element.map(e => e.timestamp))
             var minTimestamp = _.min(element.map(e => e.timestamp))
             var location: TripImportLocationVM = {
-                id: idx,
+                id: "",
                 location: {
                     lat: element[0].location.latitude,
                     long: element[0].location.longitude,
@@ -106,6 +103,7 @@ class TripImportation extends Component<Props, State> {
 
             element.forEach((img) => {
                 location.images.push({
+                    imageId: "",
                     url: img.image.uri,
                     isSelected: true
                 })
@@ -115,11 +113,10 @@ class TripImportation extends Component<Props, State> {
 
         // console.log(adapterResult)
 
-        this.setState({ locations: adapterResult, isLoaded: true });
+        this.setState({ locations: adapterResult, isLoading: false });
     }
 
-
-    _importImageSelectUnselectImage = (tripId: number, locationIdx: number, imageIdx: number) => {
+    _importImageSelectUnselectImage = (locationIdx: number, imageIdx: number) => {
 
         var newLocations = cloneDeep(this.state.locations)
         var img = newLocations[locationIdx].images[imageIdx]
@@ -132,7 +129,7 @@ class TripImportation extends Component<Props, State> {
         })
     }
 
-    _importImageSelectUnselectAllImages = (tripId: number, locationIdx: number) => {
+    _importImageSelectUnselectAllImages = (locationIdx: number) => {
 
         var newLocations = cloneDeep(this.state.locations)
 
@@ -151,18 +148,17 @@ class TripImportation extends Component<Props, State> {
     }
 
     _toLocationVM = () => {
-        var selectedLocations: StoreData.LocationVM[] = []
+        var selectedLocations = []
         
         _.reverse(this.state.locations).forEach((element, idx) => {
             var isLocationSelected = element.images.filter((img) => img.isSelected).length > 0;
 
             if (isLocationSelected) {
-                var locationVM: StoreData.LocationVM = {
-                    locationId: idx + 7, //TODO: random number to detect idx 
+                var locationVM = {
                     location: element.location,
                     fromTime: element.fromTime,
                     toTime: element.toTime,
-                    images: element.images.filter((img) => img.isSelected)
+                    images: element.images.filter((img) => img.isSelected).map(img => {return {url: img.url}})
                 }
                 return selectedLocations.push(locationVM);
             }
@@ -178,35 +174,169 @@ class TripImportation extends Component<Props, State> {
     _import = () => {
 
         var selectedLocations = this._toLocationVM();
-
-        // call API to import locations and images
-        var url = '/trips/' + this.state.tripId +'/locations';
-        tripApi.post(url, selectedLocations)
-                .then((res) => {
-                    console.log('result after import trip: ' + res.data);      
-                    // this.props.importSelectedLocations(this.state.tripId, selectedLocations);              
-                    this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId });
-                })
-                .catch((err) => {
-                    console.log('error: ' + JSON.stringify(err));
-                });        
+        this.setState({ UIState: "import images" })
+        this.props.dispatch(this._postLocations(this.state.tripId, selectedLocations));
     }
 
+    _postLocations = function postLocations(tripId, selectedLocations): ThunkResult<void> {
+        return function(dispatch, getState, extraArgument) {
+            // call API to import locations and images
+            var url = '/trips/' + tripId +'/locations';
+            console.log(`fetch: ${url}`)
+            extraArgument.api
+            .post(url, selectedLocations)
+            .then((res) => {
+                console.log('result after import trip: ' + JSON.stringify(res.data));      
+                dispatch(importSelectedLocations(tripId, res.data.locations));
+            })
+            .catch(function (error) {
+                // console.log(JSON.stringify(error));
+                if (error.response) {
+                  // The request was made and the server responded with a status code
+                  // that falls out of the range of 2xx
+                //   console.log(error.response.data);
+                  console.log(error.response.status);
+                  console.log(error.response.headers);
+                } else if (error.request) {
+                  // The request was made but no response was received
+                  // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                  // http.ClientRequest in node.js
+                  console.log(error.request);
+                } else {
+                  // Something happened in setting up the request that triggered an Error
+                  console.log('Error', error.message);
+                }
+                console.log(error.config);
+              });  
+            
+            return 
+        }
+    }
+
+    _uploadImage = function uploadImage(tripId, locationId, imageId, imgUrl): ThunkResult<Promise<any>> {
+        return async function(dispatch, getState, { api }) {
+            console.log(`imge url: ${imgUrl}`)
+            var additionalData = {
+                locationId,
+                imageId,
+                fileName: imgUrl,
+            }
+
+            var url = '/trips/' + tripId +'/uploadImage';
+
+            return uploadImageAsync(url, imgUrl, additionalData)
+            .then((res) => {
+                console.log('result after upload image: ' + JSON.stringify(res));
+                console.log('result after upload image: ' + JSON.stringify(res.data));
+                var externalStorageId: string = res.response;      
+                dispatch(uploadedImage(tripId, locationId, imageId, externalStorageId))
+                //todo replace by stop on error
+            })
+            .catch((err) => {
+                console.log('error after import trip: ' + JSON.stringify(err));
+            });
+
+            // return api
+            // .post(url, data)
+            // .then((res) => {
+            //     console.log('result after upload image: ' + JSON.stringify(res.data));
+            //     var externalStorageId: string = res.data;      
+            //     dispatch(uploadedImage(tripId, locationId, imageId, externalStorageId))
+
+            // })
+            // .catch((err) => {
+            //     console.log('error after import trip: ' + JSON.stringify(err));
+            // });   
+
+            // var externalStorageId = uuid1();
+            // return dispatch(uploadedImage(tripId, locationId, imageId, externalStorageId))
+        }
+    }
+    
     _renderItem = (itemInfo) => {
         var location: TripImportLocationVM = itemInfo.item;
+        var locIdx: number = itemInfo.index;
 
         return (
             <ImportImageLocationItem
+                locationIdx={locIdx}
                 location={location}
-                handleSelectAll={(locationIdx) => this._importImageSelectUnselectAllImages(this.state.tripId, locationIdx)}
-                handleSelect={(locationIdx, imageIdx) => this._importImageSelectUnselectImage(this.state.tripId, locationIdx, imageIdx)}
-                isForceUpdate={location.id == this.state.forceUpdateOnlyItemIdx}
+                handleSelectAll={(locationIdx) => this._importImageSelectUnselectAllImages(locationIdx)}
+                handleSelect={(locationIdx, imageIdx) => this._importImageSelectUnselectImage(locationIdx, imageIdx)}
+                isForceUpdate={locIdx == this.state.forceUpdateOnlyItemIdx}
             />
         );
     }
 
+    componentDidUpdate() {
+
+        console.log("component will update");
+        
+        if (this.state.UIState == "import images") {
+        console.log("component will update with import images");
+
+            var totalImages = 0;
+            var uploadedImages = 0;
+            var isStartUploadImage = false;
+            var locId = "";
+            var imageIdToUpload: string;
+            var imageUrlToUpload = "";
+            _.each(this.props.trip.locations, loc => {
+                _.each(loc.images, img => {
+                    totalImages++;
+                    if (img.imageId) {
+                        isStartUploadImage = true;
+                        if (img.externalStorageId) {
+                            uploadedImages++;
+                        }
+                        else {
+                            if (!imageIdToUpload)
+                            {
+                                locId = loc.locationId;
+                                imageIdToUpload = img.imageId;
+                                imageUrlToUpload = img.url;
+                            }
+                        }
+                    }
+                })
+            });
+    
+            if (uploadedImages == totalImages && uploadedImages > 0) {
+                isStartUploadImage = false;
+                console.log("now I can move to next page");
+                //todo navigate to next page
+            }
+    
+            // console.log("check status");
+            // console.log(`trip id = ${this.state.tripId}, location id = ${locId}, imageId = ${imageIdToUpload}, url = ${imageUrlToUpload}`)
+            // console.log(`uploading images ${uploadedImages}/${totalImages}`)
+    
+    
+            if (isStartUploadImage) {
+                console.log(`uploading image: trip id = ${this.state.tripId}, location id = ${locId}, imageId = ${imageIdToUpload}, url = ${imageUrlToUpload}`)
+                this.setState({ UIState: "uploading image", isLoading: true, loadingMessage: `uploading images ${uploadedImages}/${totalImages}`});
+                console.log("component will update with uploading image");
+
+
+                this.props.dispatch(this._uploadImage(this.state.tripId, locId, imageIdToUpload, imageUrlToUpload))
+                .then(() => {
+                    this.setState({UIState: "import images"});
+                })
+            }
+            else {
+                if (this.state.isLoading) {
+                    this.setState({ isLoading: false, loadingMessage: ""})
+                }
+            }
+        }
+
+
+    }
+
+
     render() {
-        const { name, locations, isLoaded } = this.state
+
+        const { name, locations, isLoading, loadingMessage } = this.state
         return (
             <Container>
                 <Header>
@@ -215,8 +345,8 @@ class TripImportation extends Component<Props, State> {
                     </View>
                 </Header>
                 <Content>
-                    {!isLoaded && <Spinner color='green' />}
-                    {isLoaded &&
+                    {isLoading && <Loading message={loadingMessage} />}
+                    {!isLoading &&
                         <StyledFlatList
                             data={locations}
                             renderItem={this._renderItem}
@@ -268,10 +398,13 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
     };
 };
 
-const mapDispatchToProps: IMapDispatchToProps = {
-    // importImageSelectUnselectImage,
-    // importImageSelectUnselectAllImages
-    importSelectedLocations
+function mapDispatchToProps(dispatch) {
+    return {
+        dispatch, //https://stackoverflow.com/questions/36850988/this-props-dispatch-not-a-function-react-redux
+        // importImageSelectUnselectImage,
+        // importImageSelectUnselectAllImages
+        importSelectedLocations
+    }
 };
 
 const TripImportationScreen = connect(mapStateToProps, mapDispatchToProps)(TripImportation);

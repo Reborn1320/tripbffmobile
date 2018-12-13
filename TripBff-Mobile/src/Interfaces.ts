@@ -1,7 +1,9 @@
 import * as moment from 'moment';
 export module StoreData {
     export interface ImportImageVM {
-        url: string
+        imageId: string,
+        url: string, //url stored in local mobile
+        externalStorageId?: string,
     }
 
     export interface LocationDetailVM {
@@ -11,7 +13,7 @@ export module StoreData {
     }
 
     export interface LocationVM {
-        locationId: number
+        locationId: string
         location: LocationDetailVM //TODO: simplify this by removing the interface
         fromTime: moment.Moment
         toTime: moment.Moment
@@ -19,7 +21,7 @@ export module StoreData {
     }
 
     export interface TripVM {
-        id: number
+        id: string
         name: string
         fromDate: moment.Moment
         toDate: moment.Moment

@@ -58,6 +58,9 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
                             //TODO: check why can not get long, lat of image
                             //console.log('full element long : ' + fullElement.location.longitude);
 
+                            console.log(fullElement.uri);
+                            console.log(fullElement.localUri);
+
                             photos.push({
                             image: {
                                 uri: fullElement.uri,

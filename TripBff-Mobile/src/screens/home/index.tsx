@@ -1,22 +1,25 @@
 import React from "react";
-import { FlatList } from "react-native";
+import { FlatList, CameraRoll } from "react-native";
 import { Container, Header, Content, Button, Icon, Text, ListItem, View } from 'native-base';
 import { Footer, FooterTab } from 'native-base';
 
-import { connect } from 'react-redux';
+import { connect, DispatchProp } from 'react-redux';
 
 import styles from "./styles";
 import { listRepos } from './reducer';
 import * as RNa from "react-navigation";
-import Expo from "expo";
+import Loading from "../_components/Loading";
+import Expo, { FileSystem, MediaLibrary } from "expo";
 import loginApi from '../apiBase/loginApi';
 import tripApi from '../apiBase/tripApi';
 import { StoreData } from "../../Interfaces";
 import { addToken } from '../auth/actions';
 import { AsyncStorage } from "react-native";
 import { ShareDialog, LoginButton, AccessToken, LoginManager } from 'react-native-fbsdk';
+import checkAndRequestPhotoPermissionAsync from "../shared/photo/PhotoPermission";
+import { uploadImageAsync } from "../_services/BlobUploader";
 
-export interface Props extends IMapDispatchToProps {
+export interface Props extends IMapDispatchToProps, DispatchProp {
   navigation: RNa.NavigationScreenProp<any, any>
   repos: Array<any>
 }
@@ -54,9 +57,49 @@ class Home extends React.Component<Props, any>  {
     };
   }
 
-  componentDidMount() {
-    this.props.listRepos('relferreira');
+  async componentDidMount() {
+
+    // //does not fucking work, curse u expo sdk
+    // const mediaType = MediaLibrary.MediaType.photo
+    // const result = await MediaLibrary.getAssetsAsync({
+    //   first: 4,
+    //   mediaType: mediaType,
+    //   sortBy: MediaLibrary.SortBy.creationTime,
+    // })    
+    // console.log(result.assets[0].uri);
+    // const u = result.assets[0].uri;
+    // uploadImageAsync("/uploadImage", u)
+    // .then(() => {
+    //   console.log("uploaded");
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // })
   }
+
+  // async uploadImageAsync(uri) {
+  //   const blob = await new Promise((resolve, reject) => {
+  //     const xhr = new XMLHttpRequest();
+  //     xhr.responseType = 'blob'; // use BlobModule's UriHandler
+  //     xhr.onload = function() {
+  //       console.log("onload")
+  //       console.log(xhr.response);
+  //       resolve(xhr.response); // when BlobModule finishes reading, resolve with the blob
+  //    };
+  //    xhr.onerror = function() {
+  //      console.log(arguments);
+  //      reject(new TypeError('Network request failed')); // error occurred, rejecting
+  //    };
+  //    xhr.open('GET', uri, true); // fetch the blob from uri in async mode
+  //    xhr.send(null); // no initial data
+  //  });
+  
+  //   // when we're done sending it, close and release the blob
+  //   // blob.close();
+  
+  //   // return the result, eg. remote URI to the image
+  //   // return remoteUri;
+  // }
 
   renderItem = ({ item }) => (
     <ListItem noIndent
@@ -185,6 +228,31 @@ class Home extends React.Component<Props, any>  {
       );
   }
 
+  async uploadImage() {
+    await checkAndRequestPhotoPermissionAsync();
+    //content://media/external/images/media/2312
+    // var u = "file:///storage/emulated/0/DCIM/Camera/20181106_082919.jpg";
+
+    let photos = await CameraRoll.getPhotos({ first: 4 });
+    var img = photos.edges[0].node.image
+    var u = photos.edges[0].node.image.uri
+    // console.log(img);
+    console.log(u);
+
+    const info = await FileSystem.getInfoAsync(u);
+    console.log(info)
+    // const fileData = await FileSystem.readAsStringAsync(u);
+    // console.log(fileData)
+    uploadImageAsync("/uploadImage", u, { fileName: "image.jpg" })
+    .then(() => {
+      console.log("uploaded");
+    })
+    .catch((err) => {
+      console.log(err);
+      
+    })
+  }
+
   render() {
 
     const { repos } = this.props;
@@ -220,6 +288,12 @@ class Home extends React.Component<Props, any>  {
                   onPress={() => this.loginLocal()}>               
                   <Text>Login Local</Text> 
                 </Button>
+
+                <Button
+                  onPress={() => this.uploadImage()}>               
+                  <Text>upload image</Text> 
+                </Button>
+                <Loading message="aaaaaasdad asd asd asd asda sdas da sdas dasd as" />
             </View>
         </Content>
         <Footer>

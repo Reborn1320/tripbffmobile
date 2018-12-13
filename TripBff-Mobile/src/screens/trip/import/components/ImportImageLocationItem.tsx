@@ -1,9 +1,10 @@
 import React from "react";
 import { CheckBox, View, ListItem, Text } from "native-base";
 import ImportImageList from "./ImportImageList";
-import { TripImportLocationVM } from "..";
+import { TripImportLocationVM } from "../TripImportViewModels";
 
 export interface Props {
+    locationIdx: number,
     location: TripImportLocationVM
     handleSelectAll: (locationIdx: number) => void
     handleSelect: (locationIdx: number, imageIdx: number) => void
@@ -12,7 +13,6 @@ export interface Props {
 }
 
 export interface State {
-    locationIdx: number
 }
 
 class ImportImageLocationItem extends React.Component<Props, State> {
@@ -20,7 +20,6 @@ class ImportImageLocationItem extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {
-            locationIdx: props.location.id
         }
     }
 
@@ -30,7 +29,7 @@ class ImportImageLocationItem extends React.Component<Props, State> {
     render() {
 
         var location: TripImportLocationVM = this.props.location;
-        var locationIdx: number = location.id;
+        var locationIdx: number = this.props.locationIdx;
 
         return (
             <ListItem noIndent
@@ -55,7 +54,7 @@ class ImportImageLocationItem extends React.Component<Props, State> {
                         {location.location.address}
                     </Text>
                     <ImportImageList images={location.images}
-                        handleSelect={(imageIdx) => this.props.handleSelect(this.state.locationIdx, imageIdx)}
+                        handleSelect={(imageIdx) => this.props.handleSelect(this.props.locationIdx, imageIdx)}
                     />
                 </View>
             </ListItem>
