@@ -215,12 +215,7 @@ class TripImportation extends Component<Props, State> {
 
     _uploadImage = function uploadImage(tripId, locationId, imageId, imgUrl): ThunkResult<Promise<any>> {
         return async function(dispatch, getState, { api }) {
-
-            var fileInfo = await FileSystem.getInfoAsync(imgUrl);
             console.log(`imge url: ${imgUrl}`)
-            console.log(fileInfo);
-            var file = await FileSystem.readAsStringAsync(imgUrl)
-
             var additionalData = {
                 locationId,
                 imageId,
@@ -233,9 +228,9 @@ class TripImportation extends Component<Props, State> {
             .then((res) => {
                 console.log('result after upload image: ' + JSON.stringify(res));
                 console.log('result after upload image: ' + JSON.stringify(res.data));
-                var externalStorageId: string = res.data;      
+                var externalStorageId: string = res.response;      
                 dispatch(uploadedImage(tripId, locationId, imageId, externalStorageId))
-
+                //todo replace by stop on error
             })
             .catch((err) => {
                 console.log('error after import trip: ' + JSON.stringify(err));

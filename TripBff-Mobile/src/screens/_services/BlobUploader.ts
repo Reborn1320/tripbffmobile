@@ -18,7 +18,7 @@ async function uploadImageXmlHttpRequestAsync(
 
   var xhr = new XMLHttpRequest();
   //todo authorization ??
-  xhr.setRequestHeader("Authorization", `Bearer abc`);
+  // xhr.setRequestHeader("Authorization", `Bearer abc`);
 
   var promise = new Promise((resolve, reject) => {
     xhr.open("POST", TRIP_URL + uploadUrl);
@@ -62,7 +62,7 @@ async function uploadImageXmlHttpRequestAsync(
       name: "image.jpg",
       type: "image/jpg"
     } as any); //todo now bypass skip error
-    formData.append("fileName", "image.jpg");
+    // formData.append("fileName", "image.jpg");
     if (data) {
       for (var propertyName in data) {
         formData.append(propertyName, data[propertyName]);

@@ -54,28 +54,7 @@ class Home extends React.Component<Props, any>  {
   }
 
   async componentDidMount() {
-    await checkAndRequestPhotoPermissionAsync();
-    //content://media/external/images/media/2312
-    // var u = "file:///storage/emulated/0/DCIM/Camera/20181106_082919.jpg";
 
-    let photos = await CameraRoll.getPhotos({ first: 4 });
-    var img = photos.edges[0].node.image
-    var u = photos.edges[0].node.image.uri
-    // console.log(img);
-    console.log(u);
-
-    const info = await FileSystem.getInfoAsync(u);
-    console.log(info)
-    // const fileData = await FileSystem.readAsStringAsync(u);
-    // console.log(fileData)
-    uploadImageAsync("/uploadImage", u)
-    .then(() => {
-      console.log("uploaded");
-    })
-    .catch((err) => {
-      console.log(err);
-      
-    })
     // //does not fucking work, curse u expo sdk
     // const mediaType = MediaLibrary.MediaType.photo
     // const result = await MediaLibrary.getAssetsAsync({
@@ -283,6 +262,31 @@ class Home extends React.Component<Props, any>  {
       );
   }
 
+  async uploadImage() {
+    await checkAndRequestPhotoPermissionAsync();
+    //content://media/external/images/media/2312
+    // var u = "file:///storage/emulated/0/DCIM/Camera/20181106_082919.jpg";
+
+    let photos = await CameraRoll.getPhotos({ first: 4 });
+    var img = photos.edges[0].node.image
+    var u = photos.edges[0].node.image.uri
+    // console.log(img);
+    console.log(u);
+
+    const info = await FileSystem.getInfoAsync(u);
+    console.log(info)
+    // const fileData = await FileSystem.readAsStringAsync(u);
+    // console.log(fileData)
+    uploadImageAsync("/uploadImage", u, { fileName: "image.jpg" })
+    .then(() => {
+      console.log("uploaded");
+    })
+    .catch((err) => {
+      console.log(err);
+      
+    })
+  }
+
   render() {
 
     const { repos } = this.props;
@@ -307,6 +311,11 @@ class Home extends React.Component<Props, any>  {
                 <Button
                   onPress={() => this.loginLocal()}>               
                   <Text>Login Local</Text> 
+                </Button>
+
+                <Button
+                  onPress={() => this.uploadImage()}>               
+                  <Text>upload image</Text> 
                 </Button>
                 <Loading message="aaaaaasdad asd asd asd asda sdas da sdas dasd as" />
             </View>
