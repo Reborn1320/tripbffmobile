@@ -28,7 +28,7 @@ class ImportImageList extends React.Component<Props> {
         );
     }
     render() {
-        console.log("render image list")
+        // console.log("render image list")
         const { images } = this.props;
         return (
             <StyledFlatListImageContainer

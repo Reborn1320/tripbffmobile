@@ -1,55 +1,72 @@
 import React from "react";
-import { FlatList, CameraRoll } from "react-native";
-import { Container, Header, Content, Button, Icon, Text, ListItem, View } from 'native-base';
-import { Footer, FooterTab } from 'native-base';
+import { CameraRoll } from "react-native";
+import {
+  Container,
+  Header,
+  Content,
+  Button,
+  Icon,
+  Text,
+  ListItem,
+  View
+} from "native-base";
+import { Footer, FooterTab } from "native-base";
 
-import { connect, DispatchProp } from 'react-redux';
+import { connect, DispatchProp } from "react-redux";
 
 import styles from "./styles";
-import { listRepos } from './reducer';
+import { listRepos } from "./reducer";
 import * as RNa from "react-navigation";
 import Loading from "../_components/Loading";
-import Expo, { FileSystem, MediaLibrary } from "expo";
-import loginApi from '../apiBase/loginApi';
-import tripApi from '../apiBase/tripApi';
+import { FileSystem } from "expo";
 import { StoreData } from "../../Interfaces";
-import { addToken } from '../auth/actions';
-import { AsyncStorage } from "react-native";
-import { ShareDialog, LoginButton, AccessToken, LoginManager } from 'react-native-fbsdk';
+import { addToken } from "../auth/actions";
+import {
+  ShareDialog,
+  LoginButton,
+  AccessToken,
+  LoginManager
+} from "react-native-fbsdk";
 import checkAndRequestPhotoPermissionAsync from "../shared/photo/PhotoPermission";
-import { uploadImageAsync } from "../_services/BlobUploader";
+import {
+  loginApi,
+  setAuthorizationHeader,
+  uploadFileApi
+} from "../_services/apis";
 
 export interface Props extends IMapDispatchToProps, DispatchProp {
-  navigation: RNa.NavigationScreenProp<any, any>
-  repos: Array<any>
+  navigation: RNa.NavigationScreenProp<any, any>;
+  repos: Array<any>;
 }
 
 interface IMapDispatchToProps {
-  listRepos: (name: string) => void,
-  addToken: (user: StoreData.UserVM) => void
+  listRepos: (name: string) => void;
+  addToken: (user: StoreData.UserVM) => void;
 }
 
-class Home extends React.Component<Props, any>  {
-
+class Home extends React.Component<Props, any> {
   constructor(props) {
     super(props);
     const shareLinkContent = {
-      contentType: 'link',
-      contentUrl: 'https://www.facebook.com/',
+      contentType: "link",
+      contentUrl: "https://www.facebook.com/"
     };
 
-    // const photoUri01 = 'file:///storage/emulated/0/Download/waiting-for-android-5a8833.jpg',
-    //       photoUri02 = 'file:///storage/emulated/0/Download/Image03.jpg',
-    //       photoUri03 = 'file:///storage/emulated/0/Download/Image04.jpg';
-
-    const photoUri01 = 'file:///storage/emulated/0/DCIM/Camera/IMG_20181208_202705.jpg',
-          photoUri02 = 'file:///storage/emulated/0/DCIM/Camera/IMG_20181208_202700.jpg',
-          photoUri03 = 'file:///storage/emulated/0/DCIM/Camera/IMG_20181208_203212.jpg';
+    const photoUri01 =
+        "file:///storage/emulated/0/DCIM/Camera/IMG_20181208_202705.jpg",
+      photoUri02 =
+        "file:///storage/emulated/0/DCIM/Camera/IMG_20181208_202700.jpg",
+      photoUri03 =
+        "file:///storage/emulated/0/DCIM/Camera/IMG_20181208_203212.jpg";
 
     const sharePhotoContent = {
-        contentType: 'photo',
-        photos: [{ imageUrl: photoUri01 }, { imageUrl: photoUri02 }, { imageUrl: photoUri03 }],
-      }
+      contentType: "photo",
+      photos: [
+        { imageUrl: photoUri01 },
+        { imageUrl: photoUri02 },
+        { imageUrl: photoUri03 }
+      ]
+    };
 
     this.state = {
       shareLinkContent: shareLinkContent,
@@ -57,58 +74,14 @@ class Home extends React.Component<Props, any>  {
     };
   }
 
-  async componentDidMount() {
-
-    // //does not fucking work, curse u expo sdk
-    // const mediaType = MediaLibrary.MediaType.photo
-    // const result = await MediaLibrary.getAssetsAsync({
-    //   first: 4,
-    //   mediaType: mediaType,
-    //   sortBy: MediaLibrary.SortBy.creationTime,
-    // })    
-    // console.log(result.assets[0].uri);
-    // const u = result.assets[0].uri;
-    // uploadImageAsync("/uploadImage", u)
-    // .then(() => {
-    //   console.log("uploaded");
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // })
-  }
-
-  // async uploadImageAsync(uri) {
-  //   const blob = await new Promise((resolve, reject) => {
-  //     const xhr = new XMLHttpRequest();
-  //     xhr.responseType = 'blob'; // use BlobModule's UriHandler
-  //     xhr.onload = function() {
-  //       console.log("onload")
-  //       console.log(xhr.response);
-  //       resolve(xhr.response); // when BlobModule finishes reading, resolve with the blob
-  //    };
-  //    xhr.onerror = function() {
-  //      console.log(arguments);
-  //      reject(new TypeError('Network request failed')); // error occurred, rejecting
-  //    };
-  //    xhr.open('GET', uri, true); // fetch the blob from uri in async mode
-  //    xhr.send(null); // no initial data
-  //  });
-  
-  //   // when we're done sending it, close and release the blob
-  //   // blob.close();
-  
-  //   // return the result, eg. remote URI to the image
-  //   // return remoteUri;
-  // }
-
   renderItem = ({ item }) => (
-    <ListItem noIndent
-    onPress={() => this.props.navigation.navigate("TripDetail", { tripDetail: item.name })}>
-      <Text
-        style={styles.item}        
-      >
-        {item.name}
-      </Text>
+    <ListItem
+      noIndent
+      onPress={() =>
+        this.props.navigation.navigate("TripDetail", { tripDetail: item.name })
+      }
+    >
+      <Text style={styles.item}>{item.name}</Text>
     </ListItem>
   );
 
@@ -118,11 +91,9 @@ class Home extends React.Component<Props, any>  {
     } else if (result.isCancelled) {
       console.log("login is cancelled.");
     } else {
-      AccessToken.getCurrentAccessToken().then(
-        (data) => {
-          console.log(data.accessToken.toString());          
-        }
-      );
+      AccessToken.getCurrentAccessToken().then(data => {
+        console.log(data.accessToken.toString());
+      });
     }
   }
 
@@ -136,7 +107,6 @@ class Home extends React.Component<Props, any>  {
             "Login success with permissions: " +
               result.grantedPermissions.toString()
           );
-         
         }
       },
       function(error) {
@@ -147,23 +117,24 @@ class Home extends React.Component<Props, any>  {
 
   loginLocal() {
     //demo call api to login and get token
-        var postUser = {
-            email: 'bbb',
-            password: '123456'
-        };
-        this.loginDetails(postUser);
+    var postUser = {
+      email: "bbb",
+      password: "123456"
+    };
+    this.loginDetails(postUser);
   }
 
-  loginDetails(postUser) {
+  loginDetails(postUser, isMoveToCreate = true) {
     var loginUser = {
       email: postUser.email,
       password: postUser.password
     };
-    loginApi.post(`/login`, loginUser)
-    .then(res => {
-      // store token into Store
-      console.log('token ' + res.data.token);
-      const user: StoreData.UserVM = {
+    return loginApi
+      .post(`/login`, loginUser)
+      .then(res => {
+        // store token into Store
+        console.log("token " + res.data.token);
+        const user: StoreData.UserVM = {
           username: "asdf",
           lastName: "asdf",
           firstName: "asdf",
@@ -171,15 +142,16 @@ class Home extends React.Component<Props, any>  {
           email: postUser.email,
           token: res.data.token,
           fbToken: postUser.fbToken
-      };
-      this.props.addToken(user);         
-      // set global token for all request to trip-api
-      tripApi.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;   
-      this.props.navigation.navigate("TripCreation");
-    })
-    .catch((error) => {
-      console.log('error: ' + JSON.stringify(error));
-    })       
+        };
+        this.props.addToken(user);
+        setAuthorizationHeader(res.data.token);
+        if (isMoveToCreate) {
+          this.props.navigation.navigate("TripCreation");
+        }
+      })
+      .catch(error => {
+        console.log("error: " + JSON.stringify(error));
+      });
   }
 
   shareLinkWithShareDialog() {
@@ -194,14 +166,14 @@ class Home extends React.Component<Props, any>  {
       .then(
         function(result) {
           if (result.isCancelled) {
-            console.log('Share cancelled');
+            console.log("Share cancelled");
           } else {
-            console.log('Share success');
+            console.log("Share success");
           }
         },
         function(error) {
-          console.log('Share fail with error: ' + error);
-        },
+          console.log("Share fail with error: " + error);
+        }
       );
   }
 
@@ -217,84 +189,84 @@ class Home extends React.Component<Props, any>  {
       .then(
         function(result) {
           if (result.isCancelled) {
-            console.log('Share cancelled');
+            console.log("Share cancelled");
           } else {
-            console.log('Share success');
+            console.log("Share success");
           }
         },
         function(error) {
-          console.log('Share fail with error: ' + error);
-        },
+          console.log("Share fail with error: " + error);
+        }
       );
   }
 
   async uploadImage() {
-    await checkAndRequestPhotoPermissionAsync();
-    //content://media/external/images/media/2312
-    // var u = "file:///storage/emulated/0/DCIM/Camera/20181106_082919.jpg";
+    var postUser = {
+      email: "bbb",
+      password: "123456"
+    };
+    this.loginDetails(postUser, false).then(async () => {
+      await checkAndRequestPhotoPermissionAsync();
+      //content://media/external/images/media/2312
+      // var u = "file:///storage/emulated/0/DCIM/Camera/20181106_082919.jpg";
 
-    let photos = await CameraRoll.getPhotos({ first: 4 });
-    var img = photos.edges[0].node.image
-    var u = photos.edges[0].node.image.uri
-    // console.log(img);
-    console.log(u);
+      let photos = await CameraRoll.getPhotos({ first: 4 });
+      var u = photos.edges[0].node.image.uri;
+      // console.log(img);
+      console.log(u);
 
-    const info = await FileSystem.getInfoAsync(u);
-    console.log(info)
-    // const fileData = await FileSystem.readAsStringAsync(u);
-    // console.log(fileData)
-    uploadImageAsync("/uploadImage", u, { fileName: "image.jpg" })
-    .then(() => {
-      console.log("uploaded");
-    })
-    .catch((err) => {
-      console.log(err);
-      
-    })
+      const info = await FileSystem.getInfoAsync(u);
+      console.log(info);
+      // const fileData = await FileSystem.readAsStringAsync(u);
+      // console.log(fileData)
+      uploadFileApi
+        .upload("/uploadImage", u, { fileName: "image.jpg" })
+        .then(() => {
+          console.log("uploaded");
+          console.log(arguments);
+        })
+        .catch(err => {
+          console.log("err");
+          console.log(err);
+        });
+    });
   }
 
   render() {
-
-    const { repos } = this.props;
-
     return (
       <Container>
         <Header />
         <Content>
-            <View>
-                {/* <Button
+          <View>
+            {/* <Button
                   onPress={() => this.loginFacebook()}>                 
                   <Text>Login Facebook</Text> 
                 </Button> */}
-                <LoginButton         
-                  readPermissions={['public_profile', 'user_photos', 'user_posts']}
-                  onLoginFinished={
-                    (error, result) => this.loginFacebookSdk(error, result)
-                  }
-                  onLogoutFinished={() => console.log("logout.")}/>
-                <Button
-                  onPress={() => this.requestPublishPermissions()}>                 
-                  <Text>Request publish permissions on FB</Text> 
-                </Button>
-                <Button
-                  onPress={() => this.shareLinkWithShareDialog()}>                 
-                  <Text>Share Link on Facebook</Text> 
-                </Button>
-                <Button
-                  onPress={() => this.sharePhotoWithShareDialog()}>                 
-                  <Text>Share Photos on Facebook</Text> 
-                </Button>
-                <Button
-                  onPress={() => this.loginLocal()}>               
-                  <Text>Login Local</Text> 
-                </Button>
+            <LoginButton
+              readPermissions={["public_profile", "user_photos", "user_posts"]}
+              onLoginFinished={(error, result) =>
+                this.loginFacebookSdk(error, result)
+              }
+              onLogoutFinished={() => console.log("logout.")}
+            />
+            <Button onPress={() => this.requestPublishPermissions()}>
+              <Text>Request publish permissions on FB</Text>
+            </Button>
+            <Button onPress={() => this.shareLinkWithShareDialog()}>
+              <Text>Share Link on Facebook</Text>
+            </Button>
+            <Button onPress={() => this.sharePhotoWithShareDialog()}>
+              <Text>Share Photos on Facebook</Text>
+            </Button>
+            <Button onPress={() => this.loginLocal()}>
+              <Text>Login Local</Text>
+            </Button>
 
-                <Button
-                  onPress={() => this.uploadImage()}>               
-                  <Text>upload image</Text> 
-                </Button>
-                <Loading message="aaaaaasdad asd asd asd asda sdas da sdas dasd as" />
-            </View>
+            <Button onPress={() => this.uploadImage()}>
+              <Text>upload image</Text>
+            </Button>
+            <Loading message="aaaaaasdad asd asd asd asda sdas da sdas dasd as" />
+          </View>
         </Content>
         <Footer>
           <FooterTab>
@@ -302,8 +274,10 @@ class Home extends React.Component<Props, any>  {
               <Icon active name="navigate" />
               <Text>Search</Text>
             </Button>
-            <Button vertical
-              onPress={() => this.props.navigation.navigate("TripCreation")}>
+            <Button
+              vertical
+              onPress={() => this.props.navigation.navigate("TripCreation")}
+            >
               <Icon type="FontAwesome" name="plus-circle" />
               <Text>Create</Text>
             </Button>
@@ -320,7 +294,10 @@ class Home extends React.Component<Props, any>  {
 }
 
 const mapStateToProps = state => {
-  let storedRepositories = state.repo.repos.map(repo => ({ key: repo.id, ...repo }));
+  let storedRepositories = state.repo.repos.map(repo => ({
+    key: repo.id,
+    ...repo
+  }));
   return {
     repos: storedRepositories
   };
@@ -331,6 +308,9 @@ const mapDispatchToProps: IMapDispatchToProps = {
   addToken
 };
 
-const HomeScreen = connect(mapStateToProps, mapDispatchToProps)(Home);
+const HomeScreen = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Home);
 export default HomeScreen;
 // export default Home;

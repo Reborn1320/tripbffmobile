@@ -6,7 +6,7 @@ import { NavigationScreenProp } from "react-navigation";
 import { connect } from "react-redux";
 import { createTrip } from './actions';
 import moment from "moment";
-import tripApi from '../../apiBase/tripApi';
+import { tripApi } from "../../_services/apis";
 
 export interface Props extends IMapDispatchToProps {
     navigation: NavigationScreenProp<any, any>

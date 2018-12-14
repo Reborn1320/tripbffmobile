@@ -6,7 +6,7 @@ interface LoadingProps {
 }
 const Loading: React.SFC<LoadingProps> = props => {
   return (
-    <View style={{display: "flex", flexDirection: "column", alignItems: "center", borderColor: "orange", borderWidth: 1 }}>
+    <View style={{display: "flex", flexDirection: "column", alignItems: "center" }}>
       <Spinner color="grey" />
       <Text style={{color: "grey", width: "80%" }}>{props.message}</Text>
     </View>

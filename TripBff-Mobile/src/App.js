@@ -14,18 +14,12 @@ import TripDetail from "./screens/trip/detail";
 import TripCreation from "./screens/trip/create";
 import TripImportationScreen from "./screens/trip/import";
 import LocationDetailScreen from "./screens/location/detail";
-import loginApi from './screens/apiBase/loginApi';
-import tripApi from './screens/apiBase/tripApi';
+import { tripApi, loginApi } from './screens/_services/apis';
 
 import bffApp from "./reducers"
 import ReduxThunk from 'redux-thunk'
-import axios from 'axios';
 
-var api = axios.create({
-  baseURL: `http://192.168.1.5:8000` // local: should use IP4 of current local computer to allow call API from native app
-});
-
-const store = createStore(bffApp, applyMiddleware(axiosMiddleware(loginApi), axiosMiddleware(tripApi), ReduxThunk.withExtraArgument({ api })));
+const store = createStore(bffApp, applyMiddleware(axiosMiddleware(loginApi), axiosMiddleware(tripApi), ReduxThunk.withExtraArgument({ api: tripApi })));
 
 const Drawer = createDrawerNavigator(
   {

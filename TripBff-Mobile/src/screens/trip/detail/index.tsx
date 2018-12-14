@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import _, { } from "lodash";
 import moment from "moment";
 import DayItem from "./components/DayItem";
-import tripApi from '../../apiBase/tripApi';
+import { tripApi } from "../../_services/apis";
 
 interface IMapDispatchToProps {
 }

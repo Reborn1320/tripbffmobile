@@ -1,29 +1,26 @@
 import React, { Component } from "react";
 import { FlatList, View } from "react-native";
-import { Container, Header, Content, Button, Text, Footer, Spinner } from 'native-base';
+import { Container, Header, Content, Button, Text, Footer } from 'native-base';
 import styled from "styled-components/native";
-import { NavigationScreenProp, NavigationProp } from "react-navigation";
+import { NavigationScreenProp } from "react-navigation";
 import { StoreData } from "../../../Interfaces";
 import _ from "lodash";
-import { connect, DispatchProp } from "react-redux";
+import { connect } from "react-redux";
 import { cloneDeep } from 'lodash';
 import 'react-native-console-time-polyfill';
-import uuid1 from 'uuid/v1';
-import {FileSystem} from 'expo';
 
-import importImagesReducer from "./reducers";
 import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
 import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
 import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
 import { importSelectedLocations, uploadedImage } from "./actions";
-import tripApi from '../../apiBase/tripApi';
 import Loading from "../../_components/Loading";
 import { AxiosInstance } from "axios";
-import thunk, {ThunkAction, ThunkDispatch} from 'redux-thunk';
+import {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import { TripImportLocationVM } from "./TripImportViewModels";
-import { uploadImageAsync } from "../../_services/BlobUploader";
+import { uploadImageAsync } from "../../_services/Uploader/BlobUploader";
+import { uploadFileApi } from "../../_services/apis";
 
 // type Actions = importloca;
 type ThunkResult<R> = ThunkAction<R, State, { api: AxiosInstance }, any>;
@@ -150,7 +147,7 @@ class TripImportation extends Component<Props, State> {
     _toLocationVM = () => {
         var selectedLocations = []
         
-        _.reverse(this.state.locations).forEach((element, idx) => {
+        _.reverse(this.state.locations).forEach((element) => {
             var isLocationSelected = element.images.filter((img) => img.isSelected).length > 0;
 
             if (isLocationSelected) {
@@ -186,8 +183,10 @@ class TripImportation extends Component<Props, State> {
             extraArgument.api
             .post(url, selectedLocations)
             .then((res) => {
-                console.log('result after import trip: ' + JSON.stringify(res.data));      
+                console.log("import trip succeeded")
+                // console.log('result after import trip: ' + JSON.stringify(res.data));      
                 dispatch(importSelectedLocations(tripId, res.data.locations));
+                // this.setState({ UIState: "import images" })
             })
             .catch(function (error) {
                 // console.log(JSON.stringify(error));
@@ -214,7 +213,7 @@ class TripImportation extends Component<Props, State> {
     }
 
     _uploadImage = function uploadImage(tripId, locationId, imageId, imgUrl): ThunkResult<Promise<any>> {
-        return async function(dispatch, getState, { api }) {
+        return async function(dispatch, getState) {
             console.log(`imge url: ${imgUrl}`)
             var additionalData = {
                 locationId,
@@ -224,7 +223,7 @@ class TripImportation extends Component<Props, State> {
 
             var url = '/trips/' + tripId +'/uploadImage';
 
-            return uploadImageAsync(url, imgUrl, additionalData)
+            return uploadFileApi.upload(url, imgUrl, additionalData)
             .then((res) => {
                 console.log('result after upload image: ' + JSON.stringify(res));
                 console.log('result after upload image: ' + JSON.stringify(res.data));
@@ -270,7 +269,7 @@ class TripImportation extends Component<Props, State> {
 
     componentDidUpdate() {
 
-        console.log("component will update");
+        console.log("component did update");
         
         if (this.state.UIState == "import images") {
         console.log("component will update with import images");
@@ -304,7 +303,8 @@ class TripImportation extends Component<Props, State> {
             if (uploadedImages == totalImages && uploadedImages > 0) {
                 isStartUploadImage = false;
                 console.log("now I can move to next page");
-                //todo navigate to next page
+                //navigate to next page
+                this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId })
             }
     
             // console.log("check status");
@@ -335,7 +335,7 @@ class TripImportation extends Component<Props, State> {
 
 
     render() {
-
+        console.log("render")
         const { name, locations, isLoading, loadingMessage } = this.state
         return (
             <Container>

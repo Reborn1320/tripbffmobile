@@ -1,8 +1,9 @@
 import Axios from "axios";
-import { TRIP_URL } from "./constants";
+import { TRIP_URL } from "../constants";
 
 export var uploadImageAsync: (
   uploadUrl: string,
+  authorizationHeader: string,
   uri: string,
   data?: any
 ) => Promise<any> = uploadImageXmlHttpRequestAsync;
@@ -10,18 +11,40 @@ export var uploadImageAsync: (
 //https://github.com/facebook/react-native/blob/fe42a28de12926c7b3254420ccb85bef5f46327f/Examples/UIExplorer/XHRExample.ios.js#L215-L230
 async function uploadImageXmlHttpRequestAsync(
   uploadUrl: string,
+  authorizationHeader: string,
   uri: string,
   data: any = undefined
 ) {
+  console.log("authorizationHeader", authorizationHeader);
   let uriParts = uri.split(".");
   let fileType = uriParts[uriParts.length - 1];
 
   var xhr = new XMLHttpRequest();
-  //todo authorization ??
-  // xhr.setRequestHeader("Authorization", `Bearer abc`);
 
   var promise = new Promise((resolve, reject) => {
     xhr.open("POST", TRIP_URL + uploadUrl);
+
+    const UNSENT = 0;
+    const OPENED = 1;
+    const HEADERS_RECEIVED = 2;
+    const LOADING = 3;
+    const DONE = 4;
+
+    xhr.onreadystatechange = function(oEvent) {
+
+      if (xhr.readyState === DONE) {
+        if (xhr.status === 200) {
+          console.log(xhr.responseText);
+        } else {
+          console.log("Error status", xhr.status);
+          console.log("Error response", xhr.response);
+          console.log("Error responseType", xhr.responseType);
+          console.log("Error responseText", xhr.responseText);
+          console.log("Error statusText", xhr.statusText);
+        }
+      }
+    };
+
     xhr.onload = () => {
       console.log(xhr.status);
       console.log(xhr.responseText);
@@ -77,6 +100,11 @@ async function uploadImageXmlHttpRequestAsync(
           console.log(event.loaded / event.total);
         }
       };
+    }
+
+    if (authorizationHeader) {
+      console.log("Added Authorization token", authorizationHeader);
+      xhr.setRequestHeader("Authorization", authorizationHeader);
     }
     xhr.send(formData);
   });

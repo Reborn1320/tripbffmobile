@@ -46,7 +46,7 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
                         var fullElement = await MediaLibrary.getAssetInfoAsync(element)                        
 
                         if (fullElement) {
-                            console.log('full element: ' + fullElement.localUri);
+                            // console.log('full element: ' + fullElement.localUri);
                             
                             // if ((fullElement.localUri.indexOf("Camera") == -1 && Platform.OS === "android") || 
                             // (fullElement.localUri.indexOf("Media") == -1 && Platform.OS === "ios")) continue;                   
@@ -59,7 +59,7 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
                             //console.log('full element long : ' + fullElement.location.longitude);
 
                             console.log(fullElement.uri);
-                            console.log(fullElement.localUri);
+                            // console.log(fullElement.localUri);
 
                             photos.push({
                             image: {
