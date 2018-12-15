@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Container, Header, Content, Spinner } from 'native-base';
-import { NavigationScreenProp } from "react-navigation";
 import { FlatList } from "react-native";
 import { StoreData } from "../../../Interfaces";
 import { connect } from "react-redux";
@@ -8,12 +7,12 @@ import _, { } from "lodash";
 import moment from "moment";
 import DayItem from "./components/DayItem";
 import { tripApi } from "../../_services/apis";
+import { BaseProps } from "../../_shared/LayoutContainer";
 
 interface IMapDispatchToProps {
 }
 
-export interface Props extends IMapDispatchToProps {
-    navigation: NavigationScreenProp<any, any>
+export interface Props extends IMapDispatchToProps, BaseProps {
     trip: StoreData.TripVM
 }
 
