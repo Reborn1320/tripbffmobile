@@ -43,6 +43,7 @@ export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
 interface IMapDispatchToProps {
   listRepos: (name: string) => void;
   addToken: (user: StoreData.UserVM) => void;
+  uploadSimpleImage: (uri: string) => Promise<any>;
 }
 
 class Home extends React.Component<Props, any> {
@@ -217,8 +218,7 @@ class Home extends React.Component<Props, any> {
         console.log(info);
         // const fileData = await FileSystem.readAsStringAsync(u);
         // console.log(fileData)
-        this.props
-          .dispatch<Promise<any>>(uploadSimpleImage(u))
+        this.props.uploadSimpleImage(u)
           .then(() => {
             console.log("uploaded");
           })
@@ -315,7 +315,8 @@ const mapStateToProps = state => {
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    dispatch, //todo remove this dispatch, and do something similar to the one below
+    uploadSimpleImage: uri => dispatch(uploadSimpleImage(uri)),
 
     listRepos,
     addToken
