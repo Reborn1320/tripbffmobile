@@ -28,13 +28,14 @@ import {
   LoginManager
 } from "react-native-fbsdk";
 import checkAndRequestPhotoPermissionAsync from "../shared/photo/PhotoPermission";
-import {
-  loginApi,
-  setAuthorizationHeader,
-  uploadFileApi
-} from "../_services/apis";
+import { setAuthorizationHeader } from "../_services/apis";
+import { NavigationConstants } from "../_shared/ScreenConstants";
+import { loginUsingUserPass, uploadSimpleImage } from "./actions";
+import { ThunkDispatch } from "redux-thunk";
+import { PropsBase } from "../_shared/LayoutContainer";
 
-export interface Props extends IMapDispatchToProps, DispatchProp {
+export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
+  dispatch: ThunkDispatch<any, null, any>;
   navigation: RNa.NavigationScreenProp<any, any>;
   repos: Array<any>;
 }
@@ -121,16 +122,12 @@ class Home extends React.Component<Props, any> {
       email: "bbb",
       password: "123456"
     };
-    this.loginDetails(postUser);
+    this.loginDetails(postUser.email, postUser.password, "");
   }
 
-  loginDetails(postUser, isMoveToCreate = true) {
-    var loginUser = {
-      email: postUser.email,
-      password: postUser.password
-    };
-    return loginApi
-      .post(`/login`, loginUser)
+  loginDetails(email, password, fbToken, isMoveToCreate = true) {
+    return this.props
+      .dispatch<Promise<any>>(loginUsingUserPass(email, password))
       .then(res => {
         // store token into Store
         console.log("token " + res.data.token);
@@ -139,9 +136,9 @@ class Home extends React.Component<Props, any> {
           lastName: "asdf",
           firstName: "asdf",
           fullName: "adffff",
-          email: postUser.email,
+          email: email,
           token: res.data.token,
-          fbToken: postUser.fbToken
+          fbToken: fbToken
         };
         this.props.addToken(user);
         setAuthorizationHeader(res.data.token);
@@ -150,7 +147,7 @@ class Home extends React.Component<Props, any> {
         }
       })
       .catch(error => {
-        console.log("error: " + JSON.stringify(error));
+        console.log("error login", error);
       });
   }
 
@@ -205,31 +202,32 @@ class Home extends React.Component<Props, any> {
       email: "bbb",
       password: "123456"
     };
-    this.loginDetails(postUser, false).then(async () => {
-      await checkAndRequestPhotoPermissionAsync();
-      //content://media/external/images/media/2312
-      // var u = "file:///storage/emulated/0/DCIM/Camera/20181106_082919.jpg";
+    this.loginDetails(postUser.email, postUser.password, "", false).then(
+      async () => {
+        await checkAndRequestPhotoPermissionAsync();
+        //content://media/external/images/media/2312
+        // var u = "file:///storage/emulated/0/DCIM/Camera/20181106_082919.jpg";
 
-      let photos = await CameraRoll.getPhotos({ first: 4 });
-      var u = photos.edges[0].node.image.uri;
-      // console.log(img);
-      console.log(u);
+        let photos = await CameraRoll.getPhotos({ first: 4 });
+        var u = photos.edges[0].node.image.uri;
+        // console.log(img);
+        console.log(u);
 
-      const info = await FileSystem.getInfoAsync(u);
-      console.log(info);
-      // const fileData = await FileSystem.readAsStringAsync(u);
-      // console.log(fileData)
-      uploadFileApi
-        .upload("/uploadImage", u, { fileName: "image.jpg" })
-        .then(() => {
-          console.log("uploaded");
-          console.log(arguments);
-        })
-        .catch(err => {
-          console.log("err");
-          console.log(err);
-        });
-    });
+        const info = await FileSystem.getInfoAsync(u);
+        console.log(info);
+        // const fileData = await FileSystem.readAsStringAsync(u);
+        // console.log(fileData)
+        this.props
+          .dispatch<Promise<any>>(uploadSimpleImage(u))
+          .then(() => {
+            console.log("uploaded");
+          })
+          .catch(err => {
+            console.log("err");
+            console.log(err);
+          });
+      }
+    );
   }
 
   render() {
@@ -276,13 +274,25 @@ class Home extends React.Component<Props, any> {
             </Button>
             <Button
               vertical
-              onPress={() => this.props.navigation.navigate("TripCreation")}
+              onPress={() =>
+                this.props.navigation.navigate(
+                  NavigationConstants.Screens.TripCreation
+                )
+              }
             >
               <Icon type="FontAwesome" name="plus-circle" />
               <Text>Create</Text>
             </Button>
 
-            <Button vertical active>
+            <Button
+              vertical
+              active
+              onPress={() =>
+                this.props.navigation.navigate(
+                  NavigationConstants.Screens.TripsList
+                )
+              }
+            >
               <Icon name="person" />
               <Text>Profile</Text>
             </Button>
@@ -303,10 +313,14 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps: IMapDispatchToProps = {
-  listRepos,
-  addToken
-};
+function mapDispatchToProps(dispatch) {
+  return {
+    dispatch,
+
+    listRepos,
+    addToken
+  };
+}
 
 const HomeScreen = connect(
   mapStateToProps,

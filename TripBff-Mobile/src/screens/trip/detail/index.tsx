@@ -7,12 +7,12 @@ import _, { } from "lodash";
 import moment from "moment";
 import DayItem from "./components/DayItem";
 import { tripApi } from "../../_services/apis";
-import { BaseProps } from "../../_shared/LayoutContainer";
+import { PropsBase } from "../../_shared/LayoutContainer";
 
 interface IMapDispatchToProps {
 }
 
-export interface Props extends IMapDispatchToProps, BaseProps {
+export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
 }
 

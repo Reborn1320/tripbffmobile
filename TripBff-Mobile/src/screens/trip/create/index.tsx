@@ -6,9 +6,9 @@ import { connect } from "react-redux";
 import { createTrip } from './actions';
 import moment from "moment";
 import { tripApi } from "../../_services/apis";
-import { BaseProps } from "../../_shared/LayoutContainer";
+import { PropsBase } from "../../_shared/LayoutContainer";
 
-export interface Props extends IMapDispatchToProps, BaseProps {
+export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM,
     user: StoreData.UserVM
 }

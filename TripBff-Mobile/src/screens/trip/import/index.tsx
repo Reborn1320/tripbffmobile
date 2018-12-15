@@ -19,11 +19,11 @@ import { AxiosInstance } from "axios";
 import {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import { TripImportLocationVM } from "./TripImportViewModels";
 import { uploadFileApi } from "../../_services/apis";
-import { BaseProps } from "../../_shared/LayoutContainer";
+import { PropsBase, ThunkResultBase } from "../../_shared/LayoutContainer";
 
-// type Actions = importloca;
-type ThunkResult<R> = ThunkAction<R, State, { api: AxiosInstance }, any>;
-export interface Props extends IMapDispatchToProps, BaseProps {
+type ThunkResult<R> = ThunkResultBase<R, State>;
+
+export interface Props extends IMapDispatchToProps, PropsBase {
     dispatch: ThunkDispatch<State, null, any>
     trip: StoreData.TripVM
 }
