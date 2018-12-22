@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { FlatList, View } from "react-native";
 import { Container, Header, Content, Button, Text, Footer } from 'native-base';
 import styled from "styled-components/native";
-import { NavigationScreenProp } from "react-navigation";
 import { StoreData } from "../../../Interfaces";
 import _ from "lodash";
 import { connect } from "react-redux";
@@ -19,14 +18,13 @@ import Loading from "../../_components/Loading";
 import { AxiosInstance } from "axios";
 import {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import { TripImportLocationVM } from "./TripImportViewModels";
-import { uploadImageAsync } from "../../_services/Uploader/BlobUploader";
 import { uploadFileApi } from "../../_services/apis";
+import { PropsBase, ThunkResultBase } from "../../_shared/LayoutContainer";
 
-// type Actions = importloca;
-type ThunkResult<R> = ThunkAction<R, State, { api: AxiosInstance }, any>;
-export interface Props extends IMapDispatchToProps {
+type ThunkResult<R> = ThunkResultBase<R, State>;
+
+export interface Props extends IMapDispatchToProps, PropsBase {
     dispatch: ThunkDispatch<State, null, any>
-    navigation: NavigationScreenProp<any, any>
     trip: StoreData.TripVM
 }
 

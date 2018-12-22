@@ -2,14 +2,13 @@ import React, { Component } from "react";
 import { Container, Header, Content, Button, Text, View } from 'native-base';
 import { Form, Item, Label, Input, DatePicker } from 'native-base';
 import { StoreData } from "../../../Interfaces";
-import { NavigationScreenProp } from "react-navigation";
 import { connect } from "react-redux";
 import { createTrip } from './actions';
 import moment from "moment";
 import { tripApi } from "../../_services/apis";
+import { PropsBase } from "../../_shared/LayoutContainer";
 
-export interface Props extends IMapDispatchToProps {
-    navigation: NavigationScreenProp<any, any>
+export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM,
     user: StoreData.UserVM
 }
@@ -24,10 +23,6 @@ class TripCreation extends Component<Props, any> {
         super(props);
         this.state = { chosenDate: new Date() };
         this.setDate = this.setDate.bind(this);
-    }
-
-    componentDidMount() {
-        
     }
 
     setDate(newDate) {

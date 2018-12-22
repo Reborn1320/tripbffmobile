@@ -1,4 +1,5 @@
 import { StoreData } from './../../../Interfaces';
+import { ThunkResultBase } from '../../_shared/LayoutContainer';
 export const IMPORT_IMAGE_SELECT_UNSELECT_IMAGE = "TRIP/IMPORT_IMAGE_SELECT_UNSELECT_IMAGE"
 export const IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES = "TRIP/IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES"
 export const IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS = "TRIP/IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS"
@@ -26,5 +27,31 @@ export function importSelectedLocations(tripId: number, locations: StoreData.Loc
 export function uploadedImage(tripId: number, locationId: string, imageId: string, externalStorageId: string) {
     return {
         type: IMPORT_UPLOADED_IMAGE, tripId, locationId, imageId, externalStorageId,
+    }
+}
+
+export function uploadImage(tripId, locationId, imageId, imgUrl): ThunkResultBase {
+    //todo check getState param ?? is it state of the store ????
+    return async function(dispatch, getState, extraArguments) {
+        console.log(`imge url: ${imgUrl}`)
+        var additionalData = {
+            locationId,
+            imageId,
+            fileName: imgUrl,
+        }
+
+        var url = '/trips/' + tripId +'/uploadImage';
+
+        return extraArguments.uploadApi.upload(url, imgUrl, additionalData)
+        .then((res) => {
+            console.log('result after upload image: ' + JSON.stringify(res));
+            console.log('result after upload image: ' + JSON.stringify(res.data));
+            var externalStorageId: string = res.response;      
+            dispatch(uploadedImage(tripId, locationId, imageId, externalStorageId))
+            //todo replace by stop on error
+        })
+        .catch((err) => {
+            console.log('error after import trip: ' + JSON.stringify(err));
+        });
     }
 }

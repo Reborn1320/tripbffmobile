@@ -1,5 +1,5 @@
 import Axios from "axios";
-import { TRIP_URL } from "../constants";
+import { TRIP_URL } from "../ServiceConstants";
 
 export var uploadImageAsync: (
   uploadUrl: string,
