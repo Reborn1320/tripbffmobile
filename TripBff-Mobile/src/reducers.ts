@@ -7,6 +7,7 @@ import ImportImageScreenData from "./fake_data";
 import importImagesReducer from './screens/trip/import/reducers';
 import { TRIP_ADD } from './screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './screens/auth/actions';
+import { ADD_INFOGRAPHIC_URI } from './screens/trip/export/actions';
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -14,25 +15,28 @@ const userInitState: StoreData.UserVM = {
     firstName: "asdf",
     fullName: "adffff",
     email: "asdf@gmail.com",
-    token: "ASdf"
+    token: "ASdf",
+    fbToken: ""
 }
 const locationInitState: StoreData.LocationVM[] = ImportImageScreenData
 const tripsInitState: StoreData.TripVM[] = []
 for (let idx = 0; idx < 5; idx++) {
     tripsInitState.push({
-        id: idx,
+        id: idx.toString(),
         name: `trip name ${idx}`,
         fromDate: moment("2018-10-10"), 
         toDate: moment("2018-10-18").add(1, "day").add(-1, "second"),
+        localInfographicUri: '',
         locations: [] // cloneDeep(locationInitState)
     })
 }
 
 tripsInitState.push({
-    id: 5,
+    id: '5',
     name: `trip name ${5}`,
     fromDate: moment("2018-10-04"), 
     toDate: moment("2018-10-29").add(1, "day").add(-1, "second"),
+    localInfographicUri: '',
     locations: [] // cloneDeep(locationInitState)
 })
 
@@ -52,6 +56,13 @@ function userReducer(state, action) {
 function tripReducer(state, action) {
     //TODO: combine with other reducer if needed
     // return state;
+
+    if (action.type == ADD_INFOGRAPHIC_URI) {
+        return Object.assign({}, state, {
+            localInfographicUri: action.path
+          });
+    }
+
     return importImagesReducer(state, action)
 }
 

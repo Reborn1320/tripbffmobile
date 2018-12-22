@@ -1,5 +1,5 @@
 import React from "react";
-import { CameraRoll } from "react-native";
+import { CameraRoll, Image } from "react-native";
 import {
   Container,
   Header,
@@ -31,8 +31,11 @@ import checkAndRequestPhotoPermissionAsync from "../shared/photo/PhotoPermission
 import {
   loginApi,
   setAuthorizationHeader,
-  uploadFileApi
+  uploadFileApi,
+  tripApi
 } from "../_services/apis";
+var RNFS = require('react-native-fs');
+import { addInfographicUri } from '../trip/export/actions';
 
 export interface Props extends IMapDispatchToProps, DispatchProp {
   navigation: RNa.NavigationScreenProp<any, any>;
@@ -41,7 +44,8 @@ export interface Props extends IMapDispatchToProps, DispatchProp {
 
 interface IMapDispatchToProps {
   listRepos: (name: string) => void;
-  addToken: (user: StoreData.UserVM) => void;
+  addToken: (user: StoreData.UserVM) => void,
+  addInfographicUri: (tripId: string, path: string) => void
 }
 
 class Home extends React.Component<Props, any> {
@@ -57,7 +61,7 @@ class Home extends React.Component<Props, any> {
       photoUri02 =
         "file:///storage/emulated/0/DCIM/Camera/IMG_20181208_202700.jpg",
       photoUri03 =
-        "file:///storage/emulated/0/DCIM/Camera/IMG_20181208_203212.jpg";
+        "file:///data/user/0/com.tripbff.android/files/test1.png";
 
     const sharePhotoContent = {
       contentType: "photo",
@@ -70,7 +74,8 @@ class Home extends React.Component<Props, any> {
 
     this.state = {
       shareLinkContent: shareLinkContent,
-      sharePhotoContent: sharePhotoContent
+      sharePhotoContent: sharePhotoContent,
+      imageUri: ""
     };
   }
 
@@ -145,6 +150,7 @@ class Home extends React.Component<Props, any> {
         };
         this.props.addToken(user);
         setAuthorizationHeader(res.data.token);
+      
         if (isMoveToCreate) {
           this.props.navigation.navigate("TripCreation");
         }
@@ -178,6 +184,7 @@ class Home extends React.Component<Props, any> {
   }
 
   sharePhotoWithShareDialog() {
+
     var tmp = this;
 
     ShareDialog.canShow(this.state.sharePhotoContent)
@@ -232,6 +239,42 @@ class Home extends React.Component<Props, any> {
     });
   }
 
+  getImage() {
+    tripApi
+      .get(`/trips/infographics/1`)
+      .then(res => {
+        this.setState({imageUri: res.data});     
+        
+        var path = RNFS.DocumentDirectoryPath + '/test1.png';
+
+        // write the file
+        RNFS.writeFile(path, res.data, 'base64')
+          .then((success) => {
+            console.log('FILE WRITTEN!');
+            // store path of infographic into store
+            this.props.addInfographicUri('1', path);
+
+            // For demo: upload infographic to fb with local storage image
+            const photoUri = "file://" + path;
+
+            const sharePhotoContent = {
+              contentType: "photo",
+              photos: [
+                { imageUrl: photoUri }
+              ]
+            };
+
+            this.setState({sharePhotoContent: sharePhotoContent});
+          })
+          .catch((err) => {
+            console.log(err.message);
+          });          
+      })
+      .catch(error => {
+        console.log("error: " + JSON.stringify(error));
+      });
+  }
+
   render() {
     return (
       <Container>
@@ -265,6 +308,18 @@ class Home extends React.Component<Props, any> {
             <Button onPress={() => this.uploadImage()}>
               <Text>upload image</Text>
             </Button>
+
+            <Button onPress={() => this.getImage()}>
+              <Text>Get Image from server</Text>
+            </Button>
+
+            <Image
+                source={{
+                  uri: 'data:image/png;base64,' + this.state.imageUri             
+                }}
+                style={{width: 400, height: 600}}
+              />
+
             <Loading message="aaaaaasdad asd asd asd asda sdas da sdas dasd as" />
           </View>
         </Content>
@@ -305,7 +360,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps: IMapDispatchToProps = {
   listRepos,
-  addToken
+  addToken,
+  addInfographicUri
 };
 
 const HomeScreen = connect(

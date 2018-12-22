@@ -15,6 +15,7 @@ import com.facebook.FacebookSdk;
 
 // Needed for `react-native link`
 import com.facebook.react.ReactApplication;
+import com.rnfs.RNFSPackage;
 
 public class MainApplication extends ExpoApplication implements ReactApplication {
 
@@ -34,6 +35,7 @@ public class MainApplication extends ExpoApplication implements ReactApplication
 
               // Needed for `react-native link`
               new MainReactPackage(),
+              new RNFSPackage(),
               //**  ADD THE FOLLOWING LINE **//
               new FBSDKPackage(mCallbackManager)
       );
@@ -58,6 +60,7 @@ public class MainApplication extends ExpoApplication implements ReactApplication
         // Needed for `react-native link`
         //new MainReactPackage(),
         //**  ADD THE FOLLOWING LINE **//
+        new RNFSPackage(),
         new FBSDKPackage(mCallbackManager)
     );
   }
