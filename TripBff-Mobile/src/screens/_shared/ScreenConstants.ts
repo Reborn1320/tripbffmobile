@@ -5,8 +5,8 @@ export const NavigationConstants = {
   Screens: {
     TripCreation: "TripCreation",
     TripDetail: "TripDetail",
-
-    TripsList: "TripsList"
+    TripsList: "TripsList",
+    TripsInfographicPreivew: "InfographicPreview"
   }
 };
 

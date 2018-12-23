@@ -14,6 +14,7 @@ import TripDetail from "./screens/trip/detail";
 import TripCreation from "./screens/trip/create";
 import TripImportationScreen from "./screens/trip/import";
 import LocationDetailScreen from "./screens/location/detail";
+import InfographicPreviewScreen from "./screens/trip/preview/index";
 import { tripApi, loginApi, uploadFileApi } from "./screens/_services/apis";
 
 import bffApp from "./reducers";
@@ -57,7 +58,8 @@ const AppNavigator = createStackNavigator(
     TripDetail: { screen: TripDetail },
     LocationDetail: { screen: LocationDetailScreen },
     TripCreation: { screen: TripCreation },
-    TripImportation: { screen: TripImportationScreen }
+    TripImportation: { screen: TripImportationScreen },
+    InfographicPreview: { screen: InfographicPreviewScreen }
   },
   {
     initialRouteName: "Drawer",
