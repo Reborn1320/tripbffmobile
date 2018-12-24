@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Spinner } from 'native-base';
-import { FlatList } from "react-native";
+import { Container, Header, Content, Spinner, Button, Text } from 'native-base';
+import { FlatList, Alert } from "react-native";
 import { StoreData } from "../../../Interfaces";
 import { connect } from "react-redux";
 import _, { } from "lodash";
@@ -8,12 +8,15 @@ import moment from "moment";
 import DayItem from "./components/DayItem";
 import { tripApi } from "../../_services/apis";
 import { PropsBase } from "../../_shared/LayoutContainer";
+import { NavigationConstants } from "../../_shared/ScreenConstants";
+import * as RNa from "react-navigation";
 
 interface IMapDispatchToProps {
 }
 
 export interface Props extends IMapDispatchToProps, PropsBase {
-    trip: StoreData.TripVM
+    trip: StoreData.TripVM,
+    navigation: RNa.NavigationScreenProp<any, any>;
 }
 
 interface State {
@@ -22,7 +25,8 @@ interface State {
     toDate: moment.Moment
     name: string
     days: DayVM[],
-    isLoaded: boolean
+    isLoaded: boolean,
+    modalVisible: boolean
 }
 
 export interface DayVM {
@@ -54,7 +58,8 @@ class TripDetail extends Component<Props, State> {
             toDate: props.trip.toDate,
             name: props.trip.name,
             days: dayVMs,
-            isLoaded: false
+            isLoaded: false,
+            modalVisible: false,
         }
     }
 
@@ -105,14 +110,48 @@ class TripDetail extends Component<Props, State> {
                      console.log('error: ' + JSON.stringify(err));
                  }); 
     }
+    
+    setModalVisible(visible) {
+        this.setState({modalVisible: visible});
+    }
+
+    exportInfographic() {
+        // call api to request export infographic
+        var tripId = this.props.trip.id;
+        tripApi
+        .post('/trips/' + tripId + '/infographics')
+        .then(res => {
+            var infographicId = res.data;
+        })
+        .catch(error => {
+            console.log("error: " + JSON.stringify(error));
+        });
+
+        this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew);
+    }
+
+    confirmExportInfographic() {
+        Alert.alert(
+            'Confirm',
+            'Export infographic ?',
+            [
+              {text: 'Cancel', onPress: () => this.props.navigation.navigate(NavigationConstants.Screens.TripsList), style: 'cancel'},
+              {text: 'OK', onPress: () => this.exportInfographic()},
+            ],
+            { cancelable: false }
+          )
+    }
 
 render() {
     const { days, isLoaded } = this.state
     return (
         <Container>
             <Header>
+                <Button onPress={() => this.confirmExportInfographic()}>
+                    <Text>Done</Text>
+                </Button>                    
             </Header>
-            <Content>
+            <Content>           
                 {!isLoaded && <Spinner color='green' />}
                {isLoaded && 
                     <FlatList
