@@ -16,6 +16,7 @@ import TripImportationScreen from "./screens/trip/import";
 import LocationDetailScreen from "./screens/location/detail";
 import InfographicPreviewScreen from "./screens/trip/preview/index";
 import { tripApi, loginApi, uploadFileApi } from "./screens/_services/apis";
+import LoginScreen from "./screens/login/index";
 
 import bffApp from "./reducers";
 import ReduxThunk from "redux-thunk";
@@ -36,11 +37,12 @@ const store = createStore(
 const Drawer = createDrawerNavigator(
   {
     Home: { screen: HomeScreen },
+    Login: { screen: LoginScreen },
     NHFab: { screen: NHFab },
     TripImportation: { screen: TripImportationScreen }
   },
   {
-    initialRouteName: "Home",
+    initialRouteName: "Login",
     initialRouteParams: {
       tripId: 3
     },
