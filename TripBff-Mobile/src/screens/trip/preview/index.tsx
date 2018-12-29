@@ -15,13 +15,14 @@ import {
   import { connect, DispatchProp } from "react-redux";
   import { tripApi  } from "../../_services/apis";
   var RNFS = require('react-native-fs');
-  import { addInfographicUri } from '../../trip/export/actions';
   import {
-    ShareDialog,
-    LoginButton,
+    ShareDialog,    
     AccessToken,
     LoginManager
   } from "react-native-fbsdk";
+  import { StoreData } from "../../../Interfaces";
+  import _, { } from "lodash";
+  import { NavigationConstants } from "../../_shared/ScreenConstants";
 
   export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
     dispatch: ThunkDispatch<any, null, any>;
@@ -29,10 +30,18 @@ import {
   }
   
   interface IMapDispatchToProps {
-    addInfographicUri: (tripId: string, path: string) => void
+    
   }
 
-  class InfographicPreview extends React.Component<Props, any> {
+  interface State {
+    tripId: string,
+    infographicId: string,
+    isLoaded: boolean,
+    imageUri: string,
+    sharePhotoContent: any
+  } 
+
+  class InfographicPreview extends React.Component<Props, State> {
     constructor(props) {
       super(props);
 
@@ -42,8 +51,11 @@ import {
       };
 
       this.state = {
-        imageUri: "",
-        sharePhotoContent: sharePhotoContent
+            tripId: props.trip.id,    
+            infographicId: props.trip.infographicId,      
+            isLoaded: false,
+            imageUri: "",
+            sharePhotoContent: sharePhotoContent
       };
     }
 
@@ -53,7 +65,7 @@ import {
 
     getInfographic() {
         tripApi
-        .get(`/trips/infographics/1`)
+        .get(`/trips/${this.state.tripId}/infographics/${this.state.infographicId}`)
         .then(res => {
             this.setState({imageUri: res.data});     
             
@@ -63,8 +75,6 @@ import {
             RNFS.writeFile(path, res.data, 'base64')
             .then((success) => {
                 console.log('FILE WRITTEN!');
-                // store path of infographic into store
-                this.props.addInfographicUri('1', path);
 
                 const photoUri = "file://" + path;
                 const sharePhotoContent = {
@@ -89,26 +99,49 @@ import {
     sharePhotoWithShareDialog() {
         var tmp = this;
 
-        //TODO: should check user login before
-    
-        ShareDialog.canShow(this.state.sharePhotoContent)
-          .then(function(canShow) {
-            if (canShow) {
-              return ShareDialog.show(tmp.state.sharePhotoContent);
-            }
-          })
-          .then(
-            function(result) {
-              if (result.isCancelled) {
-                console.log("Share cancelled");
-              } else {
-                console.log("Share success");
+        AccessToken.getCurrentAccessToken().then(
+            (data) => {
+              if (data) {
+                ShareDialog.canShow(this.state.sharePhotoContent)
+                  .then(function(canShow) {
+                    if (canShow) {
+                      return ShareDialog.show(tmp.state.sharePhotoContent);
+                    }
+                  })
+                  .then(
+                    function(result) {
+                      if (result.isCancelled) {
+                        console.log("Share cancelled");
+                      } else {
+                        console.log("Share success");
+                      }
+                    },
+                    function(error) {
+                      console.log("Share fail with error: " + error);
+                    }
+                  );
               }
-            },
-            function(error) {
-              console.log("Share fail with error: " + error);
-            }
-          );
+              else {
+                  console.log('need to log-in');
+                  LoginManager.logInWithReadPermissions(["public_profile", "user_photos", "user_posts"]).then(
+                    function(result) {
+                      if (result.isCancelled) {
+                        console.log("Login cancelled");
+                      } else {
+                        console.log(
+                          "Login success with permissions: " +
+                            result.grantedPermissions.toString()
+                        );
+                        tmp.sharePhotoWithShareDialog();
+                      }
+                    },
+                    function(error) {
+                      console.log("Login fail with error: " + error);
+                    }
+                  );
+              }
+            } 
+        );    
       }
 
     render() {
@@ -137,15 +170,23 @@ import {
 }
 
   
+
+  const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+    const { tripId } = ownProps.navigation.state.params;
+    var trip = _.find(storeState.trips, (item) => item.id == tripId)
+    return {
+        trip
+    };
+  };
+
   function mapDispatchToProps(dispatch) {
     return {
-      dispatch, //todo remove this dispatch, and do something similar to the one below
-      addInfographicUri
+      dispatch, //todo remove this dispatch, and do something similar to the one below      
     };
   }
   
   const InfographicPreviewScreen = connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
   )(InfographicPreview);
   export default InfographicPreviewScreen;

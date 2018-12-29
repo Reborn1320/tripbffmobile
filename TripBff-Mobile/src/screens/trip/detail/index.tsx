@@ -10,8 +10,10 @@ import { tripApi } from "../../_services/apis";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import * as RNa from "react-navigation";
+import { addInfographicId } from '../../trip/export/actions';
 
 interface IMapDispatchToProps {
+    addInfographicId: (tripId: string, infographicId: string) => void
 }
 
 export interface Props extends IMapDispatchToProps, PropsBase {
@@ -20,7 +22,7 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 }
 
 interface State {
-    tripId: number
+    tripId: string
     fromDate: moment.Moment
     toDate: moment.Moment
     name: string
@@ -122,12 +124,14 @@ class TripDetail extends Component<Props, State> {
         .post('/trips/' + tripId + '/infographics')
         .then(res => {
             var infographicId = res.data;
+            // store infogphicId into store
+            this.props.addInfographicId(tripId, infographicId);
+            console.log('infographic id: ' + infographicId);
+            this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, {tripId: tripId});
         })
         .catch(error => {
             console.log("error: " + JSON.stringify(error));
         });
-
-        this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew);
     }
 
     confirmExportInfographic() {
@@ -146,8 +150,13 @@ render() {
     const { days, isLoaded } = this.state
     return (
         <Container>
-            <Header>
-                <Button onPress={() => this.confirmExportInfographic()}>
+            <Header style={{
+                            flexDirection: 'row'
+                        }}>
+                <Button
+                    style={{ marginLeft: 'auto', 
+                             marginTop: 15 }}
+                    onPress={() => this.confirmExportInfographic()}>
                     <Text>Done</Text>
                 </Button>                    
             </Header>
@@ -175,9 +184,7 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 };
 
 const mapDispatchToProps: IMapDispatchToProps = {
-    // importImageSelectUnselectImage,
-    // importImageSelectUnselectAllImages
-    // importSelectedLocations
+    addInfographicId
 };
 
 const TripDetailScreen = connect(mapStateToProps, mapDispatchToProps)(TripDetail);

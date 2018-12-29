@@ -1,8 +1,8 @@
-export const ADD_INFOGRAPHIC_URI = "TRIP/ADD_INFOGRAPHIC_URI"
+export const ADD_INFOGRAPHIC_ID = "TRIP/ADD_INFOGRAPHIC_ID"
 
 
-export function addInfographicUri(tripId: string, path: string) {
+export function addInfographicId(tripId: string, infographicId: string) {
     return {
-        type: ADD_INFOGRAPHIC_URI, tripId, path
+        type: ADD_INFOGRAPHIC_ID, tripId, infographicId
     }
 }

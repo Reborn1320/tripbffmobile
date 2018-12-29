@@ -6,7 +6,8 @@ export const NavigationConstants = {
     TripCreation: "TripCreation",
     TripDetail: "TripDetail",
     TripsList: "TripsList",
-    TripsInfographicPreivew: "InfographicPreview"
+    TripsInfographicPreivew: "InfographicPreview",
+    Home: "HomeScreen"
   }
 };
 
