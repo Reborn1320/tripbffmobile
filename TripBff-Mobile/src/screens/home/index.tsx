@@ -294,24 +294,24 @@ class Home extends React.Component<Props, any> {
               }
               onLogoutFinished={() => console.log("logout.")}
             />
-            <Button onPress={() => this.requestPublishPermissions()}>
+            <Button style={{ margin: 5 }} onPress={() => this.requestPublishPermissions()}>
               <Text>Request publish permissions on FB</Text>
             </Button>
-            <Button onPress={() => this.shareLinkWithShareDialog()}>
+            <Button style={{ margin: 5 }} onPress={() => this.shareLinkWithShareDialog()}>
               <Text>Share Link on Facebook</Text>
             </Button>
-            <Button onPress={() => this.sharePhotoWithShareDialog()}>
+            <Button style={{ margin: 5 }} onPress={() => this.sharePhotoWithShareDialog()}>
               <Text>Share Photos on Facebook</Text>
             </Button>
-            <Button onPress={() => this.loginLocal()}>
+            <Button style={{ margin: 5 }} onPress={() => this.loginLocal()}>
               <Text>Login Local</Text>
             </Button>
 
-            <Button onPress={() => this.uploadImage()}>
+            <Button style={{ margin: 5 }} onPress={() => this.uploadImage()}>
               <Text>upload image</Text>
             </Button>
 
-            <Button onPress={() => this.getImage()}>
+            <Button style={{ margin: 5 }} onPress={() => this.getImage()}>
               <Text>Get Image from server</Text>
             </Button>
 
@@ -354,6 +354,17 @@ class Home extends React.Component<Props, any> {
             >
               <Icon name="person" />
               <Text>Profile</Text>
+            </Button>
+            <Button
+              vertical
+              onPress={() =>
+                this.props.navigation.navigate(
+                  NavigationConstants.Screens.TripsInfographicPreivew
+                )
+              }
+            >
+              <Icon type="FontAwesome" name="eye" />
+              <Text>Preview</Text>
             </Button>
           </FooterTab>
         </Footer>

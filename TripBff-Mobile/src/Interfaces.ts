@@ -26,7 +26,7 @@ export module StoreData {
         fromDate: moment.Moment
         toDate: moment.Moment
         locations: Array<LocationVM>,
-        localInfographicUri: string
+        infographicId: string
     }
 
     export interface UserVM {
