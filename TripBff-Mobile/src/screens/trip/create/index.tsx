@@ -48,7 +48,8 @@ class TripCreation extends Component<Props, any> {
                 name: this.state.tripName,
                 fromDate: moment(this.state.fromDate).startOf('day'),
                 toDate: moment(this.state.toDate).endOf('day'),
-                locations: []
+                locations: [],
+                infographicId: ''
             };
             this.props.createTrip(trip);
 

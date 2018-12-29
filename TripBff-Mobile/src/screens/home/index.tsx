@@ -35,7 +35,6 @@ import {
   tripApi
 } from "../_services/apis";
 var RNFS = require('react-native-fs');
-import { addInfographicUri } from '../trip/export/actions';
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import { loginUsingUserPass, uploadSimpleImage } from "./actions";
 import { ThunkDispatch } from "redux-thunk";
@@ -390,8 +389,7 @@ function mapDispatchToProps(dispatch) {
     uploadSimpleImage: uri => dispatch(uploadSimpleImage(uri)),
 
     listRepos,
-    addToken,
-    addInfographicUri
+    addToken
   };
 }
 
