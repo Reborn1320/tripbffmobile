@@ -46,7 +46,7 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
                         var fullElement = await MediaLibrary.getAssetInfoAsync(element)                        
 
                         if (fullElement) {
-                            // console.log('full element: ' + fullElement.localUri);
+                            console.log('full element: ' + JSON.stringify(fullElement));
                             
                             // if ((fullElement.localUri.indexOf("Camera") == -1 && Platform.OS === "android") || 
                             // (fullElement.localUri.indexOf("Media") == -1 && Platform.OS === "ios")) continue;                   
