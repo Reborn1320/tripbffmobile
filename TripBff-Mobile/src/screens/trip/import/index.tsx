@@ -77,6 +77,8 @@ class TripImportation extends Component<Props, State> {
         console.log(`photos result = ${photos.length} photos`);
 
         var groupedPhotos = GroupPhotosIntoLocations(photos);
+        //todo: will be removed
+        var addresses = ["Vinpearl Land, Nha Trang", "Vịnh Ninh Vân, Nha Trang"];
 
         var adapterResult: TripImportLocationVM[] = []
         for (let idx = 0; idx < groupedPhotos.length; idx++) {
@@ -89,7 +91,7 @@ class TripImportation extends Component<Props, State> {
                 location: {
                     lat: element[0].location.latitude,
                     long: element[0].location.longitude,
-                    address: "Ho Chi Minh City"
+                    address: addresses[idx]
                 },
                 fromTime: moment(minTimestamp, "X"),
                 toTime: moment(maxTimestamp, "X"),

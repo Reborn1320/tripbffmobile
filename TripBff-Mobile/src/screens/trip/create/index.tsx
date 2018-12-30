@@ -76,8 +76,10 @@ class TripCreation extends Component<Props, any> {
         return (
             <Container>
                 <Header>
-                    <Text>Create new trip</Text>
-                </Header>
+                    <View style={{ height: 100, paddingTop: 30, flex: 1 }}>
+                        <Text style={{ color: "white" }}>Create new trip</Text>
+                    </View>
+                 </Header>
                 <Content>
                     <Form> 
                          <Item fixedLabel>

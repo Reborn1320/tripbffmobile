@@ -4,7 +4,7 @@ import { StoreData } from '../../../Interfaces';
 import { connect } from 'react-redux';
 import { NavigationScreenProp } from 'react-navigation';
 import _ from "lodash";
-import { FlatList, Image } from 'react-native';
+import { FlatList, Image, TextInput } from 'react-native';
 import { url } from 'inspector';
 
 interface IMapDispatchToProps {
@@ -26,7 +26,17 @@ class LocationDetail extends React.Component<Props, State> {
                 <Header>
                 </Header>
                 <Content>
-                    <Text>Location details {this.props.location.locationId}</Text>
+                    <Text style={{ 
+                        fontSize: 26,
+                        fontWeight: "bold" }}>{this.props.location.location.address}</Text>
+                    <TextInput
+                        placeholder = "What are your feeling?"
+                        multiline = {true}
+                        numberOfLines = {4}
+                        editable = {true}
+                        maxLength = {80}
+                        style={{ fontSize: 18, marginBottom: 20, maxHeight: 200 }}
+                    />
                     <View
                         style={{flexDirection: "row", flexWrap: "wrap"}}
                     >

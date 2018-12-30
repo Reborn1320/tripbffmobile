@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Spinner, Button, Text } from 'native-base';
+import { Container, Header, Content, Spinner, Button, Text , View} from 'native-base';
 import { FlatList, Alert } from "react-native";
 import { StoreData } from "../../../Interfaces";
 import { connect } from "react-redux";
@@ -90,7 +90,7 @@ class TripDetail extends Component<Props, State> {
  
                      for (let idx = 0; idx < nDays; idx++) {
                          dayVMs.push({
-                             idx: idx,
+                             idx: idx + 1,
                              locations: trip.locations
                                  .filter(element => moment(element.fromTime).diff(this.state.fromDate, "days") == idx)
                                  .map(e => {
@@ -150,15 +150,15 @@ render() {
     const { days, isLoaded } = this.state
     return (
         <Container>
-            <Header style={{
-                            flexDirection: 'row'
-                        }}>
-                <Button
-                    style={{ marginLeft: 'auto', 
-                             marginTop: 15 }}
-                    onPress={() => this.confirmExportInfographic()}>
-                    <Text>Done</Text>
-                </Button>                    
+            <Header>
+                <View style={{ height: 100, flex: 1, paddingTop: 10 }}> 
+                    <Button
+                        style={{ marginLeft: 'auto' }}
+                        onPress={() => this.confirmExportInfographic()}>
+                        <Text style={{ paddingTop: 15 }}>Done</Text>
+                    </Button>   
+                </View>
+                 
             </Header>
             <Content>           
                 {!isLoaded && <Spinner color='green' />}

@@ -39,6 +39,15 @@ class LocationItem extends React.Component<Props, State> {
                 <CardItem cardBody
                     style={{ backgroundColor: "white" }}
                 >
+                    <Text style={{ 
+                        fontSize: 18,
+                        fontWeight: "bold",
+                        marginBottom: 10 }}>{location.address}</Text>
+                </CardItem>
+
+                <CardItem cardBody
+                    style={{ backgroundColor: "white" }}
+                >
                     <TouchableHighlight
                         style={{ width: SIZE, height: SIZE23, flex: 1 }}
                         onPress={() => this.props.toLocationDetailHandler(location.id)}
@@ -51,18 +60,15 @@ class LocationItem extends React.Component<Props, State> {
                 <CardItem>
                     <Left>
                         <Button transparent>
-                            <Icon active name="thumbs-up" />
-                            <Text>12 Likes</Text>
+                            <Icon active type="FontAwesome" name="smile-o"/>
+                            <Text>Happy</Text>
                         </Button>
                     </Left>
-                    <Body>
-                        <Button transparent>
-                            <Icon active name="chatbubbles" />
-                            <Text>4 cm(s)</Text>
-                        </Button>
-                    </Body>
                     <Right>
-                        <Text>11h ago</Text>
+                        <Button transparent>
+                            <Icon active type="FontAwesome" name="music"/>
+                            <Text>Music</Text>
+                        </Button>
                     </Right>
                 </CardItem>
             </Card>
