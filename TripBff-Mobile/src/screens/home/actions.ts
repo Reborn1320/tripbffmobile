@@ -7,7 +7,7 @@ export function loginUsingUserPass(email, password): ThunkResultBase {
       password: password
     };
 
-    return extraArguments.loginApi.post(`/login`, loginUser);
+    return extraArguments.loginApi.post(`local/login`, loginUser);
   };
 }
 
