@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Header, Content, View, Button, Text } from 'native-base';
+import { Container, Header, Content, View, Button, Text, Footer } from 'native-base';
 import { connect, DispatchProp } from "react-redux";
 import {
     LoginButton,
@@ -16,6 +16,7 @@ import {
     setAuthorizationHeader
   } from "../_services/apis";
 
+import AppFooter from "../shared/AppFooter"
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
     dispatch: ThunkDispatch<any, null, any>;
     navigation: RNa.NavigationScreenProp<any, any>;
@@ -121,6 +122,9 @@ class Login extends Component<Props, any>{
                         </Button>
                     </View>
                 </Content> 
+                <Footer>
+                    <AppFooter navigation={this.props.navigation} activeScreen={NavigationConstants.Screens.Login} />
+                </Footer>
             </Container>
         );
     }

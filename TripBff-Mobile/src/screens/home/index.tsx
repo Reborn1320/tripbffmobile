@@ -39,6 +39,7 @@ import { NavigationConstants } from "../_shared/ScreenConstants";
 import { loginUsingUserPass, uploadSimpleImage } from "./actions";
 import { ThunkDispatch } from "redux-thunk";
 import { PropsBase } from "../_shared/LayoutContainer";
+import AppFooter from "../shared/AppFooter";
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
@@ -325,47 +326,7 @@ class Home extends React.Component<Props, any> {
           </View>
         </Content>
         <Footer>
-          <FooterTab>
-            <Button vertical>
-              <Icon active name="navigate" />
-              <Text>Search</Text>
-            </Button>
-            <Button
-              vertical
-              onPress={() =>
-                this.props.navigation.navigate(
-                  NavigationConstants.Screens.TripCreation
-                )
-              }
-            >
-              <Icon type="FontAwesome" name="plus-circle" />
-              <Text>Create</Text>
-            </Button>
-
-            <Button
-              vertical
-              active
-              onPress={() =>
-                this.props.navigation.navigate(
-                  NavigationConstants.Screens.TripsList
-                )
-              }
-            >
-              <Icon name="person" />
-              <Text>Profile</Text>
-            </Button>
-            <Button
-              vertical
-              onPress={() =>
-                this.props.navigation.navigate(
-                  NavigationConstants.Screens.TripsInfographicPreivew
-                )
-              }
-            >
-              <Icon type="FontAwesome" name="eye" />
-              <Text>Preview</Text>
-            </Button>
-          </FooterTab>
+          <AppFooter navigation={this.props.navigation} activeScreen={NavigationConstants.Screens.Home} />
         </Footer>
       </Container>
     );

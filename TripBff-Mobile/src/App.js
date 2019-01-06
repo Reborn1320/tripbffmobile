@@ -1,15 +1,13 @@
 import React from "react";
 
-import { createStore, applyMiddleware, combineReducers } from "redux";
-import { Provider, connect } from "react-redux";
+import { createStore, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
 import axiosMiddleware from "redux-axios-middleware";
 
 import { Root } from "native-base";
-import { createDrawerNavigator, createStackNavigator } from "react-navigation";
+import { createStackNavigator } from "react-navigation";
 
-import BasicFab from "./screens/fab/basic";
 import HomeScreen from "./screens/home/index";
-import NHFab from "./screens/fab";
 import TripDetail from "./screens/trip/detail";
 import TripCreation from "./screens/trip/create";
 import TripImportationScreen from "./screens/trip/import";
@@ -34,29 +32,28 @@ const store = createStore(
   )
 );
 
-const Drawer = createDrawerNavigator(
-  {
-    Home: { screen: HomeScreen },
-    Login: { screen: LoginScreen },
-    NHFab: { screen: NHFab },
-    TripImportation: { screen: TripImportationScreen }
-  },
-  {
-    initialRouteName: "Login",
-    initialRouteParams: {
-      tripId: 3
-    },
-    contentOptions: {
-      activeTintColor: "#e91e63"
-    }
-  }
-);
+// const Drawer = createDrawerNavigator(
+//   {
+//     Home: { screen: HomeScreen },
+//     Login: { screen: LoginScreen },
+//     NHFab: { screen: NHFab },
+//     TripImportation: { screen: TripImportationScreen }
+//   },
+//   {
+//     initialRouteName: "Login",
+//     initialRouteParams: {
+//       tripId: 3
+//     },
+//     contentOptions: {
+//       activeTintColor: "#e91e63"
+//     }
+//   }
+// );
 
 const AppNavigator = createStackNavigator(
   {
-    Drawer: { screen: Drawer },
-
-    BasicFab: { screen: BasicFab },
+    Home: { screen: HomeScreen },
+    Login: { screen: LoginScreen },
     TripDetail: { screen: TripDetail },
     LocationDetail: { screen: LocationDetailScreen },
     TripCreation: { screen: TripCreation },
@@ -64,7 +61,10 @@ const AppNavigator = createStackNavigator(
     InfographicPreview: { screen: InfographicPreviewScreen }
   },
   {
-    initialRouteName: "Drawer",
+    initialRouteName: "Home",
+    initialRouteParams: {
+      tripId: 3
+    },
     headerMode: "none"
   }
 );
