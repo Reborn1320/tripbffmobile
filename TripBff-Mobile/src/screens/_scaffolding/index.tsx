@@ -1,11 +1,9 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Spinner } from 'native-base';
-import { FlatList } from "react-native";
+import { Container, Header, Content, Spinner, Text } from 'native-base';
 import { connect } from "react-redux";
 import _, { } from "lodash";
 import moment from "moment";
 import { PropsBase } from "../_shared/LayoutContainer";
-import DayItem from "../trip/detail/components/DayItem";
 import { StoreData } from "../../Interfaces";
 
 interface IMapDispatchToProps {
@@ -16,6 +14,7 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 
 interface State {
     // tripId: number
+    isLoaded: boolean;
 }
 
 class TripDetail extends Component<Props, State> {
@@ -24,24 +23,12 @@ class TripDetail extends Component<Props, State> {
         super(props)
         
         this.state = {
+            isLoaded: false
         }
     }
 
-    _renderItem = (itemInfo) => {
-        const day = itemInfo.item;
-        return (
-
-            <DayItem
-                locations={day.locations} dayIdx={day.idx}
-                toLocationDetailHandler={(locationId) => {
-                    this.props.navigation.navigate("LocationDetail", { tripId: this.state.tripId, locationId })}}
-            />
-        )
-    };
-
-
 render() {
-    const { days, isLoaded } = this.state
+    const { isLoaded } = this.state
     return (
         <Container>
             <Header>
@@ -49,12 +36,7 @@ render() {
             <Content>
                 {!isLoaded && <Spinner color='green' />}
                {isLoaded && 
-                    <FlatList
-                    // styles={styles.container}
-                    data={days}
-                    renderItem={this._renderItem}
-                    keyExtractor={(item, index) => String(index)}
-                />} 
+                    <Text>page content here</Text>} 
             </Content>
         </Container>
     );
@@ -62,10 +44,10 @@ render() {
 }
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
-    const { tripId } = ownProps.navigation.state.params
-    var trip = _.find(storeState.trips, (item) => item.id == tripId)
+    // const { tripId } = ownProps.navigation.state.params
+    // var trip = _.find(storeState.trips, (item) => item.id == tripId)
     return {
-        trip
+        // trip
     };
 };
 
