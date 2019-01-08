@@ -38,10 +38,10 @@ export default class AppFooter extends Component<Props, any> {
 
         <Button
           vertical
-          active={this.props.activeScreen === NavigationConstants.Screens.TripsList}
+          active={this.props.activeScreen === NavigationConstants.Screens.Profile}
           onPress={() =>
             this.props.navigation.navigate(
-              NavigationConstants.Screens.TripsList
+              NavigationConstants.Screens.Profile
             )
           }
         >

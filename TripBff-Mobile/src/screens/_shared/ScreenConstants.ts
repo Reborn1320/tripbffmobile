@@ -9,6 +9,7 @@ export const NavigationConstants = {
     TripsInfographicPreivew: "InfographicPreview",
     Home: "HomeScreen",
     Login: "Login",
+    Profile: "Profile",
   }
 };
 

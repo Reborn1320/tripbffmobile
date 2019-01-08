@@ -15,6 +15,7 @@ import LocationDetailScreen from "./screens/location/detail";
 import InfographicPreviewScreen from "./screens/trip/preview/index";
 import { tripApi, loginApi, uploadFileApi } from "./screens/_services/apis";
 import LoginScreen from "./screens/login/index";
+import ProfileScreenContainer from "./screens/user/profile/ProfileScreenContainer";
 
 import bffApp from "./reducers";
 import ReduxThunk from "redux-thunk";
@@ -54,6 +55,7 @@ const AppNavigator = createStackNavigator(
   {
     Home: { screen: HomeScreen },
     Login: { screen: LoginScreen },
+    Profile: {screen: ProfileScreenContainer },
     TripDetail: { screen: TripDetail },
     LocationDetail: { screen: LocationDetailScreen },
     TripCreation: { screen: TripCreation },
