@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Header, Content, Text, View } from "native-base";
-import { FlatList } from "react-native";
+import { FlatList, TouchableHighlight, TouchableOpacity } from "react-native";
 import _ from "lodash";
 import Loading from "../_components/Loading";
 
@@ -8,10 +8,10 @@ export interface IStateProps {
 }
 
 interface IMapDispatchToProps {
-  fetchTrips?: () => Promise<Array<any>>;
 }
 
 export interface Props extends IMapDispatchToProps {
+  handleClick: (trip: any) => void;
   trips: Array<any>
 }
 
@@ -25,18 +25,17 @@ export class TripsComponent extends Component<Props & IStateProps, State> {
   }
 
   _renderItem = itemInfo => {
-    return (<Text>trip item</Text>);
+    const trip = itemInfo.item;
+    return (
+      <TouchableOpacity style={{ width: "100%", height: "100px" }}
+        onPress={() => this.props.handleClick(trip)}>
+        <Text>trip item</Text>
+      </TouchableOpacity>
+    );
   };
-
-  // shouldComponentUpdate() {
-  //   console.log("shouldComponentUpdate")
-  //   return true;
-  // }
 
   render() {
     const { trips } = this.props;
-    // console.log("TripsComponent", trips);
-    console.log("trips component render");
     return (
       <View>
           <FlatList

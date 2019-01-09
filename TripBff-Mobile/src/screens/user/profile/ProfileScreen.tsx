@@ -1,8 +1,11 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Text } from "native-base";
+import { Container, Header, Content, Text, Footer } from "native-base";
 import _ from "lodash";
 import Loading from "../../_components/Loading";
 import { TripsComponent } from "../../trips/TripsComponent";
+import AppFooter from "../../shared/AppFooter";
+import { NavigationConstants } from "../../_shared/ScreenConstants";
+import { PropsBase } from "../../_shared/LayoutContainer";
 
 export interface IStateProps {}
 
@@ -11,7 +14,7 @@ interface IMapDispatchToProps {
   fetchTrips: () => Promise<any>;
 }
 
-export interface Props extends IMapDispatchToProps {}
+export interface Props extends IMapDispatchToProps, PropsBase {}
 
 interface State {
   isLoaded: boolean;
@@ -23,7 +26,6 @@ interface State {
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
 
 //todo add profile component
-//todo check if logged or not, then load components appropriately
 export class ProfileScreen extends Component<Props & IStateProps, State> {
   constructor(props: Props) {
     super(props);
@@ -51,13 +53,10 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
       //trigger event to load data
       console.log("LOADING_TRIP");
 
-      this.props.fetchTrips()
-      .then(res => {
+      this.props.fetchTrips().then(res => {
         console.log("fetchTrips", res.data);
 
-        const fakedata = [
-          {}, {}, {}
-        ]
+        const fakedata = [{}, {}, {}];
         this.setState({
           isLoaded: false,
           loadingMessage: "",
@@ -68,16 +67,33 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     }
   }
 
+  handleTripItemClick(trip: any) {
+    const { tripId } = trip;
+    this.props.navigation.navigate(
+      NavigationConstants.Screens.TripDetail,
+      { tripId }
+    );
+  }
+
   render() {
     const { trips, isLoaded } = this.state;
-    console.log("screen render", isLoaded)
+    console.log("screen render", isLoaded);
     return (
       <Container>
         <Header />
         <Content>
           {isLoaded && <Loading message={this.state.loadingMessage} />}
-          <TripsComponent trips={trips} />
+          <TripsComponent
+            trips={trips}
+            handleClick={trip => this.handleTripItemClick(trip)}
+          />
         </Content>
+        <Footer>
+          <AppFooter
+            navigation={this.props.navigation}
+            activeScreen={NavigationConstants.Screens.Profile}
+          />
+        </Footer>
       </Container>
     );
   }
