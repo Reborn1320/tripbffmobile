@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { Container, Header, Content, Text, Footer } from "native-base";
 import _ from "lodash";
-import Loading from "../../_components/Loading";
-import { TripsComponent } from "../../trips/TripsComponent";
-import AppFooter from "../../shared/AppFooter";
-import { NavigationConstants } from "../../_shared/ScreenConstants";
-import { PropsBase } from "../../_shared/LayoutContainer";
+import Loading from "../_components/Loading";
+import { TripsComponent } from "../trips/TripsComponent";
+import AppFooter from "../shared/AppFooter";
+import { NavigationConstants } from "../_shared/ScreenConstants";
+import { PropsBase } from "../_shared/LayoutContainer";
 
 export interface IStateProps {}
 

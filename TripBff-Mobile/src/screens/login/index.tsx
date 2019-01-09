@@ -1,29 +1,23 @@
 import React, { Component } from "react";
-import { Container, Header, Content, View, Button, Text, Footer } from 'native-base';
+import { Container, Content, View, Button, Text, Footer } from 'native-base';
 import { connect, DispatchProp } from "react-redux";
 import {
     LoginButton,
     AccessToken
   } from "react-native-fbsdk";
 import { NavigationConstants } from "../_shared/ScreenConstants";
-import { loginUsingUserPass } from "../home/actions";
 import { ThunkDispatch } from "redux-thunk";
 import { PropsBase } from "../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
-import { StoreData } from "../../Interfaces";
-import { addToken } from "../auth/actions";
-import {
-    setAuthorizationHeader
-  } from "../_services/apis";
 
 import AppFooter from "../shared/AppFooter"
+import { loginUsingUserPass } from "../../store/User/operations";
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
     dispatch: ThunkDispatch<any, null, any>;
     navigation: RNa.NavigationScreenProp<any, any>;
 }
 
 interface IMapDispatchToProps {
-    addToken: (user: StoreData.UserVM) => void
   }
   
 class Login extends Component<Props, any>{  
@@ -56,7 +50,7 @@ class Login extends Component<Props, any>{
                         fullName: json.name
                     };   
                     console.log(user);
-                    tmp.loginDetails(user.email, user.password, data.accessToken);
+                    tmp.loginDetails(user.email, user.password);
                 })
                 .catch(() => {
                     console.log('ERROR GETTING DATA FROM FACEBOOK');
@@ -71,33 +65,16 @@ class Login extends Component<Props, any>{
             email: "bbb",
             password: "123456"
             };
-            this.loginDetails(postUser.email, postUser.password, "");
+            this.loginDetails(postUser.email, postUser.password);
         }
 
-      loginDetails(email, password, fbToken, isMoveToCreate = true) {
+      loginDetails(email, password, isMoveToCreate = true) {
         return this.props
           .dispatch<Promise<any>>(loginUsingUserPass(email, password))
-          .then(res => {
-            // store token into Store
-            console.log("token " + res.data.token);
-            const user: StoreData.UserVM = {
-              username: "asdf",
-              lastName: "asdf",
-              firstName: "asdf",
-              fullName: "adffff",
-              email: email,
-              token: res.data.token,
-              fbToken: fbToken
-            };
-            this.props.addToken(user);
-            setAuthorizationHeader(res.data.token);
-          
+          .then(() => {
             if (isMoveToCreate) {
               this.props.navigation.navigate("TripCreation");
             }
-          })
-          .catch(error => {
-            console.log("error login", error);
           });
       }
 
@@ -133,7 +110,6 @@ class Login extends Component<Props, any>{
 function mapDispatchToProps(dispatch) {
     return {
       dispatch, //todo remove this dispatch, and do something similar to the one below
-      addToken
     };
   }
 

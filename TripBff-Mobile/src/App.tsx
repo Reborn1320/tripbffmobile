@@ -15,7 +15,7 @@ import LocationDetailScreen from "./screens/location/detail";
 import InfographicPreviewScreen from "./screens/trip/preview/index";
 import { tripApi, loginApi, uploadFileApi } from "./screens/_services/apis";
 import LoginScreen from "./screens/login/index";
-import ProfileScreenContainer from "./screens/user/profile/ProfileScreenContainer";
+import ProfileScreenContainer from "./screens/user/ProfileScreenContainer";
 
 import bffApp from "./reducers";
 import ReduxThunk from "redux-thunk";

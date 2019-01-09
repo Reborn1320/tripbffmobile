@@ -5,12 +5,11 @@ import {
   Header,
   Content,
   Button,
-  Icon,
   Text,
   ListItem,
   View
 } from "native-base";
-import { Footer, FooterTab } from "native-base";
+import { Footer } from "native-base";
 
 import { connect, DispatchProp } from "react-redux";
 
@@ -19,8 +18,6 @@ import { listRepos } from "./reducer";
 import * as RNa from "react-navigation";
 import Loading from "../_components/Loading";
 import { FileSystem } from "expo";
-import { StoreData } from "../../Interfaces";
-import { addToken } from "../auth/actions";
 import {
   ShareDialog,
   LoginButton,
@@ -29,17 +26,15 @@ import {
 } from "react-native-fbsdk";
 import checkAndRequestPhotoPermissionAsync from "../shared/photo/PhotoPermission";
 import {
-  loginApi,
-  setAuthorizationHeader,
-  uploadFileApi,
   tripApi
 } from "../_services/apis";
 var RNFS = require('react-native-fs');
 import { NavigationConstants } from "../_shared/ScreenConstants";
-import { loginUsingUserPass, uploadSimpleImage } from "./actions";
+import { uploadSimpleImage } from "./actions";
 import { ThunkDispatch } from "redux-thunk";
 import { PropsBase } from "../_shared/LayoutContainer";
 import AppFooter from "../shared/AppFooter";
+import { loginUsingUserPass } from "../../store/User/operations";
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
@@ -49,7 +44,6 @@ export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
 
 interface IMapDispatchToProps {
   listRepos: (name: string) => void;
-  addToken: (user: StoreData.UserVM) => void,
   addInfographicUri: (tripId: string, path: string) => void
   uploadSimpleImage: (uri: string) => Promise<any>;
 }
@@ -132,33 +126,17 @@ class Home extends React.Component<Props, any> {
       email: "bbb",
       password: "123456"
     };
-    this.loginDetails(postUser.email, postUser.password, "");
+    this.loginDetails(postUser.email, postUser.password);
   }
 
-  loginDetails(email, password, fbToken, isMoveToCreate = true) {
+  loginDetails(email, password, isMoveToCreate = true) {
     return this.props
       .dispatch<Promise<any>>(loginUsingUserPass(email, password))
-      .then(res => {
-        // store token into Store
-        console.log("token " + res.data.token);
-        const user: StoreData.UserVM = {
-          username: "asdf",
-          lastName: "asdf",
-          firstName: "asdf",
-          fullName: "adffff",
-          email: email,
-          token: res.data.token,
-          fbToken: fbToken
-        };
-        this.props.addToken(user);
-        setAuthorizationHeader(res.data.token);
+      .then(() => {
       
         if (isMoveToCreate) {
           this.props.navigation.navigate("TripCreation");
         }
-      })
-      .catch(error => {
-        console.log("error login", error);
       });
   }
 
@@ -214,7 +192,7 @@ class Home extends React.Component<Props, any> {
       email: "bbb",
       password: "123456"
     };
-    this.loginDetails(postUser.email, postUser.password, "", false).then(
+    this.loginDetails(postUser.email, postUser.password, false).then(
       async () => {
         await checkAndRequestPhotoPermissionAsync();
         //content://media/external/images/media/2312
@@ -251,7 +229,7 @@ class Home extends React.Component<Props, any> {
 
         // write the file
         RNFS.writeFile(path, res.data, 'base64')
-          .then((success) => {
+          .then(() => {
             console.log('FILE WRITTEN!');
             // store path of infographic into store
             this.props.addInfographicUri('1', path);
@@ -350,7 +328,6 @@ function mapDispatchToProps(dispatch) {
     uploadSimpleImage: uri => dispatch(uploadSimpleImage(uri)),
 
     listRepos,
-    addToken
   };
 }
 

@@ -1,16 +1,5 @@
 import { ThunkResultBase } from "../_shared/LayoutContainer";
 
-export function loginUsingUserPass(email, password): ThunkResultBase {
-  return async function(dispatch, getState, extraArguments) {
-    var loginUser = {
-      email: email,
-      password: password
-    };
-
-    return extraArguments.loginApi.post(`local/login`, loginUser);
-  };
-}
-
 export function uploadSimpleImage(uri: string): ThunkResultBase {
   return async function(dispatch, getState, extraArguments) {
     return extraArguments.uploadApi
