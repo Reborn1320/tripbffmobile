@@ -22,7 +22,7 @@ const locationInitState: StoreData.LocationVM[] = ImportImageScreenData
 const tripsInitState: StoreData.TripVM[] = []
 for (let idx = 0; idx < 5; idx++) {
     tripsInitState.push({
-        id: idx.toString(),
+        tripId: idx.toString(),
         name: `trip name ${idx}`,
         fromDate: moment("2018-10-10"), 
         toDate: moment("2018-10-18").add(1, "day").add(-1, "second"),
@@ -32,7 +32,7 @@ for (let idx = 0; idx < 5; idx++) {
 }
 
 tripsInitState.push({
-    id: '5',
+    tripId: '5',
     name: `trip name ${5}`,
     fromDate: moment("2018-10-04"), 
     toDate: moment("2018-10-29").add(1, "day").add(-1, "second"),
@@ -66,11 +66,17 @@ function tripReducer(state, action) {
     return importImagesReducer(state, action)
 }
 
-function tripsReducer(state, action) {
-    const actionType: String = action.type
-    if (actionType.search(/^TRIP\//i) !== -1) {
+function tripsReducer(state: Array<StoreData.TripVM>, action) {
+    const actionType: string = action.type;
+
+    console.log("actionType", actionType);
+    if (_.startsWith(actionType, "TRIPS")) {
+        //handle trips
+        return action.trips;
+    }
+    else if (actionType.search(/^TRIP\//i) !== -1) {
         //handle single trip
-        var trip = _.find(state, (item) => item.id == action.tripId)
+        var trip = _.find(state, (item) => item.tripId == action.tripId)
 
         var newState = [
             ...state.slice(0, action.tripId),

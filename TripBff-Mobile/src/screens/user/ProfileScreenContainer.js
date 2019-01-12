@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import _ from "lodash";
 import { loginUsingUserPass } from "../../store/User/operations";
 import { fetchTrips } from "../trips/operations";
+import { addTrips } from "../trips/actions";
 import { ProfileScreen } from "./ProfileScreen";
 
 const mapStateToProps = () => {
@@ -10,9 +11,9 @@ const mapStateToProps = () => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    loginUsingUserPass: (email, password) =>
-      dispatch(loginUsingUserPass(email, password)),
-    fetchTrips: () => dispatch(fetchTrips())
+    loginUsingUserPass: (email, password) => dispatch(loginUsingUserPass(email, password)),
+    fetchTrips: () => dispatch(fetchTrips()),
+    addTrips: (trips) => dispatch(addTrips(trips))
   };
 };
 

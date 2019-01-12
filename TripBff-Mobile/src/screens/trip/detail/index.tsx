@@ -55,7 +55,7 @@ class TripDetail extends Component<Props, State> {
         var dayVMs: DayVM[] = []
 
         this.state = {
-            tripId: props.trip.id,
+            tripId: props.trip.tripId,
             fromDate: props.trip.fromDate,
             toDate: props.trip.toDate,
             name: props.trip.name,
@@ -79,12 +79,13 @@ class TripDetail extends Component<Props, State> {
 
     async componentDidMount() {
          // get locations of trip from server
-         var url = '/trips/' + this.props.trip.id +'/locations';
+         var url = '/trips/' + this.props.trip.tripId +'/locations';
+         console.log(url);
          tripApi.get(url)
                  .then((res) => {
                      var trip = res.data;
                      var dayVMs: DayVM[] = [];
-                     //console.log('after get trip: ' + JSON.stringify(trip));
+                     console.log('after get trip: ',trip);
 
                      const nDays = this.state.toDate.diff(this.state.fromDate, "days") + 1                      
  
@@ -119,7 +120,7 @@ class TripDetail extends Component<Props, State> {
 
     exportInfographic() {
         // call api to request export infographic
-        var tripId = this.props.trip.id;
+        var tripId = this.props.trip.tripId;
         tripApi
         .post('/trips/' + tripId + '/infographics')
         .then(res => {
@@ -177,7 +178,7 @@ render() {
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId } = ownProps.navigation.state.params
-    var trip = _.find(storeState.trips, (item) => item.id == tripId)
+    var trip = _.find(storeState.trips, (item) => item.tripId == tripId)
     return {
         trip
     };

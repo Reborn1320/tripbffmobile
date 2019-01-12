@@ -48,6 +48,7 @@ class LocationItem extends React.Component<Props, State> {
                 <CardItem cardBody
                     style={{ backgroundColor: "white" }}
                 >
+                {/* todo icon x button with confirmation modal */}
                     <TouchableHighlight
                         style={{ width: SIZE, height: SIZE23, flex: 1 }}
                         onPress={() => this.props.toLocationDetailHandler(location.id)}
@@ -58,6 +59,7 @@ class LocationItem extends React.Component<Props, State> {
                     </TouchableHighlight>
                 </CardItem>
                 <CardItem>
+                    {/* todo icon x button with confirmation modal */}
                     <Left>
                         <Button transparent>
                             <Icon active type="FontAwesome" name="smile-o"/>

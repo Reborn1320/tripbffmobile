@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Text, View } from "native-base";
-import { FlatList, TouchableHighlight, TouchableOpacity } from "react-native";
+import { Text, View, Button } from "native-base";
 import _ from "lodash";
-import Loading from "../_components/Loading";
+import { StoreData } from "../../Interfaces";
 
 export interface IStateProps {
 }
@@ -12,12 +11,11 @@ interface IMapDispatchToProps {
 
 export interface Props extends IMapDispatchToProps {
   handleClick: (trip: any) => void;
-  trips: Array<any>
+  trips: Array<StoreData.TripVM>
 }
 
 interface State {
 }
-
 
 export class TripsComponent extends Component<Props & IStateProps, State> {
   constructor(props: Props) {
@@ -25,12 +23,13 @@ export class TripsComponent extends Component<Props & IStateProps, State> {
   }
 
   _renderItem = itemInfo => {
-    const trip = itemInfo.item;
+    const trip: StoreData.TripVM = itemInfo.item;
     return (
-      <TouchableOpacity style={{ width: "100%", height: "100px" }}
-        onPress={() => this.props.handleClick(trip)}>
-        <Text>trip item</Text>
-      </TouchableOpacity>
+      <View key={itemInfo.index}>
+        <Button full light onPress={() => this.props.handleClick(trip)}>
+          <Text>{trip.name}: {trip.fromDate.format()} - {trip.toDate.format()}</Text>
+        </Button>
+      </View>
     );
   };
 
@@ -38,12 +37,7 @@ export class TripsComponent extends Component<Props & IStateProps, State> {
     const { trips } = this.props;
     return (
       <View>
-          <FlatList
-            // styles={styles.container}
-            data={trips}
-            renderItem={this._renderItem}
-            keyExtractor={(item, index) => String(index)}
-          />
+        {trips.map((trip, index) => this._renderItem({item: trip, index }))}
       </View>
     );
   }

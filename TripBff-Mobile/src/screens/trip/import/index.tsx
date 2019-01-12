@@ -53,7 +53,7 @@ class TripImportation extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            tripId: props.trip.id,
+            tripId: props.trip.tripId,
             name: props.trip.name,
             fromDate: props.trip.fromDate,
             toDate: props.trip.toDate,
@@ -184,7 +184,7 @@ class TripImportation extends Component<Props, State> {
             .post(url, selectedLocations)
             .then((res) => {
                 console.log("import trip succeeded")
-                // console.log('result after import trip: ' + JSON.stringify(res.data));      
+                console.log('result after import trip: ',res.data);      
                 dispatch(importSelectedLocations(tripId, res.data.locations));
                 // this.setState({ UIState: "import images" })
             })
@@ -392,7 +392,7 @@ const StyledFlatList = styled(FlatList)`
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId } = ownProps.navigation.state.params;
-    var trip = _.find(storeState.trips, (item) => item.id == tripId)
+    var trip = _.find(storeState.trips, (item) => item.tripId == tripId)
     return {
         trip
     };

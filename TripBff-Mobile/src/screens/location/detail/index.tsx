@@ -1,11 +1,10 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Container, Header, Text, Content, View } from 'native-base';
 import { StoreData } from '../../../Interfaces';
 import { connect } from 'react-redux';
 import { NavigationScreenProp } from 'react-navigation';
 import _ from "lodash";
-import { FlatList, Image, TextInput } from 'react-native';
-import { url } from 'inspector';
+import { Image, TextInput } from 'react-native';
 
 interface IMapDispatchToProps {
 }
@@ -50,7 +49,7 @@ class LocationDetail extends React.Component<Props, State> {
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId, locationId } = ownProps.navigation.state.params
-    var trip = _.find(storeState.trips, (item) => item.id == tripId)
+    var trip = _.find(storeState.trips, (item) => item.tripId == tripId)
     var location = _.find(trip.locations, e => e.locationId == locationId)
     return {
         location

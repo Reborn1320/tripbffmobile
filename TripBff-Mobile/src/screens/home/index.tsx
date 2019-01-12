@@ -123,8 +123,8 @@ class Home extends React.Component<Props, any> {
   loginLocal() {
     //demo call api to login and get token
     var postUser = {
-      email: "bbb",
-      password: "123456"
+      email: "aaa",
+      password: "bbb"
     };
     this.loginDetails(postUser.email, postUser.password);
   }
