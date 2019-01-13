@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Text, Footer, View } from "native-base";
+import { Container, Header, Content, Footer, View } from "native-base";
 import _ from "lodash";
 import Loading from "../_components/Loading";
 import { TripsComponent } from "../trips/TripsComponent";
@@ -56,7 +56,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
       console.log("LOADING_TRIP");
 
       this.props.fetchTrips().then(trips => {
-        console.log("fetched Trips", trips);
+        // console.log("fetched Trips", trips);
 
         this.props.addTrips(trips);
 

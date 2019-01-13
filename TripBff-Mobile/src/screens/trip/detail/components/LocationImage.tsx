@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View } from 'native-base';
 import { Image, Dimensions } from "react-native";
-import { ImageVM } from '..';
+import { ImageVM } from '../TripDetailScreen';
 
 export interface Props {
     images: ImageVM[]

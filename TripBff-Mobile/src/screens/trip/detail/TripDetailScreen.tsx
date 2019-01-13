@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Container, Header, Content, Spinner, Button, Text , View} from 'native-base';
 import { FlatList, Alert } from "react-native";
 import { StoreData } from "../../../Interfaces";
-import { connect } from "react-redux";
 import _, { } from "lodash";
 import moment from "moment";
 import DayItem from "./components/DayItem";
@@ -10,10 +9,10 @@ import { tripApi } from "../../_services/apis";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import * as RNa from "react-navigation";
-import { addInfographicId } from '../../trip/export/actions';
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
+    removeLocation: (tripId: string, locationId: string) => void
 }
 
 export interface Props extends IMapDispatchToProps, PropsBase {
@@ -37,7 +36,7 @@ export interface DayVM {
 }
 
 export interface LocationVM {
-    id: number
+    id: string
     address: string
     images: Array<ImageVM>
 }
@@ -47,7 +46,7 @@ export interface ImageVM {
     highlight: boolean
 }
 
-class TripDetail extends Component<Props, State> {
+export class TripDetailScreen extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -73,14 +72,18 @@ class TripDetail extends Component<Props, State> {
                 locations={day.locations} dayIdx={day.idx}
                 toLocationDetailHandler={(locationId) => {
                     this.props.navigation.navigate("LocationDetail", { tripId: this.state.tripId, locationId })}}
+                removeLocationHandler={(locationId) => this.removeLocation(locationId)}
             />
         )
     };
 
+    removeLocation(locationId) {
+        this.props.removeLocation(this.state.tripId, locationId);
+    }
+
     async componentDidMount() {
          // get locations of trip from server
          var url = '/trips/' + this.props.trip.tripId +'/locations';
-         console.log(url);
          tripApi.get(url)
                  .then((res) => {
                      var trip = res.data;
@@ -175,20 +178,4 @@ render() {
     );
 }
 }
-
-const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
-    const { tripId } = ownProps.navigation.state.params
-    var trip = _.find(storeState.trips, (item) => item.tripId == tripId)
-    return {
-        trip
-    };
-};
-
-const mapDispatchToProps: IMapDispatchToProps = {
-    addInfographicId
-};
-
-const TripDetailScreen = connect(mapStateToProps, mapDispatchToProps)(TripDetail);
-
-export default TripDetailScreen;
 

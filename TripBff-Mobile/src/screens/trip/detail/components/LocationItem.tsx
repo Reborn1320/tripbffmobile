@@ -1,17 +1,18 @@
 import React from "react";
-import { Text, Card, CardItem, Left, Body, Button, Icon, Right } from "native-base";
-import { LocationVM } from "..";
+import { Text, Card, CardItem, Left, Button, Icon, Right } from "native-base";
+import { LocationVM } from "../TripDetailScreen";
 
 import { TouchableHighlight, Dimensions } from "react-native";
 import Location3Images from "./Location3Images";
 import LocationImage from "./LocationImage";
 export interface Props {
     location: LocationVM
-    toLocationDetailHandler: (locationId: number) => void
+    toLocationDetailHandler: (locationId: string) => void
+    removeLocationHandler: (locationId: string) => void
 }
 
 export interface State {
-    locationIdx: number
+    locationIdx: string
 }
 
 class LocationItem extends React.Component<Props, State> {
@@ -49,6 +50,12 @@ class LocationItem extends React.Component<Props, State> {
                     style={{ backgroundColor: "white" }}
                 >
                 {/* todo icon x button with confirmation modal */}
+                    <Button bordered rounded danger
+                        style={{ position: "absolute", right: 5, top: 5, backgroundColor: "white", elevation: 1 }}
+                        onPress={() => this.props.removeLocationHandler(location.id)}
+                        >
+                        <Icon type="FontAwesome" name="times" />
+                    </Button>
                     <TouchableHighlight
                         style={{ width: SIZE, height: SIZE23, flex: 1 }}
                         onPress={() => this.props.toLocationDetailHandler(location.id)}

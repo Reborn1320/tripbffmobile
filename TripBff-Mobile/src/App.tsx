@@ -8,7 +8,7 @@ import { Root } from "native-base";
 import { createStackNavigator } from "react-navigation";
 
 import HomeScreen from "./screens/home/index";
-import TripDetail from "./screens/trip/detail";
+import TripDetailScreenContainer from "./screens/trip/detail/TripDetailScreenContainer";
 import TripCreation from "./screens/trip/create";
 import TripImportationScreen from "./screens/trip/import";
 import LocationDetailScreen from "./screens/location/detail";
@@ -56,7 +56,7 @@ const AppNavigator = createStackNavigator(
     Home: { screen: HomeScreen },
     Login: { screen: LoginScreen },
     Profile: {screen: ProfileScreenContainer },
-    TripDetail: { screen: TripDetail },
+    TripDetail: { screen: TripDetailScreenContainer },
     LocationDetail: { screen: LocationDetailScreen },
     TripCreation: { screen: TripCreation },
     TripImportation: { screen: TripImportationScreen },
