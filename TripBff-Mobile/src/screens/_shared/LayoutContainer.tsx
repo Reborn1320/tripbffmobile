@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import { NavigationScreenProp } from "react-navigation";
-import { ThunkAction } from "redux-thunk";
+import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { AxiosInstance } from "axios";
 import { uploadFileApi } from "../_services/apis";
 
@@ -12,6 +12,12 @@ export interface PropsBase {
 
 export type ThunkResultBase<R = Promise<any>, S = any> = ThunkAction<
   R,
+  S,
+  ThunkExtraArgumentsBase,
+  any
+>;
+
+export type ThunkDispatchBase<S = any> = ThunkDispatch<
   S,
   ThunkExtraArgumentsBase,
   any

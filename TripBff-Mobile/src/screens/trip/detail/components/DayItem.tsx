@@ -1,12 +1,13 @@
 import React from 'react'
 import { View, Text, Button, Icon } from 'native-base';
-import { LocationVM } from '..';
+import { LocationVM } from '../TripDetailScreen';
 import LocationItem from './LocationItem';
 
 export interface Props {
     dayIdx: number
     locations: LocationVM[]
-    toLocationDetailHandler: (locationId: number) => void
+    toLocationDetailHandler: (locationId: string) => void
+    removeLocationHandler: (locationId: string) => void
 }
 
 export interface State {
@@ -25,7 +26,12 @@ export default class DayItem extends React.Component<Props, State> {
                     </Button>
                 </View>
 
-                {locations.map(e => <LocationItem location={e} key={e.id} toLocationDetailHandler={(locationId) => this.props.toLocationDetailHandler(locationId)} ></LocationItem>)}
+                {locations.map(e => 
+                <LocationItem location={e} key={e.id} 
+                    toLocationDetailHandler={(locationId) => this.props.toLocationDetailHandler(locationId)} 
+                    removeLocationHandler={(locationId) => this.props.removeLocationHandler(locationId)}
+                    >
+                </LocationItem>)}
             </View>
         )
     }

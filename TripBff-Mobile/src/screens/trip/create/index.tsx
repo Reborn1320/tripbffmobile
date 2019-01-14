@@ -44,7 +44,7 @@ class TripCreation extends Component<Props, any> {
 
             // map trip info into Store
             var trip: StoreData.TripVM = {
-                id: tripId,
+                tripId: tripId,
                 name: this.state.tripName,
                 fromDate: moment(this.state.fromDate).startOf('day'),
                 toDate: moment(this.state.toDate).endOf('day'),

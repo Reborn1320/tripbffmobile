@@ -173,7 +173,7 @@ import {
 
   const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId } = ownProps.navigation.state.params;
-    var trip = _.find(storeState.trips, (item) => item.id == tripId)
+    var trip = _.find(storeState.trips, (item) => item.tripId == tripId)
     return {
         trip
     };

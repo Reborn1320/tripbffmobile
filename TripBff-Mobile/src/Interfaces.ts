@@ -21,7 +21,7 @@ export module StoreData {
     }
 
     export interface TripVM {
-        id: string
+        tripId: string
         name: string
         fromDate: moment.Moment
         toDate: moment.Moment
@@ -37,7 +37,7 @@ export module StoreData {
         fullName: string
 
         token: string,
-        fbToken: string
+        fbToken?: string
         //TODO: expired time...
     }
 
@@ -52,5 +52,17 @@ export module StoreData {
         repo?: RepoVM
         user?: UserVM
         trips?: Array<TripVM>
+    }
+}
+
+
+export namespace RawJsonData {
+    export interface TripVM {
+        tripId: string
+        name: string
+        fromDate: string
+        toDate: string
+        locations: Array<StoreData.LocationVM>,
+        infographicId: string
     }
 }

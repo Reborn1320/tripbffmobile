@@ -1,17 +1,18 @@
 import React from "react";
-import { Text, Card, CardItem, Left, Body, Button, Icon, Right } from "native-base";
-import { LocationVM } from "..";
+import { Text, Card, CardItem, Left, Button, Icon, Right } from "native-base";
+import { LocationVM } from "../TripDetailScreen";
 
 import { TouchableHighlight, Dimensions } from "react-native";
 import Location3Images from "./Location3Images";
 import LocationImage from "./LocationImage";
 export interface Props {
     location: LocationVM
-    toLocationDetailHandler: (locationId: number) => void
+    toLocationDetailHandler: (locationId: string) => void
+    removeLocationHandler: (locationId: string) => void
 }
 
 export interface State {
-    locationIdx: number
+    locationIdx: string
 }
 
 class LocationItem extends React.Component<Props, State> {
@@ -37,7 +38,7 @@ class LocationItem extends React.Component<Props, State> {
             <Card style={{ marginLeft: MARGIN_LEFT, marginRight: MARGIN_RIGHT }}
             >
                 <CardItem cardBody
-                    style={{ backgroundColor: "white" }}
+                    style={{ backgroundColor: "white", height: 46, paddingLeft: 10 }}
                 >
                     <Text style={{ 
                         fontSize: 18,
@@ -48,6 +49,8 @@ class LocationItem extends React.Component<Props, State> {
                 <CardItem cardBody
                     style={{ backgroundColor: "white" }}
                 >
+                {/* todo icon x button with confirmation modal */}
+
                     <TouchableHighlight
                         style={{ width: SIZE, height: SIZE23, flex: 1 }}
                         onPress={() => this.props.toLocationDetailHandler(location.id)}
@@ -56,8 +59,16 @@ class LocationItem extends React.Component<Props, State> {
                         {nImages == 1 ? (<LocationImage images={location.images} />)
                             : (nImages == 2) ? (<LocationImage images={location.images} />) : (<Location3Images images={location.images} />)}
                     </TouchableHighlight>
+
                 </CardItem>
+                <Button rounded icon transparent danger small
+                        style={{ position: "absolute", right: 0, top: 6, backgroundColor: "white" }}
+                        onPress={() => this.props.removeLocationHandler(location.id)}
+                        >
+                        <Icon type="FontAwesome" name="times" />
+                    </Button>
                 <CardItem>
+                    {/* todo icon x button with confirmation modal */}
                     <Left>
                         <Button transparent>
                             <Icon active type="FontAwesome" name="smile-o"/>

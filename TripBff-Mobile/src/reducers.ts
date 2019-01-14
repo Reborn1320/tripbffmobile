@@ -8,6 +8,7 @@ import importImagesReducer from './screens/trip/import/reducers';
 import { TRIP_ADD } from './screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './screens/auth/actions';
 import { ADD_INFOGRAPHIC_ID } from './screens/trip/export/actions';
+import { LOCATION_REMOVE } from './screens/trip/detail/actions';
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -22,7 +23,7 @@ const locationInitState: StoreData.LocationVM[] = ImportImageScreenData
 const tripsInitState: StoreData.TripVM[] = []
 for (let idx = 0; idx < 5; idx++) {
     tripsInitState.push({
-        id: idx.toString(),
+        tripId: idx.toString(),
         name: `trip name ${idx}`,
         fromDate: moment("2018-10-10"), 
         toDate: moment("2018-10-18").add(1, "day").add(-1, "second"),
@@ -32,7 +33,7 @@ for (let idx = 0; idx < 5; idx++) {
 }
 
 tripsInitState.push({
-    id: '5',
+    tripId: '5',
     name: `trip name ${5}`,
     fromDate: moment("2018-10-04"), 
     toDate: moment("2018-10-29").add(1, "day").add(-1, "second"),
@@ -53,7 +54,7 @@ function userReducer(state, action) {
     return state;
 }
 
-function tripReducer(state, action) {
+function tripReducer(state: StoreData.TripVM, action) {
     //TODO: combine with other reducer if needed
     // return state;
 
@@ -62,15 +63,33 @@ function tripReducer(state, action) {
             infographicId: action.infographicId
           });
     }
+    else if (action.type == LOCATION_REMOVE) {
+        console.log("reducer")
+        var newState: StoreData.TripVM = {
+            ...state,
+            locations: [
+                ...state.locations.slice(0, action.locationId),
+                ...state.locations.slice(action.locationId + 1)
+            ]
+        }
+
+        return newState
+    }
 
     return importImagesReducer(state, action)
 }
 
-function tripsReducer(state, action) {
-    const actionType: String = action.type
-    if (actionType.search(/^TRIP\//i) !== -1) {
+function tripsReducer(state: Array<StoreData.TripVM>, action) {
+    const actionType: string = action.type;
+
+    console.log("actionType", actionType);
+    if (_.startsWith(actionType, "TRIPS")) {
+        //handle trips
+        return action.trips;
+    }
+    else if (_.startsWith(actionType, "TRIP")) {
         //handle single trip
-        var trip = _.find(state, (item) => item.id == action.tripId)
+        var trip = _.find(state, (item) => item.tripId == action.tripId)
 
         var newState = [
             ...state.slice(0, action.tripId),
