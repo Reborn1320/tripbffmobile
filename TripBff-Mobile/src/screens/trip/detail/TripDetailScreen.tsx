@@ -12,7 +12,7 @@ import * as RNa from "react-navigation";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
-    removeLocation: (tripId: string, locationId: string) => void
+    removeLocation: (tripId: string, locationId: string) => Promise<void>
 }
 
 export interface Props extends IMapDispatchToProps, PropsBase {
@@ -78,43 +78,49 @@ export class TripDetailScreen extends Component<Props, State> {
     };
 
     removeLocation(locationId) {
-        this.props.removeLocation(this.state.tripId, locationId);
+        console.log("removeLocation")
+        this.props.removeLocation(this.state.tripId, locationId)
+        .then(() => {
+            this.fetchTrip(this.props.trip.tripId);
+        });
     }
 
     async componentDidMount() {
-         // get locations of trip from server
-         var url = '/trips/' + this.props.trip.tripId +'/locations';
-         tripApi.get(url)
-                 .then((res) => {
-                     var trip = res.data;
-                     var dayVMs: DayVM[] = [];
-                     console.log('after get trip: ',trip);
+        this.fetchTrip(this.props.trip.tripId);
+    }
 
-                     const nDays = this.state.toDate.diff(this.state.fromDate, "days") + 1                      
- 
-                     for (let idx = 0; idx < nDays; idx++) {
-                         dayVMs.push({
-                             idx: idx + 1,
-                             locations: trip.locations
-                                 .filter(element => moment(element.fromTime).diff(this.state.fromDate, "days") == idx)
-                                 .map(e => {
-                                     return {
-                                         id: e.locationId,
-                                         address: e.location.address,
-                                         images: e.images.map(img => { return { url: img.url, highlight: false } })
-                                     }
-                                 })
-             
-                         })
-                     }
-                     
-                     //console.log('dayVMs: ' + JSON.stringify(dayVMs));    
-                     this.setState({ days: dayVMs, isLoaded: true });
- 
-                 })
-                 .catch((err) => {
-                     console.log('error: ' + JSON.stringify(err));
-                 }); 
+    fetchTrip(tripId) {
+        var url = '/trips/' + this.props.trip.tripId +'/locations';
+        tripApi.get(url)
+        .then((res) => {
+            var trip = res.data;
+            var dayVMs: DayVM[] = [];
+
+            const nDays = this.state.toDate.diff(this.state.fromDate, "days") + 1                      
+
+            for (let idx = 0; idx < nDays; idx++) {
+                dayVMs.push({
+                    idx: idx + 1,
+                    locations: trip.locations
+                        .filter(element => moment(element.fromTime).diff(this.state.fromDate, "days") == idx)
+                        .map(e => {
+                            return {
+                                id: e.locationId,
+                                address: e.location.address,
+                                images: e.images.map(img => { return { url: img.url, highlight: false } })
+                            }
+                        })
+    
+                })
+            }
+            
+            //console.log('dayVMs: ' + JSON.stringify(dayVMs));    
+            this.setState({ days: dayVMs, isLoaded: true });
+
+        })
+        .catch((err) => {
+            console.log('error: ' + JSON.stringify(err));
+        }); 
     }
     
     setModalVisible(visible) {

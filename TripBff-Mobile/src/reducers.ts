@@ -8,6 +8,7 @@ import importImagesReducer from './screens/trip/import/reducers';
 import { TRIP_ADD } from './screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './screens/auth/actions';
 import { ADD_INFOGRAPHIC_ID } from './screens/trip/export/actions';
+import { LOCATION_REMOVE } from './screens/trip/detail/actions';
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -53,7 +54,7 @@ function userReducer(state, action) {
     return state;
 }
 
-function tripReducer(state, action) {
+function tripReducer(state: StoreData.TripVM, action) {
     //TODO: combine with other reducer if needed
     // return state;
 
@@ -61,6 +62,18 @@ function tripReducer(state, action) {
         return Object.assign({}, state, {
             infographicId: action.infographicId
           });
+    }
+    else if (action.type == LOCATION_REMOVE) {
+        console.log("reducer")
+        var newState: StoreData.TripVM = {
+            ...state,
+            locations: [
+                ...state.locations.slice(0, action.locationId),
+                ...state.locations.slice(action.locationId + 1)
+            ]
+        }
+
+        return newState
     }
 
     return importImagesReducer(state, action)
@@ -74,7 +87,7 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
         //handle trips
         return action.trips;
     }
-    else if (actionType.search(/^TRIP\//i) !== -1) {
+    else if (_.startsWith(actionType, "TRIP")) {
         //handle single trip
         var trip = _.find(state, (item) => item.tripId == action.tripId)
 

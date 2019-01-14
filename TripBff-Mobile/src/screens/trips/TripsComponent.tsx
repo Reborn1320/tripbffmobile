@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Text, View, Button } from "native-base";
+import { View, H1, H3 } from "native-base";
 import _ from "lodash";
 import { StoreData } from "../../Interfaces";
+import { TouchableHighlight } from "react-native";
 
 export interface IStateProps {
 }
@@ -25,11 +26,13 @@ export class TripsComponent extends Component<Props & IStateProps, State> {
   _renderItem = itemInfo => {
     const trip: StoreData.TripVM = itemInfo.item;
     return (
-      <View key={itemInfo.index}>
-        <Button full light onPress={() => this.props.handleClick(trip)}>
-          <Text>{trip.name}: {trip.fromDate.format()} - {trip.toDate.format()}</Text>
-        </Button>
-      </View>
+      <TouchableHighlight key={itemInfo.index} onPress={() => this.props.handleClick(trip)}>
+        <View style={{ height: 100, borderBottomColor: "orange", borderBottomWidth: 1 }}>
+          <H1>{trip.name}</H1>
+          <H3>{trip.fromDate.format("MMM Do YY")} - {trip.toDate.format("MMM Do YY")}</H3>
+          <H3>locations: {trip.locations.length}</H3>
+        </View>
+      </TouchableHighlight>
     );
   };
 
