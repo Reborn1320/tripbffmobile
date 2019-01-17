@@ -16,6 +16,7 @@ import com.facebook.FacebookSdk;
 // Needed for `react-native link`
 import com.facebook.react.ReactApplication;
 import com.rnfs.RNFSPackage;
+import com.mapbox.rctmgl.RCTMGLPackage;
 
 public class MainApplication extends ExpoApplication implements ReactApplication {
 
@@ -36,6 +37,7 @@ public class MainApplication extends ExpoApplication implements ReactApplication
               // Needed for `react-native link`
               new MainReactPackage(),
               new RNFSPackage(),
+              new RCTMGLPackage(),
               //**  ADD THE FOLLOWING LINE **//
               new FBSDKPackage(mCallbackManager)
       );
@@ -61,6 +63,7 @@ public class MainApplication extends ExpoApplication implements ReactApplication
         //new MainReactPackage(),
         //**  ADD THE FOLLOWING LINE **//
         new RNFSPackage(),
+        new RCTMGLPackage(),
         new FBSDKPackage(mCallbackManager)
     );
   }
