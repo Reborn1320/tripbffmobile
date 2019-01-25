@@ -3,8 +3,8 @@
 
 import * as React from "react";
 import Modal from "../_atoms/Modal";
-import { View, Text, Button } from "native-base";
-import { TouchableOpacity } from "react-native";
+import { View, Text, Button  } from "native-base";
+import { StyleSheet, ViewStyle, TextStyle } from "react-native";
 
 export interface Props {
   isVisible: boolean;
@@ -30,17 +30,51 @@ class ConfirmationModal extends React.Component<Props, State> {
 
     return (
       <Modal isVisible={isVisible}>
-        <View style={{ flex: 1 }}>
-            <Text>{title}</Text>
-            <Text>{content}</Text>
-            <View>
-              <Button transparent onPress={this._onCancel}>Cancel</Button>
-              <Button onPress={this._onConfirm}>Yes</Button>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.titleContent}>{title}</Text>
+            <Text style={styles.textContent}>{content}</Text>
+            <View style={styles.buttons}>
+              <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
+              <Button onPress={this._onConfirm}><Text>Yes</Text></Button>
             </View>
           </View>
+        </View>
       </Modal>
     );
   }
 }
+
+interface Style {
+  buttons: ViewStyle;
+  modalContainer: ViewStyle;
+  modalContent: ViewStyle;
+  titleContent: TextStyle;
+  textContent: TextStyle;
+}
+
+const styles = StyleSheet.create<Style>({
+  buttons: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center"
+  },
+  modalContainer: {
+    flex: 0,
+    height: 200,
+  },
+  modalContent: {
+    padding: 22,
+    height: 200
+  },
+  titleContent: {
+    marginBottom: 10,
+    color: "white"
+  },
+  textContent: {
+    marginBottom: 10,
+    color: "white"
+  }
+})
 
 export default ConfirmationModal;
