@@ -2,10 +2,11 @@
 //input: isVisible, title, content, button confirm handler.
 
 import * as React from "react";
-import Modal from "../_atoms/Modal";
-import { View, Text, Button  } from "native-base";
+import { Modal } from "../_atoms";
+import { View, Text, Button, H2 } from "native-base";
 import { StyleSheet, ViewStyle, TextStyle } from "react-native";
-
+import variables from "../theme/variables/material";
+import { mixins } from "./utils";
 export interface Props {
   isVisible: boolean;
   title?: string;
@@ -30,14 +31,14 @@ class ConfirmationModal extends React.Component<Props, State> {
 
     return (
       <Modal isVisible={isVisible}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.titleContent}>{title}</Text>
-            <Text style={styles.textContent}>{content}</Text>
-            <View style={styles.buttons}>
-              <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
-              <Button onPress={this._onConfirm}><Text>Yes</Text></Button>
-            </View>
+        <View style={styles.modalInnerContainer}>
+          <View style={styles.titleContainer}>
+            <H2 style={styles.titleText}>{title}</H2>
+          </View>
+          <Text style={styles.contentText}>{content}</Text>
+          <View style={styles.buttons}>
+            <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
+            <Button onPress={this._onConfirm}><Text>Yes</Text></Button>
           </View>
         </View>
       </Modal>
@@ -47,10 +48,11 @@ class ConfirmationModal extends React.Component<Props, State> {
 
 interface Style {
   buttons: ViewStyle;
-  modalContainer: ViewStyle;
-  modalContent: ViewStyle;
-  titleContent: TextStyle;
-  textContent: TextStyle;
+  // modalContainer: ViewStyle;
+  modalInnerContainer: ViewStyle;
+  titleContainer: ViewStyle;
+  titleText: TextStyle;
+  contentText: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -59,21 +61,36 @@ const styles = StyleSheet.create<Style>({
     flexDirection: "row",
     justifyContent: "center"
   },
-  modalContainer: {
-    flex: 0,
+  // modalContainer: {
+  //   ...mixins.themes.debug,
+  // },
+  modalInnerContainer: {
+    flex: 1,
+    width: "100%",
     height: 200,
+    paddingBottom: 15,
+    // ...mixins.themes.debug1,
   },
-  modalContent: {
-    padding: 22,
-    height: 200
+  titleContainer: {
+    margin: 0,
+    paddingTop: 22,
+    paddingBottom: 10,
+    borderBottomColor: variables.listBorderColor,
+    borderBottomWidth: 1,
+    paddingLeft: 15,
+    paddingRight: 15,
+    width: "100%",
+    // ...mixins.themes.debug,
   },
-  titleContent: {
-    marginBottom: 10,
-    color: "white"
+  titleText: {
+    color: variables.listBorderColor,
   },
-  textContent: {
-    marginBottom: 10,
-    color: "white"
+  contentText: {
+    marginTop: 22,
+    marginBottom: 30,
+    marginLeft: 15,
+    marginRight: 15,
+    color: variables.listBorderColor
   }
 })
 

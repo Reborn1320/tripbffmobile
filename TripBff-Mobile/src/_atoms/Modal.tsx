@@ -4,6 +4,7 @@ import React, { ReactNode, FunctionComponentElement } from "react";
 import RNModal from "react-native-modal";
 import { ViewStyle, StyleSheet } from "react-native";
 import { connectStyle } from 'native-base';
+import { mixins } from "./_utils";
 
 export interface Props {
   isVisible: boolean;
@@ -38,7 +39,8 @@ const styles = StyleSheet.create<Style>({
     flex: 0,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 200 //todo improve margin with screenWidth
+    marginTop: 200, //todo improve margin with screenWidth
+    // ...mixins.themes.debug,
   }
 })
 
