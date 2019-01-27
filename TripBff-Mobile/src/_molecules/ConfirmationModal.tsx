@@ -23,7 +23,11 @@ class ConfirmationModal extends React.Component<Props, State> {
     super(props);
   }
 
-  _onCancel = () => this.props.cancelHandler();
+  _onCancel = () => {
+    if (this.props.cancelHandler) {
+      this.props.cancelHandler();
+    }
+  };
   _onConfirm = () => this.props.confirmHandler();
 
   render() {

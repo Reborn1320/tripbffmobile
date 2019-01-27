@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Footer, View, Button } from "native-base";
+import { Container, Header, Content, Footer, View } from "native-base";
 import _ from "lodash";
 import Loading from "../_components/Loading";
 import { TripsComponent } from "../trips/TripsComponent";
@@ -7,7 +7,6 @@ import AppFooter from "../shared/AppFooter";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import { PropsBase } from "../_shared/LayoutContainer";
 import { StoreData } from "../../Interfaces";
-import ConfirmationModal from "../../_molecules/ConfirmationModal";
 
 export interface IStateProps { }
 
@@ -24,7 +23,6 @@ interface State {
   loadingMessage: string;
   trips: Array<any>;
   UIState: UIState;
-  isModalVisible: boolean;
 }
 
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
@@ -39,7 +37,6 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
       loadingMessage: "Logining",
       trips: [],
       UIState: "LOGIN",
-      isModalVisible: false
     };
   }
 
@@ -80,13 +77,9 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
       { tripId, id: tripId }
     );
   }
-  _toggleConfirmationModal = () => this.setState({ isModalVisible: !this.state.isModalVisible })
-
-  _onConfirm = () => this.setState({ isModalVisible: false })
-  _onCancel = () => this.setState({ isModalVisible: false })
 
   render() {
-    const { trips, isLoaded, isModalVisible } = this.state;
+    const { trips, isLoaded } = this.state;
     // console.log("screen render", isLoaded);
     // console.log("screen render", trips);
     return (
@@ -94,8 +87,6 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         <Header />
         <Content>
           <View>
-            <Button onPress={this._toggleConfirmationModal}>need your confirmation</Button>
-            <ConfirmationModal isVisible={isModalVisible} content="You want confirm ??" confirmHandler={this._onConfirm} cancelHandler={this._onCancel}></ConfirmationModal>
             {isLoaded && <Loading message={this.state.loadingMessage} />}
             <TripsComponent
               trips={trips}
