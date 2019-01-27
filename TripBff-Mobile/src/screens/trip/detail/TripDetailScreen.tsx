@@ -9,6 +9,7 @@ import { tripApi } from "../../_services/apis";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import * as RNa from "react-navigation";
+import ConfirmationModal from "../../../_molecules/ConfirmationModal";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
@@ -27,7 +28,9 @@ interface State {
     name: string
     days: DayVM[],
     isLoaded: boolean,
-    modalVisible: boolean
+    modalVisible: boolean,
+    isConfirmationModalVisible: boolean,
+    focusingLocationId?: string,
 }
 
 export interface DayVM {
@@ -61,6 +64,7 @@ export class TripDetailScreen extends Component<Props, State> {
             days: dayVMs,
             isLoaded: false,
             modalVisible: false,
+            isConfirmationModalVisible: false,
         }
     }
 
@@ -79,10 +83,30 @@ export class TripDetailScreen extends Component<Props, State> {
 
     removeLocation(locationId) {
         console.log("removeLocation")
-        this.props.removeLocation(this.state.tripId, locationId)
+        this.setState({
+            isConfirmationModalVisible: true,
+            focusingLocationId: locationId,
+        })    
+    }
+
+    _removeLocationConfirmed = () => {
+        let focusingLocationId = this.state.focusingLocationId;
+        this.setState({
+            isConfirmationModalVisible: false,
+            focusingLocationId: null,
+        });
+        
+        this.props.removeLocation(this.state.tripId, focusingLocationId)
         .then(() => {
             this.fetchTrip(this.props.trip.tripId);
         });
+    }
+
+    _cancelModal = () => {
+        this.setState({
+            isConfirmationModalVisible: false,
+            focusingLocationId: null,
+        })
     }
 
     async componentDidMount() {
@@ -157,7 +181,7 @@ export class TripDetailScreen extends Component<Props, State> {
     }
 
 render() {
-    const { days, isLoaded } = this.state
+    const { days, isLoaded, isConfirmationModalVisible } = this.state
     return (
         <Container>
             <Header>
@@ -179,6 +203,10 @@ render() {
                     renderItem={this._renderItem}
                     keyExtractor={(item, index) => String(index)}
                 />} 
+                <ConfirmationModal title="DELETE LOCATION" content="Do you want to delete this location ?"
+                    confirmHandler={this._removeLocationConfirmed}
+                    cancelHandler={this._cancelModal}
+                    isVisible={isConfirmationModalVisible} />
             </Content>
         </Container>
     );

@@ -36,7 +36,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
       isLoaded: true,
       loadingMessage: "Logining",
       trips: [],
-      UIState: "LOGIN"
+      UIState: "LOGIN",
     };
   }
 
