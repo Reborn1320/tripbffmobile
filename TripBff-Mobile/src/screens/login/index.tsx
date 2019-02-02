@@ -11,7 +11,7 @@ import { PropsBase } from "../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
 
 import AppFooter from "../shared/AppFooter"
-import { loginUsingUserPass } from "../../store/User/operations";
+import { loginUsingUserPass } from "../../_organisms/user/operations";
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
     dispatch: ThunkDispatch<any, null, any>;
     navigation: RNa.NavigationScreenProp<any, any>;

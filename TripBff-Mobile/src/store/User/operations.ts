@@ -1,8 +1,7 @@
-import { addToken } from "./actions";
+import { addToken } from "./actionsCreator";
 import { ThunkResultBase } from "../../screens/_shared/LayoutContainer";
 import { StoreData } from "../../Interfaces";
 import { setAuthorizationHeader } from "../../screens/_services/apis";
-
 
 export function loginUsingUserPass(email: string, password: string): ThunkResultBase {
   return async function(dispatch, getState, extraArguments): Promise<any> {
