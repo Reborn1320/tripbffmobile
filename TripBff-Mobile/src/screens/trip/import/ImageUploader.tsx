@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StoreData } from "../../../Interfaces";
+import { StoreData } from "../../../store/Interfaces";
 import _ from "lodash";
 import 'react-native-console-time-polyfill';
 

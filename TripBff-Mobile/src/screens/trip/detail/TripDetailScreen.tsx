@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Container, Header, Content, Spinner, Button, Text , View} from 'native-base';
 import { FlatList, Alert } from "react-native";
-import { StoreData } from "../../../Interfaces";
+import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
 import moment from "moment";
 import DayItem from "./components/DayItem";

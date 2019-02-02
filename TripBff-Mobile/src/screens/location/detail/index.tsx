@@ -1,6 +1,6 @@
 import React from 'react'
 import { Container, Header, Text, Content, View } from 'native-base';
-import { StoreData } from '../../../Interfaces';
+import { StoreData } from '../../../store/Interfaces';
 import { connect } from 'react-redux';
 import { NavigationScreenProp } from 'react-navigation';
 import _ from "lodash";

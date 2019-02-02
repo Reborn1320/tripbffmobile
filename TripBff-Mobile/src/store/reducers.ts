@@ -2,13 +2,12 @@ import _, { cloneDeep } from 'lodash';
 import moment from "moment";
 import { StoreData } from "./Interfaces";
 // import importImagesReducer from "./screens/trip/import/reducers";
-import homeScreenReducer from "./screens/home/reducer";
-import ImportImageScreenData from "./fake_data";
-import importImagesReducer from './screens/trip/import/reducers';
-import { TRIP_ADD } from './screens/trip/create/actions';
-import { AUTH_ADD_TOKEN } from './screens/auth/actions';
-import { ADD_INFOGRAPHIC_ID } from './screens/trip/export/actions';
-import { LOCATION_REMOVE } from './screens/trip/detail/actions';
+import homeScreenReducer from "../screens/home/reducer";
+import importImagesReducer from '../screens/trip/import/reducers';
+import { TRIP_ADD } from '../screens/trip/create/actions';
+import { AUTH_ADD_TOKEN } from '../screens/auth/actions';
+import { ADD_INFOGRAPHIC_ID } from '../screens/trip/export/actions';
+import { LOCATION_REMOVE } from '../screens/trip/detail/actions';
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -19,7 +18,6 @@ const userInitState: StoreData.UserVM = {
     token: "ASdf",
     fbToken: ""
 }
-const locationInitState: StoreData.LocationVM[] = ImportImageScreenData
 const tripsInitState: StoreData.TripVM[] = []
 for (let idx = 0; idx < 5; idx++) {
     tripsInitState.push({

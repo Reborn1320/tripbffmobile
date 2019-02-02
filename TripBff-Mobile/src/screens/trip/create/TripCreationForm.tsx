@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Text, View } from 'native-base';
 import { Form, Item, Label, Input, DatePicker } from 'native-base';
-import { StoreData } from "../../../Interfaces";
+import { StoreData } from "../../../store/Interfaces";
 import { tripApi } from "../../_services/apis";
 import moment from "moment";
 

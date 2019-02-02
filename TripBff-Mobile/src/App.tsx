@@ -17,7 +17,7 @@ import { tripApi, loginApi, uploadFileApi } from "./screens/_services/apis";
 import LoginScreen from "./screens/login/index";
 import ProfileScreenContainer from "./screens/user/ProfileScreenContainer";
 
-import bffApp from "./reducers";
+import bffApp from "./store/reducers";
 import ReduxThunk from "redux-thunk";
 
 const store = createStore(

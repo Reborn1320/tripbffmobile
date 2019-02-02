@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { FlatList, View } from "react-native";
 import { Container, Header, Content, Button, Text, Footer } from 'native-base';
 import styled from "styled-components/native";
-import { StoreData } from "../../../Interfaces";
+import { StoreData } from "../../../store/Interfaces";
 import _ from "lodash";
 import { connect } from "react-redux";
 import { cloneDeep } from 'lodash';

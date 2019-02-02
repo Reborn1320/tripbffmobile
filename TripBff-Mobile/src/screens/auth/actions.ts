@@ -1,4 +1,4 @@
-import { StoreData } from '../../Interfaces';
+import { StoreData } from '../../store/Interfaces';
 
 export const AUTH_ADD_TOKEN = "AUTH_ADD_TOKEN"
 

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, H1, H3 } from "native-base";
 import _ from "lodash";
-import { StoreData } from "../../Interfaces";
+import { StoreData } from "../../../store/Interfaces";
 import { TouchableHighlight } from "react-native";
 
 export interface IStateProps {

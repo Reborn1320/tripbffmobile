@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Header, Content, Text, View } from 'native-base';
-import { StoreData } from "../../../Interfaces";
+import { StoreData } from "../../../store/Interfaces";
 import { connect } from "react-redux";
 import { createTrip } from './actions';
 import moment from "moment";

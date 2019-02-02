@@ -20,7 +20,7 @@ import {
     AccessToken,
     LoginManager
   } from "react-native-fbsdk";
-  import { StoreData } from "../../../Interfaces";
+  import { StoreData } from "../../../store/Interfaces";
   import _, { } from "lodash";
   import { NavigationConstants } from "../../_shared/ScreenConstants";
 

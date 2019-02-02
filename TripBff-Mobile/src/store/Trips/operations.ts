@@ -1,5 +1,5 @@
-import { ThunkResultBase } from "../_shared/LayoutContainer";
-import { StoreData, RawJsonData } from "../../Interfaces";
+import { ThunkResultBase } from "../../screens/_shared/LayoutContainer";
+import { StoreData, RawJsonData } from "../Interfaces";
 import moment from "moment";
 
 export function fetchTrips(): ThunkResultBase {
