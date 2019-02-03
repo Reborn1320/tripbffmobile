@@ -5,13 +5,16 @@ import moment from "moment";
 import { tripApi } from "../../_services/apis";
 import * as RNa from "react-navigation";
 import { TripDetails, DayVM } from "./TripDetails";
+import { removeLocation } from "../../../store/Trip/operations";
+import { connect } from "react-redux";
 
 interface IMapDispatchToProps {
     removeLocation: (tripId: string, locationId: string) => Promise<void>
 }
 
-export interface Props extends IMapDispatchToProps {
+export interface Props {
     trip: StoreData.TripVM,
+    //todo remove navigation, and replace with handler
     navigation: RNa.NavigationScreenProp<any, any>;
 }
 
@@ -25,9 +28,9 @@ interface State {
     focusingLocationId?: string,
 }
 
-export class TripDetailsContainer extends Component<Props, State> {
+export class TripDetailsContainer extends Component<Props & IMapDispatchToProps, State> {
 
-    constructor(props: Props) {
+    constructor(props: Props & IMapDispatchToProps) {
         super(props)
 
         var dayVMs: DayVM[] = []
@@ -46,6 +49,7 @@ export class TripDetailsContainer extends Component<Props, State> {
         this.fetchTrip();
     }
 
+    //todo move to redux-thunk approach
     fetchTrip() {
         var url = '/trips/' + this.props.trip.tripId + '/locations';
         tripApi.get(url)
@@ -80,6 +84,13 @@ export class TripDetailsContainer extends Component<Props, State> {
             });
     }
 
+    _removeLocationConfirmed = () => {
+        this.props.removeLocation(this.state.tripId, focusingLocationId)
+            .then(() => {
+                this.fetchTrip();
+            });
+    }
+
     render() {
         const { tripId, days } = this.state;
         return (
@@ -88,3 +99,21 @@ export class TripDetailsContainer extends Component<Props, State> {
     }
 }
 
+const mapStateToProps = (storeState, ownProps: Props) => {
+    return {
+        ...ownProps
+    };
+};
+
+const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
+    return {
+        removeLocation: (tripId, locationId) => dispatch(removeLocation(tripId, locationId)),
+    };
+};
+
+const TripDetailsContainer2 = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TripDetailsContainer);
+
+export default TripDetailsContainer2;

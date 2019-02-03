@@ -9,7 +9,7 @@ import { tripApi } from "../../_services/apis";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import * as RNa from "react-navigation";
-import { TripDetailsContainer } from "./TripDetailsContainer";
+import TripDetailsContainer2, { TripDetailsContainer } from "./TripDetailsContainer";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
@@ -89,69 +89,6 @@ export class TripDetailScreen extends Component<Props, State> {
         })    
     }
 
-    _removeLocationConfirmed = () => {
-        let focusingLocationId = this.state.focusingLocationId;
-        this.setState({
-            isConfirmationModalVisible: false,
-            focusingLocationId: null,
-        });
-        
-        this.props.removeLocation(this.state.tripId, focusingLocationId)
-        .then(() => {
-            this.fetchTrip();
-        });
-    }
-
-    _cancelModal = () => {
-        this.setState({
-            isConfirmationModalVisible: false,
-            focusingLocationId: null,
-        })
-    }
-
-    async componentDidMount() {
-        this.fetchTrip();
-    }
-
-    //todo move to redux-thunk approach
-    fetchTrip() {
-        var url = '/trips/' + this.props.trip.tripId +'/locations';
-        tripApi.get(url)
-        .then((res) => {
-            var trip = res.data;
-            var dayVMs: DayVM[] = [];
-
-            const nDays = this.state.toDate.diff(this.state.fromDate, "days") + 1                      
-
-            for (let idx = 0; idx < nDays; idx++) {
-                dayVMs.push({
-                    idx: idx + 1,
-                    locations: trip.locations
-                        .filter(element => moment(element.fromTime).diff(this.state.fromDate, "days") == idx)
-                        .map(e => {
-                            return {
-                                id: e.locationId,
-                                address: e.location.address,
-                                images: e.images.map(img => { return { url: img.url, highlight: false } })
-                            }
-                        })
-    
-                })
-            }
-            
-            //console.log('dayVMs: ' + JSON.stringify(dayVMs));    
-            this.setState({ days: dayVMs, isLoaded: true });
-
-        })
-        .catch((err) => {
-            console.log('error: ' + JSON.stringify(err));
-        }); 
-    }
-    
-    setModalVisible(visible) {
-        this.setState({modalVisible: visible});
-    }
-
     exportInfographic() {
         // call api to request export infographic
         var tripId = this.props.trip.tripId;
@@ -196,7 +133,7 @@ render() {
                  
             </Header>
             <Content>           
-                <TripDetailsContainer trip={trip} navigation={navigation} removeLocation={this.props.removeLocation} />
+                <TripDetailsContainer2 trip={trip} navigation={navigation} />
             </Content>
         </Container>
     );
