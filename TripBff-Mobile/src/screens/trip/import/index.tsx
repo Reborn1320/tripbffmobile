@@ -14,7 +14,7 @@ import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
 import { importSelectedLocations, uploadedImage } from "./actions";
-import Loading from "../../_components/Loading";
+import Loading from "../../../_atoms/Loading/Loading";
 import { AxiosInstance } from "axios";
 import {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import { TripImportLocationVM } from "./TripImportViewModels";

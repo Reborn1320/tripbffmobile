@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Spinner, Button, Text , View} from 'native-base';
-import { FlatList, Alert } from "react-native";
+import { Container, Header, Content, Button, Text , View} from 'native-base';
+import { Alert } from "react-native";
 import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
 import moment from "moment";
@@ -9,7 +9,7 @@ import { tripApi } from "../../_services/apis";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import * as RNa from "react-navigation";
-import ConfirmationModal from "../../../_molecules/ConfirmationModal";
+import { TripDetailsContainer } from "./TripDetailsContainer";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
@@ -98,7 +98,7 @@ export class TripDetailScreen extends Component<Props, State> {
         
         this.props.removeLocation(this.state.tripId, focusingLocationId)
         .then(() => {
-            this.fetchTrip(this.props.trip.tripId);
+            this.fetchTrip();
         });
     }
 
@@ -110,10 +110,11 @@ export class TripDetailScreen extends Component<Props, State> {
     }
 
     async componentDidMount() {
-        this.fetchTrip(this.props.trip.tripId);
+        this.fetchTrip();
     }
 
-    fetchTrip(tripId) {
+    //todo move to redux-thunk approach
+    fetchTrip() {
         var url = '/trips/' + this.props.trip.tripId +'/locations';
         tripApi.get(url)
         .then((res) => {
@@ -181,7 +182,7 @@ export class TripDetailScreen extends Component<Props, State> {
     }
 
 render() {
-    const { days, isLoaded, isConfirmationModalVisible } = this.state
+    const { trip, navigation } = this.props;
     return (
         <Container>
             <Header>
@@ -195,18 +196,7 @@ render() {
                  
             </Header>
             <Content>           
-                {!isLoaded && <Spinner color='green' />}
-               {isLoaded && 
-                    <FlatList
-                    // styles={styles.container}
-                    data={days}
-                    renderItem={this._renderItem}
-                    keyExtractor={(item, index) => String(index)}
-                />} 
-                <ConfirmationModal title="DELETE LOCATION" content="Do you want to delete this location ?"
-                    confirmHandler={this._removeLocationConfirmed}
-                    cancelHandler={this._cancelModal}
-                    isVisible={isConfirmationModalVisible} />
+                <TripDetailsContainer trip={trip} navigation={navigation} removeLocation={this.props.removeLocation} />
             </Content>
         </Container>
     );

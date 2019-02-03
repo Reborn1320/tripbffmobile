@@ -16,7 +16,7 @@ import { connect, DispatchProp } from "react-redux";
 import styles from "./styles";
 import { listRepos } from "./reducer";
 import * as RNa from "react-navigation";
-import Loading from "../_components/Loading";
+import Loading from "../../_atoms/Loading/Loading";
 import { FileSystem } from "expo";
 import {
   ShareDialog,

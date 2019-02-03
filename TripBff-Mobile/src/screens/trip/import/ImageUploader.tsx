@@ -5,7 +5,7 @@ import 'react-native-console-time-polyfill';
 
 import moment from "moment";
 import { uploadedImage } from "./actions";
-import Loading from "../../_components/Loading";
+import Loading from "../../../_atoms/Loading/Loading";
 import { ThunkDispatch } from 'redux-thunk';
 import { TripImportLocationVM } from "./TripImportViewModels";
 import { uploadFileApi } from "../../_services/apis";

@@ -5,7 +5,7 @@ import { StoreData } from "./Interfaces";
 import homeScreenReducer from "../screens/home/reducer";
 import importImagesReducer from '../screens/trip/import/reducers';
 import { TRIP_ADD } from '../screens/trip/create/actions';
-import { AUTH_ADD_TOKEN } from '../screens/auth/actions';
+import { AUTH_ADD_TOKEN } from './User/actions';
 import { ADD_INFOGRAPHIC_ID } from '../screens/trip/export/actions';
 import { LOCATION_REMOVE } from '../screens/trip/detail/actions';
 
