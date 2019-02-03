@@ -84,8 +84,8 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
             });
     }
 
-    _removeLocationConfirmed = () => {
-        this.props.removeLocation(this.state.tripId, focusingLocationId)
+    _removeLocationConfirmed = async (tripId, locationId) => {
+        this.props.removeLocation(tripId, locationId)
             .then(() => {
                 this.fetchTrip();
             });
@@ -94,7 +94,7 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
     render() {
         const { tripId, days } = this.state;
         return (
-            <TripDetails tripId={tripId} days={days} navigation={this.props.navigation} removeLocation={this.props.removeLocation} />
+            <TripDetails tripId={tripId} days={days} navigation={this.props.navigation} removeLocation={this._removeLocationConfirmed} />
         );
     }
 }

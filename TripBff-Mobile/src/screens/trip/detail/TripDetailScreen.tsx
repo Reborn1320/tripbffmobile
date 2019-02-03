@@ -1,19 +1,17 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Button, Text , View} from 'native-base';
+import { Container, Header, Content, Button, Text, View } from 'native-base';
 import { Alert } from "react-native";
 import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
 import moment from "moment";
-import DayItem from "./components/DayItem";
 import { tripApi } from "../../_services/apis";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import * as RNa from "react-navigation";
-import TripDetailsContainer2, { TripDetailsContainer } from "./TripDetailsContainer";
+import TripDetailsContainer2 from "./TripDetailsContainer";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
-    removeLocation: (tripId: string, locationId: string) => Promise<void>
 }
 
 export interface Props extends IMapDispatchToProps, PropsBase {
@@ -22,88 +20,31 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 }
 
 interface State {
-    tripId: string
-    fromDate: moment.Moment
-    toDate: moment.Moment
-    name: string
-    days: DayVM[],
-    isLoaded: boolean,
-    modalVisible: boolean,
-    isConfirmationModalVisible: boolean,
-    focusingLocationId?: string,
-}
-
-export interface DayVM {
-    idx: number
-    locations: LocationVM[]
-}
-
-export interface LocationVM {
-    id: string
-    address: string
-    images: Array<ImageVM>
-}
-
-export interface ImageVM {
-    url: string
-    highlight: boolean
 }
 
 export class TripDetailScreen extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
-        
-        var dayVMs: DayVM[] = []
-
         this.state = {
-            tripId: props.trip.tripId,
-            fromDate: props.trip.fromDate,
-            toDate: props.trip.toDate,
-            name: props.trip.name,
-            days: dayVMs,
-            isLoaded: false,
-            modalVisible: false,
-            isConfirmationModalVisible: false,
         }
-    }
-
-    _renderItem = (itemInfo) => {
-        const day: DayVM = itemInfo.item;
-        return (
-
-            <DayItem
-                locations={day.locations} dayIdx={day.idx}
-                toLocationDetailHandler={(locationId) => {
-                    this.props.navigation.navigate("LocationDetail", { tripId: this.state.tripId, locationId })}}
-                removeLocationHandler={(locationId) => this.removeLocation(locationId)}
-            />
-        )
-    };
-
-    removeLocation(locationId) {
-        console.log("removeLocation")
-        this.setState({
-            isConfirmationModalVisible: true,
-            focusingLocationId: locationId,
-        })    
     }
 
     exportInfographic() {
         // call api to request export infographic
         var tripId = this.props.trip.tripId;
         tripApi
-        .post('/trips/' + tripId + '/infographics')
-        .then(res => {
-            var infographicId = res.data;
-            // store infogphicId into store
-            this.props.addInfographicId(tripId, infographicId);
-            console.log('infographic id: ' + infographicId);
-            this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, {tripId: tripId});
-        })
-        .catch(error => {
-            console.log("error: " + JSON.stringify(error));
-        });
+            .post('/trips/' + tripId + '/infographics')
+            .then(res => {
+                var infographicId = res.data;
+                // store infogphicId into store
+                this.props.addInfographicId(tripId, infographicId);
+                console.log('infographic id: ' + infographicId);
+                this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, { tripId: tripId });
+            })
+            .catch(error => {
+                console.log("error: " + JSON.stringify(error));
+            });
     }
 
     confirmExportInfographic() {
@@ -111,32 +52,32 @@ export class TripDetailScreen extends Component<Props, State> {
             'Confirm',
             'Export infographic ?',
             [
-              {text: 'Cancel', onPress: () => this.props.navigation.navigate(NavigationConstants.Screens.TripsList), style: 'cancel'},
-              {text: 'OK', onPress: () => this.exportInfographic()},
+                { text: 'Cancel', onPress: () => this.props.navigation.navigate(NavigationConstants.Screens.TripsList), style: 'cancel' },
+                { text: 'OK', onPress: () => this.exportInfographic() },
             ],
             { cancelable: false }
-          )
+        )
     }
 
-render() {
-    const { trip, navigation } = this.props;
-    return (
-        <Container>
-            <Header>
-                <View style={{ height: 100, flex: 1, paddingTop: 10 }}> 
-                    <Button
-                        style={{ marginLeft: 'auto' }}
-                        onPress={() => this.confirmExportInfographic()}>
-                        <Text style={{ paddingTop: 15 }}>Done</Text>
-                    </Button>   
-                </View>
-                 
-            </Header>
-            <Content>           
-                <TripDetailsContainer2 trip={trip} navigation={navigation} />
-            </Content>
-        </Container>
-    );
-}
+    render() {
+        const { trip, navigation } = this.props;
+        return (
+            <Container>
+                <Header>
+                    <View style={{ height: 100, flex: 1, paddingTop: 10 }}>
+                        <Button
+                            style={{ marginLeft: 'auto' }}
+                            onPress={() => this.confirmExportInfographic()}>
+                            <Text style={{ paddingTop: 15 }}>Done</Text>
+                        </Button>
+                    </View>
+
+                </Header>
+                <Content>
+                    <TripDetailsContainer2 trip={trip} navigation={navigation} />
+                </Content>
+            </Container>
+        );
+    }
 }
 
