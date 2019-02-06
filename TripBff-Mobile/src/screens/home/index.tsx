@@ -34,7 +34,7 @@ import { uploadSimpleImage } from "./actions";
 import { ThunkDispatch } from "redux-thunk";
 import { PropsBase } from "../_shared/LayoutContainer";
 import AppFooter from "../shared/AppFooter";
-import { loginUsingUserPass } from "../../store/user/operations";
+import { loginUsingUserPass } from "../../store/User/operations";
 import  Autocomplete  from "react-native-autocomplete-input";
 const mbxClient = require('@mapbox/mapbox-sdk');
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');

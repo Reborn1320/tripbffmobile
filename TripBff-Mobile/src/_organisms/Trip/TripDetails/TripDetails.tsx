@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Spinner, View } from 'native-base';
 import { FlatList } from "react-native";
 import _, { } from "lodash";
-import DayItem from "./components/DayItem";
+import DayItem from "../../../_molecules/Trip/DayItem/DayItem";
 import * as RNa from "react-navigation";
 import ConfirmationModal from "../../../_molecules/ConfirmationModal";
 

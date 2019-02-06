@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Container, Header, Content, Footer, View } from "native-base";
 import _ from "lodash";
 import Loading from "../../_atoms/Loading/Loading";
-import { TripsComponent } from "../../_organisms/Trip/TripsList/TripsComponent";
+import { TripsComponent } from "../../_organisms/Trips/TripsList/TripsComponent";
 import AppFooter from "../shared/AppFooter";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import { PropsBase } from "../_shared/LayoutContainer";

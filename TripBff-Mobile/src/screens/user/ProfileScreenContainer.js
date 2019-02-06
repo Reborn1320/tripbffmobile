@@ -1,8 +1,8 @@
 import { connect } from "react-redux";
 import _ from "lodash";
 import { loginUsingUserPass } from "../../store/User/operations";
-import { fetchTrips } from "../trips/operations";
-import { addTrips } from "../trips/actions";
+import { fetchTrips } from "../../store/Trips/operations";
+import { addTrips } from "../../store/Trips/actions";
 import { ProfileScreen } from "./ProfileScreen";
 
 const mapStateToProps = () => {

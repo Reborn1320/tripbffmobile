@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
 import moment from "moment";
-import { tripApi } from "../../_services/apis";
+import { tripApi } from "../../../screens/_services/apis";
 import * as RNa from "react-navigation";
 import { TripDetails, DayVM } from "./TripDetails";
 import { removeLocation } from "../../../store/Trip/operations";

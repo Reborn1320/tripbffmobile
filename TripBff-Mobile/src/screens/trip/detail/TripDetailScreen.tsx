@@ -8,7 +8,7 @@ import { tripApi } from "../../_services/apis";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import * as RNa from "react-navigation";
-import TripDetailsContainer2 from "./TripDetailsContainer";
+import TripDetailsContainer2 from "../../../_organisms/Trip/TripDetails/TripDetailsContainer";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
