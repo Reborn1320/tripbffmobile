@@ -73,7 +73,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     handleTripItemClick(trip: any) {
         const { tripId } = trip;
         this.props.navigation.navigate(
-            NavigationConstants.Screens.TripDetail,
+            NavigationConstants.Screens.TripEdit,
             { tripId, id: tripId }
         );
     }

@@ -41,6 +41,7 @@
     "react-native-fbsdk": "^0.8.0",
     "react-native-fs": "^2.13.3",
     "react-native-modal": "^7.0.2",
+    "react-native-popup-menu": "^0.15.0",
     "react-navigation": "2.13.0",
     "react-redux": "5.0.7",
     "redux": "4.0.1",

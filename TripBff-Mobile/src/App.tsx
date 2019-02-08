@@ -9,6 +9,7 @@ import { createStackNavigator } from "react-navigation";
 
 import HomeScreen from "./screens/home/index";
 import TripDetailScreenContainer from "./screens/trip/detail/TripDetailScreenContainer";
+import TripEditScreenContainer from "./screens/trip/edit/TripEditScreenContainer";
 import TripCreation from "./screens/trip/create";
 import TripImportationScreen from "./screens/trip/import";
 import LocationDetailScreen from "./screens/location/detail";
@@ -33,24 +34,6 @@ const store = createStore(
   )
 );
 
-// const Drawer = createDrawerNavigator(
-//   {
-//     Home: { screen: HomeScreen },
-//     Login: { screen: LoginScreen },
-//     NHFab: { screen: NHFab },
-//     TripImportation: { screen: TripImportationScreen }
-//   },
-//   {
-//     initialRouteName: "Login",
-//     initialRouteParams: {
-//       tripId: 3
-//     },
-//     contentOptions: {
-//       activeTintColor: "#e91e63"
-//     }
-//   }
-// );
-
 const AppNavigator = createStackNavigator(
   {
     Home: { screen: HomeScreen },
@@ -60,6 +43,7 @@ const AppNavigator = createStackNavigator(
     LocationDetail: { screen: LocationDetailScreen },
     TripCreation: { screen: TripCreation },
     TripImportation: { screen: TripImportationScreen },
+    TripEdition: { screen: TripEditScreenContainer },
     InfographicPreview: { screen: InfographicPreviewScreen }
   },
   {

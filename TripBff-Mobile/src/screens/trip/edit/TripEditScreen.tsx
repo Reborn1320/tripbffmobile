@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { Container, Header, Content, View } from 'native-base';
+import { Container, Header, Content, View, Text } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
 import TripDetailsContainer2 from "../../../_organisms/Trip/TripDetails/TripDetailsContainer";
+import { Menu, MenuTrigger, MenuOptions, MenuOption } from "react-native-popup-menu";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
@@ -37,6 +38,16 @@ export class TripEditScreen extends Component<Props, State> {
                             onPress={() => this.confirmExportInfographic()}>
                             <Text style={{ paddingTop: 15 }}>Done</Text>
                         </Button> */}
+                        <Menu onSelect={value => alert(`Selected number: ${value}`)}>
+                            <MenuTrigger text='Select option' />
+                            <MenuOptions>
+                                <MenuOption value={1} text='One' />
+                                <MenuOption value={2}>
+                                    <Text style={{ color: 'red' }}>Two</Text>
+                                </MenuOption>
+                                <MenuOption value={3} disabled={true} text='Three' />
+                            </MenuOptions>
+                        </Menu>
                     </View>
 
                 </Header>
