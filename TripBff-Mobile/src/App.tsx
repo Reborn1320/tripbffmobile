@@ -15,22 +15,27 @@ import TripImportationScreen from "./screens/trip/import";
 import LocationDetailScreen from "./screens/location/detail";
 import InfographicPreviewScreen from "./screens/trip/preview/index";
 import { tripApi, loginApi, uploadFileApi } from "./screens/_services/apis";
+import { loginApiService } from "./store/ApisAsAService";
 import LoginScreen from "./screens/login/index";
 import ProfileScreenContainer from "./screens/user/ProfileScreenContainer";
 
 import bffApp from "./store/reducers";
 import ReduxThunk from "redux-thunk";
+import { ThunkExtraArgumentsBase } from "./store";
+
+var extraThunk: ThunkExtraArgumentsBase = {
+  loginApi: loginApi,
+  api: tripApi,
+  uploadApi: uploadFileApi,
+  loginApiService
+};
 
 const store = createStore(
   bffApp,
   applyMiddleware(
     axiosMiddleware(loginApi),
     axiosMiddleware(tripApi),
-    ReduxThunk.withExtraArgument({
-      loginApi: loginApi,
-      api: tripApi,
-      uploadApi: uploadFileApi
-    })
+    ReduxThunk.withExtraArgument(extraThunk)
   )
 );
 

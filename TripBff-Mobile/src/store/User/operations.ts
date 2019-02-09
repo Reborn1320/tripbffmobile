@@ -1,7 +1,7 @@
 import { addToken } from "./actions";
 import { StoreData } from "../Interfaces";
 import { setAuthorizationHeader } from "../../screens/_services/apis";
-import { ThunkResultBase } from "../../typings/redux-thunk-extra";
+import { ThunkResultBase } from "..";
 
 export function loginUsingUserPass(email: string, password: string): ThunkResultBase {
   return async function(dispatch, getState, extraArguments): Promise<any> {
@@ -10,7 +10,7 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
       password: password
     };
 
-    return extraArguments.loginApi.post(`local/login`, loginUser)
+    return extraArguments.loginApiService("local/login", "post", loginUser)
     .then(res => {
       console.log("user info", res.data);
       // store token into Store

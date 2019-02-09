@@ -1,5 +1,5 @@
 import {removeLocation as removeLocationAction } from "./actions";
-import { ThunkResultBase } from "../../typings/redux-thunk-extra";
+import { ThunkResultBase } from "..";
 
 export function removeLocation(tripId: string, locationId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {

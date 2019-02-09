@@ -1,6 +1,6 @@
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { AxiosInstance } from "axios";
-import { uploadFileApi } from "../../screens/_services/apis";
+import { uploadFileApi } from "../screens/_services/apis";
 
 //todo move into module
 export type ThunkResultBase<R = Promise<any>, S = any> = ThunkAction<
@@ -20,4 +20,6 @@ export interface ThunkExtraArgumentsBase {
   loginApi: AxiosInstance;
   api: AxiosInstance;
   uploadApi: typeof uploadFileApi;
+
+  loginApiService: (url: string, method: "post" | "get", data: any) => Promise<any>;
 }
