@@ -15,7 +15,7 @@ import TripImportationScreen from "./screens/trip/import";
 import LocationDetailScreen from "./screens/location/detail";
 import InfographicPreviewScreen from "./screens/trip/preview/index";
 import { tripApi, loginApi, uploadFileApi } from "./screens/_services/apis";
-import { loginApiService } from "./store/ApisAsAService";
+import { loginApiService, tripApiService } from "./store/ApisAsAService";
 import LoginScreen from "./screens/login/index";
 import ProfileScreenContainer from "./screens/user/ProfileScreenContainer";
 
@@ -27,7 +27,8 @@ var extraThunk: ThunkExtraArgumentsBase = {
   loginApi: loginApi,
   api: tripApi,
   uploadApi: uploadFileApi,
-  loginApiService
+  loginApiService,
+  tripApiService,
 };
 
 const store = createStore(

@@ -11,7 +11,7 @@ var loginApiInternal = axios.create({
   }
 });
 
-var tripApi = axios.create({
+var tripApiInternal = axios.create({
   baseURL: TRIP_URL,
   headers: {
     post: {
@@ -20,6 +20,7 @@ var tripApi = axios.create({
   }
 });
 
+//todo
 var uploadFileApi = {
   upload: (uploadUrl: string, uri: string, data?: any) => {
     return uploadImageAsync(uploadUrl, _bearer, uri, data);
@@ -34,10 +35,25 @@ export function setAuthorizationHeader(token) {
   axios.defaults.headers.common["Authorization"] = _bearer;
 }
 
-export var loginApiService = function loginApi(url: string, method: string, data: any): Promise<any> {
-  return loginApiInternal.request({
-    url,
-    method,
-    data,
-  });
+interface ApiServiceArguments {
+  url: string;
+  data?: any;
+}
+
+export interface IApiService {
+  get: (args: ApiServiceArguments) => Promise<any>;
+  post: (args: ApiServiceArguments) => Promise<any>;
+  delete: (args: ApiServiceArguments) => Promise<any>;
+}
+
+export var loginApiService: IApiService = {
+  get: (args: ApiServiceArguments) => loginApiInternal.get(args.url, { data: args.data }),
+  post: (args: ApiServiceArguments) => loginApiInternal.post(args.url, { data: args.data }),
+  delete: (args: ApiServiceArguments) => loginApiInternal.delete(args.url, { data: args.data }),
+}
+
+export var tripApiService: IApiService = {
+  get: (args: ApiServiceArguments) => tripApiInternal.get(args.url, { data: args.data }),
+  post: (args: ApiServiceArguments) => tripApiInternal.post(args.url, { data: args.data }),
+  delete: (args: ApiServiceArguments) => tripApiInternal.delete(args.url, { data: args.data }),
 }
