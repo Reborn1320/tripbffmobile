@@ -6,6 +6,9 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
 import TripDetailsContainer2 from "../../../_organisms/Trip/TripDetails/TripDetailsContainer";
 import { Menu, MenuTrigger, MenuOptions, MenuOption } from "react-native-popup-menu";
+import { Modal } from "../../../_atoms";
+import { Moment } from "moment";
+import { TripDateRangeForm } from "./TripDateRangeForm";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
@@ -17,6 +20,7 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 }
 
 interface State {
+    isEditDateRangeModalVisible: boolean,
 }
 
 export class TripEditScreen extends Component<Props, State> {
@@ -24,11 +28,27 @@ export class TripEditScreen extends Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {
+            isEditDateRangeModalVisible: true
         }
+    }
+
+    onMenuSelect = (value) => {
+        console.log(`Selected number: ${value}`);
+        if (value == 1) {
+            this.setState({
+                isEditDateRangeModalVisible: true
+            });
+        }
+    }
+
+    onEdit = (fromDate: Moment, toDate: Moment) => {
+
     }
 
     render() {
         const { trip, navigation } = this.props;
+        const { fromDate, toDate } = trip;
+        const { isEditDateRangeModalVisible } = this.state;
         return (
             <Container>
                 <Header>
@@ -38,10 +58,10 @@ export class TripEditScreen extends Component<Props, State> {
                             onPress={() => this.confirmExportInfographic()}>
                             <Text style={{ paddingTop: 15 }}>Done</Text>
                         </Button> */}
-                        <Menu onSelect={value => alert(`Selected number: ${value}`)}>
+                        <Menu onSelect={this.onMenuSelect}>
                             <MenuTrigger text='Select option' />
                             <MenuOptions>
-                                <MenuOption value={1} text='One' />
+                                <MenuOption value={1} text='Edit date range' />
                                 <MenuOption value={2}>
                                     <Text style={{ color: 'red' }}>Two</Text>
                                 </MenuOption>
@@ -53,6 +73,9 @@ export class TripEditScreen extends Component<Props, State> {
                 </Header>
                 <Content>
                     <TripDetailsContainer2 trip={trip} navigation={navigation} />
+                    <Modal isVisible={isEditDateRangeModalVisible} >
+                        <TripDateRangeForm fromDate={fromDate} toDate={toDate} onClickEdit={this.onEdit}  />
+                    </Modal>
                 </Content>
             </Container>
         );

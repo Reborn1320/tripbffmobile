@@ -35,7 +35,7 @@ export function setAuthorizationHeader(token) {
   axios.defaults.headers.common["Authorization"] = _bearer;
 }
 
-interface ApiServiceArguments {
+export interface ApiServiceArguments {
   url: string;
   data?: any;
 }
