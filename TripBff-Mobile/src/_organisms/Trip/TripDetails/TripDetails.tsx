@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Spinner, View } from 'native-base';
+import { Spinner, View, H1 } from 'native-base';
 import { FlatList } from "react-native";
 import _, { } from "lodash";
 import DayItem from "../../../_molecules/Trip/DayItem/DayItem";
@@ -14,10 +14,11 @@ export interface Props extends IMapDispatchToProps {
     navigation: RNa.NavigationScreenProp<any, any>;
     tripId: string,
     days: DayVM[],
+    isLoaded: boolean,
+    tripName: string
 }
 
 interface State {
-    isLoaded: boolean,
     modalVisible: boolean,
     isConfirmationModalVisible: boolean,
     focusingLocationId?: string,
@@ -45,7 +46,6 @@ export class TripDetails extends Component<Props, State> {
         super(props)
 
         this.state = {
-            isLoaded: false,
             modalVisible: false,
             isConfirmationModalVisible: false,
         }
@@ -95,10 +95,11 @@ export class TripDetails extends Component<Props, State> {
     }
 
     render() {
-        const { isLoaded, isConfirmationModalVisible } = this.state;
-        const { days } = this.props;
+        const { isConfirmationModalVisible } = this.state;
+        const { tripName, days, isLoaded } = this.props;
         return (
             <View>
+                <H1 style={{ fontSize: 40, lineHeight: 70, marginBottom: 20, marginLeft: 20 } }>{tripName}</H1>
                 {!isLoaded && <Spinner color='green' />}
                 {isLoaded &&
                     <FlatList

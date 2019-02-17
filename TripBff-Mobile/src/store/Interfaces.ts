@@ -65,4 +65,13 @@ export namespace RawJsonData {
         locations: Array<StoreData.LocationVM>,
         infographicId: string
     }
+
+    export interface LocationVM {
+        locationId: string
+        location: StoreData.LocationDetailVM
+        fromTime: string
+        toTime: string
+        images: Array<StoreData.ImportImageVM>
+    }
+
 }

@@ -300,7 +300,7 @@ class Home extends React.Component<Props, any> {
   render() {
     return (
       <Container>
-        <Header />
+        {/* <Header /> */}
         <Content contentContainerStyle={{ flex: 1}}>
           <View style={{flex: 1}} >
            <LoginButton

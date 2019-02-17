@@ -23,9 +23,18 @@ function tripGetMock(url:string, args: ApiServiceArguments) {
   return new Promise((resolve, reject) => {
     console.log("mock get", url);
 
+    var splits = url.split('/');
     if (url === "trips") {
       resolve({ data: trips })
     }
+
+    if (splits.length === 3 && splits[0] === "trips" && splits[2] === "locations") {
+      const tripId = splits[1];
+      const trip = _.find(trips, { tripId: tripId });
+      resolve({data: trip });
+    }
+
+    reject(1);
   });
 }
 
