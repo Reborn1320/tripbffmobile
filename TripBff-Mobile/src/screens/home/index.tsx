@@ -16,7 +16,7 @@ import { connect, DispatchProp } from "react-redux";
 import styles from "./styles";
 import { listRepos } from "./reducer";
 import * as RNa from "react-navigation";
-import Loading from "../_components/Loading";
+import Loading from "../../_atoms/Loading/Loading";
 import { FileSystem } from "expo";
 import {
   ShareDialog,
@@ -300,7 +300,7 @@ class Home extends React.Component<Props, any> {
   render() {
     return (
       <Container>
-        <Header />
+        {/* <Header /> */}
         <Content contentContainerStyle={{ flex: 1}}>
           <View style={{flex: 1}} >
            <LoginButton

@@ -1,15 +1,18 @@
 import * as Expo from "expo";
 import React, { Component } from "react";
 import { StyleProvider } from "native-base";
+import { MenuProvider } from 'react-native-popup-menu';
 
 import App from "../App";
 import getTheme from "../theme/components";
-import variables from "../theme/variables/commonColor";
 import material from "../theme/variables/material";
 
-export default class Setup extends Component {
-  constructor() { 
-    super();
+interface State {
+  isReady: boolean;
+}
+export default class Setup extends Component<{}, State> {
+  constructor() {
+    super({});
     this.state = {
       isReady: false
     };
@@ -32,7 +35,9 @@ export default class Setup extends Component {
     }
     return (
       <StyleProvider style={getTheme(material)}>
-        <App />
+        <MenuProvider>
+          <App />
+        </MenuProvider>
       </StyleProvider>
     );
   }

@@ -1,6 +1,6 @@
-import { StoreData } from '../../Interfaces';
+import { StoreData } from '../Interfaces';
 
-export const AUTH_ADD_TOKEN = "AUTH_ADD_TOKEN"
+export const AUTH_ADD_TOKEN = "AUTH_ADD_TOKEN";
 
 export function addToken(user: StoreData.UserVM) {
     return {

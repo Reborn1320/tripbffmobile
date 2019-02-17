@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import _, { } from "lodash";
 import moment from "moment";
 import { PropsBase } from "../_shared/LayoutContainer";
-import { StoreData } from "../../Interfaces";
+import { StoreData } from "../../store/Interfaces";
 
 interface IMapDispatchToProps {
 }

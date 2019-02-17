@@ -1,8 +1,7 @@
 import { addToken } from "./actions";
-import { ThunkResultBase } from "../../screens/_shared/LayoutContainer";
-import { StoreData } from "../../Interfaces";
+import { StoreData } from "../Interfaces";
 import { setAuthorizationHeader } from "../../screens/_services/apis";
-
+import { ThunkResultBase } from "..";
 
 export function loginUsingUserPass(email: string, password: string): ThunkResultBase {
   return async function(dispatch, getState, extraArguments): Promise<any> {
@@ -11,7 +10,7 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
       password: password
     };
 
-    return extraArguments.loginApi.post(`local/login`, loginUser)
+    return extraArguments.loginApiService.post({ url: "local/login", data: loginUser })
     .then(res => {
       console.log("user info", res.data);
       // store token into Store

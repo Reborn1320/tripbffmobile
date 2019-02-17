@@ -1,10 +1,10 @@
-import { ThunkResultBase } from "../../_shared/LayoutContainer";
 import {removeLocation as removeLocationAction } from "./actions";
+import { ThunkResultBase } from "..";
 
 export function removeLocation(tripId: string, locationId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
 
-    return extraArguments.api.delete(`trips/${tripId}/locations/${locationId}`)
+    return extraArguments.tripApiService.delete(`trips/${tripId}/locations/${locationId}`)
       .then(res => {
         dispatch(removeLocationAction(tripId, locationId));
       })

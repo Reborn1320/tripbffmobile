@@ -1,4 +1,4 @@
-import { StoreData } from '../../../Interfaces';
+import { StoreData } from '../../../store/Interfaces';
 
 export const TRIP_ADD = "TRIP_ADD"
 

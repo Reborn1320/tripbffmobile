@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { StoreData } from './../../../Interfaces';
+import { StoreData } from '../../../store/Interfaces';
 import _ from 'lodash'
 import { IMPORT_IMAGE_SELECT_UNSELECT_IMAGE, IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES, IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "./actions";
 
