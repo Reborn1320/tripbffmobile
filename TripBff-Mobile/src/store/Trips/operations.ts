@@ -1,11 +1,11 @@
-import { ThunkResultBase } from "../../screens/_shared/LayoutContainer";
 import { StoreData, RawJsonData } from "../Interfaces";
 import moment from "moment";
+import { ThunkResultBase } from "..";
 
 export function fetchTrips(): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
 
-    return extraArguments.api.get("trips")
+    return extraArguments.tripApiService.get("trips")
       .then(res => {
         var rawTripsVM: Array<RawJsonData.TripVM> = res.data;
         var trips: Array<StoreData.TripVM> = rawTripsVM.map(rawTrip => ({

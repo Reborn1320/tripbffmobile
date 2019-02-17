@@ -36,24 +36,23 @@ export function setAuthorizationHeader(token) {
 }
 
 export interface ApiServiceArguments {
-  url: string;
   data?: any;
 }
 
 export interface IApiService {
-  get: (args: ApiServiceArguments) => Promise<any>;
-  post: (args: ApiServiceArguments) => Promise<any>;
-  delete: (args: ApiServiceArguments) => Promise<any>;
+  get: (url: string, args?: ApiServiceArguments) => Promise<any>;
+  post: (url: string, args?: ApiServiceArguments) => Promise<any>;
+  delete: (url: string, args?: ApiServiceArguments) => Promise<any>;
 }
 
 export var loginApiService: IApiService = {
-  get: (args: ApiServiceArguments) => loginApiInternal.get(args.url, { data: args.data }),
-  post: (args: ApiServiceArguments) => loginApiInternal.post(args.url, { data: args.data }),
-  delete: (args: ApiServiceArguments) => loginApiInternal.delete(args.url, { data: args.data }),
+  get: (url: string, args?: ApiServiceArguments) => loginApiInternal.get(url, args ? { data: args.data }: undefined),
+  post: (url: string, args?: ApiServiceArguments) => loginApiInternal.post(url, args ? { data: args.data }: undefined),
+  delete: (url: string, args?: ApiServiceArguments) => loginApiInternal.delete(url, args ? { data: args.data }: undefined),
 }
 
 export var tripApiService: IApiService = {
-  get: (args: ApiServiceArguments) => tripApiInternal.get(args.url, { data: args.data }),
-  post: (args: ApiServiceArguments) => tripApiInternal.post(args.url, { data: args.data }),
-  delete: (args: ApiServiceArguments) => tripApiInternal.delete(args.url, { data: args.data }),
+  get: (url: string, args?: ApiServiceArguments) => tripApiInternal.get(url, args ? { data: args.data }: undefined),
+  post: (url: string, args?: ApiServiceArguments) => tripApiInternal.post(url, args ? { data: args.data }: undefined),
+  delete: (url: string, args?: ApiServiceArguments) => tripApiInternal.delete(url, args ? { data: args.data }: undefined),
 }

@@ -22,13 +22,19 @@ import ProfileScreenContainer from "./screens/user/ProfileScreenContainer";
 import bffApp from "./store/reducers";
 import ReduxThunk from "redux-thunk";
 import { ThunkExtraArgumentsBase } from "./store";
+import { mockLoginApiService, mockTripApiService } from "./store/MockApiService";
 
+var mockLoginApi = mockLoginApiService;
+var mockTripApi = mockTripApiService;
 var extraThunk: ThunkExtraArgumentsBase = {
   loginApi: loginApi,
   api: tripApi,
   uploadApi: uploadFileApi,
-  loginApiService,
-  tripApiService,
+  
+  loginApiService: mockLoginApi,
+  tripApiService: mockTripApi,
+  // loginApiService: loginApiService,
+  // tripApiService: tripApiService,
 };
 
 const store = createStore(
