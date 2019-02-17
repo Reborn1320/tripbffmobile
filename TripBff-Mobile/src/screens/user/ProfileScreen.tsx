@@ -84,7 +84,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         // console.log("screen render", trips);
         return (
             <Container>
-                <Header />
+                {/* <Header /> */}
                 <Content>
                     <View>
                         {isLoaded && <Loading message={this.state.loadingMessage} />}
