@@ -41,15 +41,7 @@ export module StoreData {
         //TODO: expired time...
     }
 
-    //testing home screen
-    export interface RepoVM {
-        loading?: boolean
-        repos: Array<string>
-        error?: string
-    }
-
     export interface BffStoreData {
-        repo?: RepoVM
         user?: UserVM
         trips?: Array<TripVM>
     }

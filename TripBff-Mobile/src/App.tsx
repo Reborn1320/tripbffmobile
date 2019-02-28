@@ -31,10 +31,10 @@ var extraThunk: ThunkExtraArgumentsBase = {
   api: tripApi,
   uploadApi: uploadFileApi,
   
-  loginApiService: mockLoginApi,
-  tripApiService: mockTripApi,
-  // loginApiService: loginApiService,
-  // tripApiService: tripApiService,
+  // loginApiService: mockLoginApi,
+  // tripApiService: mockTripApi,
+  loginApiService: loginApiService,
+  tripApiService: tripApiService,
 };
 
 const store = createStore(

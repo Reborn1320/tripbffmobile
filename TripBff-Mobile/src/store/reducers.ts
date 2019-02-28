@@ -18,30 +18,30 @@ const userInitState: StoreData.UserVM = {
     token: "ASdf",
     fbToken: ""
 }
-const tripsInitState: StoreData.TripVM[] = []
-for (let idx = 0; idx < 5; idx++) {
-    tripsInitState.push({
-        tripId: idx.toString(),
-        name: `trip name ${idx}`,
-        fromDate: moment("2018-10-10"), 
-        toDate: moment("2018-10-18").add(1, "day").add(-1, "second"),
-        infographicId: '',
-        locations: [] // cloneDeep(locationInitState)
-    })
-}
+// const tripsInitState: StoreData.TripVM[] = []
+// for (let idx = 0; idx < 5; idx++) {
+//     tripsInitState.push({
+//         tripId: idx.toString(),
+//         name: `trip name ${idx}`,
+//         fromDate: moment("2018-10-10"), 
+//         toDate: moment("2018-10-18").add(1, "day").add(-1, "second"),
+//         infographicId: '',
+//         locations: [] // cloneDeep(locationInitState)
+//     })
+// }
 
-tripsInitState.push({
-    tripId: '5',
-    name: `trip name ${5}`,
-    fromDate: moment("2018-10-04"), 
-    toDate: moment("2018-10-29").add(1, "day").add(-1, "second"),
-    infographicId: '',
-    locations: [] // cloneDeep(locationInitState)
-})
+// tripsInitState.push({
+//     tripId: '5',
+//     name: `trip name ${5}`,
+//     fromDate: moment("2018-10-04"), 
+//     toDate: moment("2018-10-29").add(1, "day").add(-1, "second"),
+//     infographicId: '',
+//     locations: [] // cloneDeep(locationInitState)
+// })
 
 const initState: StoreData.BffStoreData = {
     user: userInitState,
-    trips: tripsInitState
+    trips: [] // tripsInitState
 }
 
 function userReducer(state, action) {
@@ -85,6 +85,9 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
         //handle trips
         return action.trips;
     }
+    else if (actionType == TRIP_ADD) {
+        return [...state, action.trip];
+    }
     else if (_.startsWith(actionType, "TRIP")) {
         //handle single trip
         var trip = _.find(state, (item) => item.tripId == action.tripId)
@@ -96,9 +99,6 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
         ];
 
         return newState
-    }
-    else if (actionType == TRIP_ADD) {
-        return [...state, action.trip];
     }
 
     return state;

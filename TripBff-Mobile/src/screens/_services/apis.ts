@@ -28,6 +28,7 @@ export var uploadFileApi = {
 
 var _bearer = "";
 export function setAuthorizationHeader(token) {
+  console.log("token value", token);
   if (!token) throw "token should have value";
 
   _bearer = `Bearer ${token}`;

@@ -46,13 +46,13 @@ export interface IApiService {
 }
 
 export var loginApiService: IApiService = {
-  get: (url: string, args?: ApiServiceArguments) => loginApiInternal.get(url, args ? { data: args.data }: undefined),
-  post: (url: string, args?: ApiServiceArguments) => loginApiInternal.post(url, args ? { data: args.data }: undefined),
-  delete: (url: string, args?: ApiServiceArguments) => loginApiInternal.delete(url, args ? { data: args.data }: undefined),
+  get: (url: string, args?: ApiServiceArguments) => loginApiInternal.get(url, args ? args.data : undefined),
+  post: (url: string, args?: ApiServiceArguments) => loginApiInternal.post(url, args ? args.data : undefined),
+  delete: (url: string, args?: ApiServiceArguments) => loginApiInternal.delete(url, args ? args.data : undefined),
 }
 
 export var tripApiService: IApiService = {
-  get: (url: string, args?: ApiServiceArguments) => tripApiInternal.get(url, args ? { data: args.data }: undefined),
-  post: (url: string, args?: ApiServiceArguments) => tripApiInternal.post(url, args ? { data: args.data }: undefined),
-  delete: (url: string, args?: ApiServiceArguments) => tripApiInternal.delete(url, args ? { data: args.data }: undefined),
+  get: (url: string, args?: ApiServiceArguments) => tripApiInternal.get(url, args ? args.data : undefined),
+  post: (url: string, args?: ApiServiceArguments) => tripApiInternal.post(url, args ? args.data : undefined),
+  delete: (url: string, args?: ApiServiceArguments) => tripApiInternal.delete(url, args ? args.data : undefined),
 }

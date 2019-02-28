@@ -10,7 +10,7 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
       password: password
     };
 
-    return extraArguments.loginApiService.post({ url: "local/login", data: loginUser })
+    return extraArguments.loginApiService.post("local/login", { data: loginUser })
     .then(res => {
       console.log("user info", res.data);
       // store token into Store

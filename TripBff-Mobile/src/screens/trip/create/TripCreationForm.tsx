@@ -3,10 +3,11 @@ import { Button, Text, View } from 'native-base';
 import { Form, Item, Label, Input, DatePicker } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import { tripApi } from "../../_services/apis";
-import moment from "moment";
+import moment, { Moment } from "moment";
 
 export interface Props {
-  onTripCreated?: (tripVM: any) => void;
+    createTrip: (name: string, fromDate: Moment, toDate: Moment) => Promise<string>;
+    onTripCreated?: (tripVM: StoreData.TripVM) => void;
 }
 
 export class TripCreationForm extends Component<Props, any> {
@@ -31,25 +32,18 @@ export class TripCreationForm extends Component<Props, any> {
       fromDate: moment(this.state.fromDate).startOf('day'),
       toDate: moment(this.state.toDate).endOf('day')
     };
-    tripApi.post('/trips', tripPost).then((res) => {
-      var tripId = res.data;
-      console.log('trip id: ' + tripId);
-
+    this.props.createTrip(tripPost.name, tripPost.fromDate, tripPost.toDate)
+    .then(tripId => {
       // map trip info into Store
       var trip: StoreData.TripVM = {
         tripId: tripId,
-        name: this.state.tripName,
-        fromDate: moment(this.state.fromDate).startOf('day'),
-        toDate: moment(this.state.toDate).endOf('day'),
+        ...tripPost,
         locations: [],
         infographicId: ''
       };
 
       this.props.onTripCreated(trip);
-    })
-      .catch((err) => {
-        console.log('error create trip api: ' + JSON.stringify(err));
-      });
+    });
   }
 
   renderImportBtn() {

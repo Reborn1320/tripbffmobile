@@ -3,15 +3,19 @@ import { Container, Header, Content, Text, View } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import { connect } from "react-redux";
 import { createTrip } from './actions';
-import moment from "moment";
+import moment, { Moment } from "moment";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { TripCreationForm } from "./TripCreationForm";
+import { createTrip as createTripAsync } from "../../../store/Trip/operations";
+import { loginUsingUserPass } from "../../../store/User/operations";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
   user: StoreData.UserVM
 }
 
 interface IMapDispatchToProps {
+  createTripAsync: (name: string, fromDate: Moment, toDate: Moment) => Promise<string>;
+  loginUsingUserPass: (email: string, password: string) => Promise<any>;
   createTrip: (trip: StoreData.TripVM) => void
 }
 
@@ -23,26 +27,19 @@ class TripCreation extends Component<Props, any> {
     this.setDate = this.setDate.bind(this);
   }
 
+  componentWillMount() {
+    this.props.loginUsingUserPass("aaa", "bbb");
+  }
+
   setDate(newDate) {
     this.setState({ chosenDate: newDate });
   }
 
-  onTripCreated(tripVM: any) {
-    const { tripId } = tripVM;
-
-    // map trip info into Store
-    var trip: StoreData.TripVM = {
-      tripId: tripId,
-      name: this.state.tripName,
-      fromDate: moment(this.state.fromDate).startOf('day'),
-      toDate: moment(this.state.toDate).endOf('day'),
-      locations: [],
-      infographicId: ''
-    };
-    this.props.createTrip(trip);
-
+  onTripCreated = (tripVM: StoreData.TripVM) => {
+    console.log("tripVM", tripVM);
+    this.props.createTrip(tripVM);
     // navigate to Trip Import page
-    this.props.navigation.navigate("TripImportation", { tripId: tripId });
+    this.props.navigation.navigate("TripImportation", { tripId: tripVM.tripId });
   }
 
   render() {
@@ -55,15 +52,19 @@ class TripCreation extends Component<Props, any> {
           </View>
         </Header>
         <Content>
-          <TripCreationForm onTripCreated={this.onTripCreated} />
+          <TripCreationForm createTrip={this.props.createTripAsync} onTripCreated={this.onTripCreated} />
         </Content>
       </Container>
     );
   }
-}
+}``
 
-const mapDispatchToProps: IMapDispatchToProps = {
-  createTrip
+const mapDispatchToProps = dispatch => {
+  return {
+    createTrip: (trip) => dispatch(createTrip(trip)),
+    createTripAsync: (name, fromDate, toDate) => dispatch(createTripAsync(name, fromDate, toDate)),
+    loginUsingUserPass: (email, password) => dispatch(loginUsingUserPass(email, password)),
+  }
 };
 
 const TripCreationScreen = connect(null, mapDispatchToProps)(TripCreation);
