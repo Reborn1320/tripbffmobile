@@ -15,11 +15,11 @@ import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
 import { importSelectedLocations, uploadedImage } from "./actions";
 import Loading from "../../../_atoms/Loading/Loading";
-import { AxiosInstance } from "axios";
-import {ThunkAction, ThunkDispatch} from 'redux-thunk';
+import {ThunkDispatch} from 'redux-thunk';
 import { TripImportLocationVM } from "./TripImportViewModels";
 import { uploadFileApi } from "../../_services/apis";
-import { PropsBase, ThunkResultBase } from "../../_shared/LayoutContainer";
+import { PropsBase } from "../../_shared/LayoutContainer";
+import { ThunkResultBase } from "../../../store";
 
 type ThunkResult<R> = ThunkResultBase<R, State>;
 
@@ -213,7 +213,7 @@ class TripImportation extends Component<Props, State> {
     }
 
     _uploadImage = function uploadImage(tripId, locationId, imageId, imgUrl): ThunkResult<Promise<any>> {
-        return async function(dispatch, getState) {
+        return async function(dispatch) {
             console.log(`imge url: ${imgUrl}`)
             var additionalData = {
                 locationId,

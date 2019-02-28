@@ -43,16 +43,19 @@ export interface IApiService {
   get: (url: string, args?: ApiServiceArguments) => Promise<any>;
   post: (url: string, args?: ApiServiceArguments) => Promise<any>;
   delete: (url: string, args?: ApiServiceArguments) => Promise<any>;
+  patch: (url: string, args?: ApiServiceArguments) => Promise<any>;
 }
 
 export var loginApiService: IApiService = {
   get: (url: string, args?: ApiServiceArguments) => loginApiInternal.get(url, args ? args.data : undefined),
   post: (url: string, args?: ApiServiceArguments) => loginApiInternal.post(url, args ? args.data : undefined),
   delete: (url: string, args?: ApiServiceArguments) => loginApiInternal.delete(url, args ? args.data : undefined),
+  patch: (url: string, args?: ApiServiceArguments) => loginApiInternal.patch(url, args ? args.data : undefined),
 }
 
 export var tripApiService: IApiService = {
   get: (url: string, args?: ApiServiceArguments) => tripApiInternal.get(url, args ? args.data : undefined),
   post: (url: string, args?: ApiServiceArguments) => tripApiInternal.post(url, args ? args.data : undefined),
   delete: (url: string, args?: ApiServiceArguments) => tripApiInternal.delete(url, args ? args.data : undefined),
+  patch: (url: string, args?: ApiServiceArguments) => tripApiInternal.patch(url, args ? args.data : undefined),
 }

@@ -11,6 +11,7 @@ import { Moment } from "moment";
 import { TripDateRangeForm } from "./TripDateRangeForm";
 
 interface IMapDispatchToProps {
+    updateTripDateRange: (tripId: string, fromDate: Moment, toDate: Moment) => Promise<StoreData.TripVM>;
     addInfographicId: (tripId: string, infographicId: string) => void
 }
 
@@ -42,7 +43,12 @@ export class TripEditScreen extends Component<Props, State> {
     }
 
     onEdit = (fromDate: Moment, toDate: Moment) => {
-
+        this.props.updateTripDateRange(this.props.trip.tripId, fromDate, toDate)
+        .then(newTrip => {
+            this.setState({
+                isEditDateRangeModalVisible: false
+            })
+        })
     }
 
     render() {
@@ -74,7 +80,7 @@ export class TripEditScreen extends Component<Props, State> {
                 <Content>
                     <TripDetailsContainer2 trip={trip} navigation={navigation} />
                     <Modal isVisible={isEditDateRangeModalVisible} >
-                        <TripDateRangeForm fromDate={fromDate} toDate={toDate} onClickEdit={this.onEdit}  />
+                        <TripDateRangeForm fromDate={fromDate} toDate={toDate} onClickEdit={this.onEdit} />
                     </Modal>
                 </Content>
             </Container>
