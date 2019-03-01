@@ -1,10 +1,12 @@
 import React, { Component } from "react";
-import { Spinner, View, H1 } from 'native-base';
+import { Spinner, View, H1, Icon } from 'native-base';
 import { FlatList } from "react-native";
 import _, { } from "lodash";
 import DayItem from "../../../_molecules/Trip/DayItem/DayItem";
 import * as RNa from "react-navigation";
 import ConfirmationModal from "../../../_molecules/ConfirmationModal";
+import { Menu, MenuTrigger, MenuOptions, MenuOption } from "react-native-popup-menu";
+import { mixins } from "../../../_utils";
 
 interface IMapDispatchToProps {
     removeLocation: (tripId: string, locationId: string) => Promise<void>
@@ -99,7 +101,40 @@ export class TripDetails extends Component<Props, State> {
         const { tripName, days, isLoaded } = this.props;
         return (
             <View>
-                <H1 style={{ fontSize: 40, lineHeight: 70, marginBottom: 20, marginLeft: 20 } }>{tripName}</H1>
+                <View style={{
+                    // ...mixins.themes.debug1,
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: 10,
+                    marginBottom: 10,
+                }}>
+                    <H1 style={{
+                        // ...mixins.themes.debug2,
+                        fontSize: 40,
+                        lineHeight: 50,
+                        flexGrow: 9,
+                        maxWidth: "90%",
+                    }}>{tripName}</H1>
+                    <View style={{
+                        // ...mixins.themes.debug,
+                        // width: 50,
+
+                    }}>
+                        <Menu
+                        // onSelect={this.onMenuSelect}
+                        >
+                            <MenuTrigger>
+                                <Icon type="FontAwesome" name="cog"></Icon>
+                            </MenuTrigger>
+                            <MenuOptions>
+                                <MenuOption value={1} text='Edit date range' />
+                            </MenuOptions>
+                        </Menu>
+                    </View>
+                </View>
+
                 {!isLoaded && <Spinner color='green' />}
                 {isLoaded &&
                     <FlatList

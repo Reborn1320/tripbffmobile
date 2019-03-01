@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Header, Content, View, Text } from 'native-base';
+import { Container, Header, Content, View, Text, Icon } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
 import { PropsBase } from "../../_shared/LayoutContainer";
@@ -9,6 +9,7 @@ import { Menu, MenuTrigger, MenuOptions, MenuOption } from "react-native-popup-m
 import { Modal } from "../../../_atoms";
 import { Moment } from "moment";
 import { TripDateRangeForm } from "./TripDateRangeForm";
+import { mixins } from "../../../_utils";
 
 interface IMapDispatchToProps {
     updateTripDateRange: (tripId: string, fromDate: Moment, toDate: Moment) => Promise<StoreData.TripVM>;
@@ -44,11 +45,11 @@ export class TripEditScreen extends Component<Props, State> {
 
     onEdit = (fromDate: Moment, toDate: Moment) => {
         this.props.updateTripDateRange(this.props.trip.tripId, fromDate, toDate)
-        .then(newTrip => {
-            this.setState({
-                isEditDateRangeModalVisible: false
+            .then(newTrip => {
+                this.setState({
+                    isEditDateRangeModalVisible: false
+                })
             })
-        })
     }
 
     render() {
@@ -58,20 +59,26 @@ export class TripEditScreen extends Component<Props, State> {
         return (
             <Container>
                 <Header>
-                    <View style={{ height: 100, flex: 1, paddingTop: 10 }}>
+                    <View>
                         {/* <Button
                             style={{ marginLeft: 'auto' }}
                             onPress={() => this.confirmExportInfographic()}>
                             <Text style={{ paddingTop: 15 }}>Done</Text>
                         </Button> */}
-                        <Menu onSelect={this.onMenuSelect}>
-                            <MenuTrigger text='Select option' />
+                        <Menu
+                            onSelect={this.onMenuSelect}>
+                            <MenuTrigger customStyles={
+                                {
+                                    triggerOuterWrapper: {
+                                        ...mixins.themes.debug,
+                                    }
+                                }
+                            }
+                            >
+                                <Icon type="FontAwesome" name="cog"></Icon>
+                            </MenuTrigger>
                             <MenuOptions>
                                 <MenuOption value={1} text='Edit date range' />
-                                <MenuOption value={2}>
-                                    <Text style={{ color: 'red' }}>Two</Text>
-                                </MenuOption>
-                                <MenuOption value={3} disabled={true} text='Three' />
                             </MenuOptions>
                         </Menu>
                     </View>
