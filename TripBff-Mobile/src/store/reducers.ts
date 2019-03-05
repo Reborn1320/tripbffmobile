@@ -7,7 +7,7 @@ import importImagesReducer from '../screens/trip/import/reducers';
 import { TRIP_ADD } from '../screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './User/actions';
 import { ADD_INFOGRAPHIC_ID } from '../screens/trip/export/actions';
-import { LOCATION_REMOVE } from './Trip/actions';
+import { LOCATION_REMOVE, LOCATION_ADD } from './Trip/actions';
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -68,6 +68,18 @@ function tripReducer(state: StoreData.TripVM, action) {
             locations: [
                 ...state.locations.slice(0, action.locationId),
                 ...state.locations.slice(action.locationId + 1)
+            ]
+        }
+
+        return newState
+    }
+    else if (action.type == LOCATION_ADD) {
+        console.log("reducer")
+        var newState: StoreData.TripVM = {
+            ...state,
+            locations: [
+                ...state.locations,
+                action.location
             ]
         }
 
