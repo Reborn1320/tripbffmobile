@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Button, Text, View } from 'native-base';
 import { Form, Item, Label, Input } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
-import { tripApi } from "../../_services/apis";
+import { tripApi } from "../../../screens/_services/apis";
 import moment, { Moment } from "moment";
 import DatePicker from "../../../_atoms/DatePicker/DatePicker";
 

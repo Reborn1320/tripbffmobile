@@ -8,7 +8,7 @@ import TripDetailsContainer2 from "../../../_organisms/Trip/TripDetails/TripDeta
 import { Menu, MenuTrigger, MenuOptions, MenuOption } from "react-native-popup-menu";
 import { Modal } from "../../../_atoms";
 import { Moment } from "moment";
-import { TripDateRangeForm } from "./TripDateRangeForm";
+import { TripDateRangeForm } from "../../../_organisms/Trip/TripDetails/TripDateRangeForm";
 import { mixins } from "../../../_utils";
 
 interface IMapDispatchToProps {

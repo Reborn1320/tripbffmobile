@@ -7,6 +7,9 @@ import * as RNa from "react-navigation";
 import ConfirmationModal from "../../../_molecules/ConfirmationModal";
 import { Menu, MenuTrigger, MenuOptions, MenuOption } from "react-native-popup-menu";
 import { mixins } from "../../../_utils";
+import EditPopupMenu from "../../../_molecules/Trip/EditPopupMenu/EditPopupMenu";
+import { Modal } from "../../../_atoms";
+import { TripDateRangeForm } from "./TripDateRangeForm";
 
 interface IMapDispatchToProps {
     removeLocation: (tripId: string, locationId: string) => Promise<void>
@@ -17,7 +20,9 @@ export interface Props extends IMapDispatchToProps {
     tripId: string,
     days: DayVM[],
     isLoaded: boolean,
-    tripName: string
+    tripName: string,
+    fromDate: Moment,
+    toDate: Moment,
 }
 
 interface State {
@@ -117,22 +122,7 @@ export class TripDetails extends Component<Props, State> {
                         flexGrow: 9,
                         maxWidth: "90%",
                     }}>{tripName}</H1>
-                    <View style={{
-                        // ...mixins.themes.debug,
-                        // width: 50,
-
-                    }}>
-                        <Menu
-                        // onSelect={this.onMenuSelect}
-                        >
-                            <MenuTrigger>
-                                <Icon type="FontAwesome" name="cog"></Icon>
-                            </MenuTrigger>
-                            <MenuOptions>
-                                <MenuOption value={1} text='Edit date range' />
-                            </MenuOptions>
-                        </Menu>
-                    </View>
+                    <EditPopupMenu onSelect={} />
                 </View>
 
                 {!isLoaded && <Spinner color='green' />}
@@ -147,6 +137,10 @@ export class TripDetails extends Component<Props, State> {
                     confirmHandler={this._removeLocationConfirmed}
                     cancelHandler={this._cancelModal}
                     isVisible={isConfirmationModalVisible} />
+
+                <Modal isVisible={isEditDateRangeModalVisible} >
+                        <TripDateRangeForm fromDate={fromDate} toDate={toDate} onClickEdit={this.onEdit} />
+                    </Modal>
             </View>
         );
     }
