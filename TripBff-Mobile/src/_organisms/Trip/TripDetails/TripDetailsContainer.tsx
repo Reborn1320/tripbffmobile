@@ -4,13 +4,14 @@ import _, { } from "lodash";
 import moment from "moment";
 import * as RNa from "react-navigation";
 import { TripDetails, DayVM } from "./TripDetails";
-import { removeLocation } from "../../../store/Trip/operations";
+import { removeLocation, addLocation } from "../../../store/Trip/operations";
 import { connect } from "react-redux";
 import { fetchTripLocations } from "../../../store/Trips/operations";
 
 interface IMapDispatchToProps {
     fetchLocations: (tripId: string) => Promise<Array<StoreData.LocationVM>>;
     removeLocation: (tripId: string, locationId: string) => Promise<void>;
+    addLocation: (tripId: string, location: StoreData.LocationVM) => Promise<void>;
 }
 
 export interface Props {
@@ -50,6 +51,15 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
         this.fetchTrip();
     }
 
+    compareLocationsFromTime(first, second) {
+        if (first.fromTime < second.fromTime) 
+            return -1
+        else if (first.fromTime > second.fromTime)
+            return 1
+        else
+            return 0;
+    }
+
     fetchTrip() {
         this.props.fetchLocations(this.props.trip.tripId)
         .then((locations) => {
@@ -60,8 +70,10 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
             for (let idx = 0; idx < nDays; idx++) {
                 dayVMs.push({
                     idx: idx + 1,
+                    date: this.state.fromDate.add(idx, 'days'),
                     locations: locations
                         .filter(element => moment(element.fromTime).diff(this.state.fromDate, "days") == idx)
+                        .sort(this.compareLocationsFromTime)
                         .map(e => {
                             return {
                                 id: e.locationId,
@@ -86,12 +98,36 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
             });
     }
 
+    _addLocationConfirmed = async (address, fromTime)  => {
+        console.log('address: ' + address);
+        console.log('fromTime: ' + fromTime);
+        console.log('tripId: ' + this.state.tripId);   
+
+        var location: StoreData.LocationVM = {
+            locationId: '',
+            fromTime: fromTime,
+            toTime: fromTime,
+            location: {
+                address: address,
+                long: 0,
+                lat: 0
+            },
+            images: []
+        };
+        this.props.addLocation(this.state.tripId, location)
+        .then(() => {
+            this.fetchTrip();
+        });        
+    }
+
     render() {
         const { tripId, name, days, isLoaded } = this.state;
         return (
             <TripDetails 
             isLoaded={isLoaded}
-            tripId={tripId} tripName={name} days={days} navigation={this.props.navigation} removeLocation={this._removeLocationConfirmed} />
+            tripId={tripId} tripName={name} days={days} navigation={this.props.navigation} 
+            removeLocation={this._removeLocationConfirmed} 
+            addLocation={this._addLocationConfirmed}/>
         );
     }
 }
@@ -106,6 +142,7 @@ const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
     return {
         fetchLocations: (tripId) => dispatch(fetchTripLocations(tripId)),
         removeLocation: (tripId, locationId) => dispatch(removeLocation(tripId, locationId)),
+        addLocation: (tripId, location) => dispatch(addLocation(tripId, location))
     };
 };
 

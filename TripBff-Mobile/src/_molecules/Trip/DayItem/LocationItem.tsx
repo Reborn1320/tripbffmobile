@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, Card, CardItem, Left, Button, Icon, Right } from "native-base";
-import { LocationVM } from "../TripDetailScreen";
+import { LocationVM } from '../../../_organisms/Trip/TripDetails/TripDetails';
 
 import { TouchableHighlight, Dimensions } from "react-native";
 import Location3Images from "./Location3Images";
@@ -56,7 +56,7 @@ class LocationItem extends React.Component<Props, State> {
                         onPress={() => this.props.toLocationDetailHandler(location.id)}
 
                     >
-                        {nImages == 1 ? (<LocationImage images={location.images} />)
+                        {(nImages == 0 || nImages == 1) ? (<LocationImage images={location.images} />)
                             : (nImages == 2) ? (<LocationImage images={location.images} />) : (<Location3Images images={location.images} />)}
                     </TouchableHighlight>
 

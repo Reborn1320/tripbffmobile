@@ -5,9 +5,12 @@ import _, { } from "lodash";
 import DayItem from "../../../_molecules/Trip/DayItem/DayItem";
 import * as RNa from "react-navigation";
 import ConfirmationModal from "../../../_molecules/ConfirmationModal";
+import moment from "moment";
+import AddLocationModal from "./AddLocationModal";
 
 interface IMapDispatchToProps {
     removeLocation: (tripId: string, locationId: string) => Promise<void>
+    addLocation: (address: string, fromTime: moment.Moment) => Promise<void>
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -22,10 +25,13 @@ interface State {
     modalVisible: boolean,
     isConfirmationModalVisible: boolean,
     focusingLocationId?: string,
+    isAddLocationModalVisible: boolean,
+    selectedDate: moment.Moment
 }
 
 export interface DayVM {
-    idx: number
+    idx: number,
+    date?: moment.Moment,
     locations: LocationVM[]
 }
 
@@ -48,6 +54,8 @@ export class TripDetails extends Component<Props, State> {
         this.state = {
             modalVisible: false,
             isConfirmationModalVisible: false,
+            isAddLocationModalVisible: false,
+            selectedDate: null
         }
     }
 
@@ -56,11 +64,12 @@ export class TripDetails extends Component<Props, State> {
         return (
 
             <DayItem
-                locations={day.locations} dayIdx={day.idx}
+                locations={day.locations} dayIdx={day.idx} date={day.date}
                 toLocationDetailHandler={(locationId) => {
                     this.props.navigation.navigate("LocationDetail", { tripId: this.props.tripId, locationId })
                 }}
                 removeLocationHandler={(locationId) => this.removeLocation(locationId)}
+                addLocationHandler={(dayIdx, date) => this.addLocationModal(dayIdx, date)}
             />
         )
     };
@@ -94,8 +103,29 @@ export class TripDetails extends Component<Props, State> {
         this.setState({ modalVisible: visible });
     }
 
+    addLocationModal(dayIdx, date) {
+        this.setState({
+            isAddLocationModalVisible: true,
+            selectedDate: date
+        })  
+    }
+
+    _addLocationConfirmed = (address, fromTime)  => {
+        this.setState({
+            isAddLocationModalVisible: false
+        });
+        
+        this.props.addLocation(address, fromTime);
+    }
+
+    _cancelAddLocationModal = () => {
+        this.setState({
+            isAddLocationModalVisible: false
+        }) 
+    }
+
     render() {
-        const { isConfirmationModalVisible } = this.state;
+        const { isConfirmationModalVisible, isAddLocationModalVisible, selectedDate } = this.state;
         const { tripName, days, isLoaded } = this.props;
         return (
             <View>
@@ -112,6 +142,11 @@ export class TripDetails extends Component<Props, State> {
                     confirmHandler={this._removeLocationConfirmed}
                     cancelHandler={this._cancelModal}
                     isVisible={isConfirmationModalVisible} />
+                 <AddLocationModal
+                    isVisible={isAddLocationModalVisible} 
+                    date={selectedDate}
+                    confirmHandler={this._addLocationConfirmed}
+                    cancelHandler={this._cancelAddLocationModal}/>
             </View>
         );
     }
