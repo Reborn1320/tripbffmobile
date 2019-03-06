@@ -51,6 +51,15 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
         this.fetchTrip();
     }
 
+    compareLocationsFromTime(first, second) {
+        if (first.fromTime < second.fromTime) 
+            return -1
+        else if (first.fromTime > second.fromTime)
+            return 1
+        else
+            return 0;
+    }
+
     fetchTrip() {
         this.props.fetchLocations(this.props.trip.tripId)
         .then((locations) => {
@@ -61,8 +70,10 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
             for (let idx = 0; idx < nDays; idx++) {
                 dayVMs.push({
                     idx: idx + 1,
+                    date: this.state.fromDate.add(idx, 'days'),
                     locations: locations
                         .filter(element => moment(element.fromTime).diff(this.state.fromDate, "days") == idx)
+                        .sort(this.compareLocationsFromTime)
                         .map(e => {
                             return {
                                 id: e.locationId,
