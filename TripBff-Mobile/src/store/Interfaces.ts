@@ -54,10 +54,21 @@ export module StoreData {
         error?: string
     }
 
+    export interface PreDefinedFeelingVM {
+        feelingId: number,
+        label: string,
+        icon: string
+    }
+
+    export interface DataSourceVM {
+        feelings?: Array<PreDefinedFeelingVM>
+    }
+
     export interface BffStoreData {
         repo?: RepoVM
         user?: UserVM
-        trips?: Array<TripVM>
+        trips?: Array<TripVM>,
+        dataSource: DataSourceVM
     }
 }
 

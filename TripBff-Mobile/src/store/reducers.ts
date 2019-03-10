@@ -8,6 +8,7 @@ import { TRIP_ADD } from '../screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './User/actions';
 import { ADD_INFOGRAPHIC_ID } from '../screens/trip/export/actions';
 import { LOCATION_REMOVE, LOCATION_ADD } from './Trip/actions';
+import { DataSource_GetAllFeeling } from './DataSource/actions';
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -41,7 +42,8 @@ const userInitState: StoreData.UserVM = {
 
 const initState: StoreData.BffStoreData = {
     user: userInitState,
-    trips: [] // tripsInitState
+    dataSource: {},
+    trips: [] // tripsInitState,
 }
 
 function userReducer(state, action) {
@@ -116,10 +118,23 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
     return state;
 }
 
+function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
+    switch(action.type) {
+        case "DataSource_GetAllFeeling":
+            return {
+                ...state,
+                feelings: action.feelings
+            }
+        default:
+            return state;
+    }
+}
+
 export default function bffApp(state: StoreData.BffStoreData = initState, action): StoreData.BffStoreData {
     return {
         repo: homeScreenReducer(state.repo, action),
         user: userReducer(state.user, action),
-        trips: tripsReducer(state.trips, action)
+        trips: tripsReducer(state.trips, action),
+        dataSource: dataSourceReducer(state.dataSource, action)
     }
 }

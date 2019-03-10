@@ -10,6 +10,7 @@ export interface Props {
     location: LocationVM
     toLocationDetailHandler: (locationId: string) => void
     removeLocationHandler: (locationId: string) => void
+    addFeelingModalHandler: () => void
 }
 
 export interface State {
@@ -26,7 +27,7 @@ class LocationItem extends React.Component<Props, State> {
     }
 
     selectFeeling() {
-        //TOOD: open modal
+        this.props.addFeelingModalHandler();
     }
     
     render() {

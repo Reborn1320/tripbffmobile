@@ -14,3 +14,5 @@ export function addLocation(tripId: string, location: StoreData.LocationVM) {
         type: LOCATION_ADD, tripId, location
     }
 }
+
+ 

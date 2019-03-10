@@ -7,6 +7,7 @@ import * as RNa from "react-navigation";
 import ConfirmationModal from "../../../_molecules/ConfirmationModal";
 import moment from "moment";
 import AddLocationModal from "./AddLocationModal";
+import AddFeelingModal from "./AddFeelingModal";
 
 interface IMapDispatchToProps {
     removeLocation: (tripId: string, locationId: string) => Promise<void>
@@ -27,6 +28,7 @@ interface State {
     focusingLocationId?: string,
     isAddLocationModalVisible: boolean,
     selectedDate: moment.Moment
+    isAddFeelingModalVisible: boolean
 }
 
 export interface DayVM {
@@ -62,7 +64,8 @@ export class TripDetails extends Component<Props, State> {
             modalVisible: false,
             isConfirmationModalVisible: false,
             isAddLocationModalVisible: false,
-            selectedDate: null
+            selectedDate: null,
+            isAddFeelingModalVisible: false
         }
     }
 
@@ -77,6 +80,7 @@ export class TripDetails extends Component<Props, State> {
                 }}
                 removeLocationHandler={(locationId) => this.removeLocation(locationId)}
                 addLocationHandler={(dayIdx, date) => this.addLocationModal(dayIdx, date)}
+                addFeelingModalHandler={() => this.openAddFeelingModal()}
             />
         )
     };
@@ -131,8 +135,28 @@ export class TripDetails extends Component<Props, State> {
         }) 
     }
 
+    openAddFeelingModal() {
+        this.setState({
+            isAddFeelingModalVisible: true
+        });
+    }
+
+    _addFeelingConfirmed = () => {
+        this.setState({
+            isAddFeelingModalVisible: false
+        });
+        //TODO: call api to store feeling into location
+        //TOOD: refresh location
+    }
+
+    _cancelAddfeelingModal = () => {
+        this.setState({
+            isAddFeelingModalVisible: false
+        }) 
+    }
+
     render() {
-        const { isConfirmationModalVisible, isAddLocationModalVisible, selectedDate } = this.state;
+        const { isConfirmationModalVisible, isAddLocationModalVisible, selectedDate, isAddFeelingModalVisible } = this.state;
         const { tripName, days, isLoaded } = this.props;
         return (
             <View>
@@ -154,6 +178,10 @@ export class TripDetails extends Component<Props, State> {
                     date={selectedDate}
                     confirmHandler={this._addLocationConfirmed}
                     cancelHandler={this._cancelAddLocationModal}/>
+                 <AddFeelingModal
+                    isVisible={isAddFeelingModalVisible}                    
+                    confirmHandler={this._addFeelingConfirmed}
+                    cancelHandler={this._cancelAddfeelingModal}/>
             </View>
         );
     }
