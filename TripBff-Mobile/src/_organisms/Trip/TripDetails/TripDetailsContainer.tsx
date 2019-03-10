@@ -64,7 +64,6 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
         this.props.fetchLocations(this.props.trip.tripId)
         .then((locations) => {
             var dayVMs: DayVM[] = [];
-
             const nDays = this.state.toDate.diff(this.state.fromDate, "days") + 1
 
             for (let idx = 0; idx < nDays; idx++) {
@@ -78,7 +77,8 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
                             return {
                                 id: e.locationId,
                                 address: e.location.address,
-                                images: e.images.map(img => { return { url: img.url, highlight: false } })
+                                images: e.images.map(img => { return { url: img.url, highlight: false } }),
+                                feeling: e.feeling
                             }
                         })
 

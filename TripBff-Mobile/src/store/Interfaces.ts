@@ -6,6 +6,12 @@ export module StoreData {
         externalStorageId?: string,
     }
 
+    export interface FeelingVM {
+        feelingId: number,
+        label: string,
+        icon: string
+    }
+
     export interface LocationDetailVM {
         long: number
         lat: number
@@ -17,7 +23,8 @@ export module StoreData {
         location: LocationDetailVM //TODO: simplify this by removing the interface
         fromTime: moment.Moment
         toTime: moment.Moment
-        images: Array<ImportImageVM>
+        images: Array<ImportImageVM>,
+        feeling?: FeelingVM
     }
 
     export interface TripVM {
@@ -71,6 +78,7 @@ export namespace RawJsonData {
         fromTime: string
         toTime: string
         images: Array<StoreData.ImportImageVM>
+        feeling?: StoreData.FeelingVM
     }
 
 }

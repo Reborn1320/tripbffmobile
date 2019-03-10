@@ -1,10 +1,11 @@
 import React from "react";
-import { Text, Card, CardItem, Left, Button, Icon, Right } from "native-base";
+import { Text, Card, CardItem, Left, Button, Icon, Right, Picker } from "native-base";
 import { LocationVM } from '../../../_organisms/Trip/TripDetails/TripDetails';
 
 import { TouchableHighlight, Dimensions } from "react-native";
 import Location3Images from "./Location3Images";
 import LocationImage from "./LocationImage";
+
 export interface Props {
     location: LocationVM
     toLocationDetailHandler: (locationId: string) => void
@@ -24,6 +25,10 @@ class LocationItem extends React.Component<Props, State> {
         }
     }
 
+    selectFeeling() {
+        //TOOD: open modal
+    }
+    
     render() {
 
         var location: LocationVM = this.props.location;
@@ -33,6 +38,9 @@ class LocationItem extends React.Component<Props, State> {
         const MARGIN_RIGHT = 10
         const SIZE = Dimensions.get('window').width - MARGIN_LEFT - MARGIN_RIGHT;
         const SIZE23 = SIZE * 2 / 3
+
+        var feelingLabel = location.feeling && location.feeling.label ? location.feeling.label : "";
+        var feelingIcon = location.feeling && location.feeling.icon ? location.feeling.icon : "smile-o";
 
         return (
             <Card style={{ marginLeft: MARGIN_LEFT, marginRight: MARGIN_RIGHT }}
@@ -70,10 +78,11 @@ class LocationItem extends React.Component<Props, State> {
                 <CardItem>
                     {/* todo icon x button with confirmation modal */}
                     <Left>
-                        <Button transparent>
-                            <Icon active type="FontAwesome" name="smile-o"/>
-                            <Text>Happy</Text>
-                        </Button>
+                        <Button transparent onPress={() => this.selectFeeling()}>
+                            <Text>Feeling...</Text>
+                            <Icon type="FontAwesome" name={feelingIcon} />     
+                            <Text> {feelingLabel} </Text>                       
+                        </Button>                         
                     </Left>
                     <Right>
                         <Button transparent>
@@ -83,6 +92,7 @@ class LocationItem extends React.Component<Props, State> {
                     </Right>
                 </CardItem>
             </Card>
+            
         );
     }
 

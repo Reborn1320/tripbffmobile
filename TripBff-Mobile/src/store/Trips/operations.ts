@@ -59,8 +59,10 @@ export function fetchTripLocations(tripId: string): ThunkResultBase {
             fromTime: moment(rawLocation.fromTime),
             toTime: moment(rawLocation.toTime),
             images: rawLocation.images,
+            feeling: rawLocation.feeling
           }
         });
+
         return locations;
       })
       .catch(error => {

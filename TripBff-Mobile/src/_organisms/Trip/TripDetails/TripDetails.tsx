@@ -38,12 +38,19 @@ export interface DayVM {
 export interface LocationVM {
     id: string
     address: string
-    images: Array<ImageVM>
+    images: Array<ImageVM>,
+    feeling?: FeelingVM
 }
 
 export interface ImageVM {
     url: string
     highlight: boolean
+}
+
+export interface FeelingVM {
+    feelingId: number,
+    label: string,
+    icon: string
 }
 
 export class TripDetails extends Component<Props, State> {
