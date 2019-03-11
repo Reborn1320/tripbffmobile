@@ -24,7 +24,7 @@ interface IMapDispatchToProps {
 export interface Props {
   isVisible: boolean;
   preDefinedFeelings?: Array<StoreData.PreDefinedFeelingVM>
-  confirmHandler: (feelingId) => void;
+  confirmHandler: (id) => void;
   cancelHandler?: () => void;
 }
 
@@ -39,8 +39,8 @@ class FeelingItem extends React.PureComponent<any> {
   render() {
     return (
       <TouchableOpacity onPress={this._onPress}>
-        <View>
-          <Icon type="FontAwesome" name={this.props.icon} />  
+        <View style={{flex: 1, flexDirection: "row", justifyContent: 'flex-start'}}>
+          <Icon style={{ marginRight: 5}} type="FontAwesome" name={this.props.icon} />  
           <Text>{this.props.label}</Text>
         </View>
       </TouchableOpacity>
@@ -63,7 +63,9 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
     }
   };
 
-  _onConfirm = (id) => { this.props.confirmHandler(id)}
+  _onConfirm(id) { 
+    this.props.confirmHandler(id);
+  }
 
   _keyExtractor = (item, index) => item.feelingId;
 
@@ -72,16 +74,18 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
         id={item.feelingId}
         label={item.label}
         icon={item.icon}
-        onPressItem={this._onConfirm(item.feelingId)}
+        onPressItem={(id) => this._onConfirm(id)}
       />
     );
 
     _renderContent() {
         return (
           <FlatList
+              style={{flex: 1, marginVertical: 20}}
               data={this.props.preDefinedFeelings}
               keyExtractor={this._keyExtractor}
               renderItem={this._renderItem}
+              numColumns={2}
             />
         );
     }

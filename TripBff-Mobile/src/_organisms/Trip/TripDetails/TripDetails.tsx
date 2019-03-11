@@ -141,7 +141,7 @@ export class TripDetails extends Component<Props, State> {
         });
     }
 
-    _addFeelingConfirmed = () => {
+    _addFeelingConfirmed = (id) => {
         this.setState({
             isAddFeelingModalVisible: false
         });
