@@ -23,8 +23,9 @@ interface IMapDispatchToProps {
 
 export interface Props {
   isVisible: boolean;
+  locationId: string;
   preDefinedFeelings?: Array<StoreData.PreDefinedFeelingVM>
-  confirmHandler: (id) => void;
+  confirmHandler: (locationId, id) => void;
   cancelHandler?: () => void;
 }
 
@@ -33,7 +34,11 @@ interface State {
 
 class FeelingItem extends React.PureComponent<any> {
   _onPress = () => {
-    this.props.onPressItem(this.props.id);
+    this.props.onPressItem({
+      feelingId: this.props.id,
+      label: this.props.label,
+      icon: this.props.icon
+    });
   };
 
   render() {
@@ -63,8 +68,8 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
     }
   };
 
-  _onConfirm(id) { 
-    this.props.confirmHandler(id);
+  _onConfirm(feeling) { 
+    this.props.confirmHandler(this.props.locationId, feeling);
   }
 
   _keyExtractor = (item, index) => item.feelingId;
@@ -74,7 +79,7 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
         id={item.feelingId}
         label={item.label}
         icon={item.icon}
-        onPressItem={(id) => this._onConfirm(id)}
+        onPressItem={(item) => this._onConfirm(item)}
       />
     );
 
@@ -92,7 +97,6 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
 
   render() {
     const { isVisible } = this.props;
-    console.log('feelings: ' + JSON.stringify(this.props.preDefinedFeelings));
     var contentElement = this.props.preDefinedFeelings
           ? this._renderContent() 
           : <ActivityIndicator size="small" color="#00ff00" />

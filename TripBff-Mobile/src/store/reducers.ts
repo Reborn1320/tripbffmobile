@@ -7,8 +7,9 @@ import importImagesReducer from '../screens/trip/import/reducers';
 import { TRIP_ADD } from '../screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './User/actions';
 import { ADD_INFOGRAPHIC_ID } from '../screens/trip/export/actions';
-import { LOCATION_REMOVE, LOCATION_ADD } from './Trip/actions';
+import { LOCATION_REMOVE, LOCATION_ADD, LOCATION_UPDATE_FEELING, LOCATION_UPDATE } from './Trip/actions';
 import { DataSource_GetAllFeeling } from './DataSource/actions';
+import { stat } from 'fs';
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -64,19 +65,14 @@ function tripReducer(state: StoreData.TripVM, action) {
           });
     }
     else if (action.type == LOCATION_REMOVE) {
-        console.log("reducer")
         var newState: StoreData.TripVM = {
             ...state,
-            locations: [
-                ...state.locations.slice(0, action.locationId),
-                ...state.locations.slice(action.locationId + 1)
-            ]
+            locations: state.locations.filter(item => item.locationId !== action.locationId)
         }
 
         return newState
     }
     else if (action.type == LOCATION_ADD) {
-        console.log("reducer")
         var newState: StoreData.TripVM = {
             ...state,
             locations: [
@@ -86,6 +82,23 @@ function tripReducer(state: StoreData.TripVM, action) {
         }
 
         return newState
+    }
+    else if (action.type == LOCATION_UPDATE_FEELING) {
+        return {
+            ...state,
+            locations: state.locations.map(item => {
+                return item.locationId != action.locationId ? item : {
+                    ...item,
+                    feeling: action.feeling
+                }
+            })
+        }
+    }
+    else if (action.type == LOCATION_UPDATE) {
+        return {
+            ...state,
+            locations: action.locations
+        }
     }
 
     return importImagesReducer(state, action)

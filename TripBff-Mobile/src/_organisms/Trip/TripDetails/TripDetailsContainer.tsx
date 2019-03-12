@@ -4,14 +4,17 @@ import _, { } from "lodash";
 import moment from "moment";
 import * as RNa from "react-navigation";
 import { TripDetails, DayVM } from "./TripDetails";
-import { removeLocation, addLocation } from "../../../store/Trip/operations";
+import { removeLocation, addLocation, updateLocationFeeling } from "../../../store/Trip/operations";
 import { connect } from "react-redux";
 import { fetchTripLocations } from "../../../store/Trips/operations";
+import { updateLocations } from "../../../store/Trip/actions";
 
 interface IMapDispatchToProps {
     fetchLocations: (tripId: string) => Promise<Array<StoreData.LocationVM>>;
     removeLocation: (tripId: string, locationId: string) => Promise<void>;
     addLocation: (tripId: string, location: StoreData.LocationVM) => Promise<void>;
+    updateLocationFeeling: (tripId: string, locationId: string, feeling: StoreData.FeelingVM) => Promise<void>;
+    updateLocations: (tripId: string, locations: Array<StoreData.LocationVM>) => Promise<void>; 
 }
 
 export interface Props {
@@ -61,34 +64,46 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
     }
 
     fetchTrip() {
-        this.props.fetchLocations(this.props.trip.tripId)
-        .then((locations) => {
-            var dayVMs: DayVM[] = [];
-            const nDays = this.state.toDate.diff(this.state.fromDate, "days") + 1
+        console.log('current trip: ' + JSON.stringify(this.props.trip));
 
-            for (let idx = 0; idx < nDays; idx++) {
-                dayVMs.push({
-                    idx: idx + 1,
-                    date: this.state.fromDate.add(idx, 'days'),
-                    locations: locations
-                        .filter(element => moment(element.fromTime).diff(this.state.fromDate, "days") == idx)
-                        .sort(this.compareLocationsFromTime)
-                        .map(e => {
-                            return {
-                                id: e.locationId,
-                                address: e.location.address,
-                                images: e.images.map(img => { return { url: img.url, highlight: false } }),
-                                feeling: e.feeling
-                            }
-                        })
+        if (this.props.trip && this.props.trip.locations) {
+            this._refreshTrip(this.props.trip.locations);
+        }
+        else {
+            this.props.fetchLocations(this.props.trip.tripId)
+            .then((locations) => {  
+                //TODO: should correct update locations method in reducers
+                this.props.updateLocations(this.state.tripId, locations);           
+                this._refreshTrip(locations);
+            });
+        }     
+    }
 
-                })
-            }
-
-            //console.log('dayVMs: ' + JSON.stringify(dayVMs));    
-            this.setState({ days: dayVMs, isLoaded: true });
-
-        });
+    _refreshTrip(locations) {
+        var dayVMs: DayVM[] = [];
+                const nDays = this.state.toDate.diff(this.state.fromDate, "days") + 1
+    
+                for (let idx = 0; idx < nDays; idx++) {
+                    dayVMs.push({
+                        idx: idx + 1,
+                        date: this.state.fromDate.add(idx, 'days'),
+                        locations: locations
+                            .filter(element => moment(element.fromTime).diff(this.state.fromDate, "days") == idx)
+                            .sort(this.compareLocationsFromTime)
+                            .map(e => {
+                                return {
+                                    id: e.locationId,
+                                    address: e.location.address,
+                                    images: e.images.map(img => { return { url: img.url, highlight: false } }),
+                                    feeling: e.feeling
+                                }
+                            })
+    
+                    })
+                }
+    
+                //console.log('dayVMs: ' + JSON.stringify(dayVMs));    
+                this.setState({ days: dayVMs, isLoaded: true });
     }
 
     _removeLocationConfirmed = async (tripId, locationId) => {
@@ -120,6 +135,14 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
         });        
     }
 
+    _updateLocationFeeling = async (locationId, feeling) => {
+        this.props.updateLocationFeeling(this.state.tripId, locationId, feeling)
+                  .then(() => {
+                      //TODO: refresh focus location
+                      this.fetchTrip();
+                 });
+    };
+
     render() {
         const { tripId, name, days, isLoaded } = this.state;
         return (
@@ -127,13 +150,15 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
             isLoaded={isLoaded}
             tripId={tripId} tripName={name} days={days} navigation={this.props.navigation} 
             removeLocation={this._removeLocationConfirmed} 
-            addLocation={this._addLocationConfirmed}/>
+            addLocation={this._addLocationConfirmed}
+            updateLocationFeeling={this._updateLocationFeeling}/>
         );
     }
 }
 
-const mapStateToProps = (storeState, ownProps: Props) => {
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     return {
+
         ...ownProps
     };
 };
@@ -142,7 +167,9 @@ const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
     return {
         fetchLocations: (tripId) => dispatch(fetchTripLocations(tripId)),
         removeLocation: (tripId, locationId) => dispatch(removeLocation(tripId, locationId)),
-        addLocation: (tripId, location) => dispatch(addLocation(tripId, location))
+        addLocation: (tripId, location) => dispatch(addLocation(tripId, location)),
+        updateLocationFeeling: (tripId, locationId, feeling) => dispatch(updateLocationFeeling(tripId, locationId, feeling)),
+        updateLocations: (tripId, locations) => dispatch(updateLocations(tripId, locations))
     };
 };
 

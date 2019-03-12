@@ -8,10 +8,12 @@ import ConfirmationModal from "../../../_molecules/ConfirmationModal";
 import moment from "moment";
 import AddLocationModal from "./AddLocationModal";
 import AddFeelingModal from "./AddFeelingModal";
+import { StoreData } from "../../../store/Interfaces";
 
 interface IMapDispatchToProps {
     removeLocation: (tripId: string, locationId: string) => Promise<void>
     addLocation: (address: string, fromTime: moment.Moment) => Promise<void>
+    updateLocationFeeling: (locationId: string, feeling: StoreData.FeelingVM) => Promise<void>
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -80,7 +82,7 @@ export class TripDetails extends Component<Props, State> {
                 }}
                 removeLocationHandler={(locationId) => this.removeLocation(locationId)}
                 addLocationHandler={(dayIdx, date) => this.addLocationModal(dayIdx, date)}
-                addFeelingModalHandler={() => this.openAddFeelingModal()}
+                addFeelingModalHandler={(locationId) => this.openAddFeelingModal(locationId)}
             />
         )
     };
@@ -135,18 +137,18 @@ export class TripDetails extends Component<Props, State> {
         }) 
     }
 
-    openAddFeelingModal() {
+    openAddFeelingModal(locationId) {
         this.setState({
-            isAddFeelingModalVisible: true
+            isAddFeelingModalVisible: true,
+            focusingLocationId: locationId
         });
     }
 
-    _addFeelingConfirmed = (id) => {
+    _updateFeelingConfirmed = (locationId, feeling) => {
         this.setState({
             isAddFeelingModalVisible: false
         });
-        //TODO: call api to store feeling into location
-        //TOOD: refresh location
+        this.props.updateLocationFeeling(locationId, feeling);
     }
 
     _cancelAddfeelingModal = () => {
@@ -156,7 +158,7 @@ export class TripDetails extends Component<Props, State> {
     }
 
     render() {
-        const { isConfirmationModalVisible, isAddLocationModalVisible, selectedDate, isAddFeelingModalVisible } = this.state;
+        const { isConfirmationModalVisible, isAddLocationModalVisible, selectedDate, isAddFeelingModalVisible, focusingLocationId } = this.state;
         const { tripName, days, isLoaded } = this.props;
         return (
             <View>
@@ -179,8 +181,9 @@ export class TripDetails extends Component<Props, State> {
                     confirmHandler={this._addLocationConfirmed}
                     cancelHandler={this._cancelAddLocationModal}/>
                  <AddFeelingModal
-                    isVisible={isAddFeelingModalVisible}                    
-                    confirmHandler={this._addFeelingConfirmed}
+                    isVisible={isAddFeelingModalVisible}
+                    locationId={focusingLocationId}                    
+                    confirmHandler={this._updateFeelingConfirmed}
                     cancelHandler={this._cancelAddfeelingModal}/>
             </View>
         );

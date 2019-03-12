@@ -1,4 +1,7 @@
-import { removeLocation as removeLocationAction, addLocation as addLocationAction } from "./actions";
+import { 
+  removeLocation as removeLocationAction, 
+  addLocation as addLocationAction,
+  updateLocationFeeling as updateLocationFeelingAction } from "./actions";
 import { ThunkResultBase } from "..";
 import { Moment } from "moment";
 import { RawJsonData, StoreData } from "../Interfaces";
@@ -80,6 +83,24 @@ export function updateTripDateRange(tripId: string, fromDate: Moment, toDate: Mo
     })
     .catch((err) => {
       console.log('error update trip date range api: ', err);
+    });
+  };
+}
+
+export function updateLocationFeeling(tripId: string, locationId: string, feeling: StoreData.FeelingVM): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    // LATER: should only pass feelingId to server
+    const data = {
+      feelingId: feeling.feelingId,
+      feelingLabel: feeling.label,
+      feelingIcon: feeling.icon
+    };
+    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/feeling`, { data })
+    .then((res) => {
+      dispatch(updateLocationFeelingAction(tripId, locationId, feeling));
+    })
+    .catch((err) => {
+      console.log('error update location feeling: ', err);
     });
   };
 }
