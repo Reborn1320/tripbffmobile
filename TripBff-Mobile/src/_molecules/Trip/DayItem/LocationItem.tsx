@@ -11,6 +11,7 @@ export interface Props {
     toLocationDetailHandler: (locationId: string) => void
     removeLocationHandler: (locationId: string) => void
     addFeelingModalHandler: (locationId: string) => void
+    addActivityModalHandler: (locationId: string) => void
 }
 
 export interface State {
@@ -29,6 +30,10 @@ class LocationItem extends React.Component<Props, State> {
     selectFeeling() {
         this.props.addFeelingModalHandler(this.props.location.id);
     }
+
+    selectActivity() {
+        this.props.addActivityModalHandler(this.props.location.id);
+    }
     
     render() {
 
@@ -42,6 +47,8 @@ class LocationItem extends React.Component<Props, State> {
 
         var feelingLabel = location.feeling && location.feeling.label ? location.feeling.label : "";
         var feelingIcon = location.feeling && location.feeling.icon ? location.feeling.icon : "smile-o";
+        var activityLabel = location.activity && location.activity.label ? location.activity.label : "Doing...";
+        var activityIcon = location.activity && location.activity.icon ? location.activity.icon : "running";
 
         return (
             <Card style={{ marginLeft: MARGIN_LEFT, marginRight: MARGIN_RIGHT }}
@@ -86,9 +93,9 @@ class LocationItem extends React.Component<Props, State> {
                         </Button>                         
                     </Left>
                     <Right>
-                        <Button transparent>
-                            <Icon active type="FontAwesome" name="music"/>
-                            <Text>Music</Text>
+                        <Button transparent onPress={() => this.selectActivity()}>
+                            <Icon type="FontAwesome" name={activityIcon} />     
+                            <Text>{activityLabel} </Text> 
                         </Button>
                     </Right>
                 </CardItem>

@@ -95,7 +95,8 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
                                     id: e.locationId,
                                     address: e.location.address,
                                     images: e.images.map(img => { return { url: img.url, highlight: false } }),
-                                    feeling: e.feeling
+                                    feeling: e.feeling,
+                                    activity: e.activity
                                 }
                             })
     

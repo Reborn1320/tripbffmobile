@@ -12,6 +12,12 @@ export module StoreData {
         icon: string
     }
 
+    export interface ActivityVM {
+        activityId: number,
+        lable: string,
+        icon: string
+    }
+
     export interface LocationDetailVM {
         long: number
         lat: number
@@ -24,7 +30,8 @@ export module StoreData {
         fromTime: moment.Moment
         toTime: moment.Moment
         images: Array<ImportImageVM>,
-        feeling?: FeelingVM
+        feeling?: FeelingVM,
+        activity?: ActivityVM
     }
 
     export interface TripVM {
@@ -60,8 +67,15 @@ export module StoreData {
         icon: string
     }
 
+    export interface PreDefinedActivityVM {
+        activityId: number,
+        label: string,
+        icon: string
+    }
+
     export interface DataSourceVM {
-        feelings?: Array<PreDefinedFeelingVM>
+        feelings?: Array<PreDefinedFeelingVM>,
+        activities?: Array<PreDefinedActivityVM>
     }
 
     export interface BffStoreData {
@@ -89,7 +103,8 @@ export namespace RawJsonData {
         fromTime: string
         toTime: string
         images: Array<StoreData.ImportImageVM>
-        feeling?: StoreData.FeelingVM
+        feeling?: StoreData.FeelingVM,
+        activity?: StoreData.ActivityVM
     }
 
 }

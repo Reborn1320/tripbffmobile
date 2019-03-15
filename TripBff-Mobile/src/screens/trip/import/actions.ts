@@ -1,5 +1,5 @@
 import { StoreData } from '../../../store/Interfaces';
-import { ThunkResultBase } from '../../_shared/LayoutContainer';
+import { ThunkResultBase } from '../../../store/index';
 export const IMPORT_IMAGE_SELECT_UNSELECT_IMAGE = "TRIP/IMPORT_IMAGE_SELECT_UNSELECT_IMAGE"
 export const IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES = "TRIP/IMPORT_IMAGE_SELECT_UNSELECT_ALL_IMAGES"
 export const IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS = "TRIP/IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS"

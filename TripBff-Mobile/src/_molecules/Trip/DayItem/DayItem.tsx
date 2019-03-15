@@ -12,6 +12,7 @@ export interface Props {
     removeLocationHandler: (locationId: string) => void
     addLocationHandler: (dayIdx: number, date: moment.Moment) => void
     addFeelingModalHandler: (locationId: string) => void
+    addActivityModalHandler: (locationId: string) => void
 }
 
 export interface State {
@@ -36,6 +37,7 @@ export default class DayItem extends React.Component<Props, State> {
                     toLocationDetailHandler={(locationId) => this.props.toLocationDetailHandler(locationId)} 
                     removeLocationHandler={(locationId) => this.props.removeLocationHandler(locationId)}
                     addFeelingModalHandler={(locationId) => this.props.addFeelingModalHandler(locationId)}
+                    addActivityModalHandler={(locationId) => this.props.addActivityModalHandler(locationId)}
                     >
                 </LocationItem>)}
             </View>

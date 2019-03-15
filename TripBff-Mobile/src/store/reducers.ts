@@ -138,6 +138,11 @@ function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
                 ...state,
                 feelings: action.feelings
             }
+        case "DataSource_GetAllActivity":
+            return {
+                ...state,
+                activities: action.activities
+            }
         default:
             return state;
     }
