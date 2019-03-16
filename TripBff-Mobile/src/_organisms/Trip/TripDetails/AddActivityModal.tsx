@@ -6,36 +6,29 @@ import { View, Text, Button, Icon } from "native-base";
 import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
-import  Autocomplete  from "react-native-autocomplete-input";
-const mbxClient = require('@mapbox/mapbox-sdk');
-const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
-const baseClient = mbxClient({ accessToken: 'pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g' });
-const geoCodingService = mbxGeocoding(baseClient);
-import DateTimePicker from 'react-native-modal-datetime-picker';
-import moment from "moment";
 import { connect } from "react-redux";
-import { getAllFeelings } from "../../../store/DataSource/operations";
+import { getAllActivities } from "../../../store/DataSource/operations";
 import { StoreData } from "../../../store/Interfaces";
 
 interface IMapDispatchToProps {
-  getAllFeelings: () => Promise<StoreData.FeelingVM>
+  getAllActivities: () => Promise<StoreData.ActivityVM>
 }
 
 export interface Props {
   isVisible: boolean;
   locationId: string;
-  preDefinedFeelings?: Array<StoreData.PreDefinedFeelingVM>
-  confirmHandler: (locationId, feeling) => void;
+  preDefinedActivities?: Array<StoreData.PreDefinedActivityVM>
+  confirmHandler: (locationId, activity) => void;
   cancelHandler?: () => void;
 }
 
 interface State {
 }
 
-class FeelingItem extends React.PureComponent<any> {
+class ActivityItem extends React.PureComponent<any> {
   _onPress = () => {
     this.props.onPressItem({
-      feelingId: this.props.id,
+      activityId: this.props.id,
       label: this.props.label,
       icon: this.props.icon
     });
@@ -53,13 +46,13 @@ class FeelingItem extends React.PureComponent<any> {
   }
 }
 
-class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToProps, State> {
+class AddActivityModalComponent extends React.Component<Props & IMapDispatchToProps, State> {
   constructor(props: Props & IMapDispatchToProps) {
     super(props);  
   }
 
   componentDidMount() {
-    this.props.getAllFeelings();
+    this.props.getAllActivities();
   }
 
   _onCancel = () => {
@@ -68,15 +61,15 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
     }
   };
 
-  _onConfirm(feeling) { 
-    this.props.confirmHandler(this.props.locationId, feeling);
+  _onConfirm(activity) { 
+    this.props.confirmHandler(this.props.locationId, activity);
   }
 
-  _keyExtractor = (item, index) => item.feelingId;
+  _keyExtractor = (item, index) => item.activityId;
 
   _renderItem = ({item}) => (
-      <FeelingItem
-        id={item.feelingId}
+      <ActivityItem
+        id={item.activityId}
         label={item.label}
         icon={item.icon}
         onPressItem={(item) => this._onConfirm(item)}
@@ -87,7 +80,7 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
         return (
           <FlatList
               style={{flex: 1, marginVertical: 20}}
-              data={this.props.preDefinedFeelings}
+              data={this.props.preDefinedActivities}
               keyExtractor={this._keyExtractor}
               renderItem={this._renderItem}
               numColumns={2}
@@ -97,7 +90,7 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
 
   render() {
     const { isVisible } = this.props;
-    var contentElement = this.props.preDefinedFeelings
+    var contentElement = this.props.preDefinedActivities
           ? this._renderContent() 
           : <ActivityIndicator size="small" color="#00ff00" />
           
@@ -148,23 +141,23 @@ const styles = StyleSheet.create<Style>({
   }
 })
   
-const AddFeelingModalStyle = connectStyle<typeof AddFeelingModalComponent>('NativeBase.Modal', styles)(AddFeelingModalComponent);
+const AddActivityModalStyle = connectStyle<typeof AddActivityModalComponent>('NativeBase.Modal', styles)(AddActivityModalComponent);
 
 const mapStateToProps = (storeState, ownProps: Props) => {
   return {
-      preDefinedFeelings: storeState.dataSource.feelings
+      preDefinedActivities: storeState.dataSource.activities
   };
 };
 
 const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
   return {
-    getAllFeelings: () => dispatch(getAllFeelings())
+    getAllActivities: () => dispatch(getAllActivities())
   };
 };
 
-const AddFeelingModal = connect(
+const AddActivityModal = connect(
   mapStateToProps,
   mapDispatchToProps
-)(AddFeelingModalStyle);
+)(AddActivityModalStyle);
 
-export default AddFeelingModal;
+export default AddActivityModal;

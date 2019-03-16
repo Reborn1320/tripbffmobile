@@ -4,7 +4,7 @@ import _, { } from "lodash";
 import moment from "moment";
 import * as RNa from "react-navigation";
 import { TripDetails, DayVM } from "./TripDetails";
-import { removeLocation, addLocation, updateLocationFeeling } from "../../../store/Trip/operations";
+import { removeLocation, addLocation, updateLocationFeeling, updateLocationActivity } from "../../../store/Trip/operations";
 import { connect } from "react-redux";
 import { fetchTripLocations } from "../../../store/Trips/operations";
 import { updateLocations } from "../../../store/Trip/actions";
@@ -15,6 +15,7 @@ interface IMapDispatchToProps {
     addLocation: (tripId: string, location: StoreData.LocationVM) => Promise<void>;
     updateLocationFeeling: (tripId: string, locationId: string, feeling: StoreData.FeelingVM) => Promise<void>;
     updateLocations: (tripId: string, locations: Array<StoreData.LocationVM>) => Promise<void>; 
+    updateLocationActivity: (tripId: string, locationId: string, activity: StoreData.ActivityVM) => Promise<void>;
 }
 
 export interface Props {
@@ -64,15 +65,13 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
     }
 
     fetchTrip() {
-        console.log('current trip: ' + JSON.stringify(this.props.trip));
-
         if (this.props.trip && this.props.trip.locations) {
             this._refreshTrip(this.props.trip.locations);
         }
         else {
             this.props.fetchLocations(this.props.trip.tripId)
             .then((locations) => {  
-                //TODO: should correct update locations method in reducers
+                //TODO LATER: should correct update locations method in reducers
                 this.props.updateLocations(this.state.tripId, locations);           
                 this._refreshTrip(locations);
             });
@@ -95,7 +94,8 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
                                     id: e.locationId,
                                     address: e.location.address,
                                     images: e.images.map(img => { return { url: img.url, highlight: false } }),
-                                    feeling: e.feeling
+                                    feeling: e.feeling,
+                                    activity: e.activity
                                 }
                             })
     
@@ -114,10 +114,6 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
     }
 
     _addLocationConfirmed = async (address, fromTime)  => {
-        console.log('address: ' + address);
-        console.log('fromTime: ' + fromTime);
-        console.log('tripId: ' + this.state.tripId);   
-
         var location: StoreData.LocationVM = {
             locationId: '',
             fromTime: fromTime,
@@ -143,6 +139,14 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
                  });
     };
 
+    _updateLocationActivity = async (locationId, activity) => {
+        this.props.updateLocationActivity(this.state.tripId, locationId, activity)
+                  .then(() => {
+                      //TODO: refresh focus location
+                      this.fetchTrip();
+                 });
+    };
+
     render() {
         const { tripId, name, days, isLoaded } = this.state;
         return (
@@ -151,7 +155,8 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
             tripId={tripId} tripName={name} days={days} navigation={this.props.navigation} 
             removeLocation={this._removeLocationConfirmed} 
             addLocation={this._addLocationConfirmed}
-            updateLocationFeeling={this._updateLocationFeeling}/>
+            updateLocationFeeling={this._updateLocationFeeling}
+            updateLocationActivity={this._updateLocationActivity}/>
         );
     }
 }
@@ -169,7 +174,8 @@ const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
         removeLocation: (tripId, locationId) => dispatch(removeLocation(tripId, locationId)),
         addLocation: (tripId, location) => dispatch(addLocation(tripId, location)),
         updateLocationFeeling: (tripId, locationId, feeling) => dispatch(updateLocationFeeling(tripId, locationId, feeling)),
-        updateLocations: (tripId, locations) => dispatch(updateLocations(tripId, locations))
+        updateLocations: (tripId, locations) => dispatch(updateLocations(tripId, locations)),
+        updateLocationActivity: (tripId, locationId, activity) => dispatch(updateLocationActivity(tripId, locationId, activity)),
     };
 };
 

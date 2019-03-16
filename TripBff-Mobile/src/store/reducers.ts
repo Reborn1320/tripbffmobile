@@ -7,7 +7,11 @@ import importImagesReducer from '../screens/trip/import/reducers';
 import { TRIP_ADD } from '../screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './User/actions';
 import { ADD_INFOGRAPHIC_ID } from '../screens/trip/export/actions';
-import { LOCATION_REMOVE, LOCATION_ADD, LOCATION_UPDATE_FEELING, LOCATION_UPDATE } from './Trip/actions';
+import { LOCATION_REMOVE, 
+         LOCATION_ADD,
+         LOCATION_UPDATE_FEELING,
+         LOCATION_UPDATE,
+         LOCATION_UPDATE_ACTIVITY } from './Trip/actions';
 import { DataSource_GetAllFeeling } from './DataSource/actions';
 import { stat } from 'fs';
 
@@ -100,6 +104,17 @@ function tripReducer(state: StoreData.TripVM, action) {
             locations: action.locations
         }
     }
+    else if (action.type == LOCATION_UPDATE_ACTIVITY) {
+        return {
+            ...state,
+            locations: state.locations.map(item => {
+                return item.locationId != action.locationId ? item : {
+                    ...item,
+                    activity: action.activity
+                }
+            })
+        }
+    }
 
     return importImagesReducer(state, action)
 }
@@ -137,6 +152,11 @@ function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
             return {
                 ...state,
                 feelings: action.feelings
+            }
+        case "DataSource_GetAllActivity":
+            return {
+                ...state,
+                activities: action.activities
             }
         default:
             return state;

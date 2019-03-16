@@ -24,8 +24,11 @@ export default class Setup extends Component<{}, State> {
     await Expo.Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
-      Ionicons: require("@expo/vector-icons/fonts/Ionicons.ttf"),
-      FontAwesome: require("@expo/vector-icons/fonts/FontAwesome.ttf")
+      Ionicons: require("react-native-vector-icons/Fonts/Ionicons.ttf"),
+      FontAwesome: require("react-native-vector-icons/Fonts/FontAwesome.ttf"),
+      FontAwesome5_Solid: require("react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"),
+      FontAwesome5_Regular: require("react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"),
+      FontAwesome5_Brands: require("react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf")
     });
     this.setState({ isReady: true });
   }

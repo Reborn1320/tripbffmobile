@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Card, CardItem, Left, Button, Icon, Right, Picker } from "native-base";
+import { Text, Card, CardItem, Left, Button, Right, Picker, Icon } from "native-base";
 import { LocationVM } from '../../../_organisms/Trip/TripDetails/TripDetails';
 
 import { TouchableHighlight, Dimensions } from "react-native";
@@ -11,6 +11,7 @@ export interface Props {
     toLocationDetailHandler: (locationId: string) => void
     removeLocationHandler: (locationId: string) => void
     addFeelingModalHandler: (locationId: string) => void
+    addActivityModalHandler: (locationId: string) => void
 }
 
 export interface State {
@@ -29,6 +30,10 @@ class LocationItem extends React.Component<Props, State> {
     selectFeeling() {
         this.props.addFeelingModalHandler(this.props.location.id);
     }
+
+    selectActivity() {
+        this.props.addActivityModalHandler(this.props.location.id);
+    }
     
     render() {
 
@@ -41,7 +46,9 @@ class LocationItem extends React.Component<Props, State> {
         const SIZE23 = SIZE * 2 / 3
 
         var feelingLabel = location.feeling && location.feeling.label ? location.feeling.label : "";
-        var feelingIcon = location.feeling && location.feeling.icon ? location.feeling.icon : "smile-o";
+        var feelingIcon = location.feeling && location.feeling.icon ? location.feeling.icon : "smile";
+        var activityLabel = location.activity && location.activity.label ? location.activity.label : "Activity";
+        var activityIcon = location.activity && location.activity.icon ? location.activity.icon : "running";
 
         return (
             <Card style={{ marginLeft: MARGIN_LEFT, marginRight: MARGIN_RIGHT }}
@@ -74,21 +81,20 @@ class LocationItem extends React.Component<Props, State> {
                         style={{ position: "absolute", right: 0, top: 6, backgroundColor: "white" }}
                         onPress={() => this.props.removeLocationHandler(location.id)}
                         >
-                        <Icon type="FontAwesome" name="times" />
+                        <Icon name="times" type="FontAwesome5" />
                     </Button>
                 <CardItem>
                     {/* todo icon x button with confirmation modal */}
                     <Left>
                         <Button transparent onPress={() => this.selectFeeling()}>
-                            <Text>Feeling...</Text>
-                            <Icon type="FontAwesome" name={feelingIcon} />     
-                            <Text> {feelingLabel} </Text>                       
+                            <Icon name={feelingIcon} type="FontAwesome5" /> 
+                            <Text>Feeling {feelingLabel} </Text>                       
                         </Button>                         
                     </Left>
                     <Right>
-                        <Button transparent>
-                            <Icon active type="FontAwesome" name="music"/>
-                            <Text>Music</Text>
+                        <Button transparent onPress={() => this.selectActivity()}>
+                            <Icon name={activityIcon} type="FontAwesome5"/>     
+                            <Text>{activityLabel} </Text> 
                         </Button>
                     </Right>
                 </CardItem>
