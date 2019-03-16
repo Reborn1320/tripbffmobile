@@ -4,7 +4,6 @@ import React, { ReactNode, FunctionComponentElement } from "react";
 import RNModal from "react-native-modal";
 import { ViewStyle, StyleSheet } from "react-native";
 import { connectStyle } from 'native-base';
-import { mixins } from "./_utils";
 
 export interface Props {
   isVisible: boolean;
