@@ -1,16 +1,17 @@
 import React, { Component } from "react";
 import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import * as RNa from "react-navigation";
 import { TripDetails, DayVM } from "./TripDetails";
-import { removeLocation } from "../../../store/Trip/operations";
+import { removeLocation, updateTripDateRange } from "../../../store/Trip/operations";
 import { connect } from "react-redux";
 import { fetchTripLocations } from "../../../store/Trips/operations";
 
 interface IMapDispatchToProps {
     fetchLocations: (tripId: string) => Promise<Array<StoreData.LocationVM>>;
     removeLocation: (tripId: string, locationId: string) => Promise<void>;
+    updateTripDateRange: (tripId: string, fromDate: Moment, toDate: Moment) => Promise<StoreData.TripVM>;
 }
 
 export interface Props {
@@ -87,11 +88,15 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
     }
 
     render() {
-        const { tripId, name, days, isLoaded } = this.state;
+        const { tripId, name, days, isLoaded, fromDate, toDate } = this.state;
         return (
             <TripDetails 
             isLoaded={isLoaded}
-            tripId={tripId} tripName={name} days={days} navigation={this.props.navigation} removeLocation={this._removeLocationConfirmed} />
+            tripId={tripId} tripName={name} days={days} fromDate={fromDate} toDate={toDate}
+            navigation={this.props.navigation}
+            removeLocation={this._removeLocationConfirmed}
+            updateTripDateRange={this.props.updateTripDateRange}
+            />
         );
     }
 }
@@ -106,7 +111,8 @@ const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
     return {
         fetchLocations: (tripId) => dispatch(fetchTripLocations(tripId)),
         removeLocation: (tripId, locationId) => dispatch(removeLocation(tripId, locationId)),
-    };
+        updateTripDateRange: (tripId, fromDate, toDate) => dispatch(updateTripDateRange(tripId, fromDate, toDate)),
+};
 };
 
 const TripDetailsContainer2 = connect(

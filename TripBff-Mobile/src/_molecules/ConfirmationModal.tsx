@@ -6,7 +6,6 @@ import { Modal } from "../_atoms";
 import { View, Text, Button, H2 } from "native-base";
 import { StyleSheet, ViewStyle, TextStyle } from "react-native";
 import variables from "../theme/variables/material";
-import { mixins } from "./utils";
 export interface Props {
   isVisible: boolean;
   title?: string;

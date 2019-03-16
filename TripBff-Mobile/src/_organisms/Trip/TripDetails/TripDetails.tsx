@@ -10,8 +10,11 @@ import { mixins } from "../../../_utils";
 import EditPopupMenu from "../../../_molecules/Trip/EditPopupMenu/EditPopupMenu";
 import { Modal } from "../../../_atoms";
 import { TripDateRangeForm } from "./TripDateRangeForm";
+import { Moment } from "moment";
+import { StoreData } from "../../../store/Interfaces";
 
 interface IMapDispatchToProps {
+    updateTripDateRange: (tripId: string, fromDate: Moment, toDate: Moment) => Promise<StoreData.TripVM>;
     removeLocation: (tripId: string, locationId: string) => Promise<void>
 }
 
@@ -29,6 +32,7 @@ interface State {
     modalVisible: boolean,
     isConfirmationModalVisible: boolean,
     focusingLocationId?: string,
+    isEditDateRangeModalVisible: boolean,
 }
 
 export interface DayVM {
@@ -55,6 +59,7 @@ export class TripDetails extends Component<Props, State> {
         this.state = {
             modalVisible: false,
             isConfirmationModalVisible: false,
+            isEditDateRangeModalVisible: false,
         }
     }
 
@@ -80,6 +85,24 @@ export class TripDetails extends Component<Props, State> {
         })
     }
 
+    onPopupMenuSelect = (value) => {
+        console.log(`Selected number: ${value}`);
+        if (value == 1) {
+            this.setState({
+                isEditDateRangeModalVisible: true
+            });
+        }
+    }
+
+    onEdit = (fromDate: Moment, toDate: Moment) => {
+        this.props.updateTripDateRange(this.props.tripId, fromDate, toDate)
+            .then(newTrip => {
+                this.setState({
+                    isEditDateRangeModalVisible: false
+                })
+            })
+    }
+
     _removeLocationConfirmed = () => {
         let focusingLocationId = this.state.focusingLocationId;
         this.setState({
@@ -102,8 +125,8 @@ export class TripDetails extends Component<Props, State> {
     }
 
     render() {
-        const { isConfirmationModalVisible } = this.state;
-        const { tripName, days, isLoaded } = this.props;
+        const { isConfirmationModalVisible, isEditDateRangeModalVisible } = this.state;
+        const { tripName, days, isLoaded, fromDate, toDate } = this.props;
         return (
             <View>
                 <View style={{
@@ -122,7 +145,7 @@ export class TripDetails extends Component<Props, State> {
                         flexGrow: 9,
                         maxWidth: "90%",
                     }}>{tripName}</H1>
-                    <EditPopupMenu onSelect={} />
+                    <EditPopupMenu onSelect={this.onPopupMenuSelect} />
                 </View>
 
                 {!isLoaded && <Spinner color='green' />}
@@ -139,8 +162,8 @@ export class TripDetails extends Component<Props, State> {
                     isVisible={isConfirmationModalVisible} />
 
                 <Modal isVisible={isEditDateRangeModalVisible} >
-                        <TripDateRangeForm fromDate={fromDate} toDate={toDate} onClickEdit={this.onEdit} />
-                    </Modal>
+                    <TripDateRangeForm fromDate={fromDate} toDate={toDate} onClickEdit={this.onEdit} />
+                </Modal>
             </View>
         );
     }
