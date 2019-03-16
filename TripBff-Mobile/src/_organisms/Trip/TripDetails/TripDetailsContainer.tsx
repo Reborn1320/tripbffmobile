@@ -143,7 +143,7 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
         this.props.updateLocationActivity(this.state.tripId, locationId, activity)
                   .then(() => {
                       //TODO: refresh focus location
-                      //this.fetchTrip();
+                      this.fetchTrip();
                  });
     };
 
