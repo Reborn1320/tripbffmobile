@@ -15,6 +15,7 @@ interface IMapDispatchToProps {
     removeLocation: (tripId: string, locationId: string) => Promise<void>
     addLocation: (address: string, fromTime: moment.Moment) => Promise<void>
     updateLocationFeeling: (locationId: string, feeling: StoreData.FeelingVM) => Promise<void>
+    updateLocationActivity: (locationId: string, activity: StoreData.ActivityVM) => Promise<void>
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -179,8 +180,7 @@ export class TripDetails extends Component<Props, State> {
         this.setState({
             isAddActivityModalVisible: false
         });
-        //TODO: will update later
-        //this.props.updateLocationFeeling(locationId, activity);
+        this.props.updateLocationActivity(locationId, activity);
     }
 
     _cancelAddActivityModal = () => {

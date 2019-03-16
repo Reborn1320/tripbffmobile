@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Card, CardItem, Left, Button, Icon, Right, Picker } from "native-base";
+import { Text, Card, CardItem, Left, Button, Right, Picker, Icon } from "native-base";
 import { LocationVM } from '../../../_organisms/Trip/TripDetails/TripDetails';
 
 import { TouchableHighlight, Dimensions } from "react-native";
@@ -46,8 +46,8 @@ class LocationItem extends React.Component<Props, State> {
         const SIZE23 = SIZE * 2 / 3
 
         var feelingLabel = location.feeling && location.feeling.label ? location.feeling.label : "";
-        var feelingIcon = location.feeling && location.feeling.icon ? location.feeling.icon : "smile-o";
-        var activityLabel = location.activity && location.activity.label ? location.activity.label : "Doing...";
+        var feelingIcon = location.feeling && location.feeling.icon ? location.feeling.icon : "smile";
+        var activityLabel = location.activity && location.activity.label ? location.activity.label : "Activity";
         var activityIcon = location.activity && location.activity.icon ? location.activity.icon : "running";
 
         return (
@@ -81,20 +81,19 @@ class LocationItem extends React.Component<Props, State> {
                         style={{ position: "absolute", right: 0, top: 6, backgroundColor: "white" }}
                         onPress={() => this.props.removeLocationHandler(location.id)}
                         >
-                        <Icon type="FontAwesome" name="times" />
+                        <Icon name="times" type="FontAwesome5" />
                     </Button>
                 <CardItem>
                     {/* todo icon x button with confirmation modal */}
                     <Left>
                         <Button transparent onPress={() => this.selectFeeling()}>
-                            <Text>Feeling...</Text>
-                            <Icon type="FontAwesome" name={feelingIcon} />     
-                            <Text> {feelingLabel} </Text>                       
+                            <Icon name={feelingIcon} type="FontAwesome5" /> 
+                            <Text>Feeling {feelingLabel} </Text>                       
                         </Button>                         
                     </Left>
                     <Right>
                         <Button transparent onPress={() => this.selectActivity()}>
-                            <Icon type="FontAwesome" name={activityIcon} />     
+                            <Icon name={activityIcon} type="FontAwesome5"/>     
                             <Text>{activityLabel} </Text> 
                         </Button>
                     </Right>

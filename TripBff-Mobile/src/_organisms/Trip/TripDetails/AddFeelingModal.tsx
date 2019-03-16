@@ -25,7 +25,7 @@ export interface Props {
   isVisible: boolean;
   locationId: string;
   preDefinedFeelings?: Array<StoreData.PreDefinedFeelingVM>
-  confirmHandler: (locationId, id) => void;
+  confirmHandler: (locationId, feeling) => void;
   cancelHandler?: () => void;
 }
 
@@ -45,7 +45,7 @@ class FeelingItem extends React.PureComponent<any> {
     return (
       <TouchableOpacity onPress={this._onPress}>
         <View style={{flex: 1, flexDirection: "row", justifyContent: 'flex-start'}}>
-          <Icon style={{ marginRight: 5}} type="FontAwesome" name={this.props.icon} />  
+          <Icon style={{ marginRight: 5}} type="FontAwesome5" name={this.props.icon} />  
           <Text>{this.props.label}</Text>
         </View>
       </TouchableOpacity>

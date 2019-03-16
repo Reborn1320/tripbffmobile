@@ -18,7 +18,7 @@ export interface Props {
   isVisible: boolean;
   locationId: string;
   preDefinedActivities?: Array<StoreData.PreDefinedActivityVM>
-  confirmHandler: (locationId, id) => void;
+  confirmHandler: (locationId, activity) => void;
   cancelHandler?: () => void;
 }
 
@@ -38,7 +38,7 @@ class ActivityItem extends React.PureComponent<any> {
     return (
       <TouchableOpacity onPress={this._onPress}>
         <View style={{flex: 1, flexDirection: "row", justifyContent: 'flex-start'}}>
-          <Icon style={{ marginRight: 5}} type="FontAwesome" name={this.props.icon} />  
+          <Icon style={{ marginRight: 5}} type="FontAwesome5" name={this.props.icon} />  
           <Text>{this.props.label}</Text>
         </View>
       </TouchableOpacity>
