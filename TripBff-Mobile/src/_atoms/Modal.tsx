@@ -5,6 +5,7 @@ import RNModal from "react-native-modal";
 import { ViewStyle, StyleSheet, TextStyle } from "react-native";
 import { connectStyle, Text, View, H3 } from 'native-base';
 import { mixins } from "../_utils";
+import NBTheme from "../theme/variables/material.js";
 
 export interface Props {
   title?: string;
@@ -60,14 +61,14 @@ const styles = StyleSheet.create<Style>({
   },
   title: {
     // ...mixins.themes.debug2,
-    color: "white",
+    color: NBTheme.brandLight,
     alignSelf: "flex-start"
   },
   titleContainer: {
     // ...mixins.themes.debug,
     alignSelf: "stretch",
     // height: 50,
-    borderBottomColor: "white",
+    borderBottomColor: NBTheme.brandLight,
     borderBottomWidth: 1,
     paddingLeft: 20,
     paddingRight: 20,
