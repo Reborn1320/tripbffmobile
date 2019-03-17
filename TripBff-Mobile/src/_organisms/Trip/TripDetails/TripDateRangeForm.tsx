@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Button, Text, View } from 'native-base';
 import { Form, Item, Label, Input } from 'native-base';
-import { StoreData } from "../../../store/Interfaces";
-import { tripApi } from "../../../screens/_services/apis";
 import moment, { Moment } from "moment";
 import DatePicker from "../../../_atoms/DatePicker/DatePicker";
 import { mixins } from "../../../_utils";
@@ -63,7 +61,7 @@ export class TripDateRangeForm extends Component<Props, State> {
         </Item>
         <View style={styles.buttonsContainer}>
           {this.formValid() && this.renderEditBtn()}
-          <Button transparent dark
+          <Button transparent light
             style={{ alignSelf: 'center' }}
             onPress={() => { if (this.props.onCancel) this.props.onCancel() }}>
             <Text>Cancel</Text>
@@ -75,24 +73,25 @@ export class TripDateRangeForm extends Component<Props, State> {
   }
 }
 
-
 interface Style {
   formContainer: ViewStyle;
   item: TextStyle;
   itemLabel: TextStyle;
   buttonsContainer: ViewStyle;
+  buttonCancel: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
   formContainer: {
-    ...mixins.themes.debug1,
-    padding: 10,
+    // ...mixins.themes.debug1,
+    // padding: 10,
     display: "flex",
     flexDirection: "column",
     alignItems: "stretch"
   },
   item: {
     marginBottom: 10,
+    marginLeft: 0,
     borderRadius: 12,
     paddingLeft: 15,
     paddingRight: 15,
@@ -104,5 +103,8 @@ const styles = StyleSheet.create<Style>({
   buttonsContainer: {
     justifyContent: 'center',
     flexDirection: "row",
+  },
+  buttonCancel: {
+    color: "white"
   }
 })

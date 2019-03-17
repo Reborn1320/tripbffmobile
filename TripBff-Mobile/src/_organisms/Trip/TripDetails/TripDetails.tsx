@@ -5,7 +5,6 @@ import _, { } from "lodash";
 import DayItem from "../../../_molecules/Trip/DayItem/DayItem";
 import * as RNa from "react-navigation";
 import ConfirmationModal from "../../../_molecules/ConfirmationModal";
-import { Menu, MenuTrigger, MenuOptions, MenuOption } from "react-native-popup-menu";
 import { mixins } from "../../../_utils";
 import EditPopupMenu from "../../../_molecules/Trip/EditPopupMenu/EditPopupMenu";
 import { Modal } from "../../../_atoms";
@@ -103,6 +102,10 @@ export class TripDetails extends Component<Props, State> {
             })
     }
 
+    private closeEditDateRangeModal = () => {
+        this.setState({ isEditDateRangeModalVisible: false });
+    }
+
     _removeLocationConfirmed = () => {
         let focusingLocationId = this.state.focusingLocationId;
         this.setState({
@@ -161,8 +164,12 @@ export class TripDetails extends Component<Props, State> {
                     cancelHandler={this._cancelModal}
                     isVisible={isConfirmationModalVisible} />
 
-                <Modal isVisible={isEditDateRangeModalVisible} >
-                    <TripDateRangeForm fromDate={fromDate} toDate={toDate} onClickEdit={this.onEdit} />
+                <Modal isVisible={isEditDateRangeModalVisible}
+                    title="Edit date range"
+                    height={250}
+                    >
+                    <TripDateRangeForm fromDate={fromDate} toDate={toDate} onClickEdit={this.onEdit}
+                    onCancel={this.closeEditDateRangeModal} />
                 </Modal>
             </View>
         );

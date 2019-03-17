@@ -61,7 +61,7 @@ const AppNavigator = createStackNavigator(
     InfographicPreview: { screen: InfographicPreviewScreen }
   },
   {
-    initialRouteName: "TestComponent",
+    initialRouteName: "Home",
     initialRouteParams: {
       tripId: 3
     },

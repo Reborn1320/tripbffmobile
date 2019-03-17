@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Spinner, Text, Button, View } from 'native-base';
+import { Container, Header, Content, Text, Button, View } from 'native-base';
 import { connect } from "react-redux";
 import _, { } from "lodash";
 import moment, { Moment } from "moment";
@@ -8,7 +8,6 @@ import { StoreData } from "../../store/Interfaces";
 import { TripDateRangeForm } from "../../_organisms/Trip/TripDetails/TripDateRangeForm";
 import { Modal } from "../../_atoms";
 import { mixins } from "../../_utils";
-import { ScrollView } from "react-native";
 
 interface IMapDispatchToProps {
 }
@@ -66,8 +65,12 @@ class TestComponent extends Component<Props, State> {
 
           </View>
 
-          <Modal isVisible={isEditDateRangeModalVisible} >
-            <TripDateRangeForm fromDate={fromDate} toDate={toDate} onClickEdit={this.onEdit} onCancel={this.onModalClose} />
+          <Modal 
+            title="Edit date range"
+            isVisible={isEditDateRangeModalVisible} >
+            <TripDateRangeForm fromDate={fromDate} toDate={toDate}
+            onClickEdit={this.onEdit}
+            onCancel={this.onModalClose} />
           </Modal>
         </Content>
       </Container>
