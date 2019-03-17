@@ -1,4 +1,8 @@
-import { removeLocation as removeLocationAction } from "./actions";
+import { 
+  removeLocation as removeLocationAction, 
+  addLocation as addLocationAction,
+  updateLocationFeeling as updateLocationFeelingAction,
+  updateLocationActivity as updateLocationActivityAction } from "./actions";
 import { ThunkResultBase } from "..";
 import { Moment } from "moment";
 import { RawJsonData, StoreData } from "../Interfaces";
@@ -14,6 +18,38 @@ export function removeLocation(tripId: string, locationId: string): ThunkResultB
       .catch(error => {
         console.log("removeLocation error", error);
       });
+  };
+}
+
+export function addLocation(tripId: string, location: StoreData.LocationVM): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    
+    var adddedLocation = {
+        fromTime: location.fromTime,
+        toTime: location.toTime,
+        location: location.location,
+        images: location.images
+    };
+
+    return extraArguments.api.post(`trips/${tripId}/locations/addLocation`, adddedLocation)
+      .then(res => {
+        //console.log('added location result: ' + JSON.stringify(res));
+
+        if (res.data.isSucceed) {
+          location.locationId = res.data.data;
+          console.log('new added location id: ' + res.data.data);
+          dispatch(addLocationAction(tripId, location));
+        }
+        else if (res.data.errors.length > 0) {
+          throw new Error(res.data.errors[0]);
+        }
+        else {
+          throw new Error('Get error when add new location!');
+        }
+      })
+      .catch(error => {
+        console.log("add location error", JSON.stringify(error));
+      });    
   };
 }
 
@@ -48,6 +84,36 @@ export function updateTripDateRange(tripId: string, fromDate: Moment, toDate: Mo
     })
     .catch((err) => {
       console.log('error update trip date range api: ', err);
+    });
+  };
+}
+
+export function updateLocationFeeling(tripId: string, locationId: string, feeling: StoreData.FeelingVM): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    const data = {
+      feelingId: feeling.feelingId
+    };
+    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/feeling`, { data })
+    .then((res) => {
+      dispatch(updateLocationFeelingAction(tripId, locationId, feeling));
+    })
+    .catch((err) => {
+      console.log('error update location feeling: ', err);
+    });
+  };
+}
+
+export function updateLocationActivity(tripId: string, locationId: string, activity: StoreData.ActivityVM): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    const data = {
+      activityId: activity.activityId
+    };
+    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/activity`, { data })
+    .then((res) => {
+      dispatch(updateLocationActivityAction(tripId, locationId, activity));
+    })
+    .catch((err) => {
+      console.log('error update location activity: ', err);
     });
   };
 }

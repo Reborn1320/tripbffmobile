@@ -7,7 +7,13 @@ import importImagesReducer from '../screens/trip/import/reducers';
 import { TRIP_ADD } from '../screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './User/actions';
 import { ADD_INFOGRAPHIC_ID } from '../screens/trip/export/actions';
-import { LOCATION_REMOVE } from './Trip/actions';
+import { LOCATION_REMOVE, 
+         LOCATION_ADD,
+         LOCATION_UPDATE_FEELING,
+         LOCATION_UPDATE,
+         LOCATION_UPDATE_ACTIVITY } from './Trip/actions';
+import { DataSource_GetAllFeeling } from './DataSource/actions';
+import { stat } from 'fs';
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -41,7 +47,8 @@ const userInitState: StoreData.UserVM = {
 
 const initState: StoreData.BffStoreData = {
     user: userInitState,
-    trips: [] // tripsInitState
+    dataSource: {},
+    trips: [] // tripsInitState,
 }
 
 function userReducer(state, action) {
@@ -62,16 +69,51 @@ function tripReducer(state: StoreData.TripVM, action) {
           });
     }
     else if (action.type == LOCATION_REMOVE) {
-        console.log("reducer")
+        var newState: StoreData.TripVM = {
+            ...state,
+            locations: state.locations.filter(item => item.locationId !== action.locationId)
+        }
+
+        return newState
+    }
+    else if (action.type == LOCATION_ADD) {
         var newState: StoreData.TripVM = {
             ...state,
             locations: [
-                ...state.locations.slice(0, action.locationId),
-                ...state.locations.slice(action.locationId + 1)
+                ...state.locations,
+                action.location
             ]
         }
 
         return newState
+    }
+    else if (action.type == LOCATION_UPDATE_FEELING) {
+        return {
+            ...state,
+            locations: state.locations.map(item => {
+                return item.locationId != action.locationId ? item : {
+                    ...item,
+                    feeling: action.feeling
+                }
+            })
+        }
+    }
+    else if (action.type == LOCATION_UPDATE) {
+        return {
+            ...state,
+            locations: action.locations
+        }
+    }
+    else if (action.type == LOCATION_UPDATE_ACTIVITY) {
+        return {
+            ...state,
+            locations: state.locations.map(item => {
+                return item.locationId != action.locationId ? item : {
+                    ...item,
+                    activity: action.activity
+                }
+            })
+        }
     }
 
     return importImagesReducer(state, action)
@@ -104,10 +146,28 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
     return state;
 }
 
+function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
+    switch(action.type) {
+        case "DataSource_GetAllFeeling":
+            return {
+                ...state,
+                feelings: action.feelings
+            }
+        case "DataSource_GetAllActivity":
+            return {
+                ...state,
+                activities: action.activities
+            }
+        default:
+            return state;
+    }
+}
+
 export default function bffApp(state: StoreData.BffStoreData = initState, action): StoreData.BffStoreData {
     return {
         repo: homeScreenReducer(state.repo, action),
         user: userReducer(state.user, action),
-        trips: tripsReducer(state.trips, action)
+        trips: tripsReducer(state.trips, action),
+        dataSource: dataSourceReducer(state.dataSource, action)
     }
 }

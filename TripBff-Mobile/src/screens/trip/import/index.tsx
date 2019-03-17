@@ -392,7 +392,6 @@ const StyledFlatList = styled(FlatList)`
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId } = ownProps.navigation.state.params;
-    console.log("storeState.trips", storeState.trips)
     var trip = _.find(storeState.trips, (item) => item.tripId == tripId)
     return {
         trip

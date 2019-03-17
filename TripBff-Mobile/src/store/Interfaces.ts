@@ -6,6 +6,18 @@ export module StoreData {
         externalStorageId?: string,
     }
 
+    export interface FeelingVM {
+        feelingId: number,
+        label: string,
+        icon: string
+    }
+
+    export interface ActivityVM {
+        activityId: number,
+        lable: string,
+        icon: string
+    }
+
     export interface LocationDetailVM {
         long: number
         lat: number
@@ -17,7 +29,9 @@ export module StoreData {
         location: LocationDetailVM //TODO: simplify this by removing the interface
         fromTime: moment.Moment
         toTime: moment.Moment
-        images: Array<ImportImageVM>
+        images: Array<ImportImageVM>,
+        feeling?: FeelingVM,
+        activity?: ActivityVM
     }
 
     export interface TripVM {
@@ -41,9 +55,34 @@ export module StoreData {
         //TODO: expired time...
     }
 
+    export interface RepoVM {
+        repos: [],
+        loading?: boolean,
+        error?: string
+    }
+
+    export interface PreDefinedFeelingVM {
+        feelingId: number,
+        label: string,
+        icon: string
+    }
+
+    export interface PreDefinedActivityVM {
+        activityId: number,
+        label: string,
+        icon: string
+    }
+
+    export interface DataSourceVM {
+        feelings?: Array<PreDefinedFeelingVM>,
+        activities?: Array<PreDefinedActivityVM>
+    }
+
     export interface BffStoreData {
+        repo?: RepoVM
         user?: UserVM
-        trips?: Array<TripVM>
+        trips?: Array<TripVM>,
+        dataSource: DataSourceVM
     }
 }
 
@@ -64,6 +103,8 @@ export namespace RawJsonData {
         fromTime: string
         toTime: string
         images: Array<StoreData.ImportImageVM>
+        feeling?: StoreData.FeelingVM,
+        activity?: StoreData.ActivityVM
     }
 
 }

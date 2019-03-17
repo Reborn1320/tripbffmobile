@@ -9,12 +9,18 @@ import { mixins } from "../../../_utils";
 import EditPopupMenu from "../../../_molecules/Trip/EditPopupMenu/EditPopupMenu";
 import { Modal } from "../../../_atoms";
 import { TripDateRangeForm } from "./TripDateRangeForm";
-import { Moment } from "moment";
+import moment, { Moment } from "moment";
 import { StoreData } from "../../../store/Interfaces";
+import AddLocationModal from "./AddLocationModal";
+import AddFeelingModal from "./AddFeelingModal";
+import AddActivityModal from "./AddActivityModal";
 
 interface IMapDispatchToProps {
     updateTripDateRange: (tripId: string, fromDate: Moment, toDate: Moment) => Promise<StoreData.TripVM>;
     removeLocation: (tripId: string, locationId: string) => Promise<void>
+    addLocation: (address: string, fromTime: moment.Moment) => Promise<void>
+    updateLocationFeeling: (locationId: string, feeling: StoreData.FeelingVM) => Promise<void>
+    updateLocationActivity: (locationId: string, activity: StoreData.ActivityVM) => Promise<void>
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -33,22 +39,41 @@ interface State {
     isConfirmationModalVisible: boolean,
     focusingLocationId?: string,
     isEditDateRangeModalVisible: boolean,
+    isAddLocationModalVisible: boolean,
+    selectedDate: moment.Moment
+    isAddFeelingModalVisible: boolean,
+    isAddActivityModalVisible: boolean
 }
 
 export interface DayVM {
-    idx: number
+    idx: number,
+    date?: moment.Moment,
     locations: LocationVM[]
 }
 
 export interface LocationVM {
     id: string
     address: string
-    images: Array<ImageVM>
+    images: Array<ImageVM>,
+    feeling?: FeelingVM,
+    activity?: ActivityVM
 }
 
 export interface ImageVM {
     url: string
     highlight: boolean
+}
+
+export interface FeelingVM {
+    feelingId: number,
+    label: string,
+    icon: string
+}
+
+export interface ActivityVM {
+    activityId: number,
+    label: string,
+    icon: string
 }
 
 export class TripDetails extends Component<Props, State> {
@@ -60,6 +85,10 @@ export class TripDetails extends Component<Props, State> {
             modalVisible: false,
             isConfirmationModalVisible: false,
             isEditDateRangeModalVisible: false,
+            isAddLocationModalVisible: false,
+            selectedDate: null,
+            isAddFeelingModalVisible: false,
+            isAddActivityModalVisible: false
         }
     }
 
@@ -68,11 +97,14 @@ export class TripDetails extends Component<Props, State> {
         return (
 
             <DayItem
-                locations={day.locations} dayIdx={day.idx}
+                locations={day.locations} dayIdx={day.idx} date={day.date}
                 toLocationDetailHandler={(locationId) => {
                     this.props.navigation.navigate("LocationDetail", { tripId: this.props.tripId, locationId })
                 }}
                 removeLocationHandler={(locationId) => this.removeLocation(locationId)}
+                addLocationHandler={(dayIdx, date) => this.addLocationModal(dayIdx, date)}
+                addFeelingModalHandler={(locationId) => this.openAddFeelingModal(locationId)}
+                addActivityModalHandler={(locationId) => this.openAddActivityModal(locationId)}
             />
         )
     };
@@ -129,8 +161,76 @@ export class TripDetails extends Component<Props, State> {
         this.setState({ modalVisible: visible });
     }
 
+    addLocationModal(dayIdx, date) {
+        this.setState({
+            isAddLocationModalVisible: true,
+            selectedDate: date
+        })  
+    }
+
+    _addLocationConfirmed = (address, fromTime)  => {
+        this.setState({
+            isAddLocationModalVisible: false
+        });
+        
+        this.props.addLocation(address, fromTime);
+    }
+
+    _cancelAddLocationModal = () => {
+        this.setState({
+            isAddLocationModalVisible: false
+        }) 
+    }
+
+    openAddFeelingModal(locationId) {
+        this.setState({
+            isAddFeelingModalVisible: true,
+            focusingLocationId: locationId
+        });
+    }
+
+    _updateFeelingConfirmed = (locationId, feeling) => {
+        this.setState({
+            isAddFeelingModalVisible: false
+        });
+        this.props.updateLocationFeeling(locationId, feeling);
+    }
+
+    _cancelAddfeelingModal = () => {
+        this.setState({
+            isAddFeelingModalVisible: false
+        }) 
+    }
+
+    openAddActivityModal(locationId) {
+        this.setState({
+            isAddActivityModalVisible: true,
+            focusingLocationId: locationId
+        });
+    }
+
+    _updateActivityConfirmed = (locationId, activity) => {
+        this.setState({
+            isAddActivityModalVisible: false
+        });
+        this.props.updateLocationActivity(locationId, activity);
+    }
+
+    _cancelAddActivityModal = () => {
+        this.setState({
+            isAddActivityModalVisible: false
+        }) 
+    }
+
     render() {
-        const { isConfirmationModalVisible, isEditDateRangeModalVisible } = this.state;
+        const { 
+            isConfirmationModalVisible,
+            isEditDateRangeModalVisible,
+            isAddLocationModalVisible, 
+            selectedDate,
+            isAddFeelingModalVisible,
+            focusingLocationId,
+            isAddActivityModalVisible } = this.state;
         const { tripName, days, isLoaded, fromDate, toDate } = this.props;
         return (
             <View>
@@ -165,7 +265,6 @@ export class TripDetails extends Component<Props, State> {
                     confirmHandler={this._removeLocationConfirmed}
                     cancelHandler={this._cancelModal}
                     isVisible={isConfirmationModalVisible} />
-
                 <Modal isVisible={isEditDateRangeModalVisible}
                     title="Edit date range"
                     height={250}
@@ -173,6 +272,21 @@ export class TripDetails extends Component<Props, State> {
                     <TripDateRangeForm fromDate={fromDate} toDate={toDate} onClickEdit={this.onEdit}
                     onCancel={this.closeEditDateRangeModal} />
                 </Modal>
+                 <AddLocationModal
+                    isVisible={isAddLocationModalVisible} 
+                    date={selectedDate}
+                    confirmHandler={this._addLocationConfirmed}
+                    cancelHandler={this._cancelAddLocationModal}/>
+                 <AddFeelingModal
+                    isVisible={isAddFeelingModalVisible}
+                    locationId={focusingLocationId}                    
+                    confirmHandler={this._updateFeelingConfirmed}
+                    cancelHandler={this._cancelAddfeelingModal}/>
+                 <AddActivityModal
+                    isVisible={isAddActivityModalVisible}
+                    locationId={focusingLocationId}                    
+                    confirmHandler={this._updateActivityConfirmed}
+                    cancelHandler={this._cancelAddActivityModal}/>
             </View>
         );
     }

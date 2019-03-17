@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View } from 'native-base';
 import { Image, Dimensions } from "react-native";
-import { ImageVM } from '../TripDetailScreen';
+import { ImageVM } from '../../../_organisms/Trip/TripDetails/TripDetails';
 
 export interface Props {
     images: ImageVM[]
@@ -12,7 +12,9 @@ export interface State {
 
 export default class LocationImage extends Component<Props, State> {
     render() {
-        const firstImage = this.props.images[0].url;
+        const firstImage = this.props.images.length > 0
+                                ? this.props.images[0].url
+                                : "";
 
         const MARGIN_LEFT = 10
         const MARGIN_RIGHT = 10
