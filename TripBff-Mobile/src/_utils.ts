@@ -12,5 +12,8 @@ export const mixins = {
       borderColor: "blue",
       borderWidth: 1,
     },
+    displayFlex: {
+      display: "flex"
+    }
   }
 }

@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import * as RNa from "react-navigation";
 import { TripDetails, DayVM } from "./TripDetails";
-import { removeLocation, addLocation, updateLocationFeeling, updateLocationActivity } from "../../../store/Trip/operations";
+import { removeLocation, updateTripDateRange, addLocation, updateLocationFeeling, updateLocationActivity } from "../../../store/Trip/operations";
 import { connect } from "react-redux";
 import { fetchTripLocations } from "../../../store/Trips/operations";
 import { updateLocations } from "../../../store/Trip/actions";
@@ -12,6 +12,7 @@ import { updateLocations } from "../../../store/Trip/actions";
 interface IMapDispatchToProps {
     fetchLocations: (tripId: string) => Promise<Array<StoreData.LocationVM>>;
     removeLocation: (tripId: string, locationId: string) => Promise<void>;
+    updateTripDateRange: (tripId: string, fromDate: Moment, toDate: Moment) => Promise<StoreData.TripVM>;
     addLocation: (tripId: string, location: StoreData.LocationVM) => Promise<void>;
     updateLocationFeeling: (tripId: string, locationId: string, feeling: StoreData.FeelingVM) => Promise<void>;
     updateLocations: (tripId: string, locations: Array<StoreData.LocationVM>) => Promise<void>; 
@@ -113,6 +114,10 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
             });
     }
 
+    private refreshTrip = () => {
+        this.fetchTrip();
+    }
+
     _addLocationConfirmed = async (address, fromTime)  => {
         var location: StoreData.LocationVM = {
             locationId: '',
@@ -148,15 +153,19 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
     };
 
     render() {
-        const { tripId, name, days, isLoaded } = this.state;
+        const { tripId, name, days, isLoaded, fromDate, toDate } = this.state;
         return (
             <TripDetails 
             isLoaded={isLoaded}
-            tripId={tripId} tripName={name} days={days} navigation={this.props.navigation} 
-            removeLocation={this._removeLocationConfirmed} 
+            tripId={tripId} tripName={name} days={days} fromDate={fromDate} toDate={toDate}
+            navigation={this.props.navigation}
+            removeLocation={this._removeLocationConfirmed}
+            updateTripDateRange={this.props.updateTripDateRange}
+            onRefresh={this.refreshTrip}
             addLocation={this._addLocationConfirmed}
             updateLocationFeeling={this._updateLocationFeeling}
-            updateLocationActivity={this._updateLocationActivity}/>
+            updateLocationActivity={this._updateLocationActivity}
+            />
         );
     }
 }
@@ -172,6 +181,7 @@ const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
     return {
         fetchLocations: (tripId) => dispatch(fetchTripLocations(tripId)),
         removeLocation: (tripId, locationId) => dispatch(removeLocation(tripId, locationId)),
+        updateTripDateRange: (tripId, fromDate, toDate) => dispatch(updateTripDateRange(tripId, fromDate, toDate)),
         addLocation: (tripId, location) => dispatch(addLocation(tripId, location)),
         updateLocationFeeling: (tripId, locationId, feeling) => dispatch(updateLocationFeeling(tripId, locationId, feeling)),
         updateLocations: (tripId, locations) => dispatch(updateLocations(tripId, locations)),

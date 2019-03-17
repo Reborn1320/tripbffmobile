@@ -18,6 +18,7 @@ import { tripApi, loginApi, uploadFileApi } from "./screens/_services/apis";
 import { loginApiService, tripApiService } from "./store/ApisAsAService";
 import LoginScreen from "./screens/login/index";
 import ProfileScreenContainer from "./screens/user/ProfileScreenContainer";
+import TestComponentScreen from "./screens/testComponent/index";
 
 import bffApp from "./store/reducers";
 import ReduxThunk from "redux-thunk";
@@ -48,6 +49,7 @@ const store = createStore(
 
 const AppNavigator = createStackNavigator(
   {
+    TestComponent: {screen: TestComponentScreen },
     Home: { screen: HomeScreen },
     Login: { screen: LoginScreen },
     Profile: {screen: ProfileScreenContainer },

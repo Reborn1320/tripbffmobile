@@ -1,17 +1,22 @@
 import React, { Component } from "react";
-import { Spinner, View, H1 } from 'native-base';
+import { Spinner, View, H1, Icon } from 'native-base';
 import { FlatList } from "react-native";
 import _, { } from "lodash";
 import DayItem from "../../../_molecules/Trip/DayItem/DayItem";
 import * as RNa from "react-navigation";
 import ConfirmationModal from "../../../_molecules/ConfirmationModal";
-import moment from "moment";
+import { mixins } from "../../../_utils";
+import EditPopupMenu from "../../../_molecules/Trip/EditPopupMenu/EditPopupMenu";
+import { Modal } from "../../../_atoms";
+import { TripDateRangeForm } from "./TripDateRangeForm";
+import moment, { Moment } from "moment";
+import { StoreData } from "../../../store/Interfaces";
 import AddLocationModal from "./AddLocationModal";
 import AddFeelingModal from "./AddFeelingModal";
-import { StoreData } from "../../../store/Interfaces";
 import AddActivityModal from "./AddActivityModal";
 
 interface IMapDispatchToProps {
+    updateTripDateRange: (tripId: string, fromDate: Moment, toDate: Moment) => Promise<StoreData.TripVM>;
     removeLocation: (tripId: string, locationId: string) => Promise<void>
     addLocation: (address: string, fromTime: moment.Moment) => Promise<void>
     updateLocationFeeling: (locationId: string, feeling: StoreData.FeelingVM) => Promise<void>
@@ -23,13 +28,17 @@ export interface Props extends IMapDispatchToProps {
     tripId: string,
     days: DayVM[],
     isLoaded: boolean,
-    tripName: string
+    tripName: string,
+    fromDate: Moment,
+    toDate: Moment,
+    onRefresh: () => void;
 }
 
 interface State {
     modalVisible: boolean,
     isConfirmationModalVisible: boolean,
     focusingLocationId?: string,
+    isEditDateRangeModalVisible: boolean,
     isAddLocationModalVisible: boolean,
     selectedDate: moment.Moment
     isAddFeelingModalVisible: boolean,
@@ -75,6 +84,7 @@ export class TripDetails extends Component<Props, State> {
         this.state = {
             modalVisible: false,
             isConfirmationModalVisible: false,
+            isEditDateRangeModalVisible: false,
             isAddLocationModalVisible: false,
             selectedDate: null,
             isAddFeelingModalVisible: false,
@@ -105,6 +115,29 @@ export class TripDetails extends Component<Props, State> {
             isConfirmationModalVisible: true,
             focusingLocationId: locationId,
         })
+    }
+
+    onPopupMenuSelect = (value) => {
+        console.log(`Selected number: ${value}`);
+        if (value == 1) {
+            this.setState({
+                isEditDateRangeModalVisible: true
+            });
+        }
+    }
+
+    onEdit = (fromDate: Moment, toDate: Moment) => {
+        this.props.updateTripDateRange(this.props.tripId, fromDate, toDate)
+            .then(newTrip => {
+                this.setState({
+                    isEditDateRangeModalVisible: false
+                });
+                this.props.onRefresh();
+            })
+    }
+
+    private closeEditDateRangeModal = () => {
+        this.setState({ isEditDateRangeModalVisible: false });
     }
 
     _removeLocationConfirmed = () => {
@@ -190,16 +223,36 @@ export class TripDetails extends Component<Props, State> {
     }
 
     render() {
-        const { isConfirmationModalVisible, 
-                isAddLocationModalVisible, 
-                selectedDate,
-                isAddFeelingModalVisible,
-                focusingLocationId,
-                isAddActivityModalVisible } = this.state;
-        const { tripName, days, isLoaded } = this.props;
+        const { 
+            isConfirmationModalVisible,
+            isEditDateRangeModalVisible,
+            isAddLocationModalVisible, 
+            selectedDate,
+            isAddFeelingModalVisible,
+            focusingLocationId,
+            isAddActivityModalVisible } = this.state;
+        const { tripName, days, isLoaded, fromDate, toDate } = this.props;
         return (
             <View>
-                <H1 style={{ fontSize: 40, lineHeight: 70, marginBottom: 20, marginLeft: 20 } }>{tripName}</H1>
+                <View style={{
+                    // ...mixins.themes.debug1,
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: 10,
+                    marginBottom: 10,
+                }}>
+                    <H1 style={{
+                        // ...mixins.themes.debug2,
+                        fontSize: 40,
+                        lineHeight: 50,
+                        flexGrow: 9,
+                        maxWidth: "90%",
+                    }}>{tripName}</H1>
+                    <EditPopupMenu onSelect={this.onPopupMenuSelect} />
+                </View>
+
                 {!isLoaded && <Spinner color='green' />}
                 {isLoaded &&
                     <FlatList
@@ -212,6 +265,13 @@ export class TripDetails extends Component<Props, State> {
                     confirmHandler={this._removeLocationConfirmed}
                     cancelHandler={this._cancelModal}
                     isVisible={isConfirmationModalVisible} />
+                <Modal isVisible={isEditDateRangeModalVisible}
+                    title="Edit date range"
+                    height={250}
+                    >
+                    <TripDateRangeForm fromDate={fromDate} toDate={toDate} onClickEdit={this.onEdit}
+                    onCancel={this.closeEditDateRangeModal} />
+                </Modal>
                  <AddLocationModal
                     isVisible={isAddLocationModalVisible} 
                     date={selectedDate}
