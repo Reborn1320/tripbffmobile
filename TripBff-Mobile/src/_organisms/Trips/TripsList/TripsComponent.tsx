@@ -29,7 +29,7 @@ export class TripsComponent extends Component<Props & IStateProps, State> {
       <TouchableHighlight key={itemInfo.index} onPress={() => this.props.handleClick(trip)}>
         <View style={styles.itemContainer}>
           <H1>{trip.name}</H1>
-          <H3>{trip.fromDate.format("DD MMM YY")} - {trip.toDate.format("DD MMM YY")}</H3>
+          <H3>{trip.fromDate.format()} - {trip.toDate.format()}</H3>
           <H3>locations: {trip.locations.length}</H3>
         </View>
       </TouchableHighlight>

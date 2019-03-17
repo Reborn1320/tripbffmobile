@@ -87,6 +87,10 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
             });
     }
 
+    private refreshTrip = () => {
+        this.fetchTrip();
+    }
+
     render() {
         const { tripId, name, days, isLoaded, fromDate, toDate } = this.state;
         return (
@@ -96,6 +100,7 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
             navigation={this.props.navigation}
             removeLocation={this._removeLocationConfirmed}
             updateTripDateRange={this.props.updateTripDateRange}
+            onRefresh={this.refreshTrip}
             />
         );
     }

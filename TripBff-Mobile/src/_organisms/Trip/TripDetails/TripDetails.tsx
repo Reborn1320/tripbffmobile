@@ -25,6 +25,7 @@ export interface Props extends IMapDispatchToProps {
     tripName: string,
     fromDate: Moment,
     toDate: Moment,
+    onRefresh: () => void;
 }
 
 interface State {
@@ -98,7 +99,8 @@ export class TripDetails extends Component<Props, State> {
             .then(newTrip => {
                 this.setState({
                     isEditDateRangeModalVisible: false
-                })
+                });
+                this.props.onRefresh();
             })
     }
 
