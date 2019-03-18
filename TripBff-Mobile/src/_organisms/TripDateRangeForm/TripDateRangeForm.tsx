@@ -10,8 +10,9 @@ import _ from "lodash";
 export interface Props {
   onClickEdit: (name: string, fromDate: Moment, toDate: Moment) => void;
   onCancel?: () => void;
-  fromDate: Moment;
-  toDate: Moment;
+  tripName?: string;
+  fromDate?: Moment;
+  toDate?: Moment;
 
   fields: Array<TripDateRangeFormEnum>;
 }
@@ -32,7 +33,7 @@ export class TripDateRangeForm extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      tripName: undefined,
+      tripName: props.tripName,
       fromDate: props.fromDate.utc(false),
       toDate: props.toDate.utc(false),
     };

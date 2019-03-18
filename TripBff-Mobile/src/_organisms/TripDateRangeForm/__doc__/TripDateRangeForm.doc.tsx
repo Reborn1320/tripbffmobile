@@ -41,7 +41,7 @@ class TestComponent extends Component<Props, State> {
   }
 
   onEdit = (tripName: string, fromDate: Moment, toDate: Moment) => {
-    this.setState({ tripName, fromDate, toDate, isEditDateRangeModalVisible: false });
+    this.setState({ tripName, fromDate, toDate, isEditDateRangeModalVisible: false, isEditTripNameModalVisible: false });
   }
 
   onModalClose = () => {
@@ -49,9 +49,9 @@ class TestComponent extends Component<Props, State> {
   }
 
   render() {
-    const { isEditDateRangeModalVisible, isEditTripNameModalVisible, fromDate, toDate } = this.state
+    const { isEditDateRangeModalVisible, isEditTripNameModalVisible, tripName, fromDate, toDate } = this.state
     return (
-      <Container style={{ height: 800 }}>
+      <Container>
         <Header></Header>
         <Content scrollEnabled={true}>
           <TripDateRangeForm
@@ -77,7 +77,8 @@ class TestComponent extends Component<Props, State> {
             onPress={() => this.setState({ isEditTripNameModalVisible: true })}>
             <Text>Edit trip name</Text>
           </Button>
-          <Text style={{ height: 40 }}>{fromDate.format() + " - " + toDate.format()}</Text>
+          <Text>{tripName}</Text>
+          <Text>{fromDate.format() + " - " + toDate.format()}</Text>
 
           <Modal
             title="Edit date range"
