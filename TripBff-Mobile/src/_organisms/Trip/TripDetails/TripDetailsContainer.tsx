@@ -4,7 +4,7 @@ import _, { } from "lodash";
 import moment, { Moment } from "moment";
 import * as RNa from "react-navigation";
 import { TripDetails, DayVM } from "./TripDetails";
-import { removeLocation, updateTripDateRange, addLocation, updateLocationFeeling, updateLocationActivity } from "../../../store/Trip/operations";
+import { removeLocation, updateTripDateRange, addLocation, updateLocationFeeling, updateLocationActivity, updateTripName } from "../../../store/Trip/operations";
 import { connect } from "react-redux";
 import { fetchTripLocations } from "../../../store/Trips/operations";
 import { updateLocations } from "../../../store/Trip/actions";
@@ -13,6 +13,7 @@ interface IMapDispatchToProps {
     fetchLocations: (tripId: string) => Promise<Array<StoreData.LocationVM>>;
     removeLocation: (tripId: string, locationId: string) => Promise<void>;
     updateTripDateRange: (tripId: string, fromDate: Moment, toDate: Moment) => Promise<StoreData.TripVM>;
+    updateTripName: (tripId: string, tripName: string) => Promise<StoreData.TripVM>;
     addLocation: (tripId: string, location: StoreData.LocationVM) => Promise<void>;
     updateLocationFeeling: (tripId: string, locationId: string, feeling: StoreData.FeelingVM) => Promise<void>;
     updateLocations: (tripId: string, locations: Array<StoreData.LocationVM>) => Promise<void>; 
@@ -161,6 +162,7 @@ export class TripDetailsContainer extends Component<Props & IMapDispatchToProps,
             navigation={this.props.navigation}
             removeLocation={this._removeLocationConfirmed}
             updateTripDateRange={this.props.updateTripDateRange}
+            updateTripName={this.props.updateTripName}
             onRefresh={this.refreshTrip}
             addLocation={this._addLocationConfirmed}
             updateLocationFeeling={this._updateLocationFeeling}
@@ -182,6 +184,7 @@ const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
         fetchLocations: (tripId) => dispatch(fetchTripLocations(tripId)),
         removeLocation: (tripId, locationId) => dispatch(removeLocation(tripId, locationId)),
         updateTripDateRange: (tripId, fromDate, toDate) => dispatch(updateTripDateRange(tripId, fromDate, toDate)),
+        updateTripName: (tripId, tripName) => dispatch(updateTripName(tripId, tripName)),
         addLocation: (tripId, location) => dispatch(addLocation(tripId, location)),
         updateLocationFeeling: (tripId, locationId, feeling) => dispatch(updateLocationFeeling(tripId, locationId, feeling)),
         updateLocations: (tripId, locations) => dispatch(updateLocations(tripId, locations)),

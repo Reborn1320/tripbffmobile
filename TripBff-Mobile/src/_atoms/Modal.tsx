@@ -3,18 +3,16 @@
 import React, { ReactNode } from "react";
 import RNModal from "react-native-modal";
 import { ViewStyle, StyleSheet, TextStyle } from "react-native";
-import { connectStyle, Text, View, H3 } from 'native-base';
+import { connectStyle, Text, H3 } from 'native-base';
 import { mixins } from "../_utils";
 import NBTheme from "../theme/variables/material.js";
+import { View } from "react-native";
 
 export interface Props {
   title?: string;
   isVisible: boolean;
   children?: ReactNode;
-  style?: Style;
-
-  height?: number;
-  marginTop?: number;
+  style?: Style; //for native base to override
 }
 
 const MODAL_HEIGHT = 200;
@@ -27,37 +25,40 @@ class ModalComponent extends React.Component<Props> {
 
   render() {
     const { isVisible, children, style } = this.props;
-    const height = this.props.height ? this.props.height : MODAL_HEIGHT;
-    const marginTop = this.props.marginTop ? this.props.marginTop : MODAL_MARGIN_TOP;
+    const modalStyle = (style as any).modal;
+    // const height = this.props.height ? this.props.height : MODAL_HEIGHT;
+    // const marginTop = this.props.marginTop ? this.props.marginTop : MODAL_MARGIN_TOP;
 
     return (
-      <RNModal style={{
-        height, marginTop,
-          ...style.modal
-        }}
+      <RNModal
         isVisible={isVisible} hideModalContentWhileAnimating >
-        {this.props.title && 
-        <View style={styles.titleContainer}>
-          <H3 style={styles.title}>{this.props.title.toUpperCase()}</H3>
-        </View>}
-        {children}
+        <View style={{
+          ...modalStyle,
+          ...styles.content,
+        }}>
+          {this.props.title &&
+            <View style={styles.titleContainer}>
+              <H3 style={styles.title}>{this.props.title.toUpperCase()}</H3>
+            </View>}
+          {children}
+        </View>
       </RNModal>
     );
   }
 }
 
 interface Style {
-  modal: ViewStyle;
+  content: ViewStyle;
   title: TextStyle;
   titleContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
-  modal: {
-    flex: 0,
+  // this withh warp around real content, then `style` will apply modal style on it
+  content: {
     justifyContent: "center",
     alignItems: "center",
-    // ...mixins.themes.debug,
+    // ...mixins.themes.debug2,
   },
   title: {
     // ...mixins.themes.debug2,
@@ -73,9 +74,11 @@ const styles = StyleSheet.create<Style>({
     paddingLeft: 20,
     paddingRight: 20,
     paddingBottom: 10,
+    marginTop: 10,
     marginBottom: 10,
   }
 })
 
 const Modal = connectStyle<typeof ModalComponent>('NativeBase.Modal', styles)(ModalComponent);
+// const Modal = ModalComponent;
 export default Modal;

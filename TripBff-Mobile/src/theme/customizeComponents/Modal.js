@@ -5,6 +5,8 @@ export default (variables = variable) => {
     modal: {
       backgroundColor: variables.brandDark,
       borderRadius: variables.borderRadiusBase,
+      // borderColor: "orange",
+      // borderWidth: 1,
     }
   };
 

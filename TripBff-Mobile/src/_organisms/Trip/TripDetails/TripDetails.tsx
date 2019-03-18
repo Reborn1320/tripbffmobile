@@ -8,7 +8,7 @@ import ConfirmationModal from "../../../_molecules/ConfirmationModal";
 import { mixins } from "../../../_utils";
 import EditPopupMenu from "../../../_molecules/Trip/EditPopupMenu/EditPopupMenu";
 import { Modal } from "../../../_atoms";
-import { TripDateRangeForm } from "./TripDateRangeForm";
+import { TripEditForm, TripEditFormEnum } from "../../TripEditForm/TripEditForm";
 import moment, { Moment } from "moment";
 import { StoreData } from "../../../store/Interfaces";
 import AddLocationModal from "./AddLocationModal";
@@ -17,6 +17,7 @@ import AddActivityModal from "./AddActivityModal";
 
 interface IMapDispatchToProps {
     updateTripDateRange: (tripId: string, fromDate: Moment, toDate: Moment) => Promise<StoreData.TripVM>;
+    updateTripName: (tripId: string, tripName: string) => Promise<StoreData.TripVM>;
     removeLocation: (tripId: string, locationId: string) => Promise<void>
     addLocation: (address: string, fromTime: moment.Moment) => Promise<void>
     updateLocationFeeling: (locationId: string, feeling: StoreData.FeelingVM) => Promise<void>
@@ -39,6 +40,7 @@ interface State {
     isConfirmationModalVisible: boolean,
     focusingLocationId?: string,
     isEditDateRangeModalVisible: boolean,
+    isEditNameModalVisible: boolean,
     isAddLocationModalVisible: boolean,
     selectedDate: moment.Moment
     isAddFeelingModalVisible: boolean,
@@ -85,6 +87,7 @@ export class TripDetails extends Component<Props, State> {
             modalVisible: false,
             isConfirmationModalVisible: false,
             isEditDateRangeModalVisible: false,
+            isEditNameModalVisible: false,
             isAddLocationModalVisible: false,
             selectedDate: null,
             isAddFeelingModalVisible: false,
@@ -114,30 +117,53 @@ export class TripDetails extends Component<Props, State> {
         this.setState({
             isConfirmationModalVisible: true,
             focusingLocationId: locationId,
-        })
+        });
     }
 
     onPopupMenuSelect = (value) => {
         console.log(`Selected number: ${value}`);
-        if (value == 1) {
-            this.setState({
-                isEditDateRangeModalVisible: true
-            });
+        switch (value) {
+            case 1:
+                this.setState({
+                    isEditDateRangeModalVisible: true
+                });
+                break;
+            case 2:
+                this.setState({
+                    isEditNameModalVisible: true
+                });
+                break;
+            default:
+                break;
         }
     }
 
-    onEdit = (fromDate: Moment, toDate: Moment) => {
+    onEditDateRange = (tripName: string, fromDate: Moment, toDate: Moment) => {
         this.props.updateTripDateRange(this.props.tripId, fromDate, toDate)
             .then(newTrip => {
                 this.setState({
                     isEditDateRangeModalVisible: false
                 });
                 this.props.onRefresh();
-            })
+            });
+    }
+
+
+    onEditTripName = (tripName: string, fromDate: Moment, toDate: Moment) => {
+        this.props.updateTripName(this.props.tripId, tripName)
+            .then(() => {
+                this.setState({
+                    isEditNameModalVisible: false
+                });
+                this.props.onRefresh(); //todo move this refresh as chain reaction
+            });
     }
 
     private closeEditDateRangeModal = () => {
         this.setState({ isEditDateRangeModalVisible: false });
+    }
+    private closeEditNameModal = () => {
+        this.setState({ isEditNameModalVisible: false });
     }
 
     _removeLocationConfirmed = () => {
@@ -154,7 +180,7 @@ export class TripDetails extends Component<Props, State> {
         this.setState({
             isConfirmationModalVisible: false,
             focusingLocationId: null,
-        })
+        });
     }
 
     setModalVisible(visible) {
@@ -165,21 +191,21 @@ export class TripDetails extends Component<Props, State> {
         this.setState({
             isAddLocationModalVisible: true,
             selectedDate: date
-        })  
+        });
     }
 
-    _addLocationConfirmed = (address, fromTime)  => {
+    _addLocationConfirmed = (address, fromTime) => {
         this.setState({
             isAddLocationModalVisible: false
         });
-        
+
         this.props.addLocation(address, fromTime);
     }
 
     _cancelAddLocationModal = () => {
         this.setState({
             isAddLocationModalVisible: false
-        }) 
+        });
     }
 
     openAddFeelingModal(locationId) {
@@ -199,7 +225,7 @@ export class TripDetails extends Component<Props, State> {
     _cancelAddfeelingModal = () => {
         this.setState({
             isAddFeelingModalVisible: false
-        }) 
+        })
     }
 
     openAddActivityModal(locationId) {
@@ -219,14 +245,15 @@ export class TripDetails extends Component<Props, State> {
     _cancelAddActivityModal = () => {
         this.setState({
             isAddActivityModalVisible: false
-        }) 
+        })
     }
 
     render() {
-        const { 
+        const {
             isConfirmationModalVisible,
             isEditDateRangeModalVisible,
-            isAddLocationModalVisible, 
+            isEditNameModalVisible,
+            isAddLocationModalVisible,
             selectedDate,
             isAddFeelingModalVisible,
             focusingLocationId,
@@ -267,26 +294,37 @@ export class TripDetails extends Component<Props, State> {
                     isVisible={isConfirmationModalVisible} />
                 <Modal isVisible={isEditDateRangeModalVisible}
                     title="Edit date range"
-                    height={250}
-                    >
-                    <TripDateRangeForm fromDate={fromDate} toDate={toDate} onClickEdit={this.onEdit}
-                    onCancel={this.closeEditDateRangeModal} />
+                >
+                    <TripEditForm
+                        fields={[TripEditFormEnum.DateRange]}
+                        fromDate={fromDate} toDate={toDate}
+                        onClickEdit={this.onEditDateRange}
+                        onCancel={this.closeEditDateRangeModal} />
                 </Modal>
-                 <AddLocationModal
-                    isVisible={isAddLocationModalVisible} 
+                <Modal isVisible={isEditNameModalVisible}
+                    title="Edit trip name"
+                >
+                    <TripEditForm
+                        fields={[TripEditFormEnum.Name]}
+                        tripName={tripName}
+                        onClickEdit={this.onEditTripName}
+                        onCancel={this.closeEditNameModal} />
+                </Modal>
+                <AddLocationModal
+                    isVisible={isAddLocationModalVisible}
                     date={selectedDate}
                     confirmHandler={this._addLocationConfirmed}
-                    cancelHandler={this._cancelAddLocationModal}/>
-                 <AddFeelingModal
+                    cancelHandler={this._cancelAddLocationModal} />
+                <AddFeelingModal
                     isVisible={isAddFeelingModalVisible}
-                    locationId={focusingLocationId}                    
+                    locationId={focusingLocationId}
                     confirmHandler={this._updateFeelingConfirmed}
-                    cancelHandler={this._cancelAddfeelingModal}/>
-                 <AddActivityModal
+                    cancelHandler={this._cancelAddfeelingModal} />
+                <AddActivityModal
                     isVisible={isAddActivityModalVisible}
-                    locationId={focusingLocationId}                    
+                    locationId={focusingLocationId}
                     confirmHandler={this._updateActivityConfirmed}
-                    cancelHandler={this._cancelAddActivityModal}/>
+                    cancelHandler={this._cancelAddActivityModal} />
             </View>
         );
     }
