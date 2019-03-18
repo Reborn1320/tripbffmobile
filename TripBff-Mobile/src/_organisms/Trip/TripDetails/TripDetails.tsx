@@ -8,7 +8,7 @@ import ConfirmationModal from "../../../_molecules/ConfirmationModal";
 import { mixins } from "../../../_utils";
 import EditPopupMenu from "../../../_molecules/Trip/EditPopupMenu/EditPopupMenu";
 import { Modal } from "../../../_atoms";
-import { TripDateRangeForm } from "./TripDateRangeForm";
+import { TripDateRangeForm, TripDateRangeFormEnum } from "../../TripDateRangeForm/TripDateRangeForm";
 import moment, { Moment } from "moment";
 import { StoreData } from "../../../store/Interfaces";
 import AddLocationModal from "./AddLocationModal";
@@ -114,7 +114,7 @@ export class TripDetails extends Component<Props, State> {
         this.setState({
             isConfirmationModalVisible: true,
             focusingLocationId: locationId,
-        })
+        });
     }
 
     onPopupMenuSelect = (value) => {
@@ -133,7 +133,7 @@ export class TripDetails extends Component<Props, State> {
                     isEditDateRangeModalVisible: false
                 });
                 this.props.onRefresh();
-            })
+            });
     }
 
     private closeEditDateRangeModal = () => {
@@ -154,7 +154,7 @@ export class TripDetails extends Component<Props, State> {
         this.setState({
             isConfirmationModalVisible: false,
             focusingLocationId: null,
-        })
+        });
     }
 
     setModalVisible(visible) {
@@ -165,21 +165,21 @@ export class TripDetails extends Component<Props, State> {
         this.setState({
             isAddLocationModalVisible: true,
             selectedDate: date
-        })  
+        });
     }
 
-    _addLocationConfirmed = (address, fromTime)  => {
+    _addLocationConfirmed = (address, fromTime) => {
         this.setState({
             isAddLocationModalVisible: false
         });
-        
+
         this.props.addLocation(address, fromTime);
     }
 
     _cancelAddLocationModal = () => {
         this.setState({
             isAddLocationModalVisible: false
-        }) 
+        });
     }
 
     openAddFeelingModal(locationId) {
@@ -199,7 +199,7 @@ export class TripDetails extends Component<Props, State> {
     _cancelAddfeelingModal = () => {
         this.setState({
             isAddFeelingModalVisible: false
-        }) 
+        })
     }
 
     openAddActivityModal(locationId) {
@@ -219,14 +219,14 @@ export class TripDetails extends Component<Props, State> {
     _cancelAddActivityModal = () => {
         this.setState({
             isAddActivityModalVisible: false
-        }) 
+        })
     }
 
     render() {
-        const { 
+        const {
             isConfirmationModalVisible,
             isEditDateRangeModalVisible,
-            isAddLocationModalVisible, 
+            isAddLocationModalVisible,
             selectedDate,
             isAddFeelingModalVisible,
             focusingLocationId,
@@ -268,25 +268,28 @@ export class TripDetails extends Component<Props, State> {
                 <Modal isVisible={isEditDateRangeModalVisible}
                     title="Edit date range"
                     height={250}
-                    >
-                    <TripDateRangeForm fromDate={fromDate} toDate={toDate} onClickEdit={this.onEdit}
-                    onCancel={this.closeEditDateRangeModal} />
+                >
+                    <TripDateRangeForm
+                        fields={[TripDateRangeFormEnum.Name, TripDateRangeFormEnum.DateRange]}
+                        fromDate={fromDate} toDate={toDate}
+                        onClickEdit={this.onEdit}
+                        onCancel={this.closeEditDateRangeModal} />
                 </Modal>
-                 <AddLocationModal
-                    isVisible={isAddLocationModalVisible} 
+                <AddLocationModal
+                    isVisible={isAddLocationModalVisible}
                     date={selectedDate}
                     confirmHandler={this._addLocationConfirmed}
-                    cancelHandler={this._cancelAddLocationModal}/>
-                 <AddFeelingModal
+                    cancelHandler={this._cancelAddLocationModal} />
+                <AddFeelingModal
                     isVisible={isAddFeelingModalVisible}
-                    locationId={focusingLocationId}                    
+                    locationId={focusingLocationId}
                     confirmHandler={this._updateFeelingConfirmed}
-                    cancelHandler={this._cancelAddfeelingModal}/>
-                 <AddActivityModal
+                    cancelHandler={this._cancelAddfeelingModal} />
+                <AddActivityModal
                     isVisible={isAddActivityModalVisible}
-                    locationId={focusingLocationId}                    
+                    locationId={focusingLocationId}
                     confirmHandler={this._updateActivityConfirmed}
-                    cancelHandler={this._cancelAddActivityModal}/>
+                    cancelHandler={this._cancelAddActivityModal} />
             </View>
         );
     }
