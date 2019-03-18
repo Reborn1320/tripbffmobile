@@ -60,22 +60,24 @@ export class TripEditForm extends Component<Props, State> {
   }
 
   render() {
+
+    const { tripName, fromDate, toDate } = this.state;
     return (
       <Form style={styles.formContainer}>
         {this.displayField(TripEditFormEnum.Name) &&
           <Item regular inlineLabel style={styles.item}>
             <Label>Trip name</Label>
             <Input
-              value={this.props.tripName}
-              onChangeText={(tripName) => this.setState({ tripName })} />
+              value={tripName}
+              onChangeText={(newName) => this.setState({ tripName: newName })} />
           </Item>
         }
         {this.displayField(TripEditFormEnum.DateRange) &&
           <Item regular inlineLabel style={styles.item}>
             <Label style={styles.itemLabel} >From date</Label>
             <DatePicker
-              value={this.props.fromDate}
-              onDateChange={(fromDate: Date) => this.setState({ fromDate: moment(fromDate) })}
+              value={fromDate}
+              onDateChange={(newDate: Date) => this.setState({ fromDate: moment(newDate) })}
             />
           </Item>
         }
@@ -83,8 +85,8 @@ export class TripEditForm extends Component<Props, State> {
           <Item regular inlineLabel style={styles.item}>
             <Label style={styles.itemLabel}>To date</Label>
             <DatePicker
-              value={this.props.toDate}
-              onDateChange={(toDate: Date) => this.setState({ toDate: moment(toDate) })}
+              value={toDate}
+              onDateChange={(newDate: Date) => this.setState({ toDate: moment(newDate) })}
             />
           </Item>
         }
