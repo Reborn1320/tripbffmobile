@@ -18,7 +18,7 @@ import { tripApi, loginApi, uploadFileApi } from "./screens/_services/apis";
 import { loginApiService, tripApiService } from "./store/ApisAsAService";
 import LoginScreen from "./screens/login/index";
 import ProfileScreenContainer from "./screens/user/ProfileScreenContainer";
-import TestComponentScreen from "./screens/testComponent/index";
+import TestComponentScreen from "./_organisms/TripEditForm/__doc__/TripEditForm.doc";
 
 import bffApp from "./store/reducers";
 import ReduxThunk from "redux-thunk";
@@ -61,7 +61,8 @@ const AppNavigator = createStackNavigator(
     InfographicPreview: { screen: InfographicPreviewScreen }
   },
   {
-    initialRouteName: "Login",
+    initialRouteName: "Home",
+    // initialRouteName: "TestComponent",
     initialRouteParams: {
       tripId: 3
     },

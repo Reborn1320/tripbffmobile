@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import _, { } from "lodash";
 import moment, { Moment } from "moment";
 import { StoreData } from "../../../store/Interfaces";
-import { TripDateRangeForm, TripDateRangeFormEnum } from "../TripDateRangeForm";
+import { TripEditForm, TripEditFormEnum } from "../TripEditForm";
 import { Modal } from "../../../_atoms";
 import { mixins } from "../../../_utils";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
@@ -53,17 +53,17 @@ class TestComponent extends Component<Props, State> {
     return (
       <Container>
         <Header></Header>
-        <Content scrollEnabled={true}>
-          <TripDateRangeForm
-            fields={[TripDateRangeFormEnum.Name, TripDateRangeFormEnum.DateRange]}
+        <Content>
+          <TripEditForm
+            fields={[TripEditFormEnum.Name, TripEditFormEnum.DateRange]}
             fromDate={fromDate} toDate={toDate}
             onClickEdit={this.onEdit} />
-          <TripDateRangeForm
-            fields={[TripDateRangeFormEnum.DateRange]}
+          <TripEditForm
+            fields={[TripEditFormEnum.DateRange]}
             fromDate={fromDate} toDate={toDate}
             onClickEdit={this.onEdit} />
-          <TripDateRangeForm
-            fields={[TripDateRangeFormEnum.Name]}
+          <TripEditForm
+            fields={[TripEditFormEnum.Name]}
             fromDate={fromDate} toDate={toDate}
             onClickEdit={this.onEdit} />
 
@@ -83,8 +83,8 @@ class TestComponent extends Component<Props, State> {
           <Modal
             title="Edit date range"
             isVisible={isEditDateRangeModalVisible} >
-            <TripDateRangeForm
-              fields={[TripDateRangeFormEnum.DateRange]}
+            <TripEditForm
+              fields={[TripEditFormEnum.DateRange]}
               fromDate={fromDate} toDate={toDate}
               onClickEdit={this.onEdit}
               onCancel={this.onModalClose} />
@@ -92,8 +92,8 @@ class TestComponent extends Component<Props, State> {
           <Modal
             title="Edit trip name"
             isVisible={isEditTripNameModalVisible} >
-            <TripDateRangeForm
-              fields={[TripDateRangeFormEnum.Name]}
+            <TripEditForm
+              fields={[TripEditFormEnum.Name]}
               fromDate={fromDate} toDate={toDate}
               onClickEdit={this.onEdit}
               onCancel={this.onModalClose} />

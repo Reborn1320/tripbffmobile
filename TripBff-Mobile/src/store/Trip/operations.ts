@@ -88,6 +88,22 @@ export function updateTripDateRange(tripId: string, fromDate: Moment, toDate: Mo
   };
 }
 
+export function updateTripName(tripId: string, name: string): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+
+    const data = { 
+      name
+    };
+    return extraArguments.tripApiService.patch(`trips/${tripId}`, { data })
+    .then((res) => {
+      return convertTripFromRaw(res.data);
+    })
+    .catch((err) => {
+      console.log('error update trip name api: ', err);
+    });
+  };
+}
+
 export function updateLocationFeeling(tripId: string, locationId: string, feeling: StoreData.FeelingVM): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     const data = {

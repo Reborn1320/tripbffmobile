@@ -14,7 +14,7 @@ export interface Props {
   fromDate?: Moment;
   toDate?: Moment;
 
-  fields: Array<TripDateRangeFormEnum>;
+  fields: Array<TripEditFormEnum>;
 }
 
 interface State {
@@ -23,28 +23,30 @@ interface State {
   toDate: Moment;
 }
 
-export enum TripDateRangeFormEnum {
+export enum TripEditFormEnum {
   Name,
   DateRange,
 }
 
-export class TripDateRangeForm extends Component<Props, State> {
+export class TripEditForm extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
     this.state = {
       tripName: props.tripName,
-      fromDate: props.fromDate.utc(false),
-      toDate: props.toDate.utc(false),
+      fromDate: props.fromDate ? props.fromDate.utc(false): null,
+      toDate: props.toDate ? props.toDate.utc(false): null,
     };
   }
 
-  private displayField(fieldEnum: TripDateRangeFormEnum) {
+  private displayField(fieldEnum: TripEditFormEnum) {
     return _.indexOf(this.props.fields, fieldEnum) !== -1;
   }
 
   private formValid() {
-    return this.state.tripName && this.state.fromDate && this.state.toDate;
+    if (this.props.fields.indexOf(TripEditFormEnum.Name) != -1 && !this.state.tripName) return false;
+    if (this.props.fields.indexOf(TripEditFormEnum.DateRange) != -1 && !(this.state.fromDate && this.state.toDate)) return false;
+    return true;
   }
 
   private renderEditBtn() {
@@ -60,14 +62,15 @@ export class TripDateRangeForm extends Component<Props, State> {
   render() {
     return (
       <Form style={styles.formContainer}>
-        {this.displayField(TripDateRangeFormEnum.Name) &&
+        {this.displayField(TripEditFormEnum.Name) &&
           <Item regular inlineLabel style={styles.item}>
             <Label>Trip name</Label>
             <Input
+              value={this.props.tripName}
               onChangeText={(tripName) => this.setState({ tripName })} />
           </Item>
         }
-        {this.displayField(TripDateRangeFormEnum.DateRange) &&
+        {this.displayField(TripEditFormEnum.DateRange) &&
           <Item regular inlineLabel style={styles.item}>
             <Label style={styles.itemLabel} >From date</Label>
             <DatePicker
@@ -76,7 +79,7 @@ export class TripDateRangeForm extends Component<Props, State> {
             />
           </Item>
         }
-        {this.displayField(TripDateRangeFormEnum.DateRange) &&
+        {this.displayField(TripEditFormEnum.DateRange) &&
           <Item regular inlineLabel style={styles.item}>
             <Label style={styles.itemLabel}>To date</Label>
             <DatePicker
@@ -109,11 +112,12 @@ interface Style {
 
 const styles = StyleSheet.create<Style>({
   formContainer: {
+    alignSelf: "stretch",
     // ...mixins.themes.debug1,
-    // padding: 10,
+    padding: 10,
     display: "flex",
     flexDirection: "column",
-    alignItems: "stretch"
+    alignItems: "stretch",
   },
   item: {
     marginBottom: 10,

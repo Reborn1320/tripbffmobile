@@ -8,7 +8,7 @@ import ConfirmationModal from "../../../_molecules/ConfirmationModal";
 import { mixins } from "../../../_utils";
 import EditPopupMenu from "../../../_molecules/Trip/EditPopupMenu/EditPopupMenu";
 import { Modal } from "../../../_atoms";
-import { TripDateRangeForm, TripDateRangeFormEnum } from "../../TripDateRangeForm/TripDateRangeForm";
+import { TripEditForm, TripEditFormEnum } from "../../TripEditForm/TripEditForm";
 import moment, { Moment } from "moment";
 import { StoreData } from "../../../store/Interfaces";
 import AddLocationModal from "./AddLocationModal";
@@ -17,6 +17,7 @@ import AddActivityModal from "./AddActivityModal";
 
 interface IMapDispatchToProps {
     updateTripDateRange: (tripId: string, fromDate: Moment, toDate: Moment) => Promise<StoreData.TripVM>;
+    updateTripName: (tripId: string, tripName: string) => Promise<StoreData.TripVM>;
     removeLocation: (tripId: string, locationId: string) => Promise<void>
     addLocation: (address: string, fromTime: moment.Moment) => Promise<void>
     updateLocationFeeling: (locationId: string, feeling: StoreData.FeelingVM) => Promise<void>
@@ -150,11 +151,11 @@ export class TripDetails extends Component<Props, State> {
 
     onEditTripName = (tripName: string, fromDate: Moment, toDate: Moment) => {
         this.props.updateTripName(this.props.tripId, tripName)
-            .then(newTrip => {
+            .then(() => {
                 this.setState({
                     isEditNameModalVisible: false
                 });
-                this.props.onRefresh();
+                this.props.onRefresh(); //todo move this refresh as chain reaction
             });
     }
 
@@ -293,20 +294,18 @@ export class TripDetails extends Component<Props, State> {
                     isVisible={isConfirmationModalVisible} />
                 <Modal isVisible={isEditDateRangeModalVisible}
                     title="Edit date range"
-                    height={250}
                 >
-                    <TripDateRangeForm
-                        fields={[TripDateRangeFormEnum.DateRange]}
+                    <TripEditForm
+                        fields={[TripEditFormEnum.DateRange]}
                         fromDate={fromDate} toDate={toDate}
                         onClickEdit={this.onEditDateRange}
                         onCancel={this.closeEditDateRangeModal} />
                 </Modal>
                 <Modal isVisible={isEditNameModalVisible}
-                    title="Edit date range"
-                    height={250}
+                    title="Edit trip name"
                 >
-                    <TripDateRangeForm
-                        fields={[TripDateRangeFormEnum.Name]}
+                    <TripEditForm
+                        fields={[TripEditFormEnum.Name]}
                         tripName={tripName}
                         onClickEdit={this.onEditTripName}
                         onCancel={this.closeEditNameModal} />
