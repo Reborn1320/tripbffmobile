@@ -3,12 +3,12 @@ import { Container, Header, Content, Button, Text, View } from 'native-base';
 import { Alert } from "react-native";
 import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
-import moment from "moment";
 import { tripApi } from "../../_services/apis";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import * as RNa from "react-navigation";
-import TripDetailsContainer2 from "../../../_organisms/Trip/TripDetails/TripDetailsContainer";
+import TripDetails from "../../../_organisms/Trip/TripDetails/TripDetails";
+import TripDetailsModal from "../../../_organisms/Trip/TripDetails/TripDetailsModal"
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
@@ -20,19 +20,30 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 }
 
 interface State {
+    focusingLocationId?: string,
+    isAddFeelingModalVisible: boolean,
+    isAddActivityModalVisible: boolean
 }
 
 export class TripDetailScreen extends Component<Props, State> {
-
     constructor(props: Props) {
         super(props)
+
         this.state = {
+            focusingLocationId: "",
+            isAddActivityModalVisible: false,
+            isAddFeelingModalVisible: false
         }
+    }
+
+    getTripId = () => {
+        return this.props.trip.tripId;
     }
 
     exportInfographic() {
         // call api to request export infographic
-        var tripId = this.props.trip.tripId;
+        var tripId = this.getTripId();
+        
         tripApi
             .post('/trips/' + tripId + '/infographics')
             .then(res => {
@@ -59,8 +70,23 @@ export class TripDetailScreen extends Component<Props, State> {
         )
     }
 
+    _openUpdateFeelingModal = (locationId) => {
+        this.setState({
+            isAddFeelingModalVisible: true,
+            focusingLocationId: locationId
+        });
+    }
+
+    _openUpdateActivityModal = (locationId) => {
+        this.setState({
+            isAddActivityModalVisible: true,
+            focusingLocationId: locationId
+        });
+    }
+
     render() {
-        const { trip, navigation } = this.props;
+        const tripId = this.getTripId();
+
         return (
             <Container>
                 <Header>
@@ -74,10 +100,19 @@ export class TripDetailScreen extends Component<Props, State> {
 
                 </Header>
                 <Content>
-                    <TripDetailsContainer2 trip={trip} navigation={navigation} />
+                    <TripDetails tripId={tripId}
+                        openUpdateFeelingModalHandler={this._openUpdateFeelingModal}
+                        openUpdateActivityModalHandler={this._openUpdateActivityModal} />
+
+                    <TripDetailsModal 
+                        tripId={tripId}
+                        locationId={this.state.focusingLocationId}
+                        isAddFeelingModalVisible={this.state.isAddFeelingModalVisible}
+                        isAddActivityModalVisible={this.state.isAddActivityModalVisible}/>                    
                 </Content>
             </Container>
         );
     }
 }
+
 

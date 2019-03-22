@@ -14,7 +14,7 @@ export module StoreData {
 
     export interface ActivityVM {
         activityId: number,
-        lable: string,
+        label: string,
         icon: string
     }
 
@@ -34,13 +34,20 @@ export module StoreData {
         activity?: ActivityVM
     }
 
+    export interface DateVM {
+        dayIdx: number,
+        date: moment.Moment,
+        locations: Array<LocationVM>, 
+        locationIds: Array<number>,    
+    }
+   
     export interface TripVM {
         tripId: string
         name: string
         fromDate: moment.Moment
-        toDate: moment.Moment
-        locations: Array<LocationVM>,
-        infographicId: string
+        toDate: moment.Moment   
+        dates: Array<DateVM>     
+        infographicId: string        
     }
 
     export interface UserVM {

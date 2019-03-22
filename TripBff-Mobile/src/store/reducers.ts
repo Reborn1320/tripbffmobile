@@ -1,9 +1,7 @@
 import _, { cloneDeep } from 'lodash';
 import moment from "moment";
 import { StoreData } from "./Interfaces";
-// import importImagesReducer from "./screens/trip/import/reducers";
 import homeScreenReducer from "../screens/home/reducer";
-import importImagesReducer from '../screens/trip/import/reducers';
 import { TRIP_ADD } from '../screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './User/actions';
 import { ADD_INFOGRAPHIC_ID } from '../screens/trip/export/actions';
@@ -12,8 +10,9 @@ import { LOCATION_REMOVE,
          LOCATION_UPDATE_FEELING,
          LOCATION_UPDATE,
          LOCATION_UPDATE_ACTIVITY } from './Trip/actions';
-import { DataSource_GetAllFeeling } from './DataSource/actions';
+import { DataSource_GetAllFeeling, DataSource_GetAllActivity } from './DataSource/actions';
 import { stat } from 'fs';
+import { IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "../screens/trip/import/actions";
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -24,31 +23,42 @@ const userInitState: StoreData.UserVM = {
     token: "ASdf",
     fbToken: ""
 }
-// const tripsInitState: StoreData.TripVM[] = []
-// for (let idx = 0; idx < 5; idx++) {
-//     tripsInitState.push({
-//         tripId: idx.toString(),
-//         name: `trip name ${idx}`,
-//         fromDate: moment("2018-10-10"), 
-//         toDate: moment("2018-10-18").add(1, "day").add(-1, "second"),
-//         infographicId: '',
-//         locations: [] // cloneDeep(locationInitState)
-//     })
-// }
-
-// tripsInitState.push({
-//     tripId: '5',
-//     name: `trip name ${5}`,
-//     fromDate: moment("2018-10-04"), 
-//     toDate: moment("2018-10-29").add(1, "day").add(-1, "second"),
-//     infographicId: '',
-//     locations: [] // cloneDeep(locationInitState)
-// })
 
 const initState: StoreData.BffStoreData = {
     user: userInitState,
     dataSource: {},
-    trips: [] // tripsInitState,
+    trips: [] 
+}
+
+function compareLocationsFromTime(first, second) {
+    if (first.fromTime < second.fromTime) 
+        return -1
+    else if (first.fromTime > second.fromTime)
+        return 1
+    else
+        return 0;
+}
+
+function importSelectedLocations(state: StoreData.TripVM, action) {
+    const { locations } = action
+    var dateVMs: StoreData.DateVM[] = [];
+    const nDays = state.toDate.diff(state.fromDate, "days") + 1
+
+    for (let idx = 0; idx < nDays; idx++) {
+        var locationsOfDate = locations.filter(element => moment(element.fromTime).diff(state.fromDate, "days") == idx);
+
+        dateVMs.push({
+            dayIdx: idx + 1,
+            date: moment(state.fromDate.add(idx, 'days')),
+            locationIds: locationsOfDate.map(e => { return e.locationId }),
+            locations: locationsOfDate.sort(compareLocationsFromTime).map(e => { return e })
+        })
+    }
+
+    return {
+        ...state,
+        dates: dateVMs
+    };
 }
 
 function userReducer(state, action) {
@@ -59,64 +69,97 @@ function userReducer(state, action) {
     return state;
 }
 
-function tripReducer(state: StoreData.TripVM, action) {
-    //TODO: combine with other reducer if needed
-    // return state;
+function imageReducer(state: StoreData.ImportImageVM, action) {
+    switch(action.type) {
+        case IMPORT_UPLOADED_IMAGE:
+            return {
+                ...state,
+                externalStorageId: action.externalStorageId
+            }
+        default: 
+            return state;
+    }
+}
 
+function locationReducer(state: StoreData.LocationVM, action) {
+    switch(action.type) {
+        case LOCATION_UPDATE_FEELING:
+            return {
+                ...state,
+                feeling: action.feeling
+            };        
+        case LOCATION_UPDATE:
+            return {
+                ...state,
+                locations: action.locations
+            };        
+        case LOCATION_UPDATE_ACTIVITY:
+            return {
+                ...state,
+                activity: action.activity
+            };
+        //TODO: upload images
+        //TODO: remove images
+        default:
+            return {
+                ...state,
+                images: state.images.map(item => {
+                    return item.imageId == action.imageId ? imageReducer(item, action) : item;
+                })
+            };
+    }    
+}
+
+function dateReducer(state: StoreData.DateVM, action) {
+    switch(action.type) {
+        case LOCATION_REMOVE:
+            return {
+                ...state,
+                locations: state.locations.filter(item => item.locationId !== action.locationId),
+                locationIds: state.locationIds.filter(l => l !== action.locationId)
+            }    
+        case LOCATION_ADD:
+            return {
+                ...state,
+                locations: [
+                    ...state.locations,
+                    action.location
+                ],
+                locationIds: [
+                    ...state.locationIds,
+                    action.location.locationId
+                ]
+            }     
+        default:
+            return {
+                ...state,
+                locations: state.locations.map(item => {
+                    return item.locationId == action.locationId ? locationReducer(item, action) : item;
+                })
+        };
+    }    
+}
+
+
+function tripReducer(state: StoreData.TripVM, action) {
     if (action.type == ADD_INFOGRAPHIC_ID) {
         return Object.assign({}, state, {
             infographicId: action.infographicId
           });
-    }
-    else if (action.type == LOCATION_REMOVE) {
-        var newState: StoreData.TripVM = {
-            ...state,
-            locations: state.locations.filter(item => item.locationId !== action.locationId)
-        }
-
-        return newState
-    }
-    else if (action.type == LOCATION_ADD) {
-        var newState: StoreData.TripVM = {
-            ...state,
-            locations: [
-                ...state.locations,
-                action.location
-            ]
-        }
-
-        return newState
-    }
-    else if (action.type == LOCATION_UPDATE_FEELING) {
-        return {
-            ...state,
-            locations: state.locations.map(item => {
-                return item.locationId != action.locationId ? item : {
-                    ...item,
-                    feeling: action.feeling
-                }
-            })
-        }
-    }
-    else if (action.type == LOCATION_UPDATE) {
-        return {
-            ...state,
-            locations: action.locations
-        }
-    }
-    else if (action.type == LOCATION_UPDATE_ACTIVITY) {
-        return {
-            ...state,
-            locations: state.locations.map(item => {
-                return item.locationId != action.locationId ? item : {
-                    ...item,
-                    activity: action.activity
-                }
-            })
-        }
+    }        
+    else if (action.type == IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS) {
+        return importSelectedLocations(state, action);
     }
 
-    return importImagesReducer(state, action)
+    //TODO: edit date range
+    //TODO: edit trip name
+    
+    return {
+        ...state,
+        dates: state.dates.map(item => {
+            return item.dayIdx == action.dayIdx ? dateReducer(item, action) : item;
+        })
+    }
 }
 
 function tripsReducer(state: Array<StoreData.TripVM>, action) {
@@ -148,12 +191,12 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
 
 function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
     switch(action.type) {
-        case "DataSource_GetAllFeeling":
+        case DataSource_GetAllFeeling:
             return {
                 ...state,
                 feelings: action.feelings
             }
-        case "DataSource_GetAllActivity":
+        case DataSource_GetAllActivity:
             return {
                 ...state,
                 activities: action.activities

@@ -6,21 +6,21 @@ export const LOCATION_UPDATE_FEELING = "TRIP_LOCATION_UPDATE_FEELING"
 export const LOCATION_UPDATE = "TRIP_LOCATION_UPDATE"
 export const LOCATION_UPDATE_ACTIVITY = "TRIP_LOCATION_UPDATE_ACTIVITY"
 
-export function removeLocation(tripId: string, locationId: string) {
+export function removeLocation(tripId: string, dateIdx: number, locationId: string) {
     return {
-        type: LOCATION_REMOVE, tripId, locationId
+        type: LOCATION_REMOVE, tripId, dateIdx, locationId
     }
 }
 
-export function addLocation(tripId: string, location: StoreData.LocationVM) {
+export function addLocation(tripId: string, dateIdx: number, location: StoreData.LocationVM) {
     return {
         type: LOCATION_ADD, tripId, location
     }
 }
 
-export function updateLocationFeeling(tripId: string, locationId: string, feeling: StoreData.FeelingVM) {
+export function updateLocationFeeling(tripId: string, dateIdx: number, locationId: string, feeling: StoreData.FeelingVM) {
     return {
-        type: LOCATION_UPDATE_FEELING, tripId, locationId, feeling
+        type: LOCATION_UPDATE_FEELING, tripId, dateIdx, locationId, feeling
     }
 }
 
@@ -30,9 +30,9 @@ export function updateLocations(tripId: string, locations: Array<StoreData.Locat
     }
 }
 
-export function updateLocationActivity(tripId: string, locationId: string, activity: StoreData.ActivityVM) {
+export function updateLocationActivity(tripId: string, dateIdx: number, locationId: string, activity: StoreData.ActivityVM) {
     return {
-        type: LOCATION_UPDATE_ACTIVITY, tripId, locationId, activity
+        type: LOCATION_UPDATE_ACTIVITY, tripId, dateIdx, locationId, activity
     }
 }
 

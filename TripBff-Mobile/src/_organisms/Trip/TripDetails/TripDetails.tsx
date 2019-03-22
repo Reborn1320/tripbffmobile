@@ -5,7 +5,6 @@ import _, { } from "lodash";
 import DayItem from "../../../_molecules/Trip/DayItem/DayItem";
 import * as RNa from "react-navigation";
 import ConfirmationModal from "../../../_molecules/ConfirmationModal";
-import { mixins } from "../../../_utils";
 import EditPopupMenu from "../../../_molecules/Trip/EditPopupMenu/EditPopupMenu";
 import { Modal } from "../../../_atoms";
 import { TripEditForm, TripEditFormEnum } from "../../TripEditForm/TripEditForm";
@@ -14,25 +13,26 @@ import { StoreData } from "../../../store/Interfaces";
 import AddLocationModal from "./AddLocationModal";
 import AddFeelingModal from "./AddFeelingModal";
 import AddActivityModal from "./AddActivityModal";
+import { removeLocation, updateTripDateRange, addLocation, updateLocationFeeling, updateLocationActivity, updateTripName } from "../../../store/Trip/operations";
+import { connect } from "react-redux";
+import { fetchTripLocations } from "../../../store/Trips/operations";
+import { updateLocations } from "../../../store/Trip/actions";
 
 interface IMapDispatchToProps {
-    updateTripDateRange: (tripId: string, fromDate: Moment, toDate: Moment) => Promise<StoreData.TripVM>;
-    updateTripName: (tripId: string, tripName: string) => Promise<StoreData.TripVM>;
-    removeLocation: (tripId: string, locationId: string) => Promise<void>
-    addLocation: (address: string, fromTime: moment.Moment) => Promise<void>
-    updateLocationFeeling: (locationId: string, feeling: StoreData.FeelingVM) => Promise<void>
-    updateLocationActivity: (locationId: string, activity: StoreData.ActivityVM) => Promise<void>
+    updateTripDateRange?: (tripId: string, fromDate: Moment, toDate: Moment) => Promise<StoreData.TripVM>;
+    updateTripName?: (tripId: string, tripName: string) => Promise<StoreData.TripVM>;
+    removeLocation?: (tripId: string, locationId: string) => Promise<void>
+    fetchLocations?: (tripId: string) => Promise<Array<StoreData.LocationVM>>;    
+    updateLocations?: (tripId: string, locations: Array<StoreData.LocationVM>) => Promise<void>;    
+    openUpdateFeelingModalHandler?: (locationId: string) => void;
+    openUpdateActivityModalHandler?: (locationId: string) => void;
 }
 
 export interface Props extends IMapDispatchToProps {
-    navigation: RNa.NavigationScreenProp<any, any>;
     tripId: string,
-    days: DayVM[],
-    isLoaded: boolean,
-    tripName: string,
-    fromDate: Moment,
-    toDate: Moment,
-    onRefresh: () => void;
+    tripName?: string
+    tripFromDate?: moment.Moment
+    tripToDate?: moment.Moment
 }
 
 interface State {
@@ -41,44 +41,17 @@ interface State {
     focusingLocationId?: string,
     isEditDateRangeModalVisible: boolean,
     isEditNameModalVisible: boolean,
-    isAddLocationModalVisible: boolean,
-    selectedDate: moment.Moment
     isAddFeelingModalVisible: boolean,
-    isAddActivityModalVisible: boolean
+    isAddActivityModalVisible: boolean,
+    isLoaded: boolean
 }
 
 export interface DayVM {
     idx: number,
-    date?: moment.Moment,
-    locations: LocationVM[]
+    date?: moment.Moment
 }
 
-export interface LocationVM {
-    id: string
-    address: string
-    images: Array<ImageVM>,
-    feeling?: FeelingVM,
-    activity?: ActivityVM
-}
-
-export interface ImageVM {
-    url: string
-    highlight: boolean
-}
-
-export interface FeelingVM {
-    feelingId: number,
-    label: string,
-    icon: string
-}
-
-export interface ActivityVM {
-    activityId: number,
-    label: string,
-    icon: string
-}
-
-export class TripDetails extends Component<Props, State> {
+export class TripDetailsComponent extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -88,29 +61,11 @@ export class TripDetails extends Component<Props, State> {
             isConfirmationModalVisible: false,
             isEditDateRangeModalVisible: false,
             isEditNameModalVisible: false,
-            isAddLocationModalVisible: false,
-            selectedDate: null,
             isAddFeelingModalVisible: false,
-            isAddActivityModalVisible: false
+            isAddActivityModalVisible: false,
+            isLoaded: true
         }
     }
-
-    _renderItem = (itemInfo) => {
-        const day: DayVM = itemInfo.item;
-        return (
-
-            <DayItem
-                locations={day.locations} dayIdx={day.idx} date={day.date}
-                toLocationDetailHandler={(locationId) => {
-                    this.props.navigation.navigate("LocationDetail", { tripId: this.props.tripId, locationId })
-                }}
-                removeLocationHandler={(locationId) => this.removeLocation(locationId)}
-                addLocationHandler={(dayIdx, date) => this.addLocationModal(dayIdx, date)}
-                addFeelingModalHandler={(locationId) => this.openAddFeelingModal(locationId)}
-                addActivityModalHandler={(locationId) => this.openAddActivityModal(locationId)}
-            />
-        )
-    };
 
     removeLocation(locationId) {
         console.log("removeLocation")
@@ -144,7 +99,7 @@ export class TripDetails extends Component<Props, State> {
                 this.setState({
                     isEditDateRangeModalVisible: false
                 });
-                this.props.onRefresh();
+                //TODO: this.props.onRefresh();
             });
     }
 
@@ -155,7 +110,7 @@ export class TripDetails extends Component<Props, State> {
                 this.setState({
                     isEditNameModalVisible: false
                 });
-                this.props.onRefresh(); //todo move this refresh as chain reaction
+                //TODO: this.props.onRefresh(); //todo move this refresh as chain reaction
             });
     }
 
@@ -187,78 +142,33 @@ export class TripDetails extends Component<Props, State> {
         this.setState({ modalVisible: visible });
     }
 
-    addLocationModal(dayIdx, date) {
-        this.setState({
-            isAddLocationModalVisible: true,
-            selectedDate: date
-        });
-    }
-
-    _addLocationConfirmed = (address, fromTime) => {
-        this.setState({
-            isAddLocationModalVisible: false
-        });
-
-        this.props.addLocation(address, fromTime);
-    }
-
-    _cancelAddLocationModal = () => {
-        this.setState({
-            isAddLocationModalVisible: false
-        });
-    }
-
-    openAddFeelingModal(locationId) {
-        this.setState({
-            isAddFeelingModalVisible: true,
-            focusingLocationId: locationId
-        });
-    }
-
-    _updateFeelingConfirmed = (locationId, feeling) => {
-        this.setState({
-            isAddFeelingModalVisible: false
-        });
-        this.props.updateLocationFeeling(locationId, feeling);
-    }
-
-    _cancelAddfeelingModal = () => {
-        this.setState({
-            isAddFeelingModalVisible: false
-        })
-    }
-
-    openAddActivityModal(locationId) {
-        this.setState({
-            isAddActivityModalVisible: true,
-            focusingLocationId: locationId
-        });
-    }
-
-    _updateActivityConfirmed = (locationId, activity) => {
-        this.setState({
-            isAddActivityModalVisible: false
-        });
-        this.props.updateLocationActivity(locationId, activity);
-    }
-
-    _cancelAddActivityModal = () => {
-        this.setState({
-            isAddActivityModalVisible: false
-        })
-    }
+    
+    _renderItem = (itemInfo) => {
+        const day: DayVM = itemInfo.item;
+        return (
+            <DayItem tripId={this.props.tripId} dayIdx={day.idx} date={day.date} 
+                openUpdateFeelingModalHandler={this.props.openUpdateFeelingModalHandler}
+                openUpdateActivityModalHandler={this.props.openUpdateActivityModalHandler} />
+        )
+    };
 
     render() {
         const {
             isConfirmationModalVisible,
             isEditDateRangeModalVisible,
             isEditNameModalVisible,
-            isAddLocationModalVisible,
-            selectedDate,
-            isAddFeelingModalVisible,
-            focusingLocationId,
-            isAddActivityModalVisible } = this.state;
-        const { tripName, days, isLoaded, fromDate, toDate } = this.props;
+            isLoaded } = this.state;
+        const { tripName, tripFromDate, tripToDate } = this.props;
+        const nDays = tripToDate.diff(tripFromDate, "days") + 1;
+        var dayVMs: DayVM[] = [];
+
+        for (let idx = 0; idx < nDays; idx++) {
+            dayVMs.push({
+                idx: idx + 1,
+                date: tripFromDate.add(idx, 'days')                       
+            })
+        }
+
         return (
             <View>
                 <View style={{
@@ -281,13 +191,15 @@ export class TripDetails extends Component<Props, State> {
                 </View>
 
                 {!isLoaded && <Spinner color='green' />}
-                {isLoaded &&
+                {isLoaded &&   
                     <FlatList
                         // styles={styles.container}
-                        data={days}
+                        data={dayVMs}
                         renderItem={this._renderItem}
                         keyExtractor={(item, index) => String(index)}
-                    />}
+                    />
+                }
+
                 <ConfirmationModal title="DELETE LOCATION" content="Do you want to delete this location ?"
                     confirmHandler={this._removeLocationConfirmed}
                     cancelHandler={this._cancelModal}
@@ -297,7 +209,7 @@ export class TripDetails extends Component<Props, State> {
                 >
                     <TripEditForm
                         fields={[TripEditFormEnum.DateRange]}
-                        fromDate={fromDate} toDate={toDate}
+                        fromDate={tripFromDate} toDate={tripToDate}
                         onClickEdit={this.onEditDateRange}
                         onCancel={this.closeEditDateRangeModal} />
                 </Modal>
@@ -310,23 +222,37 @@ export class TripDetails extends Component<Props, State> {
                         onClickEdit={this.onEditTripName}
                         onCancel={this.closeEditNameModal} />
                 </Modal>
-                <AddLocationModal
-                    isVisible={isAddLocationModalVisible}
-                    date={selectedDate}
-                    confirmHandler={this._addLocationConfirmed}
-                    cancelHandler={this._cancelAddLocationModal} />
-                <AddFeelingModal
-                    isVisible={isAddFeelingModalVisible}
-                    locationId={focusingLocationId}
-                    confirmHandler={this._updateFeelingConfirmed}
-                    cancelHandler={this._cancelAddfeelingModal} />
-                <AddActivityModal
-                    isVisible={isAddActivityModalVisible}
-                    locationId={focusingLocationId}
-                    confirmHandler={this._updateActivityConfirmed}
-                    cancelHandler={this._cancelAddActivityModal} />
             </View>
         );
     }
 }
+
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+    var tripId = ownProps.tripId;
+    var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
+
+    return {
+        tripId: trip.tripId,
+        tripName: trip.name,
+        tripFromDate: trip.fromDate,
+        tripToDate: trip.toDate
+    };
+};
+
+const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
+    return {
+        fetchLocations: (tripId) => dispatch(fetchTripLocations(tripId)),
+        removeLocation: (tripId, locationId) => dispatch(removeLocation(tripId, locationId)),
+        updateTripDateRange: (tripId, fromDate, toDate) => dispatch(updateTripDateRange(tripId, fromDate, toDate)),
+        updateTripName: (tripId, tripName) => dispatch(updateTripName(tripId, tripName)),               
+        updateLocations: (tripId, locations) => dispatch(updateLocations(tripId, locations))        
+    };
+};
+
+const TripDetails = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TripDetailsComponent);
+
+export default TripDetails;
 
