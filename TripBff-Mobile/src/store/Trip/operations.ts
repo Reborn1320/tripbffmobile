@@ -5,15 +5,15 @@ import {
   updateLocationActivity as updateLocationActivityAction } from "./actions";
 import { ThunkResultBase } from "..";
 import { Moment } from "moment";
-import { RawJsonData, StoreData } from "../Interfaces";
+import { StoreData } from "../Interfaces";
 import moment from "moment";
 
-export function removeLocation(tripId: string, locationId: string): ThunkResultBase {
+export function removeLocation(tripId: string, dateIdx: number, locationId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
 
     return extraArguments.tripApiService.delete(`trips/${tripId}/locations/${locationId}`)
       .then(res => {
-        dispatch(removeLocationAction(tripId, locationId));
+        dispatch(removeLocationAction(tripId, dateIdx, locationId));
       })
       .catch(error => {
         console.log("removeLocation error", error);
@@ -21,7 +21,7 @@ export function removeLocation(tripId: string, locationId: string): ThunkResultB
   };
 }
 
-export function addLocation(tripId: string, location: StoreData.LocationVM): ThunkResultBase {
+export function addLocation(tripId: string, dateIdx: number, location: StoreData.LocationVM): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     
     var adddedLocation = {
@@ -38,7 +38,7 @@ export function addLocation(tripId: string, location: StoreData.LocationVM): Thu
         if (res.data.isSucceed) {
           location.locationId = res.data.data;
           console.log('new added location id: ' + res.data.data);
-          dispatch(addLocationAction(tripId, location));
+          dispatch(addLocationAction(tripId, dateIdx, location));
         }
         else if (res.data.errors.length > 0) {
           throw new Error(res.data.errors[0]);
@@ -80,7 +80,8 @@ export function updateTripDateRange(tripId: string, fromDate: Moment, toDate: Mo
     };
     return extraArguments.tripApiService.patch(`trips/${tripId}`, { data })
     .then((res) => {
-      return convertTripFromRaw(res.data);
+      // return convertTripFromRaw(res.data);
+      //TODO: replact it by update Store
     })
     .catch((err) => {
       console.log('error update trip date range api: ', err);
@@ -96,7 +97,8 @@ export function updateTripName(tripId: string, name: string): ThunkResultBase {
     };
     return extraArguments.tripApiService.patch(`trips/${tripId}`, { data })
     .then((res) => {
-      return convertTripFromRaw(res.data);
+      // return convertTripFromRaw(res.data);
+      //TODO: replact it by update Store
     })
     .catch((err) => {
       console.log('error update trip name api: ', err);
@@ -104,14 +106,14 @@ export function updateTripName(tripId: string, name: string): ThunkResultBase {
   };
 }
 
-export function updateLocationFeeling(tripId: string, locationId: string, feeling: StoreData.FeelingVM): ThunkResultBase {
+export function updateLocationFeeling(tripId: string, dateIdx: number, locationId: string, feeling: StoreData.FeelingVM): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     const data = {
       feelingId: feeling.feelingId
     };
     return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/feeling`, { data })
     .then((res) => {
-      dispatch(updateLocationFeelingAction(tripId, locationId, feeling));
+      dispatch(updateLocationFeelingAction(tripId, dateIdx, locationId, feeling));
     })
     .catch((err) => {
       console.log('error update location feeling: ', err);
@@ -119,29 +121,17 @@ export function updateLocationFeeling(tripId: string, locationId: string, feelin
   };
 }
 
-export function updateLocationActivity(tripId: string, locationId: string, activity: StoreData.ActivityVM): ThunkResultBase {
+export function updateLocationActivity(tripId: string, dateIdx: number, locationId: string, activity: StoreData.ActivityVM): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     const data = {
       activityId: activity.activityId
     };
     return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/activity`, { data })
     .then((res) => {
-      dispatch(updateLocationActivityAction(tripId, locationId, activity));
+      dispatch(updateLocationActivityAction(tripId, dateIdx, locationId, activity));
     })
     .catch((err) => {
       console.log('error update location activity: ', err);
     });
   };
-}
-
-function convertTripFromRaw(rawTrip: RawJsonData.TripVM): StoreData.TripVM {
-  var trip: StoreData.TripVM = {
-    tripId: rawTrip.tripId,
-    name: rawTrip.name,
-    fromDate: moment(rawTrip.fromDate),
-    toDate: moment(rawTrip.toDate),
-    locations: rawTrip.locations,
-    infographicId: rawTrip.infographicId,
-  };
-  return trip;
 }

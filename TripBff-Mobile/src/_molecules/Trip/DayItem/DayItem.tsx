@@ -5,13 +5,12 @@ import moment from 'moment';
 import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
-import AddLocationModal from "../../../_organisms/Trip/TripDetails/AddLocationModal";
-import { addLocation } from "../../../store/Trip/operations";
 
 interface IMapDispatchToProps {
-    addLocation?: (tripId: string, location: StoreData.LocationVM) => Promise<void>;
-    openUpdateFeelingModalHandler?: (locationId: string) => void;
-    openUpdateActivityModalHandler?: (locationId: string) => void;
+    openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
+    openUpdateActivityModalHandler?: (dateIdx: number, locationId: string) => void;
+    openRemoveLocationModalHandler?: (dateIdx: number, locationId: string) => void;
+    openAddLocationModalHandler?: (dateIdx: number, date: moment.Moment) => void;
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -22,50 +21,23 @@ export interface Props extends IMapDispatchToProps {
 }
 
 export interface State {
-    isAddLocationModalVisible: boolean
 }
 
 export class DayItemComponent extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props)
 
-        this.state = {
-            isAddLocationModalVisible: false
-        }
+    _openAddLocationModal = () => {
+        this.props.openAddLocationModalHandler(this.props.dayIdx, this.props.date);
     }
-
-
-    _addLocationModal() {
-        this.setState({
-            isAddLocationModalVisible: true
-        });
-    }
-
-    _addLocationConfirmed = (address, fromTime) => {
-        this.setState({
-            isAddLocationModalVisible: false
-        });
-
-        this.props.addLocation(address, fromTime);
-    }
-
-    _cancelAddLocationModal = () => {
-        this.setState({
-            isAddLocationModalVisible: false
-        });
-    }
-
 
     render() {
-        const { dayIdx, date } = this.props
-        const { isAddLocationModalVisible } = this.state
+        const { dayIdx } = this.props
 
         return (
             <View>
                 <View style={{display: "flex", alignItems: "stretch", flexDirection: "row", paddingLeft: 10, paddingRight: 10}}>
                     <Text style={{color: "darkred", fontSize: 20}}>Day {dayIdx}</Text>
                     <Button small transparent
-                            onPress= {() => this._addLocationModal()}>
+                            onPress= {this._openAddLocationModal}>
                         <Icon type={"FontAwesome"} name="plus" />
                     </Button>
                 </View>
@@ -77,11 +49,6 @@ export class DayItemComponent extends React.Component<Props, State> {
                     </LocationItem>)
                 }
 
-                <AddLocationModal
-                    isVisible={isAddLocationModalVisible}
-                    date={date}
-                    confirmHandler={this._addLocationConfirmed}
-                    cancelHandler={this._cancelAddLocationModal} />
             </View>
         )
     }
@@ -98,15 +65,9 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
     };
 };
 
-const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
-    return {
-        addLocation: (tripId, location) => dispatch(addLocation(tripId, location)),
-    };
-};
-
 const DayItem = connect(
     mapStateToProps,
-    mapDispatchToProps
+    null
 )(DayItemComponent);
 
 export default DayItem;

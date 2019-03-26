@@ -9,13 +9,14 @@ import { StoreData } from "../../../store/Interfaces";
 
 interface IMapDispatchToProps {
     toLocationDetailHandler?: (locationId: string) => void
-    removeLocationHandler?: (locationId: string) => void
-    openUpdateFeelingModalHandler?: (locationId: string) => void;
-    openUpdateActivityModalHandler?: (locationId: string) => void;
+    removeLocationHandler?: (dateIdx: number, locationId: string) => void
+    openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
+    openUpdateActivityModalHandler?: (dateIdx: number, locationId: string) => void;
 }
 
 export interface Props extends IMapDispatchToProps {
     tripId: string,
+    dateIdx: number,
     location: StoreData.LocationVM,
 }
 
@@ -35,11 +36,11 @@ class LocationItemComponent extends React.Component<Props, State> {
     } 
 
     _openUpdateFeelingModal = () => {
-        this.props.openUpdateFeelingModalHandler(this.props.location.locationId);
+        this.props.openUpdateFeelingModalHandler(this.props.dateIdx, this.props.location.locationId);
     }
 
     _openUpdateActivityModal= () => {
-        this.props.openUpdateActivityModalHandler(this.props.location.locationId);
+        this.props.openUpdateActivityModalHandler(this.props.dateIdx, this.props.location.locationId);
     }
 
     render() {
@@ -86,10 +87,10 @@ class LocationItemComponent extends React.Component<Props, State> {
                 </CardItem>
                 <Button rounded icon transparent danger small
                         style={{ position: "absolute", right: 0, top: 6, backgroundColor: "white" }}
-                        onPress={() => this.props.removeLocationHandler(this.props.location.locationId)}
+                        onPress={() => this.props.removeLocationHandler(this.props.dateIdx, this.props.location.locationId)}
                         >
                         <Icon name="times" type="FontAwesome5" />
-                    </Button>
+                </Button>
                 <CardItem>
                     {/* todo icon x button with confirmation modal */}
                     <Left>
@@ -118,6 +119,7 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
 
     return {
         tripId: tripId,
+        dateIdx: dayIdx,
         location: location
     };
 };

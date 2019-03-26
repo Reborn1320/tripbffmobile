@@ -9,6 +9,7 @@ import { NavigationConstants } from "../../_shared/ScreenConstants";
 import * as RNa from "react-navigation";
 import TripDetails from "../../../_organisms/Trip/TripDetails/TripDetails";
 import TripDetailsModal from "../../../_organisms/Trip/TripDetails/TripDetailsModal"
+import moment  from "moment";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
@@ -20,9 +21,15 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 }
 
 interface State {
+    dateIdx: number,
     focusingLocationId?: string,
     isAddFeelingModalVisible: boolean,
-    isAddActivityModalVisible: boolean
+    isAddActivityModalVisible: boolean,
+    isConfirmationModalVisible: boolean,
+    isAddLocationModalVisible: boolean,
+    addLocationSelectedDate: moment.Moment,
+    isEditDateRangeModalVisible: boolean,
+    isEditNameModalVisible: boolean
 }
 
 export class TripDetailScreen extends Component<Props, State> {
@@ -30,9 +37,15 @@ export class TripDetailScreen extends Component<Props, State> {
         super(props)
 
         this.state = {
+            dateIdx: null,
             focusingLocationId: "",
             isAddActivityModalVisible: false,
-            isAddFeelingModalVisible: false
+            isAddFeelingModalVisible: false,
+            isConfirmationModalVisible: false,
+            isAddLocationModalVisible: false,
+            addLocationSelectedDate: null,
+            isEditDateRangeModalVisible: false,
+            isEditNameModalVisible: false
         }
     }
 
@@ -40,7 +53,11 @@ export class TripDetailScreen extends Component<Props, State> {
         return this.props.trip.tripId;
     }
 
-    exportInfographic() {
+    _cancelExportInfographic = () => {
+        this.props.navigation.navigate(NavigationConstants.Screens.TripsList);
+    }
+
+    _exportInfographic = () => {
         // call api to request export infographic
         var tripId = this.getTripId();
         
@@ -58,29 +75,59 @@ export class TripDetailScreen extends Component<Props, State> {
             });
     }
 
-    confirmExportInfographic() {
+    _confirmExportInfographic = ()  => {
         Alert.alert(
             'Confirm',
             'Export infographic ?',
             [
-                { text: 'Cancel', onPress: () => this.props.navigation.navigate(NavigationConstants.Screens.TripsList), style: 'cancel' },
-                { text: 'OK', onPress: () => this.exportInfographic() },
+                { text: 'Cancel', onPress: this._cancelExportInfographic, style: 'cancel' },
+                { text: 'OK', onPress: this._exportInfographic },
             ],
             { cancelable: false }
         )
     }
 
-    _openUpdateFeelingModal = (locationId) => {
+    _openRemoveLocationModal = (dateIdx, locationId) => {
         this.setState({
-            isAddFeelingModalVisible: true,
+            isConfirmationModalVisible: true,
+            dateIdx: dateIdx,
             focusingLocationId: locationId
         });
     }
 
-    _openUpdateActivityModal = (locationId) => {
+    _openUpdateFeelingModal = (dateIdx, locationId) => {
+        this.setState({
+            isAddFeelingModalVisible: true,
+            dateIdx: dateIdx,
+            focusingLocationId: locationId
+        });
+    }
+
+    _openUpdateActivityModal = (dateIdx, locationId) => {
         this.setState({
             isAddActivityModalVisible: true,
+            dateIdx: dateIdx,
             focusingLocationId: locationId
+        });
+    }
+
+    _openAddLocationModal(dateIdx, date) {
+        this.setState({
+            isAddLocationModalVisible: true,
+            dateIdx: dateIdx,
+            addLocationSelectedDate: date
+        });
+    }   
+
+    _openEditDateRangeModal() {
+        this.setState({
+            isEditDateRangeModalVisible: true
+        });
+    }
+
+    _openEditNameModal() {
+        this.setState({
+            isEditNameModalVisible: true
         });
     }
 
@@ -93,7 +140,7 @@ export class TripDetailScreen extends Component<Props, State> {
                     <View style={{ height: 100, flex: 1, paddingTop: 10 }}>
                         <Button
                             style={{ marginLeft: 'auto' }}
-                            onPress={() => this.confirmExportInfographic()}>
+                            onPress={this._confirmExportInfographic}>
                             <Text style={{ paddingTop: 15 }}>Done</Text>
                         </Button>
                     </View>
@@ -102,13 +149,26 @@ export class TripDetailScreen extends Component<Props, State> {
                 <Content>
                     <TripDetails tripId={tripId}
                         openUpdateFeelingModalHandler={this._openUpdateFeelingModal}
-                        openUpdateActivityModalHandler={this._openUpdateActivityModal} />
+                        openUpdateActivityModalHandler={this._openUpdateActivityModal} 
+                        openRemoveLocationModalHandler={this._openRemoveLocationModal}
+                        openAddLocationModalHandler={this._openAddLocationModal}
+                        openEditDateRangeModalHandler={this._openEditDateRangeModal}
+                        openEditTripNameModalHandler={this._openEditNameModal}/>
 
                     <TripDetailsModal 
                         tripId={tripId}
+                        dateIdx={this.state.dateIdx}
                         locationId={this.state.focusingLocationId}
                         isAddFeelingModalVisible={this.state.isAddFeelingModalVisible}
-                        isAddActivityModalVisible={this.state.isAddActivityModalVisible}/>                    
+                        isAddActivityModalVisible={this.state.isAddActivityModalVisible}
+                        isConfirmationModalVisible={this.state.isConfirmationModalVisible}
+                        isAddLocationModalVisible={this.state.isAddLocationModalVisible}
+                        selectedDate={this.state.addLocationSelectedDate}
+                        isEditDateRangeModalVisible={this.state.isEditDateRangeModalVisible}
+                        tripFromDate={this.props.trip.fromDate}
+                        tripToDate={this.props.trip.toDate}
+                        isEditNameModalVisible={this.state.isEditNameModalVisible}
+                        tripName={this.props.trip.name}/>                    
                 </Content>
             </Container>
         );
