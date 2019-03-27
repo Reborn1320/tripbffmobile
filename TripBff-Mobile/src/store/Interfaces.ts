@@ -35,7 +35,7 @@ export module StoreData {
     }
 
     export interface DateVM {
-        dayIdx: number,
+        dateIdx: number,
         date: moment.Moment,
         locations: Array<LocationVM>, 
         locationIds: Array<number>,    

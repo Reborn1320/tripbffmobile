@@ -2,7 +2,9 @@ import {
   removeLocation as removeLocationAction, 
   addLocation as addLocationAction,
   updateLocationFeeling as updateLocationFeelingAction,
-  updateLocationActivity as updateLocationActivityAction } from "./actions";
+  updateLocationActivity as updateLocationActivityAction,
+  updateTripDateRange as updateTripDateRangeAction,
+  updateTripName as updateTripNameAction } from "./actions";
 import { ThunkResultBase } from "..";
 import { Moment } from "moment";
 import { StoreData } from "../Interfaces";
@@ -80,8 +82,7 @@ export function updateTripDateRange(tripId: string, fromDate: Moment, toDate: Mo
     };
     return extraArguments.tripApiService.patch(`trips/${tripId}`, { data })
     .then((res) => {
-      // return convertTripFromRaw(res.data);
-      //TODO: replact it by update Store
+        dispatch(updateTripDateRangeAction(tripId, data.fromDate, data.toDate));
     })
     .catch((err) => {
       console.log('error update trip date range api: ', err);
@@ -97,8 +98,7 @@ export function updateTripName(tripId: string, name: string): ThunkResultBase {
     };
     return extraArguments.tripApiService.patch(`trips/${tripId}`, { data })
     .then((res) => {
-      // return convertTripFromRaw(res.data);
-      //TODO: replact it by update Store
+        dispatch(updateTripNameAction(tripId, name));
     })
     .catch((err) => {
       console.log('error update trip name api: ', err);

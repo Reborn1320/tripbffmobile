@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { Text, Card, CardItem, Left, Button, Right, Picker, Icon } from "native-base";
 import { TouchableHighlight, Dimensions } from "react-native";
 import Location3Images from "./Location3Images";
@@ -25,7 +25,7 @@ export interface State {
     isAddActivityModalVisible: boolean
 }
 
-class LocationItemComponent extends React.Component<Props, State> { 
+class LocationItemComponent extends Component<Props, State> { 
     constructor(props) {
         super(props)
 
@@ -34,6 +34,10 @@ class LocationItemComponent extends React.Component<Props, State> {
             isAddActivityModalVisible: false
         }
     } 
+
+    _openRemoveLocationModal = () => {
+        this.props.removeLocationHandler(this.props.dateIdx, this.props.location.locationId)
+    }
 
     _openUpdateFeelingModal = () => {
         this.props.openUpdateFeelingModalHandler(this.props.dateIdx, this.props.location.locationId);
@@ -87,7 +91,7 @@ class LocationItemComponent extends React.Component<Props, State> {
                 </CardItem>
                 <Button rounded icon transparent danger small
                         style={{ position: "absolute", right: 0, top: 6, backgroundColor: "white" }}
-                        onPress={() => this.props.removeLocationHandler(this.props.dateIdx, this.props.location.locationId)}
+                        onPress={this._openRemoveLocationModal}
                         >
                         <Icon name="times" type="FontAwesome5" />
                 </Button>
@@ -112,14 +116,14 @@ class LocationItemComponent extends React.Component<Props, State> {
 }
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
-    var { tripId, locationId, dayIdx } = ownProps;
+    var { tripId, locationId, dateIdx } = ownProps;
     var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
-    var dateVm = _.find(trip.dates, (item) => item.dayIdx == dayIdx);
+    var dateVm = _.find(trip.dates, (item) => item.dateIdx == dateIdx);
     var location = _.find(dateVm.locations, (item) => item.locationId == locationId);
 
     return {
         tripId: tripId,
-        dateIdx: dayIdx,
+        dateIdx: dateIdx,
         location: location
     };
 };

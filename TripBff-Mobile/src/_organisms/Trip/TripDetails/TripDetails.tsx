@@ -72,7 +72,7 @@ export class TripDetailsComponent extends Component<Props, State> {
     _renderItem = (itemInfo) => {
         const day: DayVM = itemInfo.item;
         return (
-            <DayItem tripId={this.props.tripId} dayIdx={day.idx} date={day.date} 
+            <DayItem tripId={this.props.tripId} dateIdx={day.idx} date={day.date} 
                 openUpdateFeelingModalHandler={this.props.openUpdateFeelingModalHandler}
                 openUpdateActivityModalHandler={this.props.openUpdateActivityModalHandler} 
                 openRemoveLocationModalHandler={this.props.openRemoveLocationModalHandler}

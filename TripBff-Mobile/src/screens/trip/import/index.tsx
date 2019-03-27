@@ -212,7 +212,7 @@ class TripImportation extends Component<Props, State> {
         }
     }
 
-    _uploadImage = function uploadImage(tripId, dayIdx, locationId, imageId, imgUrl): ThunkResult<Promise<any>> {
+    _uploadImage = function uploadImage(tripId, dateIdx, locationId, imageId, imgUrl): ThunkResult<Promise<any>> {
         return async function(dispatch) {
             console.log(`imge url: ${imgUrl}`)
             var additionalData = {
@@ -228,7 +228,7 @@ class TripImportation extends Component<Props, State> {
                 console.log('result after upload image: ' + JSON.stringify(res));
                 console.log('result after upload image: ' + JSON.stringify(res.data));
                 var externalStorageId: string = res.response;      
-                dispatch(uploadedImage(tripId, dayIdx, locationId, imageId, externalStorageId))
+                dispatch(uploadedImage(tripId, dateIdx, locationId, imageId, externalStorageId))
                 //todo replace by stop on error
             })
             .catch((err) => {
@@ -277,7 +277,7 @@ class TripImportation extends Component<Props, State> {
             var totalImages = 0;
             var uploadedImages = 0;
             var isStartUploadImage = false;
-            var dayIdx = 0;
+            var dateIdx = 0;
             var locId = "";
             var imageIdToUpload: string;
             var imageUrlToUpload = "";
@@ -294,7 +294,7 @@ class TripImportation extends Component<Props, State> {
                             else {
                                 if (!imageIdToUpload)
                                 {
-                                    dayIdx = date.dayIdx;
+                                    dateIdx = date.dateIdx;
                                     locId = loc.locationId;
                                     imageIdToUpload = img.imageId;
                                     imageUrlToUpload = img.url;
@@ -323,7 +323,7 @@ class TripImportation extends Component<Props, State> {
                 console.log("component will update with uploading image");
 
 
-                this.props.dispatch(this._uploadImage(this.state.tripId, dayIdx, locId, imageIdToUpload, imageUrlToUpload))
+                this.props.dispatch(this._uploadImage(this.state.tripId, dateIdx, locId, imageIdToUpload, imageUrlToUpload))
                 .then(() => {
                     this.setState({UIState: "import images"});
                 })

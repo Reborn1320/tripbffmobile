@@ -1,10 +1,13 @@
 import { StoreData } from "../Interfaces"
+import moment from "moment";
 
 export const LOCATION_REMOVE = "TRIP_LOCATION_REMOVE"
 export const LOCATION_ADD = "TRIP_LOCATION_ADD"
 export const LOCATION_UPDATE_FEELING = "TRIP_LOCATION_UPDATE_FEELING"
 export const LOCATION_UPDATE = "TRIP_LOCATION_UPDATE"
 export const LOCATION_UPDATE_ACTIVITY = "TRIP_LOCATION_UPDATE_ACTIVITY"
+export const TRIP_UPDATE_DATE_RANGE = "TRIP_UPDATE_DATE_RANGE"
+export const TRIP_UPDATE_TRIP_NAME = "TRIP_UPDATE_TRIP_NAME"
 
 export function removeLocation(tripId: string, dateIdx: number, locationId: string) {
     return {
@@ -36,4 +39,15 @@ export function updateLocationActivity(tripId: string, dateIdx: number, location
     }
 }
 
+export function updateTripDateRange(tripId: string, fromDate: moment.Moment, toDate: moment.Moment) {
+    return {
+        type: TRIP_UPDATE_DATE_RANGE, tripId, fromDate, toDate
+    }
+}
+
+export function updateTripName(tripId: string, tripName: string) {
+    return {
+        type: TRIP_UPDATE_TRIP_NAME, tripId, tripName
+    }
+}
  

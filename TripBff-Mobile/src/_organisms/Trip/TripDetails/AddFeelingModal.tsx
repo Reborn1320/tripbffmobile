@@ -6,13 +6,6 @@ import { View, Text, Button, Icon } from "native-base";
 import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
-import  Autocomplete  from "react-native-autocomplete-input";
-const mbxClient = require('@mapbox/mapbox-sdk');
-const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
-const baseClient = mbxClient({ accessToken: 'pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g' });
-const geoCodingService = mbxGeocoding(baseClient);
-import DateTimePicker from 'react-native-modal-datetime-picker';
-import moment from "moment";
 import { connect } from "react-redux";
 import { getAllFeelings } from "../../../store/DataSource/operations";
 import { StoreData } from "../../../store/Interfaces";
@@ -63,9 +56,7 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
   }
 
   _onCancel = () => {
-    if (this.props.cancelHandler) {
-      this.props.cancelHandler();
-    }
+    this.props.cancelHandler();
   };
 
   _onConfirm(feeling) { 

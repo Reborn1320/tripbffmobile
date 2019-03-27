@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { View, Text, Button, Icon } from 'native-base';
 import LocationItem from './LocationItem';
 import moment from 'moment';
@@ -16,26 +16,26 @@ interface IMapDispatchToProps {
 export interface Props extends IMapDispatchToProps {
     tripId: string
     locationIds?: Array<number>
-    dayIdx: number
+    dateIdx: number
     date: moment.Moment
 }
 
 export interface State {
 }
 
-export class DayItemComponent extends React.Component<Props, State> {
+export class DayItemComponent extends Component<Props, State> {
 
     _openAddLocationModal = () => {
-        this.props.openAddLocationModalHandler(this.props.dayIdx, this.props.date);
+        this.props.openAddLocationModalHandler(this.props.dateIdx, this.props.date);
     }
 
     render() {
-        const { dayIdx } = this.props
+        const { dateIdx } = this.props
 
         return (
             <View>
                 <View style={{display: "flex", alignItems: "stretch", flexDirection: "row", paddingLeft: 10, paddingRight: 10}}>
-                    <Text style={{color: "darkred", fontSize: 20}}>Day {dayIdx}</Text>
+                    <Text style={{color: "darkred", fontSize: 20}}>Day {dateIdx}</Text>
                     <Button small transparent
                             onPress= {this._openAddLocationModal}>
                         <Icon type={"FontAwesome"} name="plus" />
@@ -43,7 +43,8 @@ export class DayItemComponent extends React.Component<Props, State> {
                 </View>
 
                 {this.props.locationIds.map(e => 
-                    <LocationItem tripId={this.props.tripId} dayIdx={dayIdx} locationId={e} key={e}
+                    <LocationItem tripId={this.props.tripId} dateIdx={dateIdx} locationId={e} key={e}
+                        removeLocationHandler={this.props.openRemoveLocationModalHandler}
                         openUpdateFeelingModalHandler={this.props.openUpdateFeelingModalHandler}
                         openUpdateActivityModalHandler={this.props.openUpdateActivityModalHandler}>
                     </LocationItem>)
@@ -57,7 +58,7 @@ export class DayItemComponent extends React.Component<Props, State> {
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     var tripId = ownProps.tripId;
     var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
-    var dateVm = trip.dates.find(d => d.dayIdx == d.dayIdx);
+    var dateVm = trip.dates.find(d => d.dateIdx == d.dateIdx);
 
     return {
         tripId: tripId,

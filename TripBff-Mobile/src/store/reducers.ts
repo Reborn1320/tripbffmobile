@@ -9,7 +9,9 @@ import { LOCATION_REMOVE,
          LOCATION_ADD,
          LOCATION_UPDATE_FEELING,
          LOCATION_UPDATE,
-         LOCATION_UPDATE_ACTIVITY } from './Trip/actions';
+         LOCATION_UPDATE_ACTIVITY,
+         TRIP_UPDATE_DATE_RANGE,
+         TRIP_UPDATE_TRIP_NAME } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity } from './DataSource/actions';
 import { stat } from 'fs';
 import { IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "../screens/trip/import/actions";
@@ -48,7 +50,7 @@ function importSelectedLocations(state: StoreData.TripVM, action) {
         var locationsOfDate = locations.filter(element => moment(element.fromTime).diff(state.fromDate, "days") == idx);
 
         dateVMs.push({
-            dayIdx: idx + 1,
+            dateIdx: idx + 1,
             date: moment(state.fromDate.add(idx, 'days')),
             locationIds: locationsOfDate.map(e => { return e.locationId }),
             locations: locationsOfDate.sort(compareLocationsFromTime).map(e => { return e })
@@ -82,6 +84,7 @@ function imageReducer(state: StoreData.ImportImageVM, action) {
 }
 
 function locationReducer(state: StoreData.LocationVM, action) {
+    console.log('come here update location reducer');
     switch(action.type) {
         case LOCATION_UPDATE_FEELING:
             return {
@@ -142,24 +145,32 @@ function dateReducer(state: StoreData.DateVM, action) {
 
 
 function tripReducer(state: StoreData.TripVM, action) {
-    if (action.type == ADD_INFOGRAPHIC_ID) {
-        return Object.assign({}, state, {
-            infographicId: action.infographicId
-          });
-    }        
-    else if (action.type == IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS) {
-        return importSelectedLocations(state, action);
-    }
-
-    //TODO: edit date range
-    //TODO: edit trip name
-    
-    return {
-        ...state,
-        dates: state.dates.map(item => {
-            return item.dayIdx == action.dayIdx ? dateReducer(item, action) : item;
-        })
-    }
+    switch(action.type) {
+        case ADD_INFOGRAPHIC_ID: 
+            return Object.assign({}, state, {
+                infographicId: action.infographicId
+              });              
+        case IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS:
+            return importSelectedLocations(state, action);        
+        case TRIP_UPDATE_DATE_RANGE:
+            return {
+                ...state,
+                fromDate: action.fromDate,
+                toDate: action.toDate
+            }
+        case TRIP_UPDATE_TRIP_NAME:
+            return {
+                ...state,
+                name: action.tripName
+            }
+        default: 
+            return {
+                ...state,
+                dates: state.dates.map(item => {
+                    return item.dateIdx == action.dateIdx ? dateReducer(item, action) : item;
+                })
+            }
+    }    
 }
 
 function tripsReducer(state: Array<StoreData.TripVM>, action) {

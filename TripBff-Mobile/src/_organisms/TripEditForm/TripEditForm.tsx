@@ -6,10 +6,13 @@ import DatePicker from "../../_atoms/DatePicker/DatePicker";
 import { mixins } from "../../_utils";
 import { StyleSheet, ViewStyle, TextStyle } from "react-native";
 import _ from "lodash";
+import { connect } from "react-redux";
+import { StoreData } from "../../store/Interfaces";
 
 export interface Props {
   onClickEdit: (name: string, fromDate: Moment, toDate: Moment) => void;
   onCancel?: () => void;
+  tripId: string,
   tripName?: string;
   fromDate?: Moment;
   toDate?: Moment;
@@ -28,7 +31,7 @@ export enum TripEditFormEnum {
   DateRange,
 }
 
-export class TripEditForm extends Component<Props, State> {
+class TripEditFormComponent extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
@@ -140,3 +143,22 @@ const styles = StyleSheet.create<Style>({
     color: "white"
   }
 })
+
+
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+  var tripId  = ownProps.tripId;
+  var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
+
+  return {
+      tripName: trip.name,
+      tripFromDate: trip.fromDate,
+      tripToDate: trip.toDate
+  };
+};
+
+const TripEditForm = connect(
+  mapStateToProps,
+  null
+)(TripEditFormComponent);
+
+export default TripEditForm;
