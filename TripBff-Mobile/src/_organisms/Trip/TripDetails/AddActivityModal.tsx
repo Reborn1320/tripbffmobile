@@ -100,7 +100,6 @@ class AddActivityModalComponent extends React.Component<Props & IMapDispatchToPr
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
                     <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
-                    <Button transparent onPress={this._onConfirm}><Text>Done</Text></Button>
                 </View>
                 <View style={{ flex: 1 }}>
                   {contentElement}

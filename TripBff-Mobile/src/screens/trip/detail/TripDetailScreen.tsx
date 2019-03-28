@@ -168,7 +168,7 @@ export class TripDetailScreen extends Component<Props, State> {
         })
     }
 
-    _openAddLocationModal(dateIdx, date) {
+    _openAddLocationModal = (dateIdx, date) => {
         this.setState({
             isAddLocationModalVisible: true,
             dateIdx: dateIdx,

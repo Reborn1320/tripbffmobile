@@ -35,8 +35,6 @@ export function addLocation(tripId: string, dateIdx: number, location: StoreData
 
     return extraArguments.api.post(`trips/${tripId}/locations/addLocation`, adddedLocation)
       .then(res => {
-        //console.log('added location result: ' + JSON.stringify(res));
-
         if (res.data.isSucceed) {
           location.locationId = res.data.data;
           console.log('new added location id: ' + res.data.data);

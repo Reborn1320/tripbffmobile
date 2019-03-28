@@ -33,12 +33,16 @@ const initState: StoreData.BffStoreData = {
 }
 
 function compareLocationsFromTime(first, second) {
-    if (first.fromTime < second.fromTime) 
-        return -1
-    else if (first.fromTime > second.fromTime)
-        return 1
-    else
-        return 0;
+    var order = 0,
+        firstElementFromTime = moment(first.fromTime),
+        secondElementFromTime = moment(second.fromTime);
+
+    if (firstElementFromTime < secondElementFromTime) 
+        order = -1
+    else if (firstElementFromTime > secondElementFromTime)
+        order =  1
+
+    return order;
 }
 
 function importSelectedLocations(state: StoreData.TripVM, action) {
@@ -84,7 +88,6 @@ function imageReducer(state: StoreData.ImportImageVM, action) {
 }
 
 function locationReducer(state: StoreData.LocationVM, action) {
-    console.log('come here update location reducer');
     switch(action.type) {
         case LOCATION_UPDATE_FEELING:
             return {
@@ -122,16 +125,13 @@ function dateReducer(state: StoreData.DateVM, action) {
                 locationIds: state.locationIds.filter(l => l !== action.locationId)
             }    
         case LOCATION_ADD:
+            var locations = [...state.locations, action.location];
+            locations.sort(compareLocationsFromTime);
+
             return {
                 ...state,
-                locations: [
-                    ...state.locations,
-                    action.location
-                ],
-                locationIds: [
-                    ...state.locationIds,
-                    action.location.locationId
-                ]
+                locations: locations,
+                locationIds: locations.map((e) => { return e.locationId })
             }     
         default:
             return {
@@ -145,6 +145,8 @@ function dateReducer(state: StoreData.DateVM, action) {
 
 
 function tripReducer(state: StoreData.TripVM, action) {
+    console.log('come here trip reducer: ' + JSON.stringify(action));
+
     switch(action.type) {
         case ADD_INFOGRAPHIC_ID: 
             return Object.assign({}, state, {

@@ -17,7 +17,7 @@ export function removeLocation(tripId: string, dateIdx: number, locationId: stri
 
 export function addLocation(tripId: string, dateIdx: number, location: StoreData.LocationVM) {
     return {
-        type: LOCATION_ADD, tripId, location
+        type: LOCATION_ADD, tripId, dateIdx, location
     }
 }
 

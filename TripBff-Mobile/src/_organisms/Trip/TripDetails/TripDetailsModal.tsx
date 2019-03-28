@@ -76,10 +76,10 @@ class TripDetailsModal extends Component<Props, State> {
             locationId: "",
             location: {
                 address: address,
-                long: null,
-                lat: null
+                long: 0,
+                lat: 0
             },
-            images: null,
+            images: [],
             fromTime: fromTime,
             toTime: fromTime
         };

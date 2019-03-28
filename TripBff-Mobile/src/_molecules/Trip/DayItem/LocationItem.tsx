@@ -6,15 +6,15 @@ import LocationImage from "./LocationImage";
 import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
+import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 
 interface IMapDispatchToProps {
-    toLocationDetailHandler?: (locationId: string) => void
     removeLocationHandler?: (dateIdx: number, locationId: string) => void
     openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
     openUpdateActivityModalHandler?: (dateIdx: number, locationId: string) => void;
 }
 
-export interface Props extends IMapDispatchToProps {
+export interface Props extends IMapDispatchToProps, PropsBase {
     tripId: string,
     dateIdx: number,
     location: StoreData.LocationVM,
@@ -45,6 +45,11 @@ class LocationItemComponent extends Component<Props, State> {
 
     _openUpdateActivityModal= () => {
         this.props.openUpdateActivityModalHandler(this.props.dateIdx, this.props.location.locationId);
+    }
+
+    _toLocationDetail = () => {
+        var locationId = this.props.location.locationId;
+        this.props.navigation.navigate("LocationDetail", { tripId: this.props.tripId, locationId })
     }
 
     render() {
@@ -81,7 +86,7 @@ class LocationItemComponent extends Component<Props, State> {
 
                     <TouchableHighlight
                         style={{ width: SIZE, height: SIZE23, flex: 1 }}
-                        onPress={() => this.props.toLocationDetailHandler(this.props.location.locationId)}
+                        onPress={this._toLocationDetail}
 
                     >
                         {(nImages == 0 || nImages == 1) ? (<LocationImage images={location.images} />)
