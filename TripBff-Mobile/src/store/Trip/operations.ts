@@ -73,10 +73,9 @@ export function createTrip(name: string, fromDate: Moment, toDate: Moment): Thun
 
 export function updateTripDateRange(tripId: string, fromDate: Moment, toDate: Moment): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
-
     const data = { 
-      fromDate: fromDate.startOf("day"), 
-      toDate: toDate.endOf("day")
+      fromDate: fromDate, 
+      toDate: toDate
     };
     return extraArguments.tripApiService.patch(`trips/${tripId}`, { data })
     .then((res) => {

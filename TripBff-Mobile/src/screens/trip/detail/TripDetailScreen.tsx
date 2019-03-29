@@ -194,7 +194,7 @@ export class TripDetailScreen extends Component<Props, State> {
         });
     }
 
-    _openEditDateRangeModal() {
+    _openEditDateRangeModal = () => {
         this.setState({
             isUpdateDateRangeModalVisible: true
         });
@@ -212,7 +212,7 @@ export class TripDetailScreen extends Component<Props, State> {
         this.setState({ isUpdateDateRangeModalVisible: false });
     }
 
-    _openUpdateNameModal() {
+    _openUpdateNameModal = () => {
         this.setState({
             isUpdateNameModalVisible: true
         });

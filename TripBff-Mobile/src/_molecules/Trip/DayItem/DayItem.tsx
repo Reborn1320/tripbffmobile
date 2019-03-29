@@ -17,7 +17,7 @@ export interface Props extends IMapDispatchToProps {
     tripId: string
     locationIds?: Array<number>
     dateIdx: number
-    date: moment.Moment
+    date?: moment.Moment
 }
 
 export interface State {
@@ -26,7 +26,7 @@ export interface State {
 export class DayItemComponent extends Component<Props, State> {
 
     _openAddLocationModal = () => {
-        this.props.openAddLocationModalHandler(this.props.dateIdx, this.props.date);
+        this.props.openAddLocationModalHandler(this.props.dateIdx, this.props.date.clone());
     }
 
     render() {
@@ -42,7 +42,7 @@ export class DayItemComponent extends Component<Props, State> {
                     </Button>
                 </View>
 
-                {this.props.locationIds.map(e => 
+                {this.props.locationIds.length > 0 && this.props.locationIds.map(e => 
                     <LocationItem tripId={this.props.tripId} dateIdx={dateIdx} locationId={e} key={e}
                         removeLocationHandler={this.props.openRemoveLocationModalHandler}
                         openUpdateFeelingModalHandler={this.props.openUpdateFeelingModalHandler}
@@ -58,11 +58,12 @@ export class DayItemComponent extends Component<Props, State> {
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     var tripId = ownProps.tripId;
     var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
-    var dateVm = trip.dates.find(d => d.dateIdx == d.dateIdx);
+    var dateVm = trip.dates.find(d => d.dateIdx == ownProps.dateIdx);
 
     return {
         tripId: tripId,
-        locationIds: dateVm.locationIds
+        locationIds: dateVm.locationIds,
+        date: dateVm.date
     };
 };
 

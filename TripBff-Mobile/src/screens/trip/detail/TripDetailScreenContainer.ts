@@ -30,10 +30,6 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
   };
 };
 
-
-
-
-
 const TripDetailScreenContainer = connect(
   mapStateToProps,
   mapDispatchToProps

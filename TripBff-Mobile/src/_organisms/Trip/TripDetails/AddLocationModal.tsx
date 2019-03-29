@@ -48,7 +48,18 @@ class AddLocationModalComponent extends React.Component<Props, State> {
     }
   };
 
-  _onConfirm = () => this.props.confirmHandler(this.state.query, this.state.selectedTime);
+  _onConfirm = () => {
+    var selectedTime = this.state.selectedTime;
+
+    if (selectedTime == null) {
+      var startDate = this.props.date.startOf('day');
+      var addedHours = moment().hour();
+      var addedMinutes = moment().minute();
+      selectedTime = startDate.add(addedHours, 'h').add(addedMinutes, 'm');
+    }
+
+     this.props.confirmHandler(this.state.query, selectedTime);
+  }
 
   _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
 
@@ -97,7 +108,7 @@ class AddLocationModalComponent extends React.Component<Props, State> {
 
   render() {
     const { isVisible } = this.props;
-
+    console.log('add location modal selected date : ' + this.props.date);
     return (
         <RNModal style={styles.modal} 
             isVisible={isVisible} hideModalContentWhileAnimating 

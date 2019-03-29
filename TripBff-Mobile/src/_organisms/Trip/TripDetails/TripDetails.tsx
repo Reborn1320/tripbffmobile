@@ -50,9 +50,10 @@ export class TripDetailsComponent extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        return this.props.tripId != nextProps.tripId ||
-                this.props.tripFromDate != nextProps.tripFromDate ||
-                this.props.tripToDate != nextProps.tripToDate;
+        var isUpdate = this.props.tripId != nextProps.tripId ||
+            this.props.tripFromDate != nextProps.tripFromDate ||
+            this.props.tripToDate != nextProps.tripToDate;
+        return isUpdate;
     }
 
     onPopupMenuSelect = (value) => {
@@ -72,7 +73,7 @@ export class TripDetailsComponent extends Component<Props, State> {
     _renderItem = (itemInfo) => {
         const day: DayVM = itemInfo.item;
         return (
-            <DayItem tripId={this.props.tripId} dateIdx={day.idx} date={day.date} 
+            <DayItem tripId={this.props.tripId} dateIdx={day.idx} 
                 openUpdateFeelingModalHandler={this.props.openUpdateFeelingModalHandler}
                 openUpdateActivityModalHandler={this.props.openUpdateActivityModalHandler} 
                 openRemoveLocationModalHandler={this.props.openRemoveLocationModalHandler}
@@ -88,10 +89,11 @@ export class TripDetailsComponent extends Component<Props, State> {
 
         for (let idx = 0; idx < nDays; idx++) {
             dayVMs.push({
-                idx: idx + 1,
-                date: tripFromDate.add(idx, 'days')                       
+                idx: idx + 1                      
             })
         }
+
+        console.log('dateVMs : ' + JSON.stringify(dayVMs));
 
         return (
             <View>

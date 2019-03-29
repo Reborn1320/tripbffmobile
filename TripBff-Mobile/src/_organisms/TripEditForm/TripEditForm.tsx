@@ -37,8 +37,8 @@ class TripEditFormComponent extends Component<Props, State> {
     super(props);
     this.state = {
       tripName: props.tripName,
-      fromDate: props.fromDate ? props.fromDate.utc(false): null,
-      toDate: props.toDate ? props.toDate.utc(false): null,
+      fromDate: props.fromDate ? props.fromDate.startOf('day') : null,
+      toDate: props.toDate ? props.toDate.startOf('day') : null,
     };
   }
 
@@ -52,11 +52,15 @@ class TripEditFormComponent extends Component<Props, State> {
     return true;
   }
 
+  _confirmEdit = () => {
+    this.props.onClickEdit(this.state.tripName, this.state.fromDate.startOf('day'), this.state.toDate.endOf('day'));
+  }
+
   private renderEditBtn() {
     return (
       <Button
         style={{ alignSelf: 'center' }}
-        onPress={() => this.props.onClickEdit(this.state.tripName, this.state.fromDate, this.state.toDate)}>
+        onPress={this._confirmEdit}>
         <Text>Edit</Text>
       </Button>
     );
@@ -89,7 +93,7 @@ class TripEditFormComponent extends Component<Props, State> {
             <Label style={styles.itemLabel}>To date</Label>
             <DatePicker
               value={toDate}
-              onDateChange={(newDate: Date) => this.setState({ toDate: moment(newDate) })}
+              onDateChange={(newDate: Date) =>  this.setState({ toDate: moment(newDate) })}
             />
           </Item>
         }
@@ -151,8 +155,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 
   return {
       tripName: trip.name,
-      tripFromDate: trip.fromDate,
-      tripToDate: trip.toDate
+      fromDate: trip.fromDate,
+      toDate: trip.toDate
   };
 };
 
