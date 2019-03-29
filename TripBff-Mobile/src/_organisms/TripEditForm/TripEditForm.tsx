@@ -6,10 +6,13 @@ import DatePicker from "../../_atoms/DatePicker/DatePicker";
 import { mixins } from "../../_utils";
 import { StyleSheet, ViewStyle, TextStyle } from "react-native";
 import _ from "lodash";
+import { connect } from "react-redux";
+import { StoreData } from "../../store/Interfaces";
 
 export interface Props {
   onClickEdit: (name: string, fromDate: Moment, toDate: Moment) => void;
   onCancel?: () => void;
+  tripId: string,
   tripName?: string;
   fromDate?: Moment;
   toDate?: Moment;
@@ -28,14 +31,14 @@ export enum TripEditFormEnum {
   DateRange,
 }
 
-export class TripEditForm extends Component<Props, State> {
+class TripEditFormComponent extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
     this.state = {
       tripName: props.tripName,
-      fromDate: props.fromDate ? props.fromDate.utc(false): null,
-      toDate: props.toDate ? props.toDate.utc(false): null,
+      fromDate: props.fromDate ? props.fromDate.startOf('day') : null,
+      toDate: props.toDate ? props.toDate.startOf('day') : null,
     };
   }
 
@@ -49,11 +52,15 @@ export class TripEditForm extends Component<Props, State> {
     return true;
   }
 
+  _confirmEdit = () => {
+    this.props.onClickEdit(this.state.tripName, this.state.fromDate.startOf('day'), this.state.toDate.endOf('day'));
+  }
+
   private renderEditBtn() {
     return (
       <Button
         style={{ alignSelf: 'center' }}
-        onPress={() => this.props.onClickEdit(this.state.tripName, this.state.fromDate, this.state.toDate)}>
+        onPress={this._confirmEdit}>
         <Text>Edit</Text>
       </Button>
     );
@@ -86,7 +93,7 @@ export class TripEditForm extends Component<Props, State> {
             <Label style={styles.itemLabel}>To date</Label>
             <DatePicker
               value={toDate}
-              onDateChange={(newDate: Date) => this.setState({ toDate: moment(newDate) })}
+              onDateChange={(newDate: Date) =>  this.setState({ toDate: moment(newDate) })}
             />
           </Item>
         }
@@ -140,3 +147,22 @@ const styles = StyleSheet.create<Style>({
     color: "white"
   }
 })
+
+
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+  var tripId  = ownProps.tripId;
+  var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
+
+  return {
+      tripName: trip.name,
+      fromDate: trip.fromDate,
+      toDate: trip.toDate
+  };
+};
+
+const TripEditForm = connect(
+  mapStateToProps,
+  null
+)(TripEditFormComponent);
+
+export default TripEditForm;

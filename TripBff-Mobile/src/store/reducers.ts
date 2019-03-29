@@ -1,9 +1,7 @@
 import _, { cloneDeep } from 'lodash';
 import moment from "moment";
 import { StoreData } from "./Interfaces";
-// import importImagesReducer from "./screens/trip/import/reducers";
 import homeScreenReducer from "../screens/home/reducer";
-import importImagesReducer from '../screens/trip/import/reducers';
 import { TRIP_ADD } from '../screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './User/actions';
 import { ADD_INFOGRAPHIC_ID } from '../screens/trip/export/actions';
@@ -11,9 +9,13 @@ import { LOCATION_REMOVE,
          LOCATION_ADD,
          LOCATION_UPDATE_FEELING,
          LOCATION_UPDATE,
-         LOCATION_UPDATE_ACTIVITY } from './Trip/actions';
-import { DataSource_GetAllFeeling } from './DataSource/actions';
+         LOCATION_UPDATE_ACTIVITY,
+         TRIP_UPDATE_DATE_RANGE,
+         TRIP_UPDATE_TRIP_NAME } from './Trip/actions';
+import { DataSource_GetAllFeeling, DataSource_GetAllActivity } from './DataSource/actions';
 import { stat } from 'fs';
+import { IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "../screens/trip/import/actions";
+
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -24,31 +26,71 @@ const userInitState: StoreData.UserVM = {
     token: "ASdf",
     fbToken: ""
 }
-// const tripsInitState: StoreData.TripVM[] = []
-// for (let idx = 0; idx < 5; idx++) {
-//     tripsInitState.push({
-//         tripId: idx.toString(),
-//         name: `trip name ${idx}`,
-//         fromDate: moment("2018-10-10"), 
-//         toDate: moment("2018-10-18").add(1, "day").add(-1, "second"),
-//         infographicId: '',
-//         locations: [] // cloneDeep(locationInitState)
-//     })
-// }
-
-// tripsInitState.push({
-//     tripId: '5',
-//     name: `trip name ${5}`,
-//     fromDate: moment("2018-10-04"), 
-//     toDate: moment("2018-10-29").add(1, "day").add(-1, "second"),
-//     infographicId: '',
-//     locations: [] // cloneDeep(locationInitState)
-// })
 
 const initState: StoreData.BffStoreData = {
     user: userInitState,
     dataSource: {},
-    trips: [] // tripsInitState,
+    trips: [] 
+}
+
+function getDateVms(fromDate, toDate, oldDateVms) {
+    var dateVMs: StoreData.DateVM[] = [];
+    const nDays = toDate.diff(fromDate, "days") + 1
+
+    for (let idx = 0; idx < nDays; idx++) {
+
+        var oldDateVM = oldDateVms.find(function(value, index) {
+            var oldDate = moment(value.date).startOf('day');
+            var date = moment(fromDate).add(idx, 'days').startOf('day');
+            return  oldDate.isSame(date);
+        });
+
+        dateVMs.push({
+            dateIdx: idx + 1,
+            date: moment(fromDate.add(idx, 'days')),
+            locationIds: oldDateVM ? oldDateVM.locationIds : [],
+            locations: oldDateVM ? oldDateVM.locations : [],
+        })
+    }
+
+    console.log('date VMs in store :' + JSON.stringify(dateVMs));
+
+    return dateVMs;  
+}
+
+function compareLocationsFromTime(first, second) {
+    var order = 0,
+        firstElementFromTime = moment(first.fromTime),
+        secondElementFromTime = moment(second.fromTime);
+
+    if (firstElementFromTime < secondElementFromTime) 
+        order = -1
+    else if (firstElementFromTime > secondElementFromTime)
+        order =  1
+
+    return order;
+}
+
+function importSelectedLocations(state: StoreData.TripVM, action) {
+    const { locations } = action
+    var dateVMs: StoreData.DateVM[] = [];
+    const nDays = state.toDate.diff(state.fromDate, "days") + 1
+
+    for (let idx = 0; idx < nDays; idx++) {
+        var locationsOfDate = locations.filter(element => moment(element.fromTime).diff(state.fromDate, "days") == idx);
+
+        dateVMs.push({
+            dateIdx: idx + 1,
+            date: moment(state.fromDate.add(idx, 'days')),
+            locationIds: locationsOfDate.map(e => { return e.locationId }),
+            locations: locationsOfDate.sort(compareLocationsFromTime).map(e => { return e })
+        })
+    }
+
+    return {
+        ...state,
+        dates: dateVMs
+    };
 }
 
 function userReducer(state, action) {
@@ -59,64 +101,105 @@ function userReducer(state, action) {
     return state;
 }
 
+function imageReducer(state: StoreData.ImportImageVM, action) {
+    switch(action.type) {
+        case IMPORT_UPLOADED_IMAGE:
+            return {
+                ...state,
+                externalStorageId: action.externalStorageId
+            }
+        default: 
+            return state;
+    }
+}
+
+function locationReducer(state: StoreData.LocationVM, action) {
+    switch(action.type) {
+        case LOCATION_UPDATE_FEELING:
+            return {
+                ...state,
+                feeling: action.feeling
+            };        
+        case LOCATION_UPDATE:
+            return {
+                ...state,
+                locations: action.locations
+            };        
+        case LOCATION_UPDATE_ACTIVITY:
+            return {
+                ...state,
+                activity: action.activity
+            };
+        //TODO: upload images
+        //TODO: remove images
+        default:
+            return {
+                ...state,
+                images: state.images.map(item => {
+                    return item.imageId == action.imageId ? imageReducer(item, action) : item;
+                })
+            };
+    }    
+}
+
+function dateReducer(state: StoreData.DateVM, action) {
+    switch(action.type) {
+        case LOCATION_REMOVE:
+            return {
+                ...state,
+                locations: state.locations.filter(item => item.locationId !== action.locationId),
+                locationIds: state.locationIds.filter(l => l !== action.locationId)
+            }    
+        case LOCATION_ADD:
+            var locations = [...state.locations, action.location];
+            locations.sort(compareLocationsFromTime);
+
+            return {
+                ...state,
+                locations: locations,
+                locationIds: locations.map((e) => { return e.locationId })
+            }     
+        default:
+            return {
+                ...state,
+                locations: state.locations.map(item => {
+                    return item.locationId == action.locationId ? locationReducer(item, action) : item;
+                })
+        };
+    }    
+}
+
+
 function tripReducer(state: StoreData.TripVM, action) {
-    //TODO: combine with other reducer if needed
-    // return state;
+    console.log('come here trip reducer: ' + JSON.stringify(action));
 
-    if (action.type == ADD_INFOGRAPHIC_ID) {
-        return Object.assign({}, state, {
-            infographicId: action.infographicId
-          });
-    }
-    else if (action.type == LOCATION_REMOVE) {
-        var newState: StoreData.TripVM = {
-            ...state,
-            locations: state.locations.filter(item => item.locationId !== action.locationId)
-        }
-
-        return newState
-    }
-    else if (action.type == LOCATION_ADD) {
-        var newState: StoreData.TripVM = {
-            ...state,
-            locations: [
-                ...state.locations,
-                action.location
-            ]
-        }
-
-        return newState
-    }
-    else if (action.type == LOCATION_UPDATE_FEELING) {
-        return {
-            ...state,
-            locations: state.locations.map(item => {
-                return item.locationId != action.locationId ? item : {
-                    ...item,
-                    feeling: action.feeling
-                }
-            })
-        }
-    }
-    else if (action.type == LOCATION_UPDATE) {
-        return {
-            ...state,
-            locations: action.locations
-        }
-    }
-    else if (action.type == LOCATION_UPDATE_ACTIVITY) {
-        return {
-            ...state,
-            locations: state.locations.map(item => {
-                return item.locationId != action.locationId ? item : {
-                    ...item,
-                    activity: action.activity
-                }
-            })
-        }
-    }
-
-    return importImagesReducer(state, action)
+    switch(action.type) {
+        case ADD_INFOGRAPHIC_ID: 
+            return Object.assign({}, state, {
+                infographicId: action.infographicId
+              });              
+        case IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS:
+            return importSelectedLocations(state, action);        
+        case TRIP_UPDATE_DATE_RANGE:
+            return {
+                ...state,
+                fromDate: action.fromDate,
+                toDate: action.toDate,
+                dates: getDateVms(action.fromDate.clone(), action.toDate.clone(), state.dates)
+            }
+        case TRIP_UPDATE_TRIP_NAME:
+            return {
+                ...state,
+                name: action.tripName
+            }
+        default: 
+            return {
+                ...state,
+                dates: state.dates.map(item => {
+                    return item.dateIdx == action.dateIdx ? dateReducer(item, action) : item;
+                })
+            }
+    }    
 }
 
 function tripsReducer(state: Array<StoreData.TripVM>, action) {
@@ -148,12 +231,12 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
 
 function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
     switch(action.type) {
-        case "DataSource_GetAllFeeling":
+        case DataSource_GetAllFeeling:
             return {
                 ...state,
                 feelings: action.feelings
             }
-        case "DataSource_GetAllActivity":
+        case DataSource_GetAllActivity:
             return {
                 ...state,
                 activities: action.activities

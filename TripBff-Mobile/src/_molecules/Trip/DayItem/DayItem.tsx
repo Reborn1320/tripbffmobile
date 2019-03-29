@@ -1,46 +1,75 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { View, Text, Button, Icon } from 'native-base';
-import { LocationVM } from '../../../_organisms/Trip/TripDetails/TripDetails';
 import LocationItem from './LocationItem';
 import moment from 'moment';
+import { connect } from "react-redux";
+import _, { } from "lodash";
+import { StoreData } from "../../../store/Interfaces";
 
-export interface Props {
-    dayIdx: number
-    locations: LocationVM[]
-    date: moment.Moment
-    toLocationDetailHandler: (locationId: string) => void
-    removeLocationHandler: (locationId: string) => void
-    addLocationHandler: (dayIdx: number, date: moment.Moment) => void
-    addFeelingModalHandler: (locationId: string) => void
-    addActivityModalHandler: (locationId: string) => void
+interface IMapDispatchToProps {
+    openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
+    openUpdateActivityModalHandler?: (dateIdx: number, locationId: string) => void;
+    openRemoveLocationModalHandler?: (dateIdx: number, locationId: string) => void;
+    openAddLocationModalHandler?: (dateIdx: number, date: moment.Moment) => void;
+}
+
+export interface Props extends IMapDispatchToProps {
+    tripId: string
+    locationIds?: Array<number>
+    dateIdx: number
+    date?: moment.Moment
 }
 
 export interface State {
-    // locationIdx: number
 }
 
-export default class DayItem extends React.Component<Props, State> {
+export class DayItemComponent extends Component<Props, State> {
+
+    _openAddLocationModal = () => {
+        this.props.openAddLocationModalHandler(this.props.dateIdx, this.props.date.clone());
+    }
+
     render() {
-        const { dayIdx, locations, date } = this.props
+        const { dateIdx } = this.props
+
         return (
             <View>
                 <View style={{display: "flex", alignItems: "stretch", flexDirection: "row", paddingLeft: 10, paddingRight: 10}}>
-                    <Text style={{color: "darkred", fontSize: 20}}>Day {dayIdx}</Text>
+                    <Text style={{color: "darkred", fontSize: 20}}>Day {dateIdx}</Text>
                     <Button small transparent
-                            onPress= {() => this.props.addLocationHandler(dayIdx, date)}>
+                            onPress= {this._openAddLocationModal}>
                         <Icon type={"FontAwesome"} name="plus" />
                     </Button>
                 </View>
 
-                {locations.map(e => 
-                <LocationItem location={e} key={e.id} 
-                    toLocationDetailHandler={(locationId) => this.props.toLocationDetailHandler(locationId)} 
-                    removeLocationHandler={(locationId) => this.props.removeLocationHandler(locationId)}
-                    addFeelingModalHandler={(locationId) => this.props.addFeelingModalHandler(locationId)}
-                    addActivityModalHandler={(locationId) => this.props.addActivityModalHandler(locationId)}
-                    >
-                </LocationItem>)}
+                {this.props.locationIds.length > 0 && this.props.locationIds.map(e => 
+                    <LocationItem tripId={this.props.tripId} dateIdx={dateIdx} locationId={e} key={e}
+                        removeLocationHandler={this.props.openRemoveLocationModalHandler}
+                        openUpdateFeelingModalHandler={this.props.openUpdateFeelingModalHandler}
+                        openUpdateActivityModalHandler={this.props.openUpdateActivityModalHandler}>
+                    </LocationItem>)
+                }
+
             </View>
         )
     }
 }
+
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+    var tripId = ownProps.tripId;
+    var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
+    var dateVm = trip.dates.find(d => d.dateIdx == ownProps.dateIdx);
+
+    return {
+        tripId: tripId,
+        locationIds: dateVm.locationIds,
+        date: dateVm.date
+    };
+};
+
+const DayItem = connect(
+    mapStateToProps,
+    null
+)(DayItemComponent);
+
+export default DayItem;

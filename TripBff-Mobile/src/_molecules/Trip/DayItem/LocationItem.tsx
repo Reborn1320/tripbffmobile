@@ -1,43 +1,60 @@
-import React from "react";
+import React, { Component } from "react";
 import { Text, Card, CardItem, Left, Button, Right, Picker, Icon } from "native-base";
-import { LocationVM } from '../../../_organisms/Trip/TripDetails/TripDetails';
-
 import { TouchableHighlight, Dimensions } from "react-native";
 import Location3Images from "./Location3Images";
 import LocationImage from "./LocationImage";
+import { connect } from "react-redux";
+import _, { } from "lodash";
+import { StoreData } from "../../../store/Interfaces";
+import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 
-export interface Props {
-    location: LocationVM
-    toLocationDetailHandler: (locationId: string) => void
-    removeLocationHandler: (locationId: string) => void
-    addFeelingModalHandler: (locationId: string) => void
-    addActivityModalHandler: (locationId: string) => void
+interface IMapDispatchToProps {
+    removeLocationHandler?: (dateIdx: number, locationId: string) => void
+    openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
+    openUpdateActivityModalHandler?: (dateIdx: number, locationId: string) => void;
+}
+
+export interface Props extends IMapDispatchToProps, PropsBase {
+    tripId: string,
+    dateIdx: number,
+    location: StoreData.LocationVM,
 }
 
 export interface State {
-    locationIdx: string
+    isAddFeelingModalVisible: boolean,
+    isAddActivityModalVisible: boolean
 }
 
-class LocationItem extends React.Component<Props, State> {
-
-    constructor(props: Props) {
+class LocationItemComponent extends Component<Props, State> { 
+    constructor(props) {
         super(props)
+
         this.state = {
-            locationIdx: props.location.id
+            isAddFeelingModalVisible: false,
+            isAddActivityModalVisible: false
         }
+    } 
+
+    _openRemoveLocationModal = () => {
+        this.props.removeLocationHandler(this.props.dateIdx, this.props.location.locationId)
     }
 
-    selectFeeling() {
-        this.props.addFeelingModalHandler(this.props.location.id);
+    _openUpdateFeelingModal = () => {
+        this.props.openUpdateFeelingModalHandler(this.props.dateIdx, this.props.location.locationId);
     }
 
-    selectActivity() {
-        this.props.addActivityModalHandler(this.props.location.id);
+    _openUpdateActivityModal= () => {
+        this.props.openUpdateActivityModalHandler(this.props.dateIdx, this.props.location.locationId);
     }
-    
+
+    _toLocationDetail = () => {
+        var locationId = this.props.location.locationId;
+        this.props.navigation.navigate("LocationDetail", { tripId: this.props.tripId, locationId })
+    }
+
     render() {
 
-        var location: LocationVM = this.props.location;
+        var location: StoreData.LocationVM = this.props.location;
         const nImages = location.images.length;
 
         const MARGIN_LEFT = 10
@@ -59,7 +76,7 @@ class LocationItem extends React.Component<Props, State> {
                     <Text style={{ 
                         fontSize: 18,
                         fontWeight: "bold",
-                        marginBottom: 10 }}>{location.address}</Text>
+                        marginBottom: 10 }}>{location.location.address}</Text>
                 </CardItem>
 
                 <CardItem cardBody
@@ -69,7 +86,7 @@ class LocationItem extends React.Component<Props, State> {
 
                     <TouchableHighlight
                         style={{ width: SIZE, height: SIZE23, flex: 1 }}
-                        onPress={() => this.props.toLocationDetailHandler(location.id)}
+                        onPress={this._toLocationDetail}
 
                     >
                         {(nImages == 0 || nImages == 1) ? (<LocationImage images={location.images} />)
@@ -79,30 +96,46 @@ class LocationItem extends React.Component<Props, State> {
                 </CardItem>
                 <Button rounded icon transparent danger small
                         style={{ position: "absolute", right: 0, top: 6, backgroundColor: "white" }}
-                        onPress={() => this.props.removeLocationHandler(location.id)}
+                        onPress={this._openRemoveLocationModal}
                         >
                         <Icon name="times" type="FontAwesome5" />
-                    </Button>
+                </Button>
                 <CardItem>
                     {/* todo icon x button with confirmation modal */}
                     <Left>
-                        <Button transparent onPress={() => this.selectFeeling()}>
+                        <Button transparent onPress={this._openUpdateFeelingModal}>
                             <Icon name={feelingIcon} type="FontAwesome5" /> 
                             <Text>Feeling {feelingLabel} </Text>                       
                         </Button>                         
                     </Left>
                     <Right>
-                        <Button transparent onPress={() => this.selectActivity()}>
+                        <Button transparent onPress={this._openUpdateActivityModal}>
                             <Icon name={activityIcon} type="FontAwesome5"/>     
                             <Text>{activityLabel} </Text> 
                         </Button>
                     </Right>
-                </CardItem>
-            </Card>
-            
+                </CardItem>                
+            </Card>            
         );
     }
-
 }
+
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
+    var { tripId, locationId, dateIdx } = ownProps;
+    var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
+    var dateVm = _.find(trip.dates, (item) => item.dateIdx == dateIdx);
+    var location = _.find(dateVm.locations, (item) => item.locationId == locationId);
+
+    return {
+        tripId: tripId,
+        dateIdx: dateIdx,
+        location: location
+    };
+};
+
+const LocationItem = connect(
+    mapStateToProps,
+    null
+)(LocationItemComponent);
 
 export default LocationItem;

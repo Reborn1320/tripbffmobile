@@ -68,7 +68,6 @@ const styles = StyleSheet.create<Style>({
   //   ...mixins.themes.debug,
   // },
   modalInnerContainer: {
-    flex: 1,
     width: "100%",
     height: 200,
     paddingBottom: 15,

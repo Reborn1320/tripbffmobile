@@ -2,19 +2,31 @@ import { connect } from "react-redux";
 import _ from "lodash";
 import { TripDetailScreen } from "./TripDetailScreen";
 import { addInfographicId } from '../export/actions';
+import { StoreData } from "../../../store/Interfaces";
+import { Props, IMapDispatchToProps } from "./TripDetailScreen"
+import { updateLocationFeeling, 
+  updateLocationActivity, 
+  removeLocation, 
+  addLocation } from "../../../store/Trip/operations";
+import { updateTripDateRange, updateTripName } from "../../../store/Trip/operations";
 
-const mapStateToProps = (storeState, ownProps) => {
-  const { tripId } = ownProps.navigation.state.params
-  //todo move to getter
-  var trip = _.find(storeState.trips, (item) => item.tripId == tripId)
+const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
   return {
-      trip
+    addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
+    updateLocationFeeling: (tripId, dateIdx, locationId, feeling) => dispatch(updateLocationFeeling(tripId, dateIdx, locationId, feeling)),
+    updateLocationActivity: (tripId, dateIdx, locationId, activity) => dispatch(updateLocationActivity(tripId, dateIdx, locationId, activity)),
+    removeLocation: (tripId, dateIdx, locationId) => dispatch(removeLocation(tripId, dateIdx, locationId)),
+    addLocation: (tripId, dateIdx, location) => dispatch(addLocation(tripId, dateIdx, location)),
+    updateTripDateRange: (tripId, fromDate, toDate) => dispatch(updateTripDateRange(tripId, fromDate, toDate)),
+    updateTripName: (tripId, tripName) => dispatch(updateTripName(tripId, tripName))
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+  var { tripId } = ownProps.navigation.state.params;
+
   return {
-    addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
+      tripId: tripId
   };
 };
 
