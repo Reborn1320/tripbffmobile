@@ -7,6 +7,8 @@ import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
+import Carousel from 'react-native-snap-carousel';
+import SliderEntry from './SliderEntry'
 
 interface IMapDispatchToProps {
     removeLocationHandler?: (dateIdx: number, locationId: string) => void
@@ -52,6 +54,17 @@ class LocationItemComponent extends Component<Props, State> {
         this.props.navigation.navigate("LocationDetail", { tripId: this.props.tripId, locationId })
     }
 
+    _renderItemWithParallax ({item, index}, parallaxProps) {
+        return (
+            <SliderEntry
+              data={item}
+              even={(index + 1) % 2 === 0}
+              parallax={true}
+              parallaxProps={parallaxProps}
+            />
+        );
+    }
+
     render() {
 
         var location: StoreData.LocationVM = this.props.location;
@@ -66,6 +79,18 @@ class LocationItemComponent extends Component<Props, State> {
         var feelingIcon = location.feeling && location.feeling.icon ? location.feeling.icon : "smile";
         var activityLabel = location.activity && location.activity.label ? location.activity.label : "Activity";
         var activityIcon = location.activity && location.activity.icon ? location.activity.icon : "running";
+
+        const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
+
+        function wp (percentage) {
+            const value = (percentage * viewportWidth) / 100;
+            return Math.round(value);
+        }
+
+        const slideWidth = wp(75);
+        const itemHorizontalMargin = wp(2);
+        const itemWidth = slideWidth + itemHorizontalMargin * 2;
+        const sliderWidth = viewportWidth;
 
         return (
             <Card style={{ marginLeft: MARGIN_LEFT, marginRight: MARGIN_RIGHT }}
@@ -84,14 +109,21 @@ class LocationItemComponent extends Component<Props, State> {
                 >
                 {/* todo icon x button with confirmation modal */}
 
-                    <TouchableHighlight
+                <Carousel                    
+                    data={localStorage.images}
+                    renderItem={this._renderItemWithParallax}
+                    sliderWidth={sliderWidth}
+                    itemWidth={itemWidth}
+                    />
+
+                    {/* <TouchableHighlight
                         style={{ width: SIZE, height: SIZE23, flex: 1 }}
                         onPress={this._toLocationDetail}
 
                     >
                         {(nImages == 0 || nImages == 1) ? (<LocationImage images={location.images} />)
                             : (nImages == 2) ? (<LocationImage images={location.images} />) : (<Location3Images images={location.images} />)}
-                    </TouchableHighlight>
+                    </TouchableHighlight> */}
 
                 </CardItem>
                 <Button rounded icon transparent danger small
