@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, Card, CardItem, Left, Button, Right, Picker, Icon } from "native-base";
+import { Text, Card, CardItem, Left, Button, Right, Picker, Icon, View, Body } from "native-base";
 import { TouchableHighlight, Dimensions } from "react-native";
 import Location3Images from "./Location3Images";
 import LocationImage from "./LocationImage";
@@ -7,8 +7,12 @@ import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
-import Carousel from 'react-native-snap-carousel';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 import SliderEntry from './SliderEntry'
+import styles from '../SliderEntry.styles';
+import { colors } from '../index.style';
+
+const SLIDER_1_FIRST_ITEM = 0;
 
 interface IMapDispatchToProps {
     removeLocationHandler?: (dateIdx: number, locationId: string) => void
@@ -24,7 +28,8 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 
 export interface State {
     isAddFeelingModalVisible: boolean,
-    isAddActivityModalVisible: boolean
+    isAddActivityModalVisible: boolean,
+    slider1ActiveSlide: number
 }
 
 class LocationItemComponent extends Component<Props, State> { 
@@ -33,9 +38,12 @@ class LocationItemComponent extends Component<Props, State> {
 
         this.state = {
             isAddFeelingModalVisible: false,
-            isAddActivityModalVisible: false
+            isAddActivityModalVisible: false,
+            slider1ActiveSlide: SLIDER_1_FIRST_ITEM
         }
     } 
+
+    _slider1Ref;
 
     _openRemoveLocationModal = () => {
         this.props.removeLocationHandler(this.props.dateIdx, this.props.location.locationId)
@@ -59,7 +67,7 @@ class LocationItemComponent extends Component<Props, State> {
             <SliderEntry
               data={item}
               even={(index + 1) % 2 === 0}
-              parallax={true}
+              parallax={false}
               parallaxProps={parallaxProps}
             />
         );
@@ -73,8 +81,7 @@ class LocationItemComponent extends Component<Props, State> {
         const MARGIN_LEFT = 10
         const MARGIN_RIGHT = 10
         const SIZE = Dimensions.get('window').width - MARGIN_LEFT - MARGIN_RIGHT;
-        const SIZE23 = SIZE * 2 / 3
-
+ 
         var feelingLabel = location.feeling && location.feeling.label ? location.feeling.label : "";
         var feelingIcon = location.feeling && location.feeling.icon ? location.feeling.icon : "smile";
         var activityLabel = location.activity && location.activity.label ? location.activity.label : "Activity";
@@ -93,47 +100,50 @@ class LocationItemComponent extends Component<Props, State> {
         const sliderWidth = viewportWidth;
 
         return (
-            <Card style={{ marginLeft: MARGIN_LEFT, marginRight: MARGIN_RIGHT }}
-            >
+            <Card style={{ marginLeft: MARGIN_LEFT, marginRight: MARGIN_RIGHT }}>
                 <CardItem cardBody
-                    style={{ backgroundColor: "white", height: 46, paddingLeft: 10 }}
-                >
+                    style={{ backgroundColor: "white", height: 46, paddingLeft: 10 }}>
                     <Text style={{ 
                         fontSize: 18,
                         fontWeight: "bold",
                         marginBottom: 10 }}>{location.location.address}</Text>
                 </CardItem>
 
-                <CardItem cardBody
-                    style={{ backgroundColor: "white" }}
-                >
-                {/* todo icon x button with confirmation modal */}
-
-                <Carousel                    
-                    data={localStorage.images}
-                    renderItem={this._renderItemWithParallax}
-                    sliderWidth={sliderWidth}
-                    itemWidth={itemWidth}
-                    />
-
-                    {/* <TouchableHighlight
-                        style={{ width: SIZE, height: SIZE23, flex: 1 }}
-                        onPress={this._toLocationDetail}
-
-                    >
-                        {(nImages == 0 || nImages == 1) ? (<LocationImage images={location.images} />)
-                            : (nImages == 2) ? (<LocationImage images={location.images} />) : (<Location3Images images={location.images} />)}
-                    </TouchableHighlight> */}
-
-                </CardItem>
                 <Button rounded icon transparent danger small
                         style={{ position: "absolute", right: 0, top: 6, backgroundColor: "white" }}
                         onPress={this._openRemoveLocationModal}
                         >
                         <Icon name="times" type="FontAwesome5" />
                 </Button>
+
+                <CardItem cardBody>
+                    <Carousel       
+                        ref={c => this._slider1Ref = c}             
+                        data={location.images}
+                        renderItem={this._renderItemWithParallax}
+                        sliderWidth={sliderWidth}
+                        itemWidth={itemWidth}
+                        firstItem={SLIDER_1_FIRST_ITEM}
+                        onSnapToItem={(index) => this.setState({ slider1ActiveSlide: index }) }
+                     /> 
+                   </CardItem>
+
+                <CardItem cardBody style={{ justifyContent:"center" }}>
+                        <Pagination 
+                                dotsLength={location.images.length}
+                                activeDotIndex={this.state.slider1ActiveSlide}
+                                containerStyle={styles.paginationContainer}
+                                dotColor={'rgba(64, 130, 237, 0.92)'}
+                                dotStyle={styles.paginationDot}
+                                inactiveDotColor={colors.black}
+                                inactiveDotOpacity={0.4}
+                                inactiveDotScale={0.6}
+                                carouselRef={this._slider1Ref}
+                                tappableDots={!!this._slider1Ref}
+                         />                    
+                </CardItem>   
+
                 <CardItem>
-                    {/* todo icon x button with confirmation modal */}
                     <Left>
                         <Button transparent onPress={this._openUpdateFeelingModal}>
                             <Icon name={feelingIcon} type="FontAwesome5" /> 
