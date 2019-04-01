@@ -2,16 +2,9 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { ParallaxImage } from 'react-native-snap-carousel';
-import styles from '../SliderEntry.styles';
+import styles from './SliderEntry.styles';
 
 export default class SliderEntry extends Component<any, any> {
-
-    static propTypes = {
-        data: PropTypes.object.isRequired,
-        even: PropTypes.bool,
-        parallax: PropTypes.bool,
-        parallaxProps: PropTypes.object
-    };
 
     get image () {
         const { data: { url }, parallax, parallaxProps, even } = this.props;

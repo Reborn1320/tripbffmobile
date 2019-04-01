@@ -1,16 +1,14 @@
 import React, { Component } from "react";
-import { Text, Card, CardItem, Left, Button, Right, Picker, Icon, View, Body } from "native-base";
-import { TouchableHighlight, Dimensions } from "react-native";
-import Location3Images from "./Location3Images";
-import LocationImage from "./LocationImage";
+import { Text, Card, CardItem, Left, Button, Right, Icon, View, Body } from "native-base";
+import { Dimensions } from "react-native";
 import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import SliderEntry from './SliderEntry'
-import styles from '../SliderEntry.styles';
-import { colors } from '../index.style';
+import styles from './SliderEntry.styles';
+import { colors } from './index.style';
 
 const SLIDER_1_FIRST_ITEM = 0;
 
