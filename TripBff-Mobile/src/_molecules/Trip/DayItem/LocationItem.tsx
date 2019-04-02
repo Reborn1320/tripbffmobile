@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Text, Card, CardItem, Left, Button, Right, Icon } from "native-base";
-import { Dimensions, TouchableHighlight } from "react-native";
+import { Dimensions, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
@@ -56,8 +56,8 @@ class LocationItemComponent extends Component<Props, State> {
     }
 
     _toLocationDetail = () => {
-        var locationId = this.props.location.locationId;
-        this.props.navigation.navigate("LocationDetail", { tripId: this.props.tripId, locationId })
+        var { tripId, dateIdx, location: { locationId }  } = this.props;
+        this.props.navigation.navigate("LocationDetail", { tripId, locationId, dateIdx })
     }
 
     _renderItemWithParallax = ({item, index}, parallaxProps) => {
@@ -101,13 +101,17 @@ class LocationItemComponent extends Component<Props, State> {
 
         return (
             <Card style={{ marginLeft: MARGIN_LEFT, marginRight: MARGIN_RIGHT }}>
-                <CardItem cardBody
-                    style={{ backgroundColor: "white", height: 46, paddingLeft: 10 }}>
-                    <Text style={{ 
-                        fontSize: 18,
-                        fontWeight: "bold",
-                        marginBottom: 10 }}>{location.location.address}</Text>
-                </CardItem>
+                <TouchableOpacity onPress={this._toLocationDetail}>
+                    <CardItem cardBody
+                            style={{ backgroundColor: "white", height: 46, paddingLeft: 10 }}>
+                        <Text style={{ 
+                            fontSize: 18,
+                            fontWeight: "bold",
+                            marginBottom: 10 }}
+                            >{location.location.address}</Text>
+                    </CardItem>
+                </TouchableOpacity>
+                
 
                 <Button rounded icon transparent danger small
                         style={{ position: "absolute", right: 0, top: 6, backgroundColor: "white" }}
@@ -116,32 +120,37 @@ class LocationItemComponent extends Component<Props, State> {
                         <Icon name="times" type="FontAwesome5" />
                 </Button>
 
-                <CardItem cardBody>
-                     <Carousel       
-                            ref={c => this._slider1Ref = c}             
-                            data={location.images}
-                            renderItem={this._renderItemWithParallax}
-                            sliderWidth={sliderWidth}
-                            itemWidth={itemWidth}
-                            firstItem={SLIDER_1_FIRST_ITEM}
-                            onSnapToItem={(index) => this.setState({ slider1ActiveSlide: index }) }
-                        /> 
-                </CardItem>
+                <TouchableOpacity onPress={this._toLocationDetail}>
+                    <CardItem cardBody>
+                        <Carousel       
+                                ref={c => this._slider1Ref = c}             
+                                data={location.images}
+                                renderItem={this._renderItemWithParallax}
+                                sliderWidth={sliderWidth}
+                                itemWidth={itemWidth}
+                                firstItem={SLIDER_1_FIRST_ITEM}
+                                onSnapToItem={(index) => this.setState({ slider1ActiveSlide: index }) }
+                            /> 
+                    </CardItem>  
+                </TouchableOpacity>                 
+                
 
-                <CardItem cardBody style={{ justifyContent:"center" }}>
-                    <Pagination 
-                            dotsLength={location.images.length}
-                            activeDotIndex={this.state.slider1ActiveSlide}
-                            containerStyle={styles.paginationContainer}
-                            dotColor={'rgba(64, 130, 237, 0.92)'}
-                            dotStyle={styles.paginationDot}
-                            inactiveDotColor={colors.black}
-                            inactiveDotOpacity={0.4}
-                            inactiveDotScale={0.6}
-                            carouselRef={this._slider1Ref}
-                            tappableDots={!!this._slider1Ref}
-                        />                    
-                </CardItem>   
+                <TouchableOpacity onPress={this._toLocationDetail}>
+                    <CardItem cardBody style={{ justifyContent:"center" }}>
+                        <Pagination 
+                                dotsLength={location.images.length}
+                                activeDotIndex={this.state.slider1ActiveSlide}
+                                containerStyle={styles.paginationContainer}
+                                dotColor={'rgba(64, 130, 237, 0.92)'}
+                                dotStyle={styles.paginationDot}
+                                inactiveDotColor={colors.black}
+                                inactiveDotOpacity={0.4}
+                                inactiveDotScale={0.6}
+                                carouselRef={this._slider1Ref}
+                                tappableDots={!!this._slider1Ref}
+                            />                    
+                    </CardItem>   
+                </TouchableOpacity>                
 
                 <CardItem>
                     <Left>
