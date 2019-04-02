@@ -4,7 +4,6 @@ import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
-import TripDetailsContainer2 from "../../../_organisms/Trip/TripDetails/TripDetailsContainer";
 import { mixins } from "../../../_utils";
 
 interface IMapDispatchToProps {

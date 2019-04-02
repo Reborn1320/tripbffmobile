@@ -230,6 +230,7 @@ export class TripDetailScreen extends Component<Props, State> {
 
     render() {
         const tripId = this.props.tripId;
+        const navigation = this.props.navigation;
 
         return (
             <Container>
@@ -246,6 +247,7 @@ export class TripDetailScreen extends Component<Props, State> {
                 <Content>
                     <View>
                         <TripDetails tripId={tripId}
+                            navigation={navigation}
                             openUpdateFeelingModalHandler={this._openUpdateFeelingModal}
                             openUpdateActivityModalHandler={this._openUpdateActivityModal} 
                             openRemoveLocationModalHandler={this._openRemoveLocationModal}

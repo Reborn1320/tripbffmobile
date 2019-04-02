@@ -5,6 +5,7 @@ import moment from 'moment';
 import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
+import { PropsBase } from '../../../screens/_shared/LayoutContainer';
 
 interface IMapDispatchToProps {
     openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
@@ -13,7 +14,7 @@ interface IMapDispatchToProps {
     openAddLocationModalHandler?: (dateIdx: number, date: moment.Moment) => void;
 }
 
-export interface Props extends IMapDispatchToProps {
+export interface Props extends IMapDispatchToProps, PropsBase {
     tripId: string
     locationIds?: Array<number>
     dateIdx: number
@@ -44,6 +45,7 @@ export class DayItemComponent extends Component<Props, State> {
 
                 {this.props.locationIds.length > 0 && this.props.locationIds.map(e => 
                     <LocationItem tripId={this.props.tripId} dateIdx={dateIdx} locationId={e} key={e}
+                        navigation={this.props.navigation}
                         removeLocationHandler={this.props.openRemoveLocationModalHandler}
                         openUpdateFeelingModalHandler={this.props.openUpdateFeelingModalHandler}
                         openUpdateActivityModalHandler={this.props.openUpdateActivityModalHandler}>
