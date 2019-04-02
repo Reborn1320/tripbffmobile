@@ -8,7 +8,6 @@ import { ADD_INFOGRAPHIC_ID } from '../screens/trip/export/actions';
 import { LOCATION_REMOVE, 
          LOCATION_ADD,
          LOCATION_UPDATE_FEELING,
-         LOCATION_UPDATE,
          LOCATION_UPDATE_ACTIVITY,
          TRIP_UPDATE_DATE_RANGE,
          TRIP_UPDATE_TRIP_NAME } from './Trip/actions';
@@ -119,12 +118,7 @@ function locationReducer(state: StoreData.LocationVM, action) {
             return {
                 ...state,
                 feeling: action.feeling
-            };        
-        case LOCATION_UPDATE:
-            return {
-                ...state,
-                locations: action.locations
-            };        
+            };
         case LOCATION_UPDATE_ACTIVITY:
             return {
                 ...state,
