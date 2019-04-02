@@ -48,9 +48,11 @@ class LocationDetail extends React.Component<Props, State> {
 }
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
-    const { tripId, locationId } = ownProps.navigation.state.params
+    const { tripId, dateIdx, locationId } = ownProps.navigation.state.params
     var trip = _.find(storeState.trips, (item) => item.tripId == tripId)
-    var location = _.find(trip.locations, e => e.locationId == locationId)
+    var dateVm = _.find(trip.dates, (item) => item.dateIdx == dateIdx);
+    var location = _.find(dateVm.locations, (item) => item.locationId == locationId);
+    
     return {
         location
     };

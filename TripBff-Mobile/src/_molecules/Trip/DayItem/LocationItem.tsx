@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Text, Card, CardItem, Left, Button, Right, Icon, View, Body } from "native-base";
-import { Dimensions } from "react-native";
+import { Text, Card, CardItem, Left, Button, Right, Icon } from "native-base";
+import { Dimensions, TouchableHighlight } from "react-native";
 import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
@@ -60,13 +60,17 @@ class LocationItemComponent extends Component<Props, State> {
         this.props.navigation.navigate("LocationDetail", { tripId: this.props.tripId, locationId })
     }
 
-    _renderItemWithParallax ({item, index}, parallaxProps) {
+    _renderItemWithParallax = ({item, index}, parallaxProps) => {
         return (
             <SliderEntry
               data={item}
+              tripId={this.props.tripId}
+              locationId={this.props.location.locationId}
+              dateIdx={this.props.dateIdx}
               even={(index + 1) % 2 === 0}
               parallax={false}
               parallaxProps={parallaxProps}
+              navigation={this.props.navigation}
             />
         );
     }
@@ -74,12 +78,10 @@ class LocationItemComponent extends Component<Props, State> {
     render() {
 
         var location: StoreData.LocationVM = this.props.location;
-        const nImages = location.images.length;
 
         const MARGIN_LEFT = 10
         const MARGIN_RIGHT = 10
-        const SIZE = Dimensions.get('window').width - MARGIN_LEFT - MARGIN_RIGHT;
- 
+
         var feelingLabel = location.feeling && location.feeling.label ? location.feeling.label : "";
         var feelingIcon = location.feeling && location.feeling.icon ? location.feeling.icon : "smile";
         var activityLabel = location.activity && location.activity.label ? location.activity.label : "Activity";
@@ -115,30 +117,30 @@ class LocationItemComponent extends Component<Props, State> {
                 </Button>
 
                 <CardItem cardBody>
-                    <Carousel       
-                        ref={c => this._slider1Ref = c}             
-                        data={location.images}
-                        renderItem={this._renderItemWithParallax}
-                        sliderWidth={sliderWidth}
-                        itemWidth={itemWidth}
-                        firstItem={SLIDER_1_FIRST_ITEM}
-                        onSnapToItem={(index) => this.setState({ slider1ActiveSlide: index }) }
-                     /> 
-                   </CardItem>
+                     <Carousel       
+                            ref={c => this._slider1Ref = c}             
+                            data={location.images}
+                            renderItem={this._renderItemWithParallax}
+                            sliderWidth={sliderWidth}
+                            itemWidth={itemWidth}
+                            firstItem={SLIDER_1_FIRST_ITEM}
+                            onSnapToItem={(index) => this.setState({ slider1ActiveSlide: index }) }
+                        /> 
+                </CardItem>
 
                 <CardItem cardBody style={{ justifyContent:"center" }}>
-                        <Pagination 
-                                dotsLength={location.images.length}
-                                activeDotIndex={this.state.slider1ActiveSlide}
-                                containerStyle={styles.paginationContainer}
-                                dotColor={'rgba(64, 130, 237, 0.92)'}
-                                dotStyle={styles.paginationDot}
-                                inactiveDotColor={colors.black}
-                                inactiveDotOpacity={0.4}
-                                inactiveDotScale={0.6}
-                                carouselRef={this._slider1Ref}
-                                tappableDots={!!this._slider1Ref}
-                         />                    
+                    <Pagination 
+                            dotsLength={location.images.length}
+                            activeDotIndex={this.state.slider1ActiveSlide}
+                            containerStyle={styles.paginationContainer}
+                            dotColor={'rgba(64, 130, 237, 0.92)'}
+                            dotStyle={styles.paginationDot}
+                            inactiveDotColor={colors.black}
+                            inactiveDotOpacity={0.4}
+                            inactiveDotScale={0.6}
+                            carouselRef={this._slider1Ref}
+                            tappableDots={!!this._slider1Ref}
+                        />                    
                 </CardItem>   
 
                 <CardItem>

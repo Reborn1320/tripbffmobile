@@ -9,6 +9,7 @@ import moment, { Moment } from "moment";
 import { StoreData } from "../../../store/Interfaces";
 import { connect } from "react-redux";
 import TripName from "../../../_molecules/Trip/TripName";
+import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 
 interface IMapDispatchToProps {
     openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
@@ -19,7 +20,7 @@ interface IMapDispatchToProps {
     openEditTripNameModalHandler?: () => void;
 }
 
-export interface Props extends IMapDispatchToProps {
+export interface Props extends IMapDispatchToProps, PropsBase {
     tripId: string,
     tripName?: string
     tripFromDate?: moment.Moment
@@ -73,7 +74,7 @@ export class TripDetailsComponent extends Component<Props, State> {
     _renderItem = (itemInfo) => {
         const day: DayVM = itemInfo.item;
         return (
-            <DayItem tripId={this.props.tripId} dateIdx={day.idx} 
+            <DayItem tripId={this.props.tripId} dateIdx={day.idx} navigation={this.props.navigation}
                 openUpdateFeelingModalHandler={this.props.openUpdateFeelingModalHandler}
                 openUpdateActivityModalHandler={this.props.openUpdateActivityModalHandler} 
                 openRemoveLocationModalHandler={this.props.openRemoveLocationModalHandler}
