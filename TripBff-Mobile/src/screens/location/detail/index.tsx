@@ -1,10 +1,13 @@
 import React from 'react'
-import { Container, Header, Text, Content, View } from 'native-base';
+import { Container, Header, Content } from 'native-base';
 import { StoreData } from '../../../store/Interfaces';
 import { connect } from 'react-redux';
 import { NavigationScreenProp } from 'react-navigation';
 import _ from "lodash";
-import { Image, TextInput } from 'react-native';
+import LocationName from './LocationName'
+import LocationLike from './LocationLike'
+import LocationDescription from './LocationDescription'
+import LocationMedia from './LocationMedia'
 
 interface IMapDispatchToProps {
 }
@@ -15,7 +18,6 @@ export interface Props extends IMapDispatchToProps {
 }
 
 interface State {
-
 }
 
 class LocationDetail extends React.Component<Props, State> {
@@ -25,22 +27,22 @@ class LocationDetail extends React.Component<Props, State> {
                 <Header>
                 </Header>
                 <Content>
-                    <Text style={{ 
-                        fontSize: 26,
-                        fontWeight: "bold" }}>{this.props.location.name}</Text>
-                    <TextInput
-                        placeholder = "What are your feeling?"
-                        multiline = {true}
-                        numberOfLines = {4}
-                        editable = {true}
-                        maxLength = {80}
-                        style={{ fontSize: 18, marginBottom: 20, maxHeight: 200 }}
-                    />
-                    <View
-                        style={{flexDirection: "row", flexWrap: "wrap"}}
-                    >
-                        {this.props.location.images.map((img, idx) => <Image key={idx} source={{ uri: img.url }} style={{width: 120, height: 120 }} ></Image>)}
-                    </View>
+                    <LocationName 
+                        locationName={this.props.location.name}
+                        locationAddress={this.props.location.location.address}>                        
+                    </LocationName>
+
+                    <LocationLike
+                        likeItems={this.props.location.likeItems}>                        
+                    </LocationLike>
+
+                    <LocationDescription
+                        description={this.props.location.description}>                        
+                    </LocationDescription>
+
+                    <LocationMedia
+                        images={this.props.location.images}>                        
+                    </LocationMedia>
                 </Content>
             </Container>
         )
