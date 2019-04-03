@@ -27,6 +27,7 @@ export function addLocation(tripId: string, dateIdx: number, location: StoreData
   return async function (dispatch, getState, extraArguments): Promise<any> {
     
     var adddedLocation = {
+        name: location.name,
         fromTime: location.fromTime,
         toTime: location.toTime,
         location: location.location,

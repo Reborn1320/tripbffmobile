@@ -67,13 +67,14 @@ class TripDetailsModal extends Component<Props, State> {
         this.props.cancelUpdateActivityModalHandler();
     }
 
-    _addLocationConfirmed = (address, fromTime) => {
+    _addLocationConfirmed = (name, address, fromTime) => {
         this.setState({
             isAddLocationModalVisible: false
         });
 
         var location: StoreData.LocationVM = {
             locationId: "",
+            name: name,
             location: {
                 address: address,
                 long: 0,

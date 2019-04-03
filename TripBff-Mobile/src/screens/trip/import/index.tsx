@@ -88,6 +88,7 @@ class TripImportation extends Component<Props, State> {
             var minTimestamp = _.min(element.map(e => e.timestamp))
             var location: TripImportLocationVM = {
                 id: "",
+                name: addresses[idx],
                 location: {
                     lat: element[0].location.latitude,
                     long: element[0].location.longitude,
@@ -152,6 +153,7 @@ class TripImportation extends Component<Props, State> {
 
             if (isLocationSelected) {
                 var locationVM = {
+                    name: element.name,
                     location: element.location,
                     fromTime: element.fromTime,
                     toTime: element.toTime,
@@ -172,6 +174,7 @@ class TripImportation extends Component<Props, State> {
 
         var selectedLocations = this._toLocationVM();
         this.setState({ UIState: "import images" })
+        console.log('selected locations: ' + JSON.stringify(selectedLocations))
         this.props.dispatch(this._postLocations(this.state.tripId, selectedLocations));
     }
 

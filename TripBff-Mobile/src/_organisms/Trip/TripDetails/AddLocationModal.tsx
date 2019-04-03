@@ -17,12 +17,13 @@ import moment from "moment";
 export interface Props {
   isVisible: boolean;
   date: moment.Moment;
-  confirmHandler: (address, fromTime) => void;
+  confirmHandler: (name, address, fromTime) => void;
   cancelHandler?: () => void;
 }
 
 interface State {
   query: string;
+  address: string,
   places: Array<string>,
   isDateTimePickerVisible: boolean,
   displayTime: string,
@@ -36,6 +37,7 @@ class AddLocationModalComponent extends React.Component<Props, State> {
     this.state = {
       places: [],
       query: '',
+      address: '',
       isDateTimePickerVisible: false,
       displayTime: moment().format('hh:mm A'),
       selectedTime: null
@@ -58,7 +60,7 @@ class AddLocationModalComponent extends React.Component<Props, State> {
       selectedTime = startDate.add(addedHours, 'h').add(addedMinutes, 'm');
     }
 
-     this.props.confirmHandler(this.state.query, selectedTime);
+     this.props.confirmHandler(this.state.query, this.state.address, selectedTime);
   }
 
   _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
@@ -92,6 +94,7 @@ class AddLocationModalComponent extends React.Component<Props, State> {
       var places = match.features.map((place) => {
         return {
           placeName: place.text,
+          address: place.place_name,
           id: place.id
         };
       });
@@ -138,8 +141,8 @@ class AddLocationModalComponent extends React.Component<Props, State> {
                     defaultValue={this.state.query}
                     data={this.state.places}
                     onChangeText={text => this.searchPlaces(text)}
-                    renderItem={({ placeName, id }) => (
-                      <TouchableOpacity onPress={() => this.setState({ query: placeName, places: [] })}>
+                    renderItem={({ placeName, id, address }) => (
+                      <TouchableOpacity onPress={() => this.setState({ query: placeName, address: address ,places: [] })}>
                         <Text>{placeName}</Text>
                       </TouchableOpacity>
                     )}

@@ -27,7 +27,7 @@ class LocationDetail extends React.Component<Props, State> {
                 <Content>
                     <Text style={{ 
                         fontSize: 26,
-                        fontWeight: "bold" }}>{this.props.location.location.address}</Text>
+                        fontWeight: "bold" }}>{this.props.location.name}</Text>
                     <TextInput
                         placeholder = "What are your feeling?"
                         multiline = {true}
@@ -59,10 +59,7 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 };
 
 const mapDispatchToProps: IMapDispatchToProps = {
-    // importImageSelectUnselectImage,
-    // importImageSelectUnselectAllImages
-    // importSelectedLocations
-};
+ };
 
 const LocationDetailScreen = connect(mapStateToProps, mapDispatchToProps)(LocationDetail);
 

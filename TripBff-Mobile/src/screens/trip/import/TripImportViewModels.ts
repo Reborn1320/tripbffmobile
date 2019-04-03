@@ -1,7 +1,8 @@
 
 import moment from "moment";
 export interface TripImportLocationVM {
-  id: string
+  id: string,
+  name: string,
   location: TripImportLocationDetailVM
   fromTime: moment.Moment
   toTime: moment.Moment

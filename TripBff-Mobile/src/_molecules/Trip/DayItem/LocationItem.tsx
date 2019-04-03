@@ -108,7 +108,7 @@ class LocationItemComponent extends Component<Props, State> {
                             fontSize: 18,
                             fontWeight: "bold",
                             marginBottom: 10 }}
-                            >{location.location.address}</Text>
+                            >{location.name}</Text>
                     </CardItem>
                 </TouchableOpacity>
                 

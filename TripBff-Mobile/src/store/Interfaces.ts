@@ -6,6 +6,17 @@ export module StoreData {
         externalStorageId?: string,
     }
 
+    export enum LikeTypeVM {
+        Like = 1,
+        DisLike = 2
+    }
+
+    export interface LocationLikeItemVM {
+        likeItemId: string,
+        label: string,
+        type: LikeTypeVM
+    }
+
     export interface FeelingVM {
         feelingId: number,
         label: string,
@@ -25,13 +36,16 @@ export module StoreData {
     }
 
     export interface LocationVM {
-        locationId: string
+        locationId: string,
+        name: string,
         location: LocationDetailVM //TODO: simplify this by removing the interface
         fromTime: moment.Moment
         toTime: moment.Moment
         images: Array<ImportImageVM>,
         feeling?: FeelingVM,
-        activity?: ActivityVM
+        activity?: ActivityVM,
+        likeItems?: Array<LocationLikeItemVM>,
+        description?: string
     }
 
     export interface DateVM {
