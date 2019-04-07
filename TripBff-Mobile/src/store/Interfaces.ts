@@ -4,6 +4,8 @@ export module StoreData {
         imageId: string,
         url: string, //url stored in local mobile
         externalStorageId?: string,
+        externalUrl: string;
+        thumbnailExternalUrl: string;
     }
 
     export enum LikeTypeVM {

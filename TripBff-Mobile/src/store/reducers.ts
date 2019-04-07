@@ -202,7 +202,12 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
     console.log("actionType", actionType);
     if (_.startsWith(actionType, "TRIPS")) {
         //handle trips
-        return action.trips;
+        var newTrips: ITrip[] = [
+            ...action.trips
+        ];
+        return newTrips.map(trip => {
+            return importSelectedLocations(trip, { locations: trip.locations });
+        })
     }
     else if (actionType == TRIP_ADD) {
         return [...state, action.trip];
