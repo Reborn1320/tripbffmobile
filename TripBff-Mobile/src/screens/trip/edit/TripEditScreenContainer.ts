@@ -5,7 +5,7 @@ import { TripEditScreen } from "./TripEditScreen";
 // import { updateTripDateRange } from "../../../store/Trip/operations";
 
 const mapStateToProps = (storeState, ownProps) => {
-  const { tripId } = ownProps.navigation.state.params
+  const { tripId } = ownProps.navigation.state.params;
   //todo move to getter
   var trip = _.find(storeState.trips, (item) => item.tripId == tripId)
   return {

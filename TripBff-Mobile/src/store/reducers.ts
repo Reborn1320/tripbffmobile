@@ -1,4 +1,4 @@
-import _, { cloneDeep } from 'lodash';
+import _ from 'lodash';
 import moment from "moment";
 import { StoreData } from "./Interfaces";
 import homeScreenReducer from "../screens/home/reducer";
@@ -12,7 +12,6 @@ import { LOCATION_REMOVE,
          TRIP_UPDATE_DATE_RANGE,
          TRIP_UPDATE_TRIP_NAME } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity } from './DataSource/actions';
-import { stat } from 'fs';
 import { IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "../screens/trip/import/actions";
 
 
@@ -202,12 +201,8 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
     console.log("actionType", actionType);
     if (_.startsWith(actionType, "TRIPS")) {
         //handle trips
-        var newTrips: ITrip[] = [
-            ...action.trips
-        ];
-        return newTrips.map(trip => {
-            return importSelectedLocations(trip, { locations: trip.locations });
-        })
+        //todo clearly something wrong here
+        return action.trips.map(trip => importSelectedLocations(trip, { locations: trip.locations }));
     }
     else if (actionType == TRIP_ADD) {
         return [...state, action.trip];
@@ -245,6 +240,7 @@ function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
     }
 }
 
+//todo small refactor to move each reducer to files
 export default function bffApp(state: StoreData.BffStoreData = initState, action): StoreData.BffStoreData {
     return {
         repo: homeScreenReducer(state.repo, action),
