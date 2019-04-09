@@ -1,10 +1,16 @@
 import React from "react";
-import { Text } from "native-base";
+import { Text, Icon } from "native-base";
 import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
+import { View } from "react-native";
 
-export interface Props {
+interface IMapDispatchToProps {
+    openUpdateLocationAddressModalHanlder: () => void
+}
+
+
+export interface Props extends IMapDispatchToProps {
     locationName: string,
     locationAddress: string
 }
@@ -14,12 +20,26 @@ export interface State {
 
 export default class LocationName extends React.PureComponent<Props, State> { 
 
+    _openMapLocation = () => {
+        this.props.openUpdateLocationAddressModalHanlder();
+    }
+
     render() {
         return (
-            <Text style={{ 
-                fontSize: 26,
-                fontWeight: "bold" }}>{this.props.locationName}</Text>
-            //TODO: display address + map icon
+            <View>
+                <View>
+                    <Text style={{ 
+                        fontSize: 26,
+                        fontWeight: "bold" }}>{this.props.locationName}
+                    </Text>
+                </View>
+                <View>
+                    <Text>
+                        {this.props.locationAddress}
+                        <Icon name="globe" type="FontAwesome5" onPress={this._openMapLocation}/>   
+                    </Text>
+                </View>                 
+            </View>
         );
     }
 }
