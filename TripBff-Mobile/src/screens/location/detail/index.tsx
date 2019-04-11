@@ -1,13 +1,15 @@
 import React from 'react'
 import { Container, Header, Content } from 'native-base';
-import { StoreData } from '../../../store/Interfaces';
+import { StoreData, RawJsonData } from '../../../store/Interfaces';
 import { connect } from 'react-redux';
 import { NavigationScreenProp } from 'react-navigation';
 import _ from "lodash";
 import LocationContent from './LocationContent';
 import LocationModal from './LocationModal'
+import { updateLocationAddress } from '../../../store/Trip/operations';
 
 interface IMapDispatchToProps {
+    updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -42,8 +44,11 @@ class LocationDetail extends React.Component<Props, State> {
         this.setState({isUpdateLocationAddressModalVisible: true});
     }
 
-    _confirmUpdateLocationAddress = (address) => {
-
+    _confirmUpdateLocationAddress = (name, address, long, lat) => {
+        var location: RawJsonData.LocationAddressVM = {
+            name, address, long, lat
+        };
+        this.props.updateLocationAddress(this.props.tripId, this.props.dateIdx, this.props.locationId, location);
     }
 
     _cancelUpdateLocationAddress = () => {
@@ -87,6 +92,9 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
     var location = _.find(dateVm.locations, (item) => item.locationId == locationId);
     
     return {
+        tripId,
+        dateIdx,
+        locationId,
         name: location.name,
         address: location.location.address,
         long: location.location.long,
@@ -97,7 +105,10 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
     };
 };
 
-const mapDispatchToProps: IMapDispatchToProps = {
+const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
+    return {
+        updateLocationAddress: (tripId, dateIdx, locationId, location) => dispatch(updateLocationAddress(tripId, dateIdx, locationId, location))
+    };
  };
 
 const LocationDetailScreen = connect(mapStateToProps, mapDispatchToProps)(LocationDetail);

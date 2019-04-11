@@ -10,7 +10,8 @@ import { LOCATION_REMOVE,
          LOCATION_UPDATE_FEELING,
          LOCATION_UPDATE_ACTIVITY,
          TRIP_UPDATE_DATE_RANGE,
-         TRIP_UPDATE_TRIP_NAME } from './Trip/actions';
+         TRIP_UPDATE_TRIP_NAME, 
+         LOCATION_UPDATE_ADDRESS} from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity } from './DataSource/actions';
 import { stat } from 'fs';
 import { IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "../screens/trip/import/actions";
@@ -123,6 +124,16 @@ function locationReducer(state: StoreData.LocationVM, action) {
             return {
                 ...state,
                 activity: action.activity
+            };
+        case LOCATION_UPDATE_ADDRESS:
+            return {
+                ...state,
+                name: action.location.name,
+                location: {
+                    address: action.location.address,
+                    long: action.location.long,
+                    lat: action.location.lat
+                }
             };
         //TODO: upload images
         //TODO: remove images

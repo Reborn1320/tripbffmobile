@@ -7,7 +7,7 @@ import moment from 'moment';
 
 
 interface IMapDispatchToProps {
-    confirmUpdateLocationAddressHandler: (address: string) => void
+    confirmUpdateLocationAddressHandler: (name: string, address: string, long: number, lat: number) => void
     cancelUpdateLocationAddressHandler: () => void
 }
 
@@ -22,8 +22,8 @@ interface State {
 
 export default class LocationModal extends PureComponent<Props, State> { 
 
-    _updateLocationAddressConfirmed = (address) => {
-        this.props.confirmUpdateLocationAddressHandler(address);
+    _updateLocationAddressConfirmed = (name, address, long, lat) => {
+        this.props.confirmUpdateLocationAddressHandler(name, address, long, lat);
     }
 
     _cancelUpdateLocationAddress = () => {

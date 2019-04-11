@@ -128,4 +128,10 @@ export namespace RawJsonData {
         activity?: StoreData.ActivityVM
     }
 
+    export interface LocationAddressVM {
+        name: string,
+        address: string,
+        long: number,
+        lat: number
+    }
 }

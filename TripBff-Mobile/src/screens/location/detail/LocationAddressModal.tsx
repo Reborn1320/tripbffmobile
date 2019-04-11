@@ -13,16 +13,18 @@ const geoCodingService = mbxGeocoding(baseClient);
 import Mapbox from '@mapbox/react-native-mapbox-gl';
 Mapbox.setAccessToken('pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g');
 import moment from "moment";
+import SearchLocation from '../../../_molecules/Trip/SearchLocationComponent'
 
 export interface Props {
   isVisible: boolean;
   long: number,
   lat: number
-  confirmHandler: (address) => void;
+  confirmHandler: (name, address, long, lat) => void;
   cancelHandler?: () => void;
 }
 
 interface State {
+  name: string,
   address: string,
   long: number,
   lat: number
@@ -31,6 +33,22 @@ interface State {
 class LocationAddressModalComponent extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);    
+
+    this.state = {
+      name: "",
+      address: "",
+      long: this.props.long,
+      lat: this.props.lat
+    }
+  }
+
+  _selectedLocationHandler = (name, address, long, lat) => {
+      this.setState({
+        name: name,
+        address: address,
+        long: long,
+        lat: lat
+      });
   }
 
   _onCancel = () => {
@@ -38,7 +56,7 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
   };
 
   _onConfirm = () => {
-      this.props.confirmHandler("");
+      this.props.confirmHandler(this.state.name, this.state.address, this.state.long, this.state.lat);
   }  
 
   render() {
@@ -52,11 +70,13 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
                     <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
                     <Button transparent onPress={this._onConfirm}><Text>Save</Text></Button>
                 </View>
+                <SearchLocation 
+                  confirmHandler={this._selectedLocationHandler}></SearchLocation>
                 <View style={{ flex: 4 }}>
                     <Mapbox.MapView
                         styleURL={Mapbox.StyleURL.Street}
                         zoomLevel={15}
-                        centerCoordinate={[this.props.long, this.props.lat]}
+                        centerCoordinate={[this.state.long, this.state.lat]}                        
                         style={{ flex: 1 }}
                         >
                     </Mapbox.MapView>                
