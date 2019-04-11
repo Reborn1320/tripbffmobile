@@ -17,13 +17,15 @@ import moment from "moment";
 export interface Props {
   isVisible: boolean;
   date: moment.Moment;
-  confirmHandler: (name, address, fromTime) => void;
+  confirmHandler: (name, address, long, lat, fromTime) => void;
   cancelHandler?: () => void;
 }
 
 interface State {
   query: string;
   address: string,
+  long: number,
+  lat: number,
   places: Array<string>,
   isDateTimePickerVisible: boolean,
   displayTime: string,
@@ -38,6 +40,8 @@ class AddLocationModalComponent extends React.Component<Props, State> {
       places: [],
       query: '',
       address: '',
+      long: 0,
+      lat: 0,
       isDateTimePickerVisible: false,
       displayTime: moment().format('hh:mm A'),
       selectedTime: null
@@ -60,7 +64,7 @@ class AddLocationModalComponent extends React.Component<Props, State> {
       selectedTime = startDate.add(addedHours, 'h').add(addedMinutes, 'm');
     }
 
-     this.props.confirmHandler(this.state.query, this.state.address, selectedTime);
+     this.props.confirmHandler(this.state.query, this.state.address, this.state.long, this.state.lat, selectedTime);
   }
 
   _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
@@ -95,7 +99,9 @@ class AddLocationModalComponent extends React.Component<Props, State> {
         return {
           placeName: place.text,
           address: place.place_name,
-          id: place.id
+          id: place.id,
+          long: place.geometry.coordinates[0],
+          lat: place.geometry.coordinates[1]
         };
       });
       this.setState({places: places});
@@ -141,8 +147,13 @@ class AddLocationModalComponent extends React.Component<Props, State> {
                     defaultValue={this.state.query}
                     data={this.state.places}
                     onChangeText={text => this.searchPlaces(text)}
-                    renderItem={({ placeName, id, address }) => (
-                      <TouchableOpacity onPress={() => this.setState({ query: placeName, address: address ,places: [] })}>
+                    renderItem={({ placeName, id, address, long, lat}) => (
+                      <TouchableOpacity onPress={() => this.setState({ 
+                            query: placeName,
+                            address: address,
+                            long: long,
+                            lat: lat,
+                            places: [] })}>
                         <Text>{placeName}</Text>
                       </TouchableOpacity>
                     )}
