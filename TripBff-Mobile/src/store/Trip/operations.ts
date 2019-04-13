@@ -4,10 +4,11 @@ import {
   updateLocationFeeling as updateLocationFeelingAction,
   updateLocationActivity as updateLocationActivityAction,
   updateTripDateRange as updateTripDateRangeAction,
-  updateTripName as updateTripNameAction } from "./actions";
+  updateTripName as updateTripNameAction,
+  updateLocationAddress as updateLocationAddressAction } from "./actions";
 import { ThunkResultBase } from "..";
 import { Moment } from "moment";
-import { StoreData } from "../Interfaces";
+import { StoreData, RawJsonData } from "../Interfaces";
 import moment from "moment";
 
 export function removeLocation(tripId: string, dateIdx: number, locationId: string): ThunkResultBase {
@@ -127,6 +128,24 @@ export function updateLocationActivity(tripId: string, dateIdx: number, location
     return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/activity`, { data })
     .then((res) => {
       dispatch(updateLocationActivityAction(tripId, dateIdx, locationId, activity));
+    })
+    .catch((err) => {
+      console.log('error update location activity: ', err);
+    });
+  };
+}
+
+export function updateLocationAddress(tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    const data = {
+      name: location.name,
+      address: location.address,
+      long: location.long,
+      lat: location.lat
+    };
+    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/address`, { data })
+    .then((res) => {
+      dispatch(updateLocationAddressAction(tripId, dateIdx, locationId, location));
     })
     .catch((err) => {
       console.log('error update location activity: ', err);

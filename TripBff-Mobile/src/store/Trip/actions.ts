@@ -1,4 +1,4 @@
-import { StoreData } from "../Interfaces"
+import { StoreData, RawJsonData } from "../Interfaces"
 import moment from "moment";
 
 export const LOCATION_REMOVE = "TRIP_LOCATION_REMOVE"
@@ -7,6 +7,7 @@ export const LOCATION_UPDATE_FEELING = "TRIP_LOCATION_UPDATE_FEELING"
 export const LOCATION_UPDATE_ACTIVITY = "TRIP_LOCATION_UPDATE_ACTIVITY"
 export const TRIP_UPDATE_DATE_RANGE = "TRIP_UPDATE_DATE_RANGE"
 export const TRIP_UPDATE_TRIP_NAME = "TRIP_UPDATE_TRIP_NAME"
+export const LOCATION_UPDATE_ADDRESS = "TRIP_LOCATION_UPDATE_ADDRESS"
 
 export function removeLocation(tripId: string, dateIdx: number, locationId: string) {
     return {
@@ -44,3 +45,8 @@ export function updateTripName(tripId: string, tripName: string) {
     }
 }
  
+export function updateLocationAddress(tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) {
+    return {
+        type: LOCATION_UPDATE_ADDRESS, tripId, dateIdx, locationId, location
+    }
+}

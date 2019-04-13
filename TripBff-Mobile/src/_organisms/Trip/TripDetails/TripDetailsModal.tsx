@@ -67,7 +67,7 @@ class TripDetailsModal extends Component<Props, State> {
         this.props.cancelUpdateActivityModalHandler();
     }
 
-    _addLocationConfirmed = (name, address, fromTime) => {
+    _addLocationConfirmed = (name, address, long, lat, fromTime) => {
         this.setState({
             isAddLocationModalVisible: false
         });
@@ -77,8 +77,8 @@ class TripDetailsModal extends Component<Props, State> {
             name: name,
             location: {
                 address: address,
-                long: 0,
-                lat: 0
+                long: long,
+                lat: lat
             },
             images: [],
             fromTime: fromTime,
