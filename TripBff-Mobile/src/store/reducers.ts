@@ -80,7 +80,7 @@ function importSelectedLocations(state: StoreData.TripVM, action) {
 
         dateVMs.push({
             dateIdx: idx + 1,
-            date: moment(state.fromDate.add(idx, 'days')),
+            date: state.fromDate.clone().add(idx, 'days'),
             locationIds: locationsOfDate.map(e => { return e.locationId }),
             locations: locationsOfDate.sort(compareLocationsFromTime).map(e => { return e })
         })
