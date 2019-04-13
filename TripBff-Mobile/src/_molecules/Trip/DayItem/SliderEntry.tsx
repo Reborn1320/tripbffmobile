@@ -26,11 +26,11 @@ export default class SliderEntry extends Component<Props, any> {
     }
 
      get image() {
-        const { data: { url }, parallax, parallaxProps, even } = this.props;
+        const { data: { thumbnailExternalUrl }, parallax, parallaxProps, even } = this.props;
 
         return parallax ? (
             <ParallaxImage
-              source={{ uri: url }}
+              source={{ uri: thumbnailExternalUrl }}
               containerStyle={[styles.imageContainer, even ? styles.imageContainerEven : {}]}
               style={styles.image}
               parallaxFactor={0.35}
@@ -40,7 +40,7 @@ export default class SliderEntry extends Component<Props, any> {
             />
         ) : (
             <Image
-              source={{ uri: url }}
+              source={{ uri: thumbnailExternalUrl }}
               style={styles.image}
             />
         );
