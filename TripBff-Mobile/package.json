@@ -37,7 +37,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
     "react-native-autocomplete-input": "^3.6.0",
     "react-native-console-time-polyfill": "^0.0.6",
-    "react-native-elements": "^0.19.1",
+    "react-native-elements": "1.1.0",
     "react-native-fbsdk": "^0.8.0",
     "react-native-fs": "^2.13.3",
     "react-native-modal": "^7.0.2",

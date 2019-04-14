@@ -13,7 +13,7 @@ const geoCodingService = mbxGeocoding(baseClient);
 import Mapbox from '@mapbox/react-native-mapbox-gl';
 Mapbox.setAccessToken('pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g');
 import moment from "moment";
-import SearchLocation from '../../../_molecules/Trip/SearchLocationComponent'
+import SearchLocation from '../../_molecules/Trip/SearchLocationComponent'
 
 export interface Props {
   isVisible: boolean;

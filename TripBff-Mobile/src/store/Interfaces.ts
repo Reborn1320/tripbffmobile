@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+
 export module StoreData {
     export interface ImportImageVM {
         imageId: string,
@@ -8,10 +9,7 @@ export module StoreData {
         thumbnailExternalUrl: string;
     }
 
-    export enum LikeTypeVM {
-        Like = 1,
-        DisLike = 2
-    }
+    export type LikeTypeVM = "Like" | "Dislike";
 
     export interface LocationLikeItemVM {
         likeItemId: string,
