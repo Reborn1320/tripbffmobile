@@ -2,7 +2,7 @@ import React from "react";
 import { Text, Icon } from "native-base";
 import { connect } from "react-redux";
 import _, { } from "lodash";
-import { StoreData } from "../../../store/Interfaces";
+import { StoreData } from "../../store/Interfaces";
 import { View } from "react-native";
 
 interface IMapDispatchToProps {
