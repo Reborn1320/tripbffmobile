@@ -134,7 +134,7 @@ async function uploadImageFetchAsync(uploadUrl: string, uri: string) {
     }
   };
 
-  return fetch("http://192.168.1.5:8000" + uploadUrl, options);
+  return fetch(TRIP_URL + uploadUrl, options);
 }
 
 async function uploadImageAxiosAsync(uploadUrl: string, uri: string) {
@@ -149,8 +149,7 @@ async function uploadImageAxiosAsync(uploadUrl: string, uri: string) {
   formData.append("file", new Blob(["test payload"], { type: "text/csv" }));
 
   const axios = Axios.create({
-    //baseURL: `http://192.168.2.101:8000` // local: should use IP4 of current local computer to allow call API from native app
-    baseURL: `http://192.168.1.5:8000`
+    baseURL: TRIP_URL
   });
 
   console.log("uploadImageAxiosAsync");
