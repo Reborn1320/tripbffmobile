@@ -7,7 +7,7 @@ import _ from "lodash";
 import LocationName from './LocationName'
 import LocationLike from './LocationLike'
 import LocationDescription from './LocationDescription'
-import LocationMedia from './LocationMedia'
+import LocationMedia from '../../../_organisms/LocationMedia/LocationMedia'
 
 interface IMapDispatchToProps {
     openUpdateLocationAddressModalHanlder: () => void
