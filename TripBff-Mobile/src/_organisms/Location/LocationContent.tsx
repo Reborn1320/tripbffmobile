@@ -5,7 +5,7 @@ import _ from "lodash";
 import LocationName from './LocationName'
 import LocationLike from './LocationLike'
 import LocationDescription from '../../screens/location/detail/LocationDescription'
-import LocationMedia from '../../screens/location/detail/LocationMedia'
+import LocationMedia from '../LocationMedia/LocationMedia'
 
 interface IMapDispatchToProps {
     openUpdateLocationAddressModalHanlder: () => void
@@ -41,7 +41,7 @@ export default class LocationContent extends React.PureComponent<Props, State> {
                     </LocationDescription>
 
                     <LocationMedia
-                        images={this.props.images}>                        
+                        images={this.props.images.map( img => ({ imageId: img.imageId, url: img.thumbnailExternalUrl}))}>                        
                     </LocationMedia>
             </View>
         )
