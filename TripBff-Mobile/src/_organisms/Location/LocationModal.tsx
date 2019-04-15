@@ -1,6 +1,6 @@
 import React, { Component, PureComponent } from "react";
 import { View } from 'native-base';
-import { StoreData } from "../../../store/Interfaces";
+import { StoreData } from "../../store/Interfaces";
 import _, { } from "lodash";
 import LocationAddressModal from "./LocationAddressModal";
 import moment from 'moment';

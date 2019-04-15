@@ -4,8 +4,8 @@ import { StoreData, RawJsonData } from '../../../store/Interfaces';
 import { connect } from 'react-redux';
 import { NavigationScreenProp } from 'react-navigation';
 import _ from "lodash";
-import LocationContent from './LocationContent';
-import LocationModal from './LocationModal'
+import LocationContent from '../../../_organisms/Location/LocationContent';
+import LocationModal from '../../../_organisms/Location/LocationModal'
 import { updateLocationAddress } from '../../../store/Trip/operations';
 
 interface IMapDispatchToProps {
@@ -91,6 +91,40 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
     var dateVm = _.find(trip.dates, (item) => item.dateIdx == dateIdx);
     var location = _.find(dateVm.locations, (item) => item.locationId == locationId);
     
+    //TODO: fake data, will be removed later
+    location.likeItems = [
+        {
+            likeItemId: "1",
+            label: "Beautiful",
+            type: "Like"
+        },
+        {
+            likeItemId: "2",
+            label: "Bad Services",
+            type: "Dislike"
+        },
+        {
+            likeItemId: "3",
+            label: "Good Foods",
+            type: "Like"
+        },
+        {
+            likeItemId: "4",
+            label: "Very Noise",
+            type: "Dislike"
+        },
+        {
+            likeItemId: "5",
+            label: "Good Drinks",
+            type: "Like"
+        },
+        {
+            likeItemId: "6",
+            label: "A Lot of Dogs ",
+            type: "Like"
+        }
+    ];
+
     return {
         tripId,
         dateIdx,
