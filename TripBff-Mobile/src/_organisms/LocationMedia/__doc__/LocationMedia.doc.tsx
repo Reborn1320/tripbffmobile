@@ -23,14 +23,14 @@ class LocationMediaDoc extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-      this.state = {
-        isLoaded: false,
-        images: Array.from({ length: 50 }, (v, i) => {
-          return {
-            url: "https://placekitten.com/g/200/200"
-          };
-        })
-      }
+    this.state = {
+      isLoaded: false,
+      images: Array.from({ length: 50 }, (v, i) => {
+        return {
+          url: "https://placekitten.com/g/200/200"
+        };
+      })
+    }
   }
 
   render() {
@@ -39,9 +39,14 @@ class LocationMediaDoc extends Component<Props, State> {
       <Container>
         <Header></Header>
         <Content>
+          <View>
+            <Text>some thing here</Text>
+            <Text>some thing here</Text>
+            <Text>some thing here</Text>
+          </View>
           <View
             style={{
-              marginTop: 10,
+              marginTop: 20,
               marginBottom: 10
             }}
           >

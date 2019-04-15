@@ -5,7 +5,7 @@ import { mixins } from "../../_utils";
 
 export interface Props {
   items: Array<any>
-  renderItem: (index: number) => ReactNode
+  renderItem: ({ item: any, index: number }) => ReactNode
   width?: number
 }
 
@@ -40,7 +40,7 @@ class ImageList extends React.Component<Props, States> {
     }
   }
 
-  _renderItem = (itemInfo) => {
+  _renderItem = (itemInfo: { item: any, index: number }) => {
     const idx: number = itemInfo.index
 
     return (
@@ -52,7 +52,7 @@ class ImageList extends React.Component<Props, States> {
         }
         key={idx}
       >
-        {this.props.renderItem(itemInfo.index)}
+        {this.props.renderItem(itemInfo)}
       </View>
     );
   }

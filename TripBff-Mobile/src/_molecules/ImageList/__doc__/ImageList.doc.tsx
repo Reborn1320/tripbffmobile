@@ -31,7 +31,8 @@ class ImageListDoc extends Component<Props, State> {
       }
   }
 
-  private renderItem = (index: number) => {
+  private renderItem = (itemInfo: { item: number, index: number }) => {
+    const { item } = itemInfo;
     return (
       <View
         style={{
@@ -39,7 +40,7 @@ class ImageListDoc extends Component<Props, State> {
           height: 120,
           backgroundColor: "orange"
         }}>
-        <Text>{this.state.items[index]}</Text>
+        <Text>{item}</Text>
       </View>
     );
   };
