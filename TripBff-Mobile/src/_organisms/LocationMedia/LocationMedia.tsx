@@ -1,22 +1,25 @@
 import React from "react";
-import { StyleSheet, TextInput, Image, ViewStyle, TextStyle } from 'react-native'
+import { StyleSheet, Image, ViewStyle, TextStyle } from 'react-native'
 import { Text, View, H3 } from "native-base";
-import { connect } from "react-redux";
 import _, { } from "lodash";
-import { StoreData } from "../../store/Interfaces";
 import ImageList, { calculateImageListWidth } from "../../_molecules/ImageList/ImageList";
 import NBTheme from "../../theme/variables/material.js";
 
 export interface Props {
-  images: Array<StoreData.ImportImageVM>
+  images: Array<ILocationMediaImage>
 }
 
 export interface State {
 }
 
+interface ILocationMediaImage {
+  imageId: string;
+  url: string;
+}
+
 export default class LocationMedia extends React.PureComponent<Props, State> {
 
-  private renderItem = (itemInfo: { item: StoreData.ImportImageVM, index: number }) => {
+  private renderItem = (itemInfo: { item: ILocationMediaImage, index: number }) => {
     const img = itemInfo.item;
     const { itemWidth } = calculateImageListWidth();
     return (
@@ -29,7 +32,8 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
     return (
       <View style={styles.locationMediaContainer}>
         <H3 style={styles.headerText}>Photos & Videos</H3>
-        <ImageList items={this.props.images}
+        <ImageList
+          items={this.props.images}
           renderItem={this.renderItem} />
       </View>
     );
@@ -47,11 +51,13 @@ const styles = StyleSheet.create<Style>({
     display: "flex",
     backgroundColor: NBTheme.cardDefaultBg,
     borderRadius: NBTheme.borderRadiusBase / 2,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
 
   },
   headerText: {
     marginTop: 10,
     marginBottom: 12,
     marginLeft: 10,
-  }
+  },
 })

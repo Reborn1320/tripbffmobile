@@ -7,6 +7,7 @@ export interface Props {
   items: Array<any>
   renderItem: ({ item: any, index: number }) => ReactNode
   width?: number
+  paddingLeftRight?: number
 }
 
 interface States {
@@ -34,6 +35,10 @@ class ImageList extends React.Component<Props, States> {
     super(prop);
 
     let listWidth = this.props.width ? this.props.width : Dimensions.get("window").width;
+
+    if (this.props.paddingLeftRight) {
+      listWidth -= 2 * this.props.paddingLeftRight;
+    }
     // listWidth -= 2;
     this.state = {
       itemWidth: getItemWidthFromListWidth(listWidth)

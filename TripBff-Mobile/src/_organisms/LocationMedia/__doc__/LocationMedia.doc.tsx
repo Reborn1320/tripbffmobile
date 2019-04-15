@@ -15,7 +15,7 @@ export interface Props extends IMapDispatchToProps {
 
 interface State {
   isLoaded: boolean;
-  images: any[];
+  images: { imageId: string, url: string }[];
 }
 
 class LocationMediaDoc extends Component<Props, State> {
@@ -27,6 +27,7 @@ class LocationMediaDoc extends Component<Props, State> {
       isLoaded: false,
       images: Array.from({ length: 50 }, (v, i) => {
         return {
+          imageId: i.toString(),
           url: "https://placekitten.com/g/200/200"
         };
       })
@@ -47,7 +48,6 @@ class LocationMediaDoc extends Component<Props, State> {
           <View
             style={{
               marginTop: 20,
-              marginBottom: 10
             }}
           >
             <LocationMedia

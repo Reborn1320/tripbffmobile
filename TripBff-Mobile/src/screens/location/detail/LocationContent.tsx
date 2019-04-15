@@ -43,7 +43,7 @@ export default class LocationContent extends React.PureComponent<Props, State> {
                     </LocationDescription>
 
                     <LocationMedia
-                        images={this.props.images}>                        
+                        images={this.props.images.map( img => ({ imageId: img.imageId, url: img.thumbnailExternalUrl}))}>                        
                     </LocationMedia>
             </View>
         )
