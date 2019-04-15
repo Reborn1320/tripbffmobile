@@ -9,6 +9,7 @@ import LocationMedia from '../../screens/location/detail/LocationMedia'
 
 interface IMapDispatchToProps {
     openUpdateLocationAddressModalHanlder: () => void
+    openUpdateLocationHighlightModalHanlder: () => void
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -33,7 +34,8 @@ export default class LocationContent extends React.PureComponent<Props, State> {
                     </LocationName>
 
                     <LocationLike
-                        likeItems={this.props.likeItems}>                        
+                        likeItems={this.props.likeItems}
+                        openUpdateLocationHighlightModalHanlder={this.props.openUpdateLocationHighlightModalHanlder}>                        
                     </LocationLike>
 
                     <LocationDescription

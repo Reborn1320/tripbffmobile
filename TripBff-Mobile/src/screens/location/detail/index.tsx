@@ -27,7 +27,8 @@ export interface Props extends IMapDispatchToProps {
 }
 
 interface State {
-    isUpdateLocationAddressModalVisible: boolean
+    isUpdateLocationAddressModalVisible: boolean,
+    isUpdateLocationHighlightModalVisible: boolean
 }
 
 class LocationDetail extends React.Component<Props, State> {
@@ -36,7 +37,8 @@ class LocationDetail extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            isUpdateLocationAddressModalVisible: false
+            isUpdateLocationAddressModalVisible: false,
+            isUpdateLocationHighlightModalVisible: false
         }
     }
 
@@ -55,6 +57,22 @@ class LocationDetail extends React.Component<Props, State> {
         this.setState({isUpdateLocationAddressModalVisible: false});
     }
 
+    _openUpdateLocationHighlightModal = () => {
+        this.setState({isUpdateLocationHighlightModalVisible: true});
+    }
+
+    _confirmUpdateLocationHighlight = () => {
+        // var location: RawJsonData.LocationAddressVM = {
+        //     name, address, long, lat
+        // };
+        // this.props.updateLocationAddress(this.props.tripId, this.props.dateIdx, this.props.locationId, location);
+    }
+
+    _cancelUpdateLocationHighlight = () => {
+        this.setState({isUpdateLocationHighlightModalVisible: false});
+    }
+
+
     render() {
         return (
             <Container>
@@ -68,7 +86,8 @@ class LocationDetail extends React.Component<Props, State> {
                         description={this.props.description}
                         images={this.props.images}
                         
-                        openUpdateLocationAddressModalHanlder={this._openUpdateLocationAddressModal}>
+                        openUpdateLocationAddressModalHanlder={this._openUpdateLocationAddressModal}
+                        openUpdateLocationHighlightModalHanlder={this._openUpdateLocationHighlightModal}>
                     </LocationContent>
                     <LocationModal
                         long={this.props.long}
@@ -76,7 +95,11 @@ class LocationDetail extends React.Component<Props, State> {
 
                         isUpdateLocationAddressModalVisible={this.state.isUpdateLocationAddressModalVisible}
                         confirmUpdateLocationAddressHandler={this._confirmUpdateLocationAddress}
-                        cancelUpdateLocationAddressHandler={this._cancelUpdateLocationAddress}>
+                        cancelUpdateLocationAddressHandler={this._cancelUpdateLocationAddress}
+                        
+                        isUpdateLocationHighlightModalVisible={this.state.isUpdateLocationHighlightModalVisible}
+                        confirmUpdateLocationHighlightHandler={this._confirmUpdateLocationHighlight}
+                        cancelUpdateLocationHighlightHandler={this._cancelUpdateLocationHighlight}>
                     </LocationModal>
                 </Content>
             </Container>

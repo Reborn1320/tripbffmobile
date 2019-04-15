@@ -12,7 +12,7 @@ import { LOCATION_REMOVE,
          TRIP_UPDATE_DATE_RANGE,
          TRIP_UPDATE_TRIP_NAME, 
          LOCATION_UPDATE_ADDRESS} from './Trip/actions';
-import { DataSource_GetAllFeeling, DataSource_GetAllActivity } from './DataSource/actions';
+import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
 import { IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "../screens/trip/import/actions";
 
 
@@ -245,6 +245,11 @@ function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
             return {
                 ...state,
                 activities: action.activities
+            }
+        case DataSource_GetAllHighlight:
+            return {
+                ...state,
+                highlights: action.highlights
             }
         default:
             return state;
