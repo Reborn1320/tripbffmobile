@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 
-import { StyleSheet, View, ViewStyle, Dimensions } from "react-native";
+import { StyleSheet, View, ViewStyle, Dimensions, FlatList } from "react-native";
 import { mixins } from "../../_utils";
 
 export interface Props {
@@ -67,9 +67,9 @@ class ImageList extends React.Component<Props, States> {
     const { items } = this.props;
     return (
       <View style={styles.listImageContainer}
-      // data={images}
+      // data={items}
       // renderItem={this._renderItem}
-      // keyExtractor={(item, index) => String(index)}
+      // keyExtractor={(item, index) => item.imageId}
       >
         {items.map((item, index) => this._renderItem({ item, index }))}
       </View>

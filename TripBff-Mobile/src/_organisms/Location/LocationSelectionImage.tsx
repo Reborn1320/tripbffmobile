@@ -19,6 +19,9 @@ export class LocationSelectionImage extends React.Component<Props, State> {
     this.state = {
     }
   }
+  shouldComponentUpdate(nextProps: Props, nextState) {
+    return this.props.isChecked != nextProps.isChecked;
+  }
 
   render() {
     const { width, isChecked } = this.props;
