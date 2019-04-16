@@ -5,6 +5,7 @@ import _, { } from "lodash";
 import ImageList, { calculateImageListWidth } from "../../_molecules/ImageList/ImageList";
 import NBTheme from "../../theme/variables/material.js";
 import { ImageListWithSelection } from "../../_molecules/ImageList/ImageListWithSelection";
+import { LocationSelectionImage } from "./LocationSelectionImage";
 
 export interface Props {
   images: Array<ILocationMediaImage>
@@ -68,25 +69,13 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
     if (_.indexOf(this.state.selectedImageIds, img.imageId) == -1) {
       //render unselected item
       return (
-        <View style={{ width: itemWidth, height: itemWidth, backgroundColor: "orange"}}><Text>Not-select</Text></View>
-        // <Image source={{ uri: img.url }}
-        //   style={
-        //     Object.assign({
-        //       width: itemWidth - itemMargin * 2,
-        //       height: itemWidth - itemMargin * 2
-        //     }, itemStyle)} />
+        <LocationSelectionImage imageUrl={img.url} width={itemWidth} isChecked={false} />
       );
     }
 
     //render selected item
     return (
-      <View style={{ width: itemWidth, height: itemWidth, backgroundColor: "cyan"}}><Text>Selected</Text></View>
-      // <Image source={{ uri: img.url }}
-      //   style={
-      //     Object.assign({
-      //       width: itemWidth - itemMargin * 2,
-      //       height: itemWidth - itemMargin * 2
-      //     }, itemStyle)} />
+      <LocationSelectionImage imageUrl={img.url} width={itemWidth} isChecked={true} />
     );
   }
 

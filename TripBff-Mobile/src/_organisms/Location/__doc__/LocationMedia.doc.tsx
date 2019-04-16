@@ -7,6 +7,7 @@ import { StoreData } from "../../../store/Interfaces";
 import { mixins } from "../../../_utils";
 import LocationMedia from "../LocationMedia";
 import { Button } from "react-native";
+import { LocationSelectionImage } from "../LocationSelectionImage";
 
 interface IMapDispatchToProps {
 }
@@ -61,8 +62,11 @@ class LocationMediaDoc extends Component<Props, State> {
         <Content>
           <View>
             <Text>some thing here</Text>
+            <Text>test selection image</Text>
+            <LocationSelectionImage imageUrl="https://placekitten.com/g/200/200" width={120} isChecked={false} />
+            <LocationSelectionImage imageUrl="https://placekitten.com/g/200/200" width={120} isChecked={true} />
             <Text>some thing here</Text>
-            <Text>some thing here</Text>
+            
           </View>
           <View
             style={{
