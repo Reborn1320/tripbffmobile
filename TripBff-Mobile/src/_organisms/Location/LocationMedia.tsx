@@ -4,6 +4,7 @@ import { Text, View, H3 } from "native-base";
 import _, { } from "lodash";
 import ImageList, { calculateImageListWidth } from "../../_molecules/ImageList/ImageList";
 import NBTheme from "../../theme/variables/material.js";
+import { ImageListWithSelection } from "../../_molecules/ImageList/ImageListWithSelection";
 
 export interface Props {
   images: Array<ILocationMediaImage>
@@ -12,6 +13,7 @@ export interface Props {
 }
 
 export interface State {
+  selectedImageIds: string[]
 }
 
 interface ILocationMediaImage {
@@ -21,32 +23,70 @@ interface ILocationMediaImage {
 
 export default class LocationMedia extends React.PureComponent<Props, State> {
 
-  private onPress = () => {
-    //todo select, unselect
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      selectedImageIds: []
+    }
   }
 
-  private toMassSelectionState = () => {
-    this.props.onMassSelection();
+  private onSelect = (imageId: string) => {
+    if (_.indexOf(this.state.selectedImageIds, imageId) == -1) {
+      this.setState({
+        selectedImageIds: [...this.state.selectedImageIds, imageId]
+      })
+    }
+    else {
+      this.setState({
+        selectedImageIds: _.remove(this.state.selectedImageIds, (id) => id != imageId)
+      })
+    }
   }
 
   private renderItem = (itemInfo: { item: ILocationMediaImage, index: number }) => {
     const img = itemInfo.item;
+
     const { itemWidth } = calculateImageListWidth();
     const itemMargin = this.props.massSelection == true ? 5 : 0;
     const itemStyle = this.props.massSelection == true ? styles.selectedImage : styles.unselectedImage;
 
-    return (
-      <TouchableHighlight
-        onPress={this.onPress}
-        onLongPress={this.toMassSelectionState}
-      >
+    //todo move these 3 rendering into a separated component ?
+    if (!this.props.massSelection) {
+      //render a normal image that highlight
+      return (
         <Image source={{ uri: img.url }}
           style={
             Object.assign({
-              width: itemWidth - itemMargin * 2,
-              height: itemWidth - itemMargin * 2
-            }, itemStyle)} ></Image>
-      </TouchableHighlight>
+              width: itemWidth,
+              height: itemWidth
+            }, styles.normalImage)} />
+      );
+    }
+
+    //render in case of selection
+    if (_.indexOf(this.state.selectedImageIds, img.imageId) == -1) {
+      //render unselected item
+      return (
+        <View style={{ width: itemWidth, height: itemWidth, backgroundColor: "orange"}}><Text>Not-select</Text></View>
+        // <Image source={{ uri: img.url }}
+        //   style={
+        //     Object.assign({
+        //       width: itemWidth - itemMargin * 2,
+        //       height: itemWidth - itemMargin * 2
+        //     }, itemStyle)} />
+      );
+    }
+
+    //render selected item
+    return (
+      <View style={{ width: itemWidth, height: itemWidth, backgroundColor: "cyan"}}><Text>Selected</Text></View>
+      // <Image source={{ uri: img.url }}
+      //   style={
+      //     Object.assign({
+      //       width: itemWidth - itemMargin * 2,
+      //       height: itemWidth - itemMargin * 2
+      //     }, itemStyle)} />
     );
   }
 
@@ -54,9 +94,15 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
     return (
       <View style={styles.locationMediaContainer}>
         <H3 style={styles.headerText}>Photos & Videos</H3>
-        <ImageList
-          items={this.props.images}
-          renderItem={this.renderItem} />
+        <ImageListWithSelection
+          items={this.props.images.map(img => ({ ...img, data: img }))}
+          renderItem={this.renderItem}
+
+          onSelect={this.onSelect}
+
+          onMassSelection={this.props.onMassSelection}
+          massSelection={this.props.massSelection}
+        />
       </View>
     );
   }
@@ -65,6 +111,7 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
 interface Style {
   locationMediaContainer: ViewStyle;
   headerText: TextStyle;
+  normalImage: ViewStyle;
   selectedImage: ViewStyle;
   unselectedImage: ViewStyle;
 }
@@ -83,6 +130,9 @@ const styles = StyleSheet.create<Style>({
     marginTop: 10,
     marginBottom: 12,
     marginLeft: 10,
+  },
+  normalImage: {
+
   },
   selectedImage: {
     padding: 5,
