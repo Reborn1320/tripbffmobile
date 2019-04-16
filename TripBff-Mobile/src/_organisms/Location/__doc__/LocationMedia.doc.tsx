@@ -19,6 +19,7 @@ interface State {
   isLoaded: boolean;
   images: { imageId: string, url: string }[];
   isMassSelection: boolean;
+  selectedImageIds: string[]
 }
 
 class LocationMediaDoc extends Component<Props, State> {
@@ -35,12 +36,27 @@ class LocationMediaDoc extends Component<Props, State> {
         };
       }),
       isMassSelection: false,
+      selectedImageIds: [],
     }
   }
 
   private onMassSelection = () => {
     this.setState({ isMassSelection: true });
   }
+
+  private onSelect = (imageId: string) => {
+    if (_.indexOf(this.state.selectedImageIds, imageId) == -1) {
+      this.setState({
+        selectedImageIds: [...this.state.selectedImageIds, imageId]
+      })
+    }
+    else {
+      this.setState({
+        selectedImageIds: _.remove(this.state.selectedImageIds, (id) => id != imageId)
+      })
+    }
+  }
+
   render() {
     const { isLoaded, images, isMassSelection } = this.state
     return (
@@ -49,11 +65,11 @@ class LocationMediaDoc extends Component<Props, State> {
           {isMassSelection &&
           (<View style={{ display: "flex", flexDirection: "row" }}>
             <Button
-              onPress={() => this.setState({ isMassSelection: false })}
+              onPress={() => this.setState({ isMassSelection: false, selectedImageIds: [] })}
               title="Cancel">
             </Button>
             <Button
-              onPress={() => this.setState({ isMassSelection: false })}
+              onPress={() => this.setState({ isMassSelection: false, selectedImageIds: [] })}
               title="Complete selection">
             </Button>
           </View>)
@@ -76,7 +92,10 @@ class LocationMediaDoc extends Component<Props, State> {
             <LocationMedia
               massSelection={isMassSelection}
               onMassSelection={this.onMassSelection}
-              images={images} />
+              images={images}
+              onSelect={this.onSelect}
+              selectedImageIds={this.state.selectedImageIds}
+              />
           </View>
 
         </Content>

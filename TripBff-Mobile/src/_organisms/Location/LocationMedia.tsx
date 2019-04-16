@@ -1,20 +1,22 @@
 import React from "react";
-import { StyleSheet, Image, ViewStyle, TextStyle, TouchableHighlight } from 'react-native'
-import { Text, View, H3 } from "native-base";
+import { StyleSheet, Image, ViewStyle, TextStyle } from 'react-native'
+import { View, H3 } from "native-base";
 import _, { } from "lodash";
-import ImageList, { calculateImageListWidth } from "../../_molecules/ImageList/ImageList";
+import { calculateImageListWidth } from "../../_molecules/ImageList/ImageList";
 import NBTheme from "../../theme/variables/material.js";
 import { ImageListWithSelection } from "../../_molecules/ImageList/ImageListWithSelection";
 import { LocationSelectionImage } from "./LocationSelectionImage";
 
 export interface Props {
   images: Array<ILocationMediaImage>
+  onSelect: (imageId: string) => void
+  selectedImageIds: string[]
+
   onMassSelection: () => void
   massSelection: boolean
 }
 
 export interface State {
-  selectedImageIds: string[]
 }
 
 interface ILocationMediaImage {
@@ -24,35 +26,25 @@ interface ILocationMediaImage {
 
 export default class LocationMedia extends React.PureComponent<Props, State> {
 
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      selectedImageIds: []
-    }
-  }
-
   private onSelect = (imageId: string) => {
-    if (_.indexOf(this.state.selectedImageIds, imageId) == -1) {
-      this.setState({
-        selectedImageIds: [...this.state.selectedImageIds, imageId]
-      })
-    }
-    else {
-      this.setState({
-        selectedImageIds: _.remove(this.state.selectedImageIds, (id) => id != imageId)
-      })
-    }
+    this.props.onSelect(imageId);
+    // if (_.indexOf(this.state.selectedImageIds, imageId) == -1) {
+    //   this.setState({
+    //     selectedImageIds: [...this.state.selectedImageIds, imageId]
+    //   })
+    // }
+    // else {
+    //   this.setState({
+    //     selectedImageIds: _.remove(this.state.selectedImageIds, (id) => id != imageId)
+    //   })
+    // }
   }
 
   private renderItem = (itemInfo: { item: ILocationMediaImage, index: number }) => {
     const img = itemInfo.item;
 
     const { itemWidth } = calculateImageListWidth();
-    const itemMargin = this.props.massSelection == true ? 5 : 0;
-    const itemStyle = this.props.massSelection == true ? styles.selectedImage : styles.unselectedImage;
 
-    //todo move these 3 rendering into a separated component ?
     if (!this.props.massSelection) {
       //render a normal image that highlight
       return (
@@ -66,7 +58,7 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
     }
 
     //render in case of selection
-    if (_.indexOf(this.state.selectedImageIds, img.imageId) == -1) {
+    if (_.indexOf(this.props.selectedImageIds, img.imageId) == -1) {
       //render unselected item
       return (
         <LocationSelectionImage imageUrl={img.url} width={itemWidth} isChecked={false} />
@@ -101,8 +93,6 @@ interface Style {
   locationMediaContainer: ViewStyle;
   headerText: TextStyle;
   normalImage: ViewStyle;
-  selectedImage: ViewStyle;
-  unselectedImage: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -123,9 +113,4 @@ const styles = StyleSheet.create<Style>({
   normalImage: {
 
   },
-  selectedImage: {
-    padding: 5,
-  },
-  unselectedImage: {
-  }
 })
