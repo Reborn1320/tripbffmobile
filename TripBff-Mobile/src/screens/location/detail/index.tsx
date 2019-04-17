@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Header, Content } from 'native-base';
+import { Container, Header, Content, Button, Text } from 'native-base';
 import { StoreData, RawJsonData } from '../../../store/Interfaces';
 import { connect } from 'react-redux';
 import { NavigationScreenProp } from 'react-navigation';
@@ -7,6 +7,7 @@ import _ from "lodash";
 import LocationContent from '../../../_organisms/Location/LocationContent';
 import LocationModal from '../../../_organisms/Location/LocationModal'
 import { updateLocationAddress } from '../../../store/Trip/operations';
+import { View } from 'react-native';
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
@@ -28,6 +29,8 @@ export interface Props extends IMapDispatchToProps {
 
 interface State {
     isUpdateLocationAddressModalVisible: boolean
+    isMassSelection: boolean;
+    selectedImageIds: string[]
 }
 
 class LocationDetail extends React.Component<Props, State> {
@@ -36,29 +39,64 @@ class LocationDetail extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            isUpdateLocationAddressModalVisible: false
+            isUpdateLocationAddressModalVisible: false,
+            isMassSelection: false,
+            selectedImageIds: [],
         }
     }
 
-    _openUpdateLocationAddressModal = () => {
+    private _openUpdateLocationAddressModal = () => {
         this.setState({isUpdateLocationAddressModalVisible: true});
     }
 
-    _confirmUpdateLocationAddress = (name, address, long, lat) => {
+    private _confirmUpdateLocationAddress = (name, address, long, lat) => {
         var location: RawJsonData.LocationAddressVM = {
             name, address, long, lat
         };
         this.props.updateLocationAddress(this.props.tripId, this.props.dateIdx, this.props.locationId, location);
     }
 
-    _cancelUpdateLocationAddress = () => {
+    private _cancelUpdateLocationAddress = () => {
         this.setState({isUpdateLocationAddressModalVisible: false});
     }
 
+
+    private onMassSelection = () => {
+        this.setState({ isMassSelection: true });
+    }
+
+    private onSelect = (imageId: string) => {
+        if (_.indexOf(this.state.selectedImageIds, imageId) == -1) {
+        this.setState({
+            selectedImageIds: [...this.state.selectedImageIds, imageId]
+        })
+        }
+        else {
+        this.setState({
+            selectedImageIds: _.remove(this.state.selectedImageIds, (id) => id != imageId)
+        })
+        }
+    }
+
     render() {
+        const { isMassSelection } = this.state;
         return (
             <Container>
                 <Header>
+                {isMassSelection &&
+                (<View style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "stretch" }}>
+                    <Button transparent
+                        onPress={() => this.setState({ isMassSelection: false, selectedImageIds: [] })}
+                    >
+                        <Text>CANCEL</Text>
+                    </Button>
+                    <Button transparent danger
+                        onPress={() => this.setState({ isMassSelection: false, selectedImageIds: [] })}
+                    >
+                        <Text>DELETE</Text>
+                    </Button>
+                    </View>)
+                }
                 </Header>
                 <Content>
                     <LocationContent
@@ -67,6 +105,11 @@ class LocationDetail extends React.Component<Props, State> {
                         likeItems={this.props.likeItems}
                         description={this.props.description}
                         images={this.props.images}
+
+                        isMassSelection={isMassSelection}
+                        onMassSelection={this.onMassSelection}
+                        onSelect={this.onSelect}
+                        selectedImageIds={this.state.selectedImageIds}
                         
                         openUpdateLocationAddressModalHanlder={this._openUpdateLocationAddressModal}>
                     </LocationContent>
