@@ -17,6 +17,12 @@ export interface Props extends IMapDispatchToProps {
     likeItems: Array<StoreData.LocationLikeItemVM>,
     description: string,
     images: Array<StoreData.ImportImageVM>
+
+    isMassSelection: boolean;
+    selectedImageIds: string[]
+    onSelect: (imageId: string) => void
+    onMassSelection: () => void
+
 }
 
 interface State {
@@ -24,25 +30,31 @@ interface State {
 
 export default class LocationContent extends React.PureComponent<Props, State> {
     render() {
+        const { isMassSelection, selectedImageIds } = this.props;
         return (
             <View>
-                    <LocationName 
-                        locationName={this.props.name}
-                        locationAddress={this.props.address}
-                        openUpdateLocationAddressModalHanlder={this.props.openUpdateLocationAddressModalHanlder}>                        
-                    </LocationName>
+                <LocationName
+                    locationName={this.props.name}
+                    locationAddress={this.props.address}
+                    openUpdateLocationAddressModalHanlder={this.props.openUpdateLocationAddressModalHanlder}>
+                </LocationName>
 
-                    <LocationLike
-                        likeItems={this.props.likeItems}>                        
-                    </LocationLike>
+                <LocationLike
+                    likeItems={this.props.likeItems}>
+                </LocationLike>
 
-                    <LocationDescription
-                        description={this.props.description}>                        
-                    </LocationDescription>
+                <LocationDescription
+                    description={this.props.description}>
+                </LocationDescription>
 
-                    <LocationMedia
-                        images={this.props.images.map( img => ({ imageId: img.imageId, url: img.thumbnailExternalUrl}))}>                        
-                    </LocationMedia>
+                <LocationMedia
+                    images={this.props.images.map(img => ({ imageId: img.imageId, url: img.thumbnailExternalUrl }))}
+                    massSelection={isMassSelection}
+                    onMassSelection={this.props.onMassSelection}
+                    onSelect={this.props.onSelect}
+                    selectedImageIds={selectedImageIds}
+                >
+                </LocationMedia>
             </View>
         )
     }

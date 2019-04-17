@@ -1,12 +1,8 @@
 import React, { Component } from "react";
-import { Container, Header, Content, View, Text } from 'native-base';
-import { connect } from "react-redux";
+import { Container, Header, Content, View, Text, Button } from 'native-base';
 import _, { } from "lodash";
-import moment, { Moment } from "moment";
-import { StoreData } from "../../../store/Interfaces";
 import { mixins } from "../../../_utils";
 import LocationMedia from "../LocationMedia";
-import { Button } from "react-native";
 import { LocationSelectionImage } from "../LocationSelectionImage";
 
 interface IMapDispatchToProps {
@@ -35,7 +31,7 @@ class LocationMediaDoc extends Component<Props, State> {
           url: "https://placekitten.com/g/200/200"
         };
       }),
-      isMassSelection: false,
+      isMassSelection: true,
       selectedImageIds: [],
     }
   }
@@ -63,16 +59,18 @@ class LocationMediaDoc extends Component<Props, State> {
       <Container>
         <Header>
           {isMassSelection &&
-          (<View style={{ display: "flex", flexDirection: "row" }}>
-            <Button
-              onPress={() => this.setState({ isMassSelection: false, selectedImageIds: [] })}
-              title="Cancel">
-            </Button>
-            <Button
-              onPress={() => this.setState({ isMassSelection: false, selectedImageIds: [] })}
-              title="Complete selection">
-            </Button>
-          </View>)
+            (<View style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "stretch" }}>
+              <Button transparent
+                onPress={() => this.setState({ isMassSelection: false, selectedImageIds: [] })}
+              >
+                <Text>CANCEL</Text>
+              </Button>
+              <Button transparent danger
+                onPress={() => this.setState({ isMassSelection: false, selectedImageIds: [] })}
+              >
+                <Text>DELETE</Text>
+              </Button>
+            </View>)
           }
         </Header>
         <Content>
@@ -82,7 +80,7 @@ class LocationMediaDoc extends Component<Props, State> {
             <LocationSelectionImage imageUrl="https://placekitten.com/g/200/200" width={120} isChecked={false} />
             <LocationSelectionImage imageUrl="https://placekitten.com/g/200/200" width={120} isChecked={true} />
             <Text>some thing here</Text>
-            
+
           </View>
           <View
             style={{
@@ -95,7 +93,7 @@ class LocationMediaDoc extends Component<Props, State> {
               images={images}
               onSelect={this.onSelect}
               selectedImageIds={this.state.selectedImageIds}
-              />
+            />
           </View>
 
         </Content>

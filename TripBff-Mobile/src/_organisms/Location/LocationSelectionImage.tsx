@@ -33,9 +33,10 @@ export class LocationSelectionImage extends React.Component<Props, State> {
         }}
       >
         {!isChecked && <Icon style={styles.unCheckIcon} type="FontAwesome5" name="circle" />}
+        {/* this is not an issue, use solid to pass option into react-native-icons */}
         {isChecked && <Icon style={styles.checkIcon} active solid type="FontAwesome5" name="check-circle" />}
         <Image
-          style={Object.assign({ width, height: width }, isChecked ? styles.image2 : styles.image)}
+          style={Object.assign({ width, height: width }, isChecked ? styles.checkImage : styles.image)}
           source={{ uri: this.props.imageUrl }}
         />
       </View>
@@ -47,7 +48,7 @@ export class LocationSelectionImage extends React.Component<Props, State> {
 interface Style {
   container: ViewStyle;
   image: ViewStyle;
-  image2: ViewStyle;
+  checkImage: ViewStyle;
   unCheckIcon: TextStyle;
   checkIcon: TextStyle;
 }
@@ -58,8 +59,8 @@ const styles = StyleSheet.create<Style>({
     // backgroundColor: NBTheme.cardDefaultBg,
   },
   image: {},
-  image2: {
-    borderColor: NBTheme.brandSuccess,
+  checkImage: {
+    borderColor: NBTheme.brandDark,
     borderWidth: 4,
   },
   unCheckIcon: {
@@ -68,7 +69,10 @@ const styles = StyleSheet.create<Style>({
     top: 5,
     elevation: 5,
     color: NBTheme.brandLight,
+    width: 20,
+    height: 20,
     fontSize: 18,
+    textAlign: "center",
   },
   checkIcon: {
     position: "absolute",
@@ -76,6 +80,11 @@ const styles = StyleSheet.create<Style>({
     top: 5,
     elevation: 5,
     color: NBTheme.brandSuccess,
+    backgroundColor: NBTheme.brandLight,
+    borderRadius: 99,
+    width: 20,
+    height: 20,
     fontSize: 18,
+    textAlign: "center",
   }
 })
