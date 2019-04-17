@@ -12,7 +12,7 @@ export interface Props {
 export interface State {
 }
 
-export class LocationSelectionImage extends React.Component<Props, State> {
+export class ImageSelection extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)

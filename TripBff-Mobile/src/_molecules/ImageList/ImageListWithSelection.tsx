@@ -8,10 +8,10 @@ export interface Props {
   items: Array<IImage>
   renderItem: ({ item: IImage, index: number }) => ReactNode
 
-  onSelect: (imageId: string) => void
+  onSelect: (imageId: string, index: number) => void
 
-  onMassSelection: () => void
-  massSelection: boolean
+  onMassSelection?: () => void
+  massSelection?: boolean
 
   width?: number
   paddingLeftRight?: number
@@ -28,8 +28,8 @@ interface IImage {
 
 export class ImageListWithSelection extends React.Component<Props, States> {
 
-  private onPress = (imageId: string) => {
-    this.props.onSelect(imageId);
+  private onPress = (imageId: string, index: number) => {
+    this.props.onSelect(imageId, index);
   }
 
   private onLongPress = () => {
@@ -38,10 +38,10 @@ export class ImageListWithSelection extends React.Component<Props, States> {
 
   private renderItem = (itemInfo: { item: IImage, index: number }) => {
 
-    if (this.props.massSelection) {
+    if (!this.props.massSelection || this.props.massSelection == true) {
       return (
         <TouchableHighlight
-          onPress={() => this.onPress(itemInfo.item.imageId)}
+          onPress={() => this.onPress(itemInfo.item.imageId, itemInfo.index)}
         >
           {this.props.renderItem(itemInfo)}
         </TouchableHighlight>
@@ -50,7 +50,7 @@ export class ImageListWithSelection extends React.Component<Props, States> {
 
     return (
       <TouchableHighlight
-        onPress={() => this.onPress(itemInfo.item.imageId)}
+        onPress={() => this.onPress(itemInfo.item.imageId, itemInfo.index)}
         onLongPress={this.onLongPress}
       >
         {this.props.renderItem(itemInfo)}

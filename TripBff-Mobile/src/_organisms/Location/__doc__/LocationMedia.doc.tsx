@@ -3,7 +3,7 @@ import { Container, Header, Content, View, Text, Button } from 'native-base';
 import _, { } from "lodash";
 import { mixins } from "../../../_utils";
 import LocationMedia from "../LocationMedia";
-import { LocationSelectionImage } from "../LocationSelectionImage";
+import { ImageSelection } from "../../../_molecules/ImageList/ImageSelection";
 
 interface IMapDispatchToProps {
 }
@@ -77,8 +77,8 @@ class LocationMediaDoc extends Component<Props, State> {
           <View>
             <Text>some thing here</Text>
             <Text>test selection image</Text>
-            <LocationSelectionImage imageUrl="https://placekitten.com/g/200/200" width={120} isChecked={false} />
-            <LocationSelectionImage imageUrl="https://placekitten.com/g/200/200" width={120} isChecked={true} />
+            <ImageSelection imageUrl="https://placekitten.com/g/200/200" width={120} isChecked={false} />
+            <ImageSelection imageUrl="https://placekitten.com/g/200/200" width={120} isChecked={true} />
             <Text>some thing here</Text>
 
           </View>
