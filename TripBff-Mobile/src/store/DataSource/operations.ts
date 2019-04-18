@@ -1,5 +1,6 @@
 import { getAllFeelings as getAllFeelingsAction, 
-        getAllActivities as getAllActivitiesAction } from "./actions";
+        getAllActivities as getAllActivitiesAction,
+        getAllHighlights as getAllHighlightsAction } from "./actions";
 import { ThunkResultBase } from "..";
 
 export function getAllFeelings(): ThunkResultBase {
@@ -24,6 +25,19 @@ export function getAllFeelings(): ThunkResultBase {
         })
         .catch(error => {
           console.log("get list of pre-defined activities error", JSON.stringify(error));
+        });    
+    };
+  }
+
+  export function getAllHighlights(): ThunkResultBase {
+    return async function (dispatch, getState, extraArguments): Promise<any> {
+  
+      return extraArguments.api.get(`/trips/highlights`)
+        .then(res => {
+           dispatch(getAllHighlightsAction(res.data));
+        })
+        .catch(error => {
+          console.log("get list of pre-defined highlights error", JSON.stringify(error));
         });    
     };
   }
