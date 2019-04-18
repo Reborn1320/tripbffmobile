@@ -1,11 +1,12 @@
 import * as React from "react";
 import { View, Text, Button, Icon } from "native-base";
-import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
+import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
 import { getAllHighlights } from "../../store/DataSource/operations";
 import { StoreData } from "../../store/Interfaces";
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
 interface IMapDispatchToProps {
     getAllHighlights: () => Promise<StoreData.PreDefinedHighlightVM>
@@ -19,10 +20,12 @@ export interface Props {
 }
 
 interface State {
+  index: number,
+  routes: Array<any>,
 }
 
 class HighlightItem extends React.PureComponent<any> {
-  _onPress = () => {
+   _onPress = () => {
     // this.props.onPressItem({
     //   feelingId: this.props.id,
     //   label: this.props.label,
@@ -42,9 +45,48 @@ class HighlightItem extends React.PureComponent<any> {
   }
 }
 
+class TabHighlightComponent extends React.PureComponent<any, any> {
+
+  _onConfirm(highlight) { 
+    //this.props.confirmHandler(this.props.locationId, feeling);
+  }
+
+  _keyExtractor = (item, index) => item.highlightId;
+
+  _renderItem = ({item}) => (
+    <HighlightItem
+      id={item.highlightId}
+      label={item.label}
+      type={item.type}
+      onPressItem={(item) => this._onConfirm(item)}
+    />
+  );
+
+  render() {
+    return (
+      <View style={this.props.styles}>
+          <FlatList
+            style={{flex: 1, marginVertical: 20}}
+            data={this.props.items}
+            keyExtractor={this._keyExtractor}
+            renderItem={this._renderItem}
+            numColumns={2}
+          />
+      </View>
+    );
+  }
+}
+
 class AddHighlightModalComponent extends React.Component<Props & IMapDispatchToProps, State> {
   constructor(props: Props & IMapDispatchToProps) {
     super(props);  
+    this.state = {
+      index: 0,
+      routes: [
+        { key: 'first', title: 'Like' },
+        { key: 'second', title: 'Dislike' },
+      ],
+    }
   }
 
   componentDidMount() {
@@ -55,32 +97,28 @@ class AddHighlightModalComponent extends React.Component<Props & IMapDispatchToP
     this.props.cancelHandler();
   };
 
-  _onConfirm(highlight) { 
-    //this.props.confirmHandler(this.props.locationId, feeling);
-  }
+  _renderContent() {
+    const likePreDefinedItems = this.props.preDefinedHighlights.filter(item =>  item.type == "Like" );
+    const dislikePreDefinedItems = this.props.preDefinedHighlights.filter(item => item.type == "Dislike" );
 
-  _keyExtractor = (item, index) => item.highlightId;
-
-  _renderItem = ({item}) => (
-      <HighlightItem
-        id={item.highlightId}
-        label={item.label}
-        type={item.type}
-        onPressItem={(item) => this._onConfirm(item)}
-      />
+    return (
+        <TabView
+          navigationState={this.state}
+          renderScene={({ route }) => {
+            switch (route.key) {
+              case 'first':
+                return <TabHighlightComponent items={likePreDefinedItems} styles={[styles.tabScene, { backgroundColor: '#ff4081' }]} />;
+              case 'second':
+                return <TabHighlightComponent items={dislikePreDefinedItems} styles={[styles.tabScene, { backgroundColor: '#ff4081' }]} />;
+              default:
+                return null;
+            }
+          }}
+          onIndexChange={index => this.setState({ index })}
+          initialLayout={{ width: Dimensions.get('window').width }}
+        />
     );
-
-    _renderContent() {
-        return (
-          <FlatList
-              style={{flex: 1, marginVertical: 20}}
-              data={this.props.preDefinedHighlights}
-              keyExtractor={this._keyExtractor}
-              renderItem={this._renderItem}
-              numColumns={2}
-            />
-        );
-    }
+  }
 
   render() {
     const { isVisible } = this.props;
@@ -95,7 +133,7 @@ class AddHighlightModalComponent extends React.Component<Props & IMapDispatchToP
                 <View style={styles.buttons}>
                     <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
                 </View>
-                <View style={{ flex: 1 }}>
+                <View style={styles.modalContentContainer}>
                   {contentElement}
                 </View>                
             </View>
@@ -108,7 +146,8 @@ interface Style {
   modal: ViewStyle,
   buttons: ViewStyle;
   modalInnerContainer: ViewStyle;
-  placesContainer: ViewStyle;
+  modalContentContainer: ViewStyle;
+  tabScene: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -129,8 +168,11 @@ const styles = StyleSheet.create<Style>({
     width: "100%",
     height: "100%"
   },
-  placesContainer: {
-    flex: 6
+  modalContentContainer: {
+    flex: 10
+  },
+  tabScene: {
+    flex: 1,
   }
 })
   
