@@ -35,8 +35,11 @@ class HighlightItem extends React.PureComponent<any> {
 
   render() {
     return (
-      <TouchableOpacity onPress={this._onPress}>
-        <View style={{flex: 1, flexDirection: "row", justifyContent: 'flex-start'}}>
+      <TouchableOpacity onPress={this._onPress}       
+        style={{width: Dimensions.get('window').width / 2, height: 40, borderRadius: 4,
+        borderWidth: 0.2,
+        borderColor: '#d6d7da'}}>
+        <View style={{flex: 1, flexDirection: "row", justifyContent: 'flex-start', alignItems: "center"}}>
           <Icon style={{ marginRight: 5}} type="FontAwesome5" name={this.props.icon} />  
           <Text>{this.props.label}</Text>
         </View>
@@ -66,6 +69,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
     return (
       <View style={this.props.styles}>
           <FlatList
+            contentContainerStyle={{flexDirection:"row", justifyContent: "space-between", flexWrap: 'wrap'}}
             style={{flex: 1, marginVertical: 20}}
             data={this.props.items}
             keyExtractor={this._keyExtractor}
