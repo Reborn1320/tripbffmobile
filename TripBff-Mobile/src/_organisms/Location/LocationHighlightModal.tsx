@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { getAllHighlights } from "../../store/DataSource/operations";
 import { StoreData } from "../../store/Interfaces";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { SearchBar } from 'react-native-elements';
 
 interface IMapDispatchToProps {
     getAllHighlights: () => Promise<StoreData.PreDefinedHighlightVM>
@@ -47,6 +48,19 @@ class HighlightItem extends React.PureComponent<any> {
 }
 
 class TabHighlightComponent extends React.PureComponent<any, any> {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      search: '',
+      preDefinedItems: [],
+      newDefinedItem: {}
+    }
+  }
+
+  componentDidMount() {
+    this.setState({ preDefinedItems: this.props.items});
+  }
 
   _onConfirm(highlight) { 
     //this.props.confirmHandler(this.props.locationId, feeling);
@@ -63,18 +77,55 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
     />
   );
 
+  updateSearch = search => {
+    var filterItems = this.props.items;
+    var newItem = {};
+
+    if (search) {
+      var searchLower = search.toLowerCase();
+      filterItems = filterItems.filter(item => item.label.toLowerCase().includes(searchLower));
+
+      if (this.state.newDefinedItem)
+        filterItems = filterItems.filter(item => item.highlightId != this.state.newDefinedItem.highlightId);
+
+      var exactItem = filterItems.find(item => item.label.toLowerCase() == searchLower);
+
+      if (!exactItem) {
+        var lastPredefinedItem = this.props.items.slice(-1);
+        newItem = {
+          highlightId: -(lastPredefinedItem.highlightId),
+          label: search,
+          type: lastPredefinedItem.type
+        };
+        filterItems.push(newItem); 
+      }     
+    }
+    
+    this.setState({ preDefinedItems: filterItems, search: search, newDefinedItem: newItem });
+  };
+
+
   render() {
+    
     return (
-      <View style={this.props.styles}>
-          <FlatList
-            contentContainerStyle={styles.highlightContentContainer}
-            style={{flex: 1, marginVertical: 20}}
-            data={this.props.items}
-            keyExtractor={this._keyExtractor}
-            renderItem={this._renderItem}
-            numColumns={2}
-          />
-      </View>
+       <View style={this.props.styles}>
+           <View>
+              <SearchBar
+                placeholder="Search"
+                onChangeText={this.updateSearch}
+                value={this.state.search}
+              />
+          </View> 
+          <View style={{flex: 1}}>
+            <FlatList             
+              style={{flex: 1, marginVertical: 20}}
+              data={this.state.preDefinedItems}
+              keyExtractor={this._keyExtractor}
+              renderItem={this._renderItem}
+              numColumns={2}
+            />
+          </View>
+       </View>
     );
   }
 }
@@ -109,9 +160,9 @@ class AddHighlightModalComponent extends React.Component<Props & IMapDispatchToP
           renderScene={({ route }) => {
             switch (route.key) {
               case 'first':
-                return <TabHighlightComponent items={likePreDefinedItems} styles={[styles.tabScene, { backgroundColor: '#ff4081' }]} />;
+                return <TabHighlightComponent items={likePreDefinedItems} styles={styles.tabScene} />;
               case 'second':
-                return <TabHighlightComponent items={dislikePreDefinedItems} styles={[styles.tabScene, { backgroundColor: '#ff4081' }]} />;
+                return <TabHighlightComponent items={dislikePreDefinedItems} styles={styles.tabScene} />;
               default:
                 return null;
             }
@@ -164,7 +215,6 @@ const styles = StyleSheet.create<Style>({
     backgroundColor: "white"
   },
   buttons: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between"
   },
@@ -174,7 +224,7 @@ const styles = StyleSheet.create<Style>({
     height: "100%"
   },
   modalContentContainer: {
-    flex: 10
+    flex: 1
   },
   tabScene: {
     flex: 1,
