@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { FlatList, View } from "react-native";
 import { Container, Header, Content, Button, Text, Footer } from 'native-base';
-import styled from "styled-components/native";
 import { StoreData } from "../../../store/Interfaces";
 import _ from "lodash";
 import { connect } from "react-redux";
@@ -355,7 +354,7 @@ class TripImportation extends Component<Props, State> {
                 <Content>
                     {isLoading && <Loading message={loadingMessage} />}
                     {!isLoading &&
-                        <StyledFlatList
+                        <FlatList style={{ borderBottomWidth: 0 }}
                             data={locations}
                             renderItem={this._renderItem}
                             keyExtractor={(item, index) => String(index)}
@@ -392,11 +391,6 @@ class TripImportation extends Component<Props, State> {
         );
     }
 }
-
-
-const StyledFlatList = styled(FlatList)`
-  border-bottom-width: 0;
-`
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId } = ownProps.navigation.state.params;
