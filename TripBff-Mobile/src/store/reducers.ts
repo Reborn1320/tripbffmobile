@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import moment from "moment";
+import moment, { Moment } from "moment";
 import { StoreData } from "./Interfaces";
-import homeScreenReducer from "../screens/home/reducer";
 import { TRIP_ADD } from '../screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './User/actions';
 import { ADD_INFOGRAPHIC_ID } from '../screens/trip/export/actions';
@@ -32,6 +31,7 @@ const initState: StoreData.BffStoreData = {
     trips: [] 
 }
 
+//todo remove this function too
 function getDateVms(fromDate, toDate, oldDateVms) {
     var dateVMs: StoreData.DateVM[] = [];
     const nDays = toDate.diff(fromDate, "days") + 1
@@ -70,26 +70,22 @@ function compareLocationsFromTime(first, second) {
     return order;
 }
 
-function importSelectedLocations(state: StoreData.TripVM, action) {
-    const { locations } = action
+function getDatesProperty(fromDate: Moment, toDate: Moment, locations: StoreData.LocationVM[]) {
     var dateVMs: StoreData.DateVM[] = [];
-    const nDays = state.toDate.diff(state.fromDate, "days") + 1
+    const nDays = toDate.diff(fromDate, "days") + 1
 
     for (let idx = 0; idx < nDays; idx++) {
-        var locationsOfDate = locations.filter(element => moment(element.fromTime).diff(state.fromDate, "days") == idx);
+        var locationsOfDate = locations.filter(element => moment(element.fromTime).diff(fromDate, "days") == idx);
 
         dateVMs.push({
             dateIdx: idx + 1,
-            date: state.fromDate.clone().add(idx, 'days'),
+            date: fromDate.clone().add(idx, 'days'),
             locationIds: locationsOfDate.map(e => { return e.locationId }),
             locations: locationsOfDate.sort(compareLocationsFromTime).map(e => { return e })
         })
     }
 
-    return {
-        ...state,
-        dates: dateVMs
-    };
+    return dateVMs;
 }
 
 function userReducer(state, action) {
@@ -146,6 +142,7 @@ function locationReducer(state: StoreData.LocationVM, action) {
     }    
 }
 
+//date + locations reducer
 function dateReducer(state: StoreData.DateVM, action) {
     switch(action.type) {
         case LOCATION_REMOVE:
@@ -173,7 +170,6 @@ function dateReducer(state: StoreData.DateVM, action) {
     }    
 }
 
-
 function tripReducer(state: StoreData.TripVM, action) {
     console.log('come here trip reducer: ' + JSON.stringify(action));
 
@@ -183,8 +179,13 @@ function tripReducer(state: StoreData.TripVM, action) {
                 infographicId: action.infographicId
               });              
         case IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS:
-            return importSelectedLocations(state, action);        
-        case TRIP_UPDATE_DATE_RANGE:
+            const { locations } = action;
+            return {
+                ...state,
+                locations,
+                dates: getDatesProperty(state.fromDate, state.toDate, locations)
+            }
+        case TRIP_UPDATE_DATE_RANGE: //todo check this again, why do I need to process something in frontend now ?
             return {
                 ...state,
                 fromDate: action.fromDate,
@@ -212,8 +213,12 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
     console.log("actionType", actionType);
     if (_.startsWith(actionType, "TRIPS")) {
         //handle trips
-        //todo clearly something wrong here
-        return action.trips.map(trip => importSelectedLocations(trip, { locations: trip.locations }));
+        return action.trips.map(trip => {
+            return {
+                ...trip,
+                dates: getDatesProperty(trip.fromDate, trip.toDate, trip.locations)
+            }
+        });
     }
     else if (actionType == TRIP_ADD) {
         return [...state, action.trip];
@@ -254,9 +259,10 @@ function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
 //todo small refactor to move each reducer to files
 export default function bffApp(state: StoreData.BffStoreData = initState, action): StoreData.BffStoreData {
     return {
-        repo: homeScreenReducer(state.repo, action),
         user: userReducer(state.user, action),
         trips: tripsReducer(state.trips, action),
+        //todo trips shouldn't handle too much things in here!!!!!
+        //todo: should it be trip, location, in respect to each page ?
         dataSource: dataSourceReducer(state.dataSource, action)
     }
 }

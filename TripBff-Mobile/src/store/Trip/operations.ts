@@ -5,7 +5,8 @@ import {
   updateLocationActivity as updateLocationActivityAction,
   updateTripDateRange as updateTripDateRangeAction,
   updateTripName as updateTripNameAction,
-  updateLocationAddress as updateLocationAddressAction } from "./actions";
+  updateLocationAddress as updateLocationAddressAction, 
+  updateLocationImages} from "./actions";
 import { ThunkResultBase } from "..";
 import { Moment } from "moment";
 import { StoreData, RawJsonData } from "../Interfaces";
@@ -135,6 +136,7 @@ export function updateLocationActivity(tripId: string, dateIdx: number, location
   };
 }
 
+//todo: shouldn't depend on dateIdx
 export function updateLocationAddress(tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     const data = {
@@ -149,6 +151,24 @@ export function updateLocationAddress(tripId: string, dateIdx: number, locationI
     })
     .catch((err) => {
       console.log('error update location activity: ', err);
+    });
+  };
+}
+
+export function deleteMultiLocationImages(tripId: string, locationId: string,
+  imageIds: string[]): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    const data = {
+      imageIds
+    };
+    return extraArguments.tripApiService
+    .delete(`/trips/${tripId}/locations/${locationId}/images`, { data })
+    .then((res) => {
+      const location: StoreData.ImportImageVM = res.data;
+      dispatch(updateLocationImages(tripId, locationId, location));
+    })
+    .catch((err) => {
+      console.log('error delete multiple location images: ', err);
     });
   };
 }
