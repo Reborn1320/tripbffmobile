@@ -27,15 +27,20 @@ export default class LocationLike extends React.PureComponent<Props, State> {
                     <Text>Things you like/dislike</Text>
                 </Button>
 
-                <View style={{flexDirection: "row", flexWrap: 'wrap'}}>
-                    {
-                        this.props.likeItems.map(item => 
-                            (item.type == "Like" 
-                                ? <Badge key={item.likeItemId} value={item.label} status="primary"/> 
-                                : <Badge key={item.likeItemId} value={item.label} status="warning"/>
-                            ))
-                    }
-                </View>                
+                {
+                    this.props.likeItems ? 
+                     <View style={{flexDirection: "row", flexWrap: 'wrap'}}>
+                        {
+                            this.props.likeItems.map(item => 
+                                (item.highlightType == "Like" 
+                                    ? <Badge key={item.highlightId} value={item.label} status="primary"/> 
+                                    : <Badge key={item.highlightId} value={item.label} status="warning"/>
+                                ))
+                        }
+                    </View> 
+                 : <View></View>
+                }
+                               
             </View>
         );
     }

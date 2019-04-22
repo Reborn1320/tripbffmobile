@@ -12,9 +12,9 @@ export module StoreData {
     export type LikeTypeVM = "Like" | "Dislike";
 
     export interface LocationLikeItemVM {
-        likeItemId: string,
+        highlightId: string,
         label: string,
-        type: LikeTypeVM
+        highlightType: LikeTypeVM
     }
 
     export interface FeelingVM {
@@ -83,9 +83,9 @@ export module StoreData {
     }
 
     export interface PreDefinedHighlightVM {
-        highlightId: number,
+        highlightId: string,
         label: string,
-        type: LikeTypeVM
+        highlightType: LikeTypeVM
     }
 
     export interface PreDefinedFeelingVM {

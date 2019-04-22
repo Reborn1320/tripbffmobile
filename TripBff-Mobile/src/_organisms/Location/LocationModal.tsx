@@ -9,7 +9,7 @@ import LocationHighlightModal from "./LocationHighlightModal"
 interface IMapDispatchToProps {
     confirmUpdateLocationAddressHandler: (name: string, address: string, long: number, lat: number) => void
     cancelUpdateLocationAddressHandler: () => void
-    confirmUpdateLocationHighlightHandler: () => void
+    confirmUpdateLocationHighlightHandler: (highlights: Array<StoreData.LocationLikeItemVM>) => void
     cancelUpdateLocationHighlightHandler: () => void
 }
 
@@ -17,7 +17,8 @@ export interface Props extends IMapDispatchToProps {
     long: number,
     lat: number,
     isUpdateLocationAddressModalVisible: boolean,
-    isUpdateLocationHighlightModalVisible: boolean
+    isUpdateLocationHighlightModalVisible: boolean,
+    likeItems: Array<StoreData.LocationLikeItemVM>
 }
 
 interface State {
@@ -33,8 +34,8 @@ export default class LocationModal extends PureComponent<Props, State> {
         this.props.cancelUpdateLocationAddressHandler();
     }    
 
-    _updateLocationHighlightConfirmed = () => {
-        this.props.confirmUpdateLocationHighlightHandler();
+    _updateLocationHighlightConfirmed = (highlights) => {
+        this.props.confirmUpdateLocationHighlightHandler(highlights);
     }
 
     _cancelUpdateLocationHighlight = () => {
@@ -54,7 +55,8 @@ export default class LocationModal extends PureComponent<Props, State> {
                 <LocationHighlightModal
                     confirmHandler={this._updateLocationHighlightConfirmed}
                     cancelHandler={this._cancelUpdateLocationHighlight}
-                    isVisible={this.props.isUpdateLocationHighlightModalVisible}>
+                    isVisible={this.props.isUpdateLocationHighlightModalVisible}
+                    likeItems={this.props.likeItems}>
                 </LocationHighlightModal>  
             </View>
         );

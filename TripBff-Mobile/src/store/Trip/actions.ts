@@ -8,6 +8,7 @@ export const LOCATION_UPDATE_ACTIVITY = "TRIP_LOCATION_UPDATE_ACTIVITY"
 export const TRIP_UPDATE_DATE_RANGE = "TRIP_UPDATE_DATE_RANGE"
 export const TRIP_UPDATE_TRIP_NAME = "TRIP_UPDATE_TRIP_NAME"
 export const LOCATION_UPDATE_ADDRESS = "TRIP_LOCATION_UPDATE_ADDRESS"
+export const LOCATION_UPDATE_HIGHLIGHT = "TRIP_LOCATION_UPDATE_HIGHLIGHT"
 
 export function removeLocation(tripId: string, dateIdx: number, locationId: string) {
     return {
@@ -48,5 +49,11 @@ export function updateTripName(tripId: string, tripName: string) {
 export function updateLocationAddress(tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) {
     return {
         type: LOCATION_UPDATE_ADDRESS, tripId, dateIdx, locationId, location
+    }
+}
+
+export function updateLocationHighlight(tripId: string, dateIdx: number, locationId: string, highlights: Array<StoreData.LocationLikeItemVM>) {
+    return {
+        type: LOCATION_UPDATE_HIGHLIGHT, tripId, dateIdx, locationId, highlights
     }
 }
