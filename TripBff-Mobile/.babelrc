@@ -1,14 +1,16 @@
-{
-  "presets": [
-    "module:metro-react-native-babel-preset"
-  ],
-  "plugins": [
-  ],
-  "env": {
-    "development": {
-      "plugins": [
-        "@babel/plugin-transform-react-jsx-source"
-      ]
-    }
-  }
-}
+// this file seems to be ignored
+// {
+//   "presets": [
+//     "module:metro-react-native-babel-preset"
+//   ],
+//   "plugins": [
+//     "@babel/plugin-proposal-class-properties"
+//   ],
+//   "env": {
+//     "development": {
+//       "plugins": [
+//         "@babel/plugin-transform-react-jsx-source"
+//       ]
+//     }
+//   }
+// }

@@ -1,3 +1,6 @@
+# custom one
+.jest
+
 # OSX
 #
 .DS_Store
