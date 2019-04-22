@@ -57,7 +57,10 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
   }
 
   componentDidMount() {
-    this.setState({ preDefinedItems: this.props.items});
+    this.setState({
+      preDefinedItems: this.props.items.filter(item => !this.props.selectedItems.includes(item)),
+      selectedItems: this.props.selectedItems
+    });
   }
 
   updateSearch = search => {
@@ -79,7 +82,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
         newItem = {          
           highlightId: lastPredefinedItem[0].highlightId + 1000000,
           label: search,
-          type: lastPredefinedItem[0].type
+          highlightType: lastPredefinedItem[0].highlightType
         };
         filterItems.push(newItem);         
       }     
@@ -88,7 +91,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
     this.setState({ preDefinedItems: filterItems, search: search, newDefinedItem: newItem });
   };
 
-  _onConfirm = (selectedItem) => { 
+  _onConfirm = (selectedItem) => {
     var selectedItems = [...this.state.selectedItems, selectedItem];
     this.setState({
       preDefinedItems: this.props.items.filter(item => !selectedItems.includes(item)),
@@ -96,6 +99,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
       newDefinedItem: {},
       search: ''
     });
+    this.props.addSelectedHighlights(selectedItem);
   }
 
   _onDeselectConfirm = (deSelectedItem) => {
@@ -115,6 +119,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
       preDefinedItems: preDefinedItems,
       selectedItems: selectedItems
     });
+    this.props.removeSelectedHighlights(deSelectedItem);
   }
 
   _keySelectedExtractor = (item, index) => item.highlightId;
@@ -136,7 +141,6 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
   );
   
   render() {       
-
     return (
        <View style={this.props.styles}>
            <View>
@@ -169,23 +173,8 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
   }
 }
 
-interface IMapDispatchToProps {
-  getAllHighlights: () => Promise<StoreData.PreDefinedHighlightVM>
-}
+class AddHighlightModalContentComponent extends React.PureComponent<any, any> {
 
-export interface Props {
-isVisible: boolean;
-preDefinedHighlights?: Array<StoreData.PreDefinedHighlightVM>
-confirmHandler: () => void;
-cancelHandler?: () => void;
-}
-
-interface State {
-index: number,
-routes: Array<any>,
-}
-
-class AddHighlightModalComponent extends React.Component<Props & IMapDispatchToProps, State> {
   constructor(props: Props & IMapDispatchToProps) {
     super(props);  
     this.state = {
@@ -193,45 +182,128 @@ class AddHighlightModalComponent extends React.Component<Props & IMapDispatchToP
       routes: [
         { key: 'first', title: 'Like' },
         { key: 'second', title: 'Dislike' },
-      ],
+      ]
+    }
+  }
+
+  _addSelectedHighlights = (item) => {    
+      this.props.addSelectedHighlights(item);
+  }
+
+  _removeSelectedHighlights = (deSelectedItem) => {
+    this.props.removeSelectedHighlights(deSelectedItem);
+  }
+
+  render() {
+    const likePreDefinedItems = this.props.preDefinedHighlights.filter(item =>  item.highlightType == "Like" );
+    const dislikePreDefinedItems = this.props.preDefinedHighlights.filter(item => item.highlightType == "Dislike" );
+
+    let likeHighlightItems = [];
+    let disLikeHighlightItems = [];
+
+    if (this.props.selectedHighlightItems && this.props.selectedHighlightItems.length > 0) {
+      var selectedHighlights = this.props.preDefinedHighlights.filter(item => {
+          let selectedHighlight = this.props.selectedHighlightItems.find(selectedItem => selectedItem.highlightId == item.highlightId);
+
+          if (selectedHighlight)
+              return true;
+          return false;
+      });
+      likeHighlightItems = selectedHighlights.filter(item =>  item.highlightType == "Like" );
+      disLikeHighlightItems = selectedHighlights.filter(item =>  item.highlightType == "Dislike" );
+    }
+
+    return (
+      <TabView
+        navigationState={this.state}
+        renderScene={({ route }) => {
+          switch (route.key) {
+            case 'first':
+              return <TabHighlightComponent items={likePreDefinedItems}
+                                            selectedItems={likeHighlightItems}
+                                            addSelectedHighlights={this._addSelectedHighlights} 
+                                            removeSelectedHighlights={this._removeSelectedHighlights}
+                                            styles={styles.tabScene} />;
+            case 'second':
+              return <TabHighlightComponent items={dislikePreDefinedItems}
+                                            selectedItems={disLikeHighlightItems}
+                                            addSelectedHighlights={this._addSelectedHighlights} 
+                                            removeSelectedHighlights={this._removeSelectedHighlights}
+                                            styles={styles.tabScene} />;
+            default:
+              return null;
+          }
+        }}
+        onIndexChange={index => this.setState({ index })}
+        initialLayout={{ width: Dimensions.get('window').width }}
+      />
+  );
+  }
+}
+
+interface IMapDispatchToProps {
+  getAllHighlights: () => Promise<StoreData.PreDefinedHighlightVM>
+}
+
+export interface Props {
+  isVisible: boolean;
+  preDefinedHighlights?: Array<StoreData.PreDefinedHighlightVM>,
+  likeItems: Array<StoreData.LocationLikeItemVM>,
+  confirmHandler: (highlights: Array<StoreData.LocationLikeItemVM>) => void;
+  cancelHandler?: () => void;
+}
+
+interface State {
+  selectedHighlights: Array<StoreData.LocationLikeItemVM>
+}
+
+class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatchToProps, State> {
+  constructor(props: Props & IMapDispatchToProps) {
+    super(props);  
+    this.state = {
+      selectedHighlights: []
     }
   }
 
   componentDidMount() {
     this.props.getAllHighlights();
+
+    if (this.props.likeItems && this.props.likeItems.length > 0) {
+      this.setState({
+        selectedHighlights: [...this.props.likeItems]
+      });
+    }
   }
 
   _onCancel = () => {
     this.props.cancelHandler();
   };
 
-  _renderContent() {
-    const likePreDefinedItems = this.props.preDefinedHighlights.filter(item =>  item.type == "Like" );
-    const dislikePreDefinedItems = this.props.preDefinedHighlights.filter(item => item.type == "Dislike" );
+  _onSave = () => {
+    this.props.confirmHandler(this.state.selectedHighlights);
+  }
 
-    return (
-        <TabView
-          navigationState={this.state}
-          renderScene={({ route }) => {
-            switch (route.key) {
-              case 'first':
-                return <TabHighlightComponent items={likePreDefinedItems} styles={styles.tabScene} />;
-              case 'second':
-                return <TabHighlightComponent items={dislikePreDefinedItems} styles={styles.tabScene} />;
-              default:
-                return null;
-            }
-          }}
-          onIndexChange={index => this.setState({ index })}
-          initialLayout={{ width: Dimensions.get('window').width }}
-        />
-    );
+  _addSelectedHighlights = (item) => {    
+    this.setState({
+      selectedHighlights: [...this.state.selectedHighlights, item]
+    });
+  }
+
+  _removeSelectedHighlights = (deSelectedItem) => {
+    this.setState({
+      selectedHighlights: this.state.selectedHighlights.filter(item => item.highlightId != deSelectedItem.highlightId)
+    });
   }
 
   render() {
     const { isVisible } = this.props;
     var contentElement = this.props.preDefinedHighlights
-          ? this._renderContent() 
+          ? <AddHighlightModalContentComponent
+              preDefinedHighlights={this.props.preDefinedHighlights}
+              selectedHighlightItems={this.props.likeItems}
+              addSelectedHighlights={this._addSelectedHighlights}
+              removeSelectedHighlights={this._removeSelectedHighlights}>            
+          </AddHighlightModalContentComponent>
           : <ActivityIndicator size="small" color="#00ff00" />
           
     return (
@@ -240,6 +312,7 @@ class AddHighlightModalComponent extends React.Component<Props & IMapDispatchToP
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
                     <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
+                    <Button transparent onPress={this._onSave}><Text>Save</Text></Button>
                 </View>
                 <View style={styles.modalContentContainer}>
                   {contentElement}

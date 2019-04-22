@@ -6,11 +6,12 @@ import { NavigationScreenProp } from 'react-navigation';
 import _ from "lodash";
 import LocationContent from '../../../_organisms/Location/LocationContent';
 import LocationModal from '../../../_organisms/Location/LocationModal'
-import { updateLocationAddress } from '../../../store/Trip/operations';
+import { updateLocationAddress, updateLocationHighlight } from '../../../store/Trip/operations';
 import { View } from 'react-native';
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
+    updateLocationHighlight: (tripId: string, dateIdx: number, locationId: string, highlights: Array<StoreData.LocationLikeItemVM>) => Promise<void>
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -66,11 +67,11 @@ class LocationDetail extends React.Component<Props, State> {
         this.setState({isUpdateLocationHighlightModalVisible: true});
     }
 
-    _confirmUpdateLocationHighlight = () => {
-        // var location: RawJsonData.LocationAddressVM = {
-        //     name, address, long, lat
-        // };
-        // this.props.updateLocationAddress(this.props.tripId, this.props.dateIdx, this.props.locationId, location);
+    _confirmUpdateLocationHighlight = (highlights) => {
+        this.props.updateLocationHighlight(this.props.tripId, this.props.dateIdx, this.props.locationId, highlights)
+                    .then(() => {
+                        this.setState({isUpdateLocationHighlightModalVisible: false})
+                    });
     }
 
     _cancelUpdateLocationHighlight = () => {
@@ -140,7 +141,8 @@ class LocationDetail extends React.Component<Props, State> {
                         
                         isUpdateLocationHighlightModalVisible={this.state.isUpdateLocationHighlightModalVisible}
                         confirmUpdateLocationHighlightHandler={this._confirmUpdateLocationHighlight}
-                        cancelUpdateLocationHighlightHandler={this._cancelUpdateLocationHighlight}>
+                        cancelUpdateLocationHighlightHandler={this._cancelUpdateLocationHighlight}
+                        likeItems={this.props.likeItems}>
                     </LocationModal>
                 </Content>
             </Container>
@@ -153,41 +155,7 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
     
     var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
     var dateVm = _.find(trip.dates, (item) => item.dateIdx == dateIdx);
-    var location = _.find(dateVm.locations, (item) => item.locationId == locationId);
-    
-    //TODO: fake data, will be removed later
-    location.likeItems = [
-        {
-            likeItemId: "1",
-            label: "Beautiful",
-            type: "Like"
-        },
-        {
-            likeItemId: "2",
-            label: "Bad Services",
-            type: "Dislike"
-        },
-        {
-            likeItemId: "3",
-            label: "Good Foods",
-            type: "Like"
-        },
-        {
-            likeItemId: "4",
-            label: "Very Noise",
-            type: "Dislike"
-        },
-        {
-            likeItemId: "5",
-            label: "Good Drinks",
-            type: "Like"
-        },
-        {
-            likeItemId: "6",
-            label: "A Lot of Dogs ",
-            type: "Like"
-        }
-    ];
+    var location = _.find(dateVm.locations, (item) => item.locationId == locationId); 
 
     return {
         tripId,
@@ -205,7 +173,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 
 const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     return {
-        updateLocationAddress: (tripId, dateIdx, locationId, location) => dispatch(updateLocationAddress(tripId, dateIdx, locationId, location))
+        updateLocationAddress: (tripId, dateIdx, locationId, location) => dispatch(updateLocationAddress(tripId, dateIdx, locationId, location)),
+        updateLocationHighlight: (tripId, dateIdx, locationId, highlights) => dispatch(updateLocationHighlight(tripId, dateIdx, locationId, highlights))
     };
  };
 
