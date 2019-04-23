@@ -52,7 +52,7 @@ export module StoreData {
         dateIdx: number,
         date: moment.Moment,
         locations: Array<LocationVM>, 
-        locationIds: Array<number>,    
+        locationIds: Array<string>,    
     }
    
     export interface TripVM {

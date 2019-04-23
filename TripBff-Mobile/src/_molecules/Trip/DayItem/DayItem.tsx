@@ -16,7 +16,7 @@ interface IMapDispatchToProps {
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     tripId: string
-    locationIds?: Array<number>
+    locationIds?: Array<string>
     dateIdx: number
     date?: moment.Moment
 }

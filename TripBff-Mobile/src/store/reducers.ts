@@ -53,8 +53,6 @@ function getDateVms(fromDate, toDate, oldDateVms) {
         })
     }
 
-    console.log('date VMs in store :' + JSON.stringify(dateVMs));
-
     return dateVMs;  
 }
 
@@ -181,8 +179,6 @@ function dateReducer(state: StoreData.DateVM, action) {
 
 
 function tripReducer(state: StoreData.TripVM, action) {
-    console.log('come here trip reducer: ' + JSON.stringify(action));
-
     switch(action.type) {
         case ADD_INFOGRAPHIC_ID: 
             return Object.assign({}, state, {
@@ -215,7 +211,6 @@ function tripReducer(state: StoreData.TripVM, action) {
 function tripsReducer(state: Array<StoreData.TripVM>, action) {
     const actionType: string = action.type;
 
-    console.log("actionType", actionType);
     if (_.startsWith(actionType, "TRIPS")) {
         //handle trips
         //todo clearly something wrong here
@@ -225,15 +220,7 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
         return [...state, action.trip];
     }
     else if (_.startsWith(actionType, "TRIP")) {
-        //handle single trip
-        var trip = _.find(state, (item) => item.tripId == action.tripId)
-
-        var newState = [
-            ...state.slice(0, action.tripId),
-            tripReducer(trip, action),
-            ...state.slice(action.tripId + 1)
-        ];
-
+        var newState = state.map(trip => trip.tripId == action.tripId ? tripReducer(trip, action) : trip);
         return newState
     }
 
@@ -259,11 +246,13 @@ function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
             }
         default:
             return state;
-    }
+    } 
 }
 
 //todo small refactor to move each reducer to files
 export default function bffApp(state: StoreData.BffStoreData = initState, action): StoreData.BffStoreData {
+    console.log('action :' + action.type);
+
     return {
         repo: homeScreenReducer(state.repo, action),
         user: userReducer(state.user, action),
