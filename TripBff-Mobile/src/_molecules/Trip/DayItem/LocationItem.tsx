@@ -9,6 +9,7 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import SliderEntry from './SliderEntry'
 import styles from './SliderEntry.styles';
 import { colors } from './index.style';
+import { NavigationConstants } from "../../../screens/_shared/ScreenConstants";
 
 const SLIDER_1_FIRST_ITEM = 0;
 
@@ -57,7 +58,7 @@ class LocationItemComponent extends Component<Props, State> {
 
     _toLocationDetail = () => {
         var { tripId, dateIdx, location: { locationId }  } = this.props;
-        this.props.navigation.navigate("LocationDetail", { tripId, locationId, dateIdx })
+        this.props.navigation.navigate(NavigationConstants.Screens.LocationDetails, { tripId, locationId, dateIdx })
     }
 
     _renderItemWithParallax = ({item, index}, parallaxProps) => {
