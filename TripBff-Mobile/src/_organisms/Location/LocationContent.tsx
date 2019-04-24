@@ -4,12 +4,13 @@ import { StoreData } from '../../store/Interfaces';
 import _ from "lodash";
 import LocationName from './LocationName'
 import LocationLike from './LocationLike'
-import LocationDescription from '../../screens/location/detail/LocationDescription'
+import LocationDescription from './LocationDescription'
 import LocationMedia from './LocationMedia'
 
 interface IMapDispatchToProps {
     openUpdateLocationAddressModalHanlder: () => void
     openUpdateLocationHighlightModalHanlder: () => void
+    openUpdateLocationDescriptionModalHandler: () => void
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -46,7 +47,8 @@ export default class LocationContent extends React.PureComponent<Props, State> {
                 </LocationLike>
 
                 <LocationDescription
-                    description={this.props.description}>
+                    description={this.props.description}
+                    openUpdateLocationDescriptionModalHandler={this.props.openUpdateLocationDescriptionModalHandler}>
                 </LocationDescription>
 
                 <LocationMedia

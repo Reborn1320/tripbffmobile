@@ -6,12 +6,13 @@ import { NavigationScreenProp } from 'react-navigation';
 import _ from "lodash";
 import LocationContent from '../../../_organisms/Location/LocationContent';
 import LocationModal from '../../../_organisms/Location/LocationModal'
-import { updateLocationAddress, updateLocationHighlight } from '../../../store/Trip/operations';
+import { updateLocationAddress, updateLocationHighlight, updateLocationDescription } from '../../../store/Trip/operations';
 import { View } from 'react-native';
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
     updateLocationHighlight: (tripId: string, dateIdx: number, locationId: string, highlights: Array<StoreData.LocationLikeItemVM>) => Promise<void>
+    updateLocationDescription: (tripId: string, dateIdx: number, locationId: string, description: string) => Promise<void>
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -31,6 +32,7 @@ export interface Props extends IMapDispatchToProps {
 interface State {
     isUpdateLocationAddressModalVisible: boolean,
     isUpdateLocationHighlightModalVisible: boolean,
+    isUpdateLocationDescriptionModalVisible: boolean,
     isMassSelection: boolean;
     selectedImageIds: string[]
 }
@@ -43,6 +45,7 @@ class LocationDetail extends React.Component<Props, State> {
         this.state = {
             isUpdateLocationAddressModalVisible: false,
             isUpdateLocationHighlightModalVisible: false,
+            isUpdateLocationDescriptionModalVisible: false,
             isMassSelection: false,
             selectedImageIds: []
         }
@@ -95,6 +98,25 @@ class LocationDetail extends React.Component<Props, State> {
         }
     }
 
+    _openUpdateLocationDescriptionModal = () => {
+        this.setState({isUpdateLocationDescriptionModalVisible: true});
+    }
+
+    _confirmUpdateLocationDescription = (description) => {
+        console.log('tripId :' + this.props.tripId);
+        console.log('locationId :' + this.props.locationId);
+        this.props.updateLocationDescription(this.props.tripId, this.props.dateIdx, this.props.locationId, description)
+            .then(() => {
+                this.setState({
+                    isUpdateLocationDescriptionModalVisible: false
+                });
+            });
+    }
+
+    _cancelUpdateLocationDescription = () => {
+        this.setState({isUpdateLocationDescriptionModalVisible: false});
+    }
+
     render() {
         const { isMassSelection } = this.state;
         return (
@@ -129,7 +151,8 @@ class LocationDetail extends React.Component<Props, State> {
                         selectedImageIds={this.state.selectedImageIds}
                         
                         openUpdateLocationAddressModalHanlder={this._openUpdateLocationAddressModal}
-                        openUpdateLocationHighlightModalHanlder={this._openUpdateLocationHighlightModal}>
+                        openUpdateLocationHighlightModalHanlder={this._openUpdateLocationHighlightModal}
+                        openUpdateLocationDescriptionModalHandler={this._openUpdateLocationDescriptionModal}>
                     </LocationContent>
                     <LocationModal
                         long={this.props.long}
@@ -142,7 +165,13 @@ class LocationDetail extends React.Component<Props, State> {
                         isUpdateLocationHighlightModalVisible={this.state.isUpdateLocationHighlightModalVisible}
                         confirmUpdateLocationHighlightHandler={this._confirmUpdateLocationHighlight}
                         cancelUpdateLocationHighlightHandler={this._cancelUpdateLocationHighlight}
-                        likeItems={this.props.likeItems}>
+                        likeItems={this.props.likeItems}
+                        
+                        isUpdateLocationDescriptionModalVisible={this.state.isUpdateLocationDescriptionModalVisible}
+                        confirmUpdateLocationDescriptionHandler={this._confirmUpdateLocationDescription}
+                        cancelUpdateLocationDescriptionHandler={this._cancelUpdateLocationDescription}
+                        description={this.props.description}
+                        >
                     </LocationModal>
                 </Content>
             </Container>
@@ -174,7 +203,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     return {
         updateLocationAddress: (tripId, dateIdx, locationId, location) => dispatch(updateLocationAddress(tripId, dateIdx, locationId, location)),
-        updateLocationHighlight: (tripId, dateIdx, locationId, highlights) => dispatch(updateLocationHighlight(tripId, dateIdx, locationId, highlights))
+        updateLocationHighlight: (tripId, dateIdx, locationId, highlights) => dispatch(updateLocationHighlight(tripId, dateIdx, locationId, highlights)),
+        updateLocationDescription: (tripId, dateIdx, locationId, description) => dispatch(updateLocationDescription(tripId, dateIdx, locationId, description))
     };
  };
 
