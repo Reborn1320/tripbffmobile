@@ -1,5 +1,7 @@
 # custom one
 .jest
+.log
+coverage
 
 # OSX
 #

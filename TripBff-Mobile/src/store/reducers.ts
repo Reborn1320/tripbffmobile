@@ -191,7 +191,8 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
 function tripsReducer(state: Array<StoreData.TripVM>, action) {
     const actionType: string = action.type;
 
-    console.log("actionType", actionType);
+    // console.log("actionType", actionType);
+    // console.log("action", JSON.stringify(action));
     if (_.startsWith(actionType, "TRIPS")) {
         //handle trips
         return action.trips.map(trip => {
