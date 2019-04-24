@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { View, Text } from "native-base";
-import { StyleSheet, ViewStyle, TouchableOpacity } from "react-native";
+import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle } from "react-native";
 import { connectStyle } from 'native-base';
 import  Autocomplete  from "react-native-autocomplete-input";
 
@@ -74,22 +74,25 @@ class SearchLocationComponent extends React.Component<Props, State> {
 
     return (
         <TouchableOpacity onPress={() => this._onSelectedLocation(item)}>
-          <Text>{item.placeName}</Text>
+          <Text style={styles.itemText}>{item.placeName}</Text>
         </TouchableOpacity>
       )
   }
 
   render() {
     return (
-        <View style={styles.placesContainer}>
-            <Text style={{ margin: 5 }}>Search Places: </Text>
+        <View>
             <Autocomplete                    
                 autoCapitalize="none"
+                placeholder="Search"
                 autoCorrect={false}
                 defaultValue={this.state.query}
                 data={this.state.places}
                 onChangeText={text => this.searchPlaces(text)}
                 renderItem={this._renderItem}
+                containerStyle={styles.autocompleteContainer}
+                inputContainerStyle={styles.inputContainerStyle}
+                listContainerStyle={styles.listContainerStyle}
             />
         </View>
     );
@@ -97,12 +100,35 @@ class SearchLocationComponent extends React.Component<Props, State> {
 }
 
 interface Style {
-  placesContainer: ViewStyle;
+  autocompleteContainer: ViewStyle;
+  inputContainerStyle: ViewStyle;
+  listContainerStyle: ViewStyle;
+  itemText: TextStyle
 }
 
 const styles = StyleSheet.create<Style>({
-  placesContainer: {
-    flex: 3
+  autocompleteContainer: {
+    flex: 1,
+    left: 5,
+    position: 'absolute',
+    right: 5,
+    top: 5,
+    zIndex: 1
+  },
+  inputContainerStyle: {    
+    borderRadius: 4,
+    borderWidth: 0.5,
+    borderColor: '#d6d7da',
+  },
+  listContainerStyle: {
+    flex: 1,
+    left: 5,
+    right: 5,
+    zIndex: 1
+  },
+  itemText: {
+    fontSize: 15,
+    margin: 2
   }
 })
   

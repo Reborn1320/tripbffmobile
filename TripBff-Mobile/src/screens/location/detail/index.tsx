@@ -59,7 +59,10 @@ class LocationDetail extends React.Component<Props, State> {
         var location: RawJsonData.LocationAddressVM = {
             name, address, long, lat
         };
-        this.props.updateLocationAddress(this.props.tripId, this.props.dateIdx, this.props.locationId, location);
+        this.props.updateLocationAddress(this.props.tripId, this.props.dateIdx, this.props.locationId, location)
+        .then(() => {
+            this.setState({isUpdateLocationAddressModalVisible: false})
+        });;
     }
 
     private _cancelUpdateLocationAddress = () => {
