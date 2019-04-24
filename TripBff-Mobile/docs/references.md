@@ -6,3 +6,6 @@ This page list out basic link necessary to develop with react-native
 note on build android
 https://github.com/facebook/react-native/issues/20433
 go into gradle of handler to update to `compile 'com.facebook.infer.annotation:infer-annotation:+'`
+
+use babel.config.js, add `babel runtime`
+https://github.com/facebook/react-native/issues/21052
