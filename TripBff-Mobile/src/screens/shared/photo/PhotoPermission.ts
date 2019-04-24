@@ -1,6 +1,5 @@
 import * as Expo from "expo"
 import { Alert } from "react-native";
-import { fstat } from "fs";
 
 //https://github.com/yonahforst/react-native-permissions
 export default function checkAndRequestPhotoPermissionAsync() {

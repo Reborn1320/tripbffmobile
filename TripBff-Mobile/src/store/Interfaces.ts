@@ -60,8 +60,8 @@ export module StoreData {
         name: string
         fromDate: moment.Moment
         toDate: moment.Moment   
-        dates: Array<DateVM>     
-        infographicId: string        
+        dates?: Array<DateVM>     
+        infographicId?: string        
     }
 
     export interface UserVM {
@@ -82,6 +82,12 @@ export module StoreData {
         error?: string
     }
 
+    export interface PreDefinedHighlightVM {
+        highlightId: number,
+        label: string,
+        type: LikeTypeVM
+    }
+
     export interface PreDefinedFeelingVM {
         feelingId: number,
         label: string,
@@ -96,7 +102,8 @@ export module StoreData {
 
     export interface DataSourceVM {
         feelings?: Array<PreDefinedFeelingVM>,
-        activities?: Array<PreDefinedActivityVM>
+        activities?: Array<PreDefinedActivityVM>,
+        highlights?: Array<PreDefinedHighlightVM>
     }
 
     export interface BffStoreData {

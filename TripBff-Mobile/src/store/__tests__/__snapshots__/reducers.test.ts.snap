@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`trip reducer should handle TRIP_ADD 1`] = `
+Array [
+  Object {
+    "fromDate": "2018-12-31T17:00:00.000Z",
+    "name": "name",
+    "toDate": "2019-01-09T17:00:00.000Z",
+    "tripId": "tripId01",
+  },
+]
+`;
+
+exports[`trip reducer should return the initial state 1`] = `
+Object {
+  "dataSource": Object {},
+  "repo": Object {
+    "repos": Array [],
+  },
+  "trips": Array [],
+  "user": Object {
+    "email": "asdf@gmail.com",
+    "fbToken": "",
+    "firstName": "asdf",
+    "fullName": "adffff",
+    "lastName": "asdf",
+    "token": "ASdf",
+    "username": "asdf",
+  },
+}
+`;

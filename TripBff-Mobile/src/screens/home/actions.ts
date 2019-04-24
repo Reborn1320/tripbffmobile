@@ -1,4 +1,4 @@
-import { ThunkResultBase } from "../_shared/LayoutContainer";
+import { ThunkResultBase } from "../../store";
 
 export function uploadSimpleImage(uri: string): ThunkResultBase {
   return async function(dispatch, getState, extraArguments) {

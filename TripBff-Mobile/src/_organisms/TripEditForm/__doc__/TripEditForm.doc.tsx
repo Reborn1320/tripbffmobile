@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import _, { } from "lodash";
 import moment, { Moment } from "moment";
 import { StoreData } from "../../../store/Interfaces";
-import { TripEditForm, TripEditFormEnum } from "../TripEditForm";
+import TripEditForm, { TripEditFormEnum } from "../TripEditForm";
 import { Modal } from "../../../_atoms";
 import { mixins } from "../../../_utils";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
@@ -55,14 +55,17 @@ class TestComponent extends Component<Props, State> {
         <Header></Header>
         <Content>
           <TripEditForm
+            tripId="1"
             fields={[TripEditFormEnum.Name, TripEditFormEnum.DateRange]}
             fromDate={fromDate} toDate={toDate}
             onClickEdit={this.onEdit} />
           <TripEditForm
+            tripId="1"
             fields={[TripEditFormEnum.DateRange]}
             fromDate={fromDate} toDate={toDate}
             onClickEdit={this.onEdit} />
           <TripEditForm
+            tripId="1"
             fields={[TripEditFormEnum.Name]}
             fromDate={fromDate} toDate={toDate}
             onClickEdit={this.onEdit} />
@@ -84,6 +87,7 @@ class TestComponent extends Component<Props, State> {
             title="Edit date range"
             isVisible={isEditDateRangeModalVisible} >
             <TripEditForm
+              tripId="1"
               fields={[TripEditFormEnum.DateRange]}
               fromDate={fromDate} toDate={toDate}
               onClickEdit={this.onEdit}
@@ -93,6 +97,7 @@ class TestComponent extends Component<Props, State> {
             title="Edit trip name"
             isVisible={isEditTripNameModalVisible} >
             <TripEditForm
+              tripId="1"
               fields={[TripEditFormEnum.Name]}
               fromDate={fromDate} toDate={toDate}
               onClickEdit={this.onEdit}

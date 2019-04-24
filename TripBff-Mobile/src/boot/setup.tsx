@@ -28,7 +28,8 @@ export default class Setup extends Component<{}, State> {
       FontAwesome: require("react-native-vector-icons/Fonts/FontAwesome.ttf"),
       FontAwesome5_Solid: require("react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"),
       FontAwesome5_Regular: require("react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"),
-      FontAwesome5_Brands: require("react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf")
+      FontAwesome5_Brands: require("react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"),
+      MaterialIcons: require("react-native-vector-icons/Fonts/MaterialIcons.ttf")
     });
     this.setState({ isReady: true });
   }

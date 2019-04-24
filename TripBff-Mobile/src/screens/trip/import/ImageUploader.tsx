@@ -9,7 +9,8 @@ import Loading from "../../../_atoms/Loading/Loading";
 import { ThunkDispatch } from 'redux-thunk';
 import { TripImportLocationVM } from "./TripImportViewModels";
 import { uploadFileApi } from "../../_services/apis";
-import { PropsBase, ThunkResultBase } from "../../_shared/LayoutContainer";
+import { PropsBase } from "../../_shared/LayoutContainer";
+import { ThunkResultBase } from "../../../store";
 
 type ThunkResult<R> = ThunkResultBase<R, State>;
 
