@@ -10,7 +10,8 @@ import { LOCATION_REMOVE,
          LOCATION_UPDATE_ACTIVITY,
          TRIP_UPDATE_DATE_RANGE,
          TRIP_UPDATE_TRIP_NAME, 
-         LOCATION_UPDATE_ADDRESS} from './Trip/actions';
+         LOCATION_UPDATE_ADDRESS,
+         TripActions} from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
 import { IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "../screens/trip/import/actions";
 
@@ -29,32 +30,6 @@ const initState: StoreData.BffStoreData = {
     user: userInitState,
     dataSource: {},
     trips: [] 
-}
-
-//todo remove this function too
-function getDateVms(fromDate, toDate, oldDateVms) {
-    var dateVMs: StoreData.DateVM[] = [];
-    const nDays = toDate.diff(fromDate, "days") + 1
-
-    for (let idx = 0; idx < nDays; idx++) {
-
-        var oldDateVM = oldDateVms.find(function(value, index) {
-            var oldDate = moment(value.date).startOf('day');
-            var date = moment(fromDate).add(idx, 'days').startOf('day');
-            return  oldDate.isSame(date);
-        });
-
-        dateVMs.push({
-            dateIdx: idx + 1,
-            date: moment(fromDate.add(idx, 'days')),
-            locationIds: oldDateVM ? oldDateVM.locationIds : [],
-            locations: oldDateVM ? oldDateVM.locations : [],
-        })
-    }
-
-    console.log('date VMs in store :' + JSON.stringify(dateVMs));
-
-    return dateVMs;  
 }
 
 function compareLocationsFromTime(first, second) {
@@ -170,8 +145,8 @@ function dateReducer(state: StoreData.DateVM, action) {
     }    
 }
 
-function tripReducer(state: StoreData.TripVM, action) {
-    console.log('come here trip reducer: ' + JSON.stringify(action));
+function tripReducer(state: StoreData.TripVM, action: TripActions) {
+    console.log('come here trip reducer: ', action);
 
     switch(action.type) {
         case ADD_INFOGRAPHIC_ID: 
@@ -190,7 +165,7 @@ function tripReducer(state: StoreData.TripVM, action) {
                 ...state,
                 fromDate: action.fromDate,
                 toDate: action.toDate,
-                dates: getDateVms(action.fromDate.clone(), action.toDate.clone(), state.dates)
+                dates: getDatesProperty(action.fromDate, action.toDate, action.locations)
             }
         case TRIP_UPDATE_TRIP_NAME:
             return {

@@ -82,7 +82,9 @@ export function updateTripDateRange(tripId: string, fromDate: Moment, toDate: Mo
     };
     return extraArguments.tripApiService.patch(`trips/${tripId}`, { data })
     .then((res) => {
-        dispatch(updateTripDateRangeAction(tripId, data.fromDate, data.toDate));
+        const trip: RawJsonData.TripVM = res.data;
+        //todo need a proper conversion
+        dispatch(updateTripDateRangeAction(tripId, data.fromDate, data.toDate, trip.locations));
     })
     .catch((err) => {
       console.log('error update trip date range api: ', err);

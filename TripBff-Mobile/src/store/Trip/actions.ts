@@ -1,5 +1,5 @@
 import { StoreData, RawJsonData } from "../Interfaces"
-import moment from "moment";
+import moment, { Moment } from "moment";
 
 export const LOCATION_REMOVE = "TRIP_LOCATION_REMOVE"
 export const LOCATION_ADD = "TRIP_LOCATION_ADD"
@@ -9,6 +9,25 @@ export const TRIP_UPDATE_DATE_RANGE = "TRIP_UPDATE_DATE_RANGE"
 export const TRIP_UPDATE_TRIP_NAME = "TRIP_UPDATE_TRIP_NAME"
 export const LOCATION_UPDATE_ADDRESS = "TRIP_LOCATION_UPDATE_ADDRESS"
 export const LOCATION_UPDATE_IMAGE = "TRIP_LOCATION_UPDATE_IMAGE"
+
+export type TripActions = RemoveLocation
+| UpdateTripDateRange
+;
+
+type RemoveLocation = {
+    type: "TRIP_LOCATION_REMOVE",
+    tripId: string
+    dateIdx: number
+    locationId: string
+}
+
+type UpdateTripDateRange = {
+    type: "TRIP_UPDATE_DATE_RANGE",
+    tripId: string
+    fromDate: Moment
+    toDate: Moment
+    locations: StoreData.LocationVM[]
+}
 
 export function removeLocation(tripId: string, dateIdx: number, locationId: string) {
     return {
@@ -34,9 +53,9 @@ export function updateLocationActivity(tripId: string, dateIdx: number, location
     }
 }
 
-export function updateTripDateRange(tripId: string, fromDate: moment.Moment, toDate: moment.Moment) {
+export function updateTripDateRange(tripId: string, fromDate: moment.Moment, toDate: moment.Moment, locations: StoreData.LocationVM[]) {
     return {
-        type: TRIP_UPDATE_DATE_RANGE, tripId, fromDate, toDate
+        type: TRIP_UPDATE_DATE_RANGE, tripId, fromDate, toDate, locations
     }
 }
 
