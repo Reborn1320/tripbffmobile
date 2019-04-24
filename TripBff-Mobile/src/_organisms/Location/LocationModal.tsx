@@ -3,7 +3,8 @@ import { View } from 'native-base';
 import { StoreData } from "../../store/Interfaces";
 import _, { } from "lodash";
 import LocationAddressModal from "./LocationAddressModal";
-import LocationHighlightModal from "./LocationHighlightModal"
+import LocationHighlightModal from "./LocationHighlightModal";
+import UpdateLocationDescriptionModal from "./LocationDescriptionModal";
 
 
 interface IMapDispatchToProps {
@@ -11,6 +12,8 @@ interface IMapDispatchToProps {
     cancelUpdateLocationAddressHandler: () => void
     confirmUpdateLocationHighlightHandler: (highlights: Array<StoreData.LocationLikeItemVM>) => void
     cancelUpdateLocationHighlightHandler: () => void
+    confirmUpdateLocationDescriptionHandler: (description: string) => void
+    cancelUpdateLocationDescriptionHandler: () => void
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -18,7 +21,9 @@ export interface Props extends IMapDispatchToProps {
     lat: number,
     isUpdateLocationAddressModalVisible: boolean,
     isUpdateLocationHighlightModalVisible: boolean,
-    likeItems: Array<StoreData.LocationLikeItemVM>
+    isUpdateLocationDescriptionModalVisible: boolean,
+    likeItems: Array<StoreData.LocationLikeItemVM>,
+    description: string
 }
 
 interface State {
@@ -42,6 +47,14 @@ export default class LocationModal extends PureComponent<Props, State> {
         this.props.cancelUpdateLocationHighlightHandler();
     }    
 
+    _updateLocationDescriptionConfirmed = (description) => {
+        this.props.confirmUpdateLocationDescriptionHandler(description);
+    }
+
+    _cancelUpdateLocationDescription = () => {
+        this.props.cancelUpdateLocationDescriptionHandler();
+    }  
+
     render() {
         return (
             <View>
@@ -57,7 +70,13 @@ export default class LocationModal extends PureComponent<Props, State> {
                     cancelHandler={this._cancelUpdateLocationHighlight}
                     isVisible={this.props.isUpdateLocationHighlightModalVisible}
                     likeItems={this.props.likeItems}>
-                </LocationHighlightModal>  
+                </LocationHighlightModal>
+                <UpdateLocationDescriptionModal
+                    confirmHandler={this._updateLocationDescriptionConfirmed}
+                    cancelHandler={this._cancelUpdateLocationDescription}
+                    isVisible={this.props.isUpdateLocationDescriptionModalVisible}
+                    description={this.props.description}>                    
+                </UpdateLocationDescriptionModal>
             </View>
         );
     }

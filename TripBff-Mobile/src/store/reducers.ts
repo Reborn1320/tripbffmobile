@@ -12,7 +12,8 @@ import { LOCATION_REMOVE,
          TRIP_UPDATE_DATE_RANGE,
          TRIP_UPDATE_TRIP_NAME, 
          LOCATION_UPDATE_ADDRESS,
-         LOCATION_UPDATE_HIGHLIGHT } from './Trip/actions';
+         LOCATION_UPDATE_HIGHLIGHT,
+         LOCATION_UPDATE_DESCRIPTION } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
 import { IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "../screens/trip/import/actions";
 
@@ -137,6 +138,11 @@ function locationReducer(state: StoreData.LocationVM, action) {
             return {
                 ...state,
                 likeItems: [...action.highlights]
+            };
+        case LOCATION_UPDATE_DESCRIPTION:
+            return {
+                ...state,
+                description: action.description
             };
         //TODO: upload images
         //TODO: remove images

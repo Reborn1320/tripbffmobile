@@ -6,7 +6,8 @@ import {
   updateTripDateRange as updateTripDateRangeAction,
   updateTripName as updateTripNameAction,
   updateLocationAddress as updateLocationAddressAction,
-  updateLocationHighlight as updateLocationHighlightAction } from "./actions";
+  updateLocationHighlight as updateLocationHighlightAction,
+  updateLocationDescription as  updateLocationDescriptionAction } from "./actions";
 import { ThunkResultBase } from "..";
 import { Moment } from "moment";
 import { StoreData, RawJsonData } from "../Interfaces";
@@ -164,6 +165,19 @@ export function updateLocationHighlight(tripId: string, dateIdx: number, locatio
     })
     .catch((err) => {
       console.log('error update location highlights: ', err);
+    });
+  };
+}
+
+export function updateLocationDescription(tripId: string, dateIdx: number, locationId: string, description: string): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    const data = { description };
+    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/description`, { data })
+    .then((res) => {
+      dispatch(updateLocationDescriptionAction(tripId, dateIdx, locationId, description));
+    })
+    .catch((err) => {
+      console.log('error update location description: ', err);
     });
   };
 }
