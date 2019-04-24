@@ -1,8 +1,10 @@
 import React from "react";
-import { TextInput, Dimensions, ViewStyle, StyleSheet } from 'react-native'
+import { Dimensions, ViewStyle, StyleSheet, TextStyle } from 'react-native'
 import { Text, View, Icon } from "native-base";
 import _, { } from "lodash";
 import { connectStyle } from 'native-base';
+import  ReadMore from 'react-native-read-more-text';
+import ViewMoreText from 'react-native-view-more-text';
 
 export interface Props {
     description: string,
@@ -12,27 +14,45 @@ export interface Props {
 export interface State {
 }
 
-class LocationDescriptionComponent extends React.PureComponent<Props, State> { 
+class LocationDescriptionComponent1 extends React.PureComponent<Props, State> { 
 
     _openUpdateLocationDescriptionModal = () => {
         this.props.openUpdateLocationDescriptionModalHandler();
     }
 
+    renderViewMore(onPress){
+        return(
+          <Text style={styles.showMoreLessBtn} onPress={onPress}>View more</Text>
+        )
+      }
+
+      renderViewLess(onPress){
+        return(
+          <Text style={styles.showMoreLessBtn} onPress={onPress}>View less</Text>
+        )
+      }
+
     render() {
         return (
             <View>
-                <Text>Description</Text>
+                <View>
+                    <Text>
+                        Description
+                    </Text>
+                </View>
                 <View style={styles.textInputContainer}>
-                    <TextInput
-                        placeholder = "What are your feeling?"
-                        multiline = {true}      
-                        value = {this.props.description}                  
-                        numberOfLines = {3}
-                        editable = {false}
-                        style={[styles.textInput, { fontSize: 18 }]}
-                    />
+                    <ViewMoreText
+                        numberOfLines={3}
+                        renderViewMore={this.renderViewMore}
+                        renderViewLess={this.renderViewLess}   
+                        textStyle={styles.textInput}                     
+                        >
+                        <Text>
+                            {this.props.description}
+                        </Text>
+                    </ViewMoreText>                   
                     <Icon name='pencil-alt' type="FontAwesome5" style={[styles.icon, {fontSize: 20}]} 
-                            onPress={this._openUpdateLocationDescriptionModal}/>    
+                            onPress={this._openUpdateLocationDescriptionModal}/> 
                 </View>
             </View>
         );
@@ -42,7 +62,8 @@ class LocationDescriptionComponent extends React.PureComponent<Props, State> {
 interface Style {
     textInputContainer: ViewStyle,
     textInput: ViewStyle,
-    icon: ViewStyle
+    icon: ViewStyle,
+    showMoreLessBtn: TextStyle
   }
   
   const styles = StyleSheet.create<Style>({
@@ -57,14 +78,19 @@ interface Style {
     },
     textInput: {
         width: Dimensions.get('window').width - 50,        
-        margin: 10
+        marginLeft: 10,
+        marginTop: 5
     },
     icon: {
         marginRight: 10
+    },
+    showMoreLessBtn: {
+        color: 'blue',
+        marginLeft: 10
     }
   })
     
   const LocationDescription = 
-      connectStyle<typeof LocationDescriptionComponent>('NativeBase.Modal', styles)(LocationDescriptionComponent);
+      connectStyle<typeof LocationDescriptionComponent1>('NativeBase.Modal', styles)(LocationDescriptionComponent1);
   
   export default LocationDescription;
