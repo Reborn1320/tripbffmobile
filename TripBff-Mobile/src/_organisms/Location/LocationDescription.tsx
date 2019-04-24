@@ -5,6 +5,7 @@ import _, { } from "lodash";
 import { connectStyle } from 'native-base';
 import  ReadMore from 'react-native-read-more-text';
 import ViewMoreText from 'react-native-view-more-text';
+import { TextInput } from "react-native-gesture-handler";
 
 export interface Props {
     description: string,
@@ -26,11 +27,11 @@ class LocationDescriptionComponent1 extends React.PureComponent<Props, State> {
         )
       }
 
-      renderViewLess(onPress){
+    renderViewLess(onPress){
         return(
-          <Text style={styles.showMoreLessBtn} onPress={onPress}>View less</Text>
+            <Text style={styles.showMoreLessBtn} onPress={onPress}>View less</Text>
         )
-      }
+    }
 
     render() {
         return (
@@ -41,16 +42,32 @@ class LocationDescriptionComponent1 extends React.PureComponent<Props, State> {
                     </Text>
                 </View>
                 <View style={styles.textInputContainer}>
-                    <ViewMoreText
-                        numberOfLines={3}
-                        renderViewMore={this.renderViewMore}
-                        renderViewLess={this.renderViewLess}   
-                        textStyle={styles.textInput}                     
-                        >
-                        <Text>
-                            {this.props.description}
-                        </Text>
-                    </ViewMoreText>                   
+                {
+                    this.props.description
+                    ?
+                        (
+                            <ViewMoreText
+                                numberOfLines={3}                        
+                                renderViewMore={this.renderViewMore}
+                                renderViewLess={this.renderViewLess}   
+                                textStyle={styles.textInput}                     
+                                >
+                                <Text>
+                                    {this.props.description}
+                                </Text>
+                            </ViewMoreText>
+                        )
+                    : (
+                        <TextInput
+                            placeholder = "What are your feeling?"
+                            multiline = {true}                        
+                            numberOfLines = {3}
+                            editable = {false}
+                            style={[styles.textInput, { fontSize: 18 }]}
+                        />
+                    )
+                }
+                                       
                     <Icon name='pencil-alt' type="FontAwesome5" style={[styles.icon, {fontSize: 20}]} 
                             onPress={this._openUpdateLocationDescriptionModal}/> 
                 </View>
