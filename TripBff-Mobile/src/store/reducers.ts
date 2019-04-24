@@ -11,7 +11,8 @@ import { LOCATION_REMOVE,
          TRIP_UPDATE_DATE_RANGE,
          TRIP_UPDATE_TRIP_NAME, 
          LOCATION_UPDATE_ADDRESS,
-         TripActions} from './Trip/actions';
+         TripActions,
+         LocationActions} from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
 import { IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "../screens/trip/import/actions";
 
@@ -83,7 +84,7 @@ function imageReducer(state: StoreData.ImportImageVM, action) {
     }
 }
 
-function locationReducer(state: StoreData.LocationVM, action) {
+function locationReducer(state: StoreData.LocationVM, action: LocationActions) {
     switch(action.type) {
         case LOCATION_UPDATE_FEELING:
             return {
@@ -106,8 +107,13 @@ function locationReducer(state: StoreData.LocationVM, action) {
                 }
             };
         //TODO: upload images
-        //TODO: remove images
+        case "TRIP_LOCATION_UPDATE_IMAGES":
+            return {
+                ...state,
+                images: action.locationImages
+            }
         default:
+            //todo: action should start with image...
             return {
                 ...state,
                 images: state.images.map(item => {
