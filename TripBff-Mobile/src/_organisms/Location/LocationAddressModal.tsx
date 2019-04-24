@@ -70,11 +70,9 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
                     <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
                     <Button transparent onPress={this._onConfirm}><Text>Save</Text></Button>
                 </View>
-                <View>
-                  <SearchLocation 
+                <SearchLocation 
                     confirmHandler={this._selectedLocationHandler}>
                   </SearchLocation>
-                </View>
                 <View style={styles.mapContainer}>
                     <Mapbox.MapView
                         styleURL={Mapbox.StyleURL.Street}
