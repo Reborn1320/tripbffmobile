@@ -139,7 +139,7 @@ class AddLocationModalComponent extends React.Component<Props, State> {
 
   render() {
     const { isVisible } = this.props;
-    console.log('add location modal selected date : ' + this.props.date);
+    //console.log('add location modal selected date : ' + this.props.date);
     return (
         <RNModal style={styles.modal} 
             isVisible={isVisible} hideModalContentWhileAnimating 

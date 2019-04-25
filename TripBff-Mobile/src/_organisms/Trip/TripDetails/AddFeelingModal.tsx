@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { View, Text, Button, Icon } from "native-base";
-import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
+import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
@@ -36,8 +36,8 @@ class FeelingItem extends React.PureComponent<any> {
 
   render() {
     return (
-      <TouchableOpacity onPress={this._onPress}>
-        <View style={{flex: 1, flexDirection: "row", justifyContent: 'flex-start'}}>
+      <TouchableOpacity onPress={this._onPress} style={styles.feelingItemContainer}>
+        <View style={styles.feelingItem}>
           <Icon style={{ marginRight: 5}} type="FontAwesome5" name={this.props.icon} />  
           <Text>{this.props.label}</Text>
         </View>
@@ -102,7 +102,7 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
                 <View style={styles.buttons}>
                     <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
                 </View>
-                <View style={{ flex: 1 }}>
+                <View style={styles.feelingContainer}>
                   {contentElement}
                 </View>                
             </View>
@@ -115,7 +115,9 @@ interface Style {
   modal: ViewStyle,
   buttons: ViewStyle;
   modalInnerContainer: ViewStyle;
-  placesContainer: ViewStyle;
+  feelingContainer: ViewStyle;
+  feelingItemContainer: ViewStyle;
+  feelingItem: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -127,7 +129,6 @@ const styles = StyleSheet.create<Style>({
     backgroundColor: "white"
   },
   buttons: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between"
   },
@@ -136,8 +137,21 @@ const styles = StyleSheet.create<Style>({
     width: "100%",
     height: "100%"
   },
-  placesContainer: {
-    flex: 6
+  feelingContainer: {
+    flex: 1
+  },
+  feelingItemContainer: {
+    width: Dimensions.get('window').width / 2,
+    height: 40,
+    borderRadius: 4,
+    borderWidth: 0.2,
+    borderColor: '#d6d7da'
+  },
+  feelingItem: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: 'center',
+    alignItems: "center"
   }
 })
   
