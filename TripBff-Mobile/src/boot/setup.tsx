@@ -11,8 +11,8 @@ interface State {
   isReady: boolean;
 }
 export default class Setup extends Component<{}, State> {
-  constructor() {
-    super({});
+  constructor(props) {
+    super(props);
     this.state = {
       isReady: false
     };
