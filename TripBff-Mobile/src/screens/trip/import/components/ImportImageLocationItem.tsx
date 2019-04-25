@@ -1,8 +1,7 @@
 import React from "react";
 import { CheckBox, View, ListItem, Text } from "native-base";
 import { TripImportLocationVM , TripImportImageVM} from "../TripImportViewModels";
-import { ImageListWithSelection } from "../../../../_molecules/ImageList/ImageListWithSelection";
-import { calculateImageListWidth } from "../../../../_molecules/ImageList/ImageList";
+import ImageList, { calculateImageListWidth } from "../../../../_molecules/ImageList/ImageList";
 import { ImageSelection } from "../../../../_molecules/ImageList/ImageSelection";
 
 export interface Props {
@@ -69,7 +68,7 @@ class ImportImageLocationItem extends React.Component<Props, State> {
                     >
                         {location.location.address}
                     </Text>
-                    <ImageListWithSelection
+                    <ImageList
                         items={location.images.map(img => ({ ...img, data: img }))}
                         renderItem={this.renderItem}
 

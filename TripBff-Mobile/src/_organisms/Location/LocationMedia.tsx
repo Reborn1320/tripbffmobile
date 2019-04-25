@@ -2,9 +2,8 @@ import React from "react";
 import { StyleSheet, Image, ViewStyle, TextStyle } from 'react-native'
 import { View, H3 } from "native-base";
 import _, { } from "lodash";
-import { calculateImageListWidth } from "../../_molecules/ImageList/ImageList";
+import ImageList, { calculateImageListWidth } from "../../_molecules/ImageList/ImageList";
 import NBTheme from "../../theme/variables/material.js";
-import { ImageListWithSelection } from "../../_molecules/ImageList/ImageListWithSelection";
 import { ImageSelection } from "../../_molecules/ImageList/ImageSelection";
 
 export interface Props {
@@ -22,6 +21,7 @@ export interface State {
 interface ILocationMediaImage {
   imageId: string;
   url: string;
+  selected: boolean;
 }
 
 export default class LocationMedia extends React.PureComponent<Props, State> {
@@ -40,44 +40,37 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
     // }
   }
 
-  private renderItem = (itemInfo: { item: ILocationMediaImage, index: number }) => {
-    const img = itemInfo.item;
-
+  itemWidth: number;
+  componentWillMount() {
     const { itemWidth } = calculateImageListWidth();
-
-    if (!this.props.massSelection) {
-      //render a normal image that highlight
-      return (
-        <Image source={{ uri: img.url }}
-          style={
-            Object.assign({
-              width: itemWidth,
-              height: itemWidth
-            }, styles.normalImage)} />
-      );
-    }
-
-    //render in case of selection
-    if (_.indexOf(this.props.selectedImageIds, img.imageId) == -1) {
-      //render unselected item
-      return (
-        <ImageSelection imageUrl={img.url} width={itemWidth} isChecked={false} />
-      );
-    }
-
-    //render selected item
-    return (
-      <ImageSelection imageUrl={img.url} width={itemWidth} isChecked={true} />
-    );
+    this.itemWidth = itemWidth;
   }
 
+  private renderItem2 = (itemInfo: { item: ILocationMediaImage, index: number }) => {
+    const img = itemInfo.item;
+    // console.log("render item ", img.imageId)
+
+    //todo group all these calculation into one component with shouldUpdate
+    // const { itemWidth } = calculateImageListWidth();
+    const itemWidth = this.itemWidth;
+    return (
+      <ImageSelection imageUrl={img.url} width={itemWidth}
+        isChecked={!!this.props.selectedImageIds.find(imgId => imgId == img.imageId)}
+        onPress={() => this.props.onSelect(img.imageId) }
+        onLongPress={this.props.onMassSelection}
+      />
+    )
+  }
+
+
+  //todo move Photo & Videos up
   render() {
     return (
       <View style={styles.locationMediaContainer}>
         <H3 style={styles.headerText}>Photos & Videos</H3>
-        <ImageListWithSelection
+        <ImageList
           items={this.props.images.map(img => ({ ...img, data: img }))}
-          renderItem={this.renderItem}
+          renderItem={this.renderItem2}
 
           onSelect={this.onSelect}
 

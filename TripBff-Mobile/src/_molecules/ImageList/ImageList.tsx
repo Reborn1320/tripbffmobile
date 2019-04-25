@@ -45,7 +45,7 @@ class ImageList extends React.Component<Props, States> {
     }
   }
 
-  _renderItem = (itemInfo: { item: any, index: number }) => {
+  private _renderItem = (itemInfo: { item: any, index: number }) => {
     const idx: number = itemInfo.index
 
     return (
@@ -62,17 +62,16 @@ class ImageList extends React.Component<Props, States> {
     );
   }
 
-  //todo change to FlatList...
   render() {
     const { items } = this.props;
     return (
-      <View style={styles.listImageContainer}
-      // data={items}
-      // renderItem={this._renderItem}
-      // keyExtractor={(item, index) => item.imageId}
+      <FlatList style={styles.listImageContainer}
+      data={items}
+      renderItem={this.props.renderItem}
+      keyExtractor={(item, index) => item.imageId}
       >
-        {items.map((item, index) => this._renderItem({ item, index }))}
-      </View>
+        {/* {items.map((item, index) => this._renderItem({ item, index }))} */}
+      </FlatList>
     );
   }
 }
