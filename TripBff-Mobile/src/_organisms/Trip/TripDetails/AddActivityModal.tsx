@@ -51,8 +51,10 @@ class AddActivityModalComponent extends React.Component<Props & IMapDispatchToPr
     super(props);  
   }
 
-  componentDidMount() {
-    this.props.getAllActivities();
+  _onModalShow = () => {
+    if (!this.props.preDefinedActivities) {
+      this.props.getAllActivities();
+    }
   }
 
   _onCancel = () => {
@@ -91,11 +93,12 @@ class AddActivityModalComponent extends React.Component<Props & IMapDispatchToPr
   render() {
     const { isVisible } = this.props;
     var contentElement = this.props.preDefinedActivities
-          ? this._renderContent() 
+          ? this._renderContent()   
           : <ActivityIndicator size="small" color="#00ff00" />
           
     return (
         <RNModal style={styles.modal} 
+            onModalShow={this._onModalShow}
             isVisible={isVisible} hideModalContentWhileAnimating>
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>

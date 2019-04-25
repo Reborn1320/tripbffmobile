@@ -51,8 +51,10 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
     super(props);  
   }
 
-  componentDidMount() {
-    this.props.getAllFeelings();
+  _onModalShow = () => {
+    if (!this.props.preDefinedFeelings) {
+      this.props.getAllFeelings();
+    }
   }
 
   _onCancel = () => {
@@ -94,6 +96,7 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
           
     return (
         <RNModal style={styles.modal} 
+            onModalShow={this._onModalShow}
             isVisible={isVisible} hideModalContentWhileAnimating>
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>

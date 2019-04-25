@@ -266,12 +266,16 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
   }
 
   componentDidMount() {
-    this.props.getAllHighlights();
-
     if (this.props.likeItems && this.props.likeItems.length > 0) {
       this.setState({
         selectedHighlights: [...this.props.likeItems]
       });
+    }
+  }
+
+  _onModalWillShow = () => {
+    if (!this.props.preDefinedHighlights) {
+      this.props.getAllHighlights();
     }
   }
 
@@ -308,6 +312,7 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
           
     return (
         <RNModal style={styles.modal} 
+            onModalShow={this._onModalWillShow}
             isVisible={isVisible} hideModalContentWhileAnimating>
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
