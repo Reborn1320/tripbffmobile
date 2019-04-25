@@ -336,7 +336,6 @@ interface Style {
   tabScene: ViewStyle;
   highlightItemContainer: ViewStyle;
   highlightItem: ViewStyle;
-  highlightContentContainer: ViewStyle;
   iconRemoved: ViewStyle;
 }
 
@@ -362,11 +361,6 @@ const styles = StyleSheet.create<Style>({
   },
   tabScene: {
     flex: 1,
-  },
-  highlightContentContainer: {
-    flexDirection:"row",
-    justifyContent: "space-between",
-    flexWrap: 'wrap'
   },
   highlightItemContainer: {
     width: Dimensions.get('window').width / 2,
