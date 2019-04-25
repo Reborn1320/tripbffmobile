@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { View, Text } from "native-base";
-import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle } from "react-native";
+import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle, Dimensions } from "react-native";
 import { connectStyle } from 'native-base';
 import  Autocomplete  from "react-native-autocomplete-input";
 
@@ -45,7 +45,7 @@ class SearchLocationComponent extends React.Component<Props, State> {
     .send()
     .then(response => {
       const match = response.body;
-      console.log('Places result: ' + JSON.stringify(match.features));
+      //console.log('Places result: ' + JSON.stringify(match.features));
       var places = match.features.map((place) => {
         return {
           placeName: place.text,
@@ -71,30 +71,34 @@ class SearchLocationComponent extends React.Component<Props, State> {
   }
 
   _renderItem = (item) => {
+    var placeAddress =  item.address.replace(item.placeName + ',', '');
 
     return (
         <TouchableOpacity onPress={() => this._onSelectedLocation(item)}>
-          <Text style={styles.itemText}>{item.placeName}</Text>
+          <View style={styles.listViewContainer}>
+            <Text numberOfLines={1} style={styles.placeNameText}>{item.placeName}</Text>
+            <Text numberOfLines={1} style={styles.addressText}>{placeAddress}</Text>
+          </View>          
         </TouchableOpacity>
       )
   }
 
   render() {
     return (
-        <View>
-            <Autocomplete                    
-                autoCapitalize="none"
-                placeholder="Search"
-                autoCorrect={false}
-                defaultValue={this.state.query}
-                data={this.state.places}
-                onChangeText={text => this.searchPlaces(text)}
-                renderItem={this._renderItem}
-                containerStyle={styles.autocompleteContainer}
-                inputContainerStyle={styles.inputContainerStyle}
-                listContainerStyle={styles.listContainerStyle}
-            />
-        </View>
+      <View>
+        <Autocomplete                    
+            autoCapitalize="none"
+            placeholder="Search"
+            autoCorrect={false}
+            defaultValue={this.state.query}
+            data={this.state.places}
+            onChangeText={text => this.searchPlaces(text)}
+            renderItem={this._renderItem}
+            containerStyle={styles.autocompleteContainer}
+            inputContainerStyle={styles.inputContainerStyle}
+            listStyle={styles.listStyle}
+          />
+      </View>      
     );
   }
 }
@@ -102,8 +106,10 @@ class SearchLocationComponent extends React.Component<Props, State> {
 interface Style {
   autocompleteContainer: ViewStyle;
   inputContainerStyle: ViewStyle;
-  listContainerStyle: ViewStyle;
-  itemText: TextStyle
+  listViewContainer: ViewStyle;
+  listStyle: ViewStyle;
+  placeNameText: TextStyle;
+  addressText: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -115,20 +121,32 @@ const styles = StyleSheet.create<Style>({
     top: 5,
     zIndex: 1
   },
+  listViewContainer: {
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    borderBottomWidth: 0.5,
+    height: 50,
+    borderColor: '#d6d7da'
+  },
   inputContainerStyle: {    
-    borderRadius: 4,
-    borderWidth: 0.5,
+    borderRadius: 2,
+    borderWidth: 1,
     borderColor: '#d6d7da',
   },
-  listContainerStyle: {
-    flex: 1,
-    left: 5,
-    right: 5,
-    zIndex: 1
+  listStyle: {
+    margin: 0,
+    borderRightWidth: 0.5,
+    borderLeftWidth: 0.5
   },
-  itemText: {
-    fontSize: 15,
-    margin: 2
+  placeNameText: {
+    fontSize: 16,
+    paddingLeft: 2,
+    paddingTop: 2,
+    fontWeight: 'bold'    
+  },
+  addressText: {
+    fontSize: 14, 
+    fontWeight: 'normal'
   }
 })
   
