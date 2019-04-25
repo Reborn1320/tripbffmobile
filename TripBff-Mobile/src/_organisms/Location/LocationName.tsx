@@ -34,9 +34,9 @@ export default class LocationName extends React.PureComponent<Props, State> {
                     </Text>
                 </View>
                 <View>
-                    <Text>
+                    <Text onPress={this._openMapLocation}>
                         {this.props.locationAddress}
-                        <Icon name="globe" type="FontAwesome5" onPress={this._openMapLocation}/>   
+                        <Icon name="globe" type="FontAwesome5"/>   
                     </Text>
                 </View>                 
             </View>
