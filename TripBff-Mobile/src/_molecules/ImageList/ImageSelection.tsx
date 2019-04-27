@@ -5,7 +5,7 @@ import NBTheme from "../../theme/variables/material.js";
 
 export interface Props {
   imageUrl: string
-  isChecked: boolean
+  isChecked?: boolean
   width: number
 
   onPress: () => void
@@ -47,9 +47,9 @@ export class ImageSelection extends React.Component<Props, State> {
             position: "relative",
           }}
         >
-          {!isChecked && <Icon style={styles.unCheckIcon} type="FontAwesome5" name="circle" />}
+          {isChecked == false && <Icon style={styles.unCheckIcon} type="FontAwesome5" name="circle" />}
           {/* this is not an issue, use solid to pass option into react-native-icons */}
-          {isChecked && <Icon style={styles.checkIcon} active solid type="FontAwesome5" name="check-circle" />}
+          {isChecked == true && <Icon style={styles.checkIcon} active solid type="FontAwesome5" name="check-circle" />}
           <Image
             style={Object.assign({ width, height: width }, isChecked ? styles.checkImage : styles.image)}
             source={{ uri: this.props.imageUrl }}

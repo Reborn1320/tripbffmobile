@@ -29,7 +29,7 @@ function getItemWidthFromListWidth(listWidth: number) {
   return (listWidth - (N_ITEMS_PER_ROW - 1) * IN_BETWEEN_ITEMS_MARGIN) / N_ITEMS_PER_ROW;
 }
 
-function isFirstRow(idx, nItemPerRow = N_ITEMS_PER_ROW) {
+export function isFirstItemInRow(idx, nItemPerRow = N_ITEMS_PER_ROW) {
   return idx % N_ITEMS_PER_ROW == 0
 }
 
@@ -49,18 +49,18 @@ class ImageList extends React.Component<Props, States> {
     }
   }
 
-  private _renderItem = (itemInfo: { item: any, index: number }) => {
-    const idx: number = itemInfo.index
+  // private _renderItem = (itemInfo: { item: any, index: number }) => {
+  //   const idx: number = itemInfo.index
 
-    // const styleContainer = Object.assign({ width: this.state.itemWidth },
-    //   idx % N_ITEMS_PER_ROW == 0 ? styles.firstInRowItemContainer : styles.itemContainer);
+  //   // const styleContainer = Object.assign({ width: this.state.itemWidth },
+  //   //   idx % N_ITEMS_PER_ROW == 0 ? styles.firstInRowItemContainer : styles.itemContainer);
     
-    return this.props.renderItem({
-      item: itemInfo.item,
-      index: itemInfo.index,
-      // styleContainer
-    });
-  }
+  //   return this.props.renderItem({
+  //     item: itemInfo.item,
+  //     index: itemInfo.index,
+  //     // styleContainer
+  //   });
+  // }
 
   render() {
     const { items } = this.props;

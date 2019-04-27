@@ -58,7 +58,7 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
         isFirstItemInRow={itemInfo.index % N_ITEMS_PER_ROW == 0}
         isFirstRow={ itemInfo.index < N_ITEMS_PER_ROW }
 
-        isChecked={!!this.props.selectedImageIds.find(imgId => imgId == img.imageId)}
+        isChecked={ this.props.massSelection ? !!this.props.selectedImageIds.find(imgId => imgId == img.imageId) : undefined }
         onPress={() => this.props.onSelect(img.imageId) }
         onLongPress={this.props.onMassSelection}
       />
@@ -74,10 +74,10 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
           items={this.props.images}
           renderItem={this.renderItem2}
 
-          onSelect={this.onSelect}
+          // onSelect={this.onSelect}
 
-          onMassSelection={this.props.onMassSelection}
-          massSelection={this.props.massSelection}
+          // onMassSelection={this.props.onMassSelection}
+          // massSelection={this.props.massSelection}
         />
       </View>
     );
