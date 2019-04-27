@@ -67,17 +67,13 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
 
   //todo move Photo & Videos up
   render() {
+    console.log("n images ", this.props.images.length);
     return (
       <View style={styles.locationMediaContainer}>
         <H3 style={styles.headerText}>Photos & Videos</H3>
         <ImageList
           items={this.props.images}
           renderItem={this.renderItem2}
-
-          // onSelect={this.onSelect}
-
-          // onMassSelection={this.props.onMassSelection}
-          // massSelection={this.props.massSelection}
         />
       </View>
     );

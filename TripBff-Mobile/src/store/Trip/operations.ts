@@ -157,17 +157,18 @@ export function updateLocationAddress(tripId: string, dateIdx: number, locationI
   };
 }
 
-export function deleteMultiLocationImages(tripId: string, locationId: string,
+export function deleteMultiLocationImages(tripId: string, dateIdx: number, locationId: string,
   imageIds: string[]): ThunkResultBase {
+    console.log("DELETE location images", imageIds);
   return async function (dispatch, getState, extraArguments): Promise<any> {
     const data = {
-      imageIds
+      deletingIds: imageIds
     };
     return extraArguments.tripApiService
-    .delete(`/trips/${tripId}/locations/${locationId}/images`, { data })
+    .patch(`/trips/${tripId}/locations/${locationId}/images`, { data })
     .then((res) => {
-      const location: StoreData.ImportImageVM = res.data;
-      dispatch(updateLocationImages(tripId, locationId, location));
+      const location: StoreData.LocationVM = res.data;
+      dispatch(updateLocationImages(tripId, dateIdx, locationId, location.images));
     })
     .catch((err) => {
       console.log('error delete multiple location images: ', err);

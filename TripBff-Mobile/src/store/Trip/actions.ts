@@ -106,8 +106,8 @@ export function updateLocationAddress(tripId: string, dateIdx: number, locationI
     }
 }
 
-export function updateLocationImages(tripId: string, locationId: string, locationImages: StoreData.ImportImageVM[]) {
+export function updateLocationImages(tripId: string, dateIdx: number, locationId: string, locationImages: StoreData.ImportImageVM[]) {
     return {
-        type: LOCATION_UPDATE_IMAGES, tripId, locationId, locationImages
+        type: LOCATION_UPDATE_IMAGES, tripId, dateIdx, locationId, locationImages
     }
 }

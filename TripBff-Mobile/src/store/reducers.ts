@@ -12,7 +12,8 @@ import { LOCATION_REMOVE,
          TRIP_UPDATE_TRIP_NAME, 
          LOCATION_UPDATE_ADDRESS,
          TripActions,
-         LocationActions} from './Trip/actions';
+         LocationActions,
+         LOCATION_UPDATE_IMAGES} from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
 import { IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "../screens/trip/import/actions";
 
@@ -85,6 +86,7 @@ function imageReducer(state: StoreData.ImportImageVM, action) {
 }
 
 function locationReducer(state: StoreData.LocationVM, action: LocationActions) {
+    console.log('   + location reducer: ', action.type);
     switch(action.type) {
         case LOCATION_UPDATE_FEELING:
             return {
@@ -107,7 +109,8 @@ function locationReducer(state: StoreData.LocationVM, action: LocationActions) {
                 }
             };
         //TODO: upload images
-        case "TRIP_LOCATION_UPDATE_IMAGES":
+        case LOCATION_UPDATE_IMAGES:
+            console.log("LOCATION_UPDATE_IMAGES", action.locationImages.length)
             return {
                 ...state,
                 images: action.locationImages
@@ -125,6 +128,7 @@ function locationReducer(state: StoreData.LocationVM, action: LocationActions) {
 
 //date + locations reducer
 function dateReducer(state: StoreData.DateVM, action) {
+    console.log(' + date reducer: ', action.type);
     switch(action.type) {
         case LOCATION_REMOVE:
             return {
@@ -152,7 +156,8 @@ function dateReducer(state: StoreData.DateVM, action) {
 }
 
 function tripReducer(state: StoreData.TripVM, action: TripActions) {
-    console.log('come here trip reducer: ', action);
+    console.log('trip reducer: ', action.type);
+    // console.log('come here trip reducer: ', action);
 
     switch(action.type) {
         case ADD_INFOGRAPHIC_ID: 
