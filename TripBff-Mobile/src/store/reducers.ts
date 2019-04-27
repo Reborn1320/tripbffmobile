@@ -77,6 +77,7 @@ function userReducer(state, action) {
 }
 
 function imageReducer(state: StoreData.ImportImageVM, action) {
+    console.log('     + location image reducer: ', action.type);
     switch(action.type) {
         case IMPORT_UPLOADED_IMAGE:
             return {

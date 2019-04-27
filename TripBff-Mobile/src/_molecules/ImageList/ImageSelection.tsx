@@ -9,7 +9,7 @@ export interface Props {
   width: number
 
   onPress: () => void
-  onLongPress: () => void
+  onLongPress?: () => void
 
   isFirstRow: boolean
   isFirstItemInRow: boolean
@@ -39,7 +39,7 @@ export class ImageSelection extends React.Component<Props, State> {
       }}>
       <TouchableHighlight
         onPress={this.props.onPress}
-        onLongPress={this.props.onLongPress}
+        onLongPress={() => this.props.onLongPress ? this.props.onLongPress() : true }
       >
         <View
         style={{
