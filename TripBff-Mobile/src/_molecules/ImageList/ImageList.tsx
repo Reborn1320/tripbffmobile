@@ -14,8 +14,8 @@ interface States {
   itemWidth: number;
 }
 
-const N_ITEMS_PER_ROW = 3;
-const IN_BETWEEN_ITEMS_MARGIN = 2;
+export const N_ITEMS_PER_ROW = 3;
+export const IN_BETWEEN_ITEMS_MARGIN = 2;
 // w + 2 + w + 2 + w
 export function calculateImageListWidth(paddingLeft: number = 0, paddingRight: number = 0) {
   const width = Dimensions.get("window").width;
@@ -27,6 +27,10 @@ export function calculateImageListWidth(paddingLeft: number = 0, paddingRight: n
 
 function getItemWidthFromListWidth(listWidth: number) {
   return (listWidth - (N_ITEMS_PER_ROW - 1) * IN_BETWEEN_ITEMS_MARGIN) / N_ITEMS_PER_ROW;
+}
+
+export function isFirstItemInRow(idx, nItemPerRow = N_ITEMS_PER_ROW) {
+  return idx % N_ITEMS_PER_ROW == 0
 }
 
 class ImageList extends React.Component<Props, States> {
@@ -45,33 +49,28 @@ class ImageList extends React.Component<Props, States> {
     }
   }
 
-  _renderItem = (itemInfo: { item: any, index: number }) => {
-    const idx: number = itemInfo.index
+  // private _renderItem = (itemInfo: { item: any, index: number }) => {
+  //   const idx: number = itemInfo.index
 
-    return (
-      <View
-        style={
-          Object.assign(
-            { width: this.state.itemWidth },
-            idx % N_ITEMS_PER_ROW == 0 ? styles.firstInRowItemContainer : styles.itemContainer)
-        }
-        key={idx}
-      >
-        {this.props.renderItem(itemInfo)}
-      </View>
-    );
-  }
+  //   // const styleContainer = Object.assign({ width: this.state.itemWidth },
+  //   //   idx % N_ITEMS_PER_ROW == 0 ? styles.firstInRowItemContainer : styles.itemContainer);
+    
+  //   return this.props.renderItem({
+  //     item: itemInfo.item,
+  //     index: itemInfo.index,
+  //     // styleContainer
+  //   });
+  // }
 
-  //todo change to FlatList...
   render() {
     const { items } = this.props;
     return (
       <View style={styles.listImageContainer}
       // data={items}
-      // renderItem={this._renderItem}
-      // keyExtractor={(item, index) => item.imageId}
+      // renderItem={this.props.renderItem}
+      // keyExtractor={(item, index) => index.toString()}
       >
-        {items.map((item, index) => this._renderItem({ item, index }))}
+        {items.map((item, index) => this.props.renderItem({ item, index }))}
       </View>
     );
   }
@@ -79,8 +78,6 @@ class ImageList extends React.Component<Props, States> {
 
 interface Style {
   listImageContainer: ViewStyle;
-  firstInRowItemContainer: ViewStyle;
-  itemContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -89,18 +86,7 @@ const styles = StyleSheet.create<Style>({
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-  },
-  firstInRowItemContainer: {
-    // ...mixins.themes.debug2,
-    margin: 0,
-    marginTop: IN_BETWEEN_ITEMS_MARGIN
-  },
-  itemContainer: {
-    // ...mixins.themes.debug1,
-    margin: 0,
-    marginTop: IN_BETWEEN_ITEMS_MARGIN,
-    marginLeft: IN_BETWEEN_ITEMS_MARGIN,
-  },
+  }
 })
 
 export default ImageList;

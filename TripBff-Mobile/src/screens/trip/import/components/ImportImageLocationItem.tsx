@@ -1,9 +1,9 @@
 import React from "react";
 import { CheckBox, View, ListItem, Text } from "native-base";
 import { TripImportLocationVM , TripImportImageVM} from "../TripImportViewModels";
-import { ImageListWithSelection } from "../../../../_molecules/ImageList/ImageListWithSelection";
-import { calculateImageListWidth } from "../../../../_molecules/ImageList/ImageList";
+import ImageList, { calculateImageListWidth, N_ITEMS_PER_ROW } from "../../../../_molecules/ImageList/ImageList";
 import { ImageSelection } from "../../../../_molecules/ImageList/ImageSelection";
+import { Image } from "react-native";
 
 export interface Props {
     locationIdx: number,
@@ -35,9 +35,16 @@ class ImportImageLocationItem extends React.Component<Props, State> {
 
         return (
             <ImageSelection
+                key={itemInfo.index}
                 imageUrl={img.url}
                 width={itemWidth}
                 isChecked={img.data.isSelected}
+
+                isFirstItemInRow={itemInfo.index % N_ITEMS_PER_ROW == 0}
+                isFirstRow={ itemInfo.index < N_ITEMS_PER_ROW }
+
+                onPress={() => this.props.handleSelect(this.props.locationIdx, itemInfo.index)}
+
             />
         );
     }
@@ -69,11 +76,9 @@ class ImportImageLocationItem extends React.Component<Props, State> {
                     >
                         {location.location.address}
                     </Text>
-                    <ImageListWithSelection
+                    <ImageList
                         items={location.images.map(img => ({ ...img, data: img }))}
                         renderItem={this.renderItem}
-
-                        onSelect={(imageIdx, imageIndex) => this.props.handleSelect(this.props.locationIdx, imageIndex)}
                     />
                 </View>
             </ListItem>

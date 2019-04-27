@@ -1,12 +1,18 @@
 import React from "react";
 import { View, Icon } from "native-base";
-import { Image, StyleSheet, ViewStyle, TextStyle } from "react-native";
+import { Image, StyleSheet, ViewStyle, TextStyle, TouchableHighlight } from "react-native";
 import NBTheme from "../../theme/variables/material.js";
 
 export interface Props {
   imageUrl: string
-  isChecked: boolean
+  isChecked?: boolean
   width: number
+
+  onPress: () => void
+  onLongPress?: () => void
+
+  isFirstRow: boolean
+  isFirstItemInRow: boolean
 }
 
 export interface State {
@@ -20,25 +26,36 @@ export class ImageSelection extends React.Component<Props, State> {
     }
   }
   shouldComponentUpdate(nextProps: Props, nextState) {
+    // console.log(this.props.isChecked != nextProps.isChecked)
     return this.props.isChecked != nextProps.isChecked;
   }
 
   render() {
-    const { width, isChecked } = this.props;
+    const { width, isChecked, isFirstRow, isFirstItemInRow } = this.props;
     return (
-      <View
-        style={{
-          width, height: width,
-          position: "relative"
-        }}
+      <View style={{
+        marginTop: isFirstRow ? 0 : 2,
+        marginLeft: isFirstItemInRow ? 0 : 2,
+      }}>
+      <TouchableHighlight
+        onPress={this.props.onPress}
+        onLongPress={() => this.props.onLongPress ? this.props.onLongPress() : true }
       >
-        {!isChecked && <Icon style={styles.unCheckIcon} type="FontAwesome5" name="circle" />}
-        {/* this is not an issue, use solid to pass option into react-native-icons */}
-        {isChecked && <Icon style={styles.checkIcon} active solid type="FontAwesome5" name="check-circle" />}
-        <Image
-          style={Object.assign({ width, height: width }, isChecked ? styles.checkImage : styles.image)}
-          source={{ uri: this.props.imageUrl }}
-        />
+        <View
+        style={{
+            width, height: width,
+            position: "relative",
+          }}
+        >
+          {isChecked == false && <Icon style={styles.unCheckIcon} type="FontAwesome5" name="circle" />}
+          {/* this is not an issue, use solid to pass option into react-native-icons */}
+          {isChecked == true && <Icon style={styles.checkIcon} active solid type="FontAwesome5" name="check-circle" />}
+          <Image
+            style={Object.assign({ width, height: width }, isChecked ? styles.checkImage : styles.image)}
+            source={{ uri: this.props.imageUrl }}
+          />
+        </View>
+      </TouchableHighlight>
       </View>
     );
   }

@@ -3,8 +3,7 @@ import { Container, Header, Content } from 'native-base';
 import { connect } from "react-redux";
 import _, { } from "lodash";
 import moment, { Moment } from "moment";
-import { StoreData } from "../../../store/Interfaces";
-import { mixins } from "../../../_utils";
+import { StoreData } from "../../store/Interfaces";
 
 interface IMapDispatchToProps {
 }

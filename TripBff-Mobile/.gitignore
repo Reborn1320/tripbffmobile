@@ -1,3 +1,8 @@
+# custom one
+.jest
+.log
+coverage
+
 # OSX
 #
 .DS_Store

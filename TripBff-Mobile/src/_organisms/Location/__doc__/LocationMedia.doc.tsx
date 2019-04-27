@@ -13,7 +13,7 @@ export interface Props extends IMapDispatchToProps {
 
 interface State {
   isLoaded: boolean;
-  images: { imageId: string, url: string }[];
+  images: { imageId: string, url: string, selected: boolean }[];
   isMassSelection: boolean;
   selectedImageIds: string[]
 }
@@ -28,7 +28,8 @@ class LocationMediaDoc extends Component<Props, State> {
       images: Array.from({ length: 50 }, (v, i) => {
         return {
           imageId: i.toString(),
-          url: "https://placekitten.com/g/200/200"
+          url: "https://placekitten.com/g/200/200",
+          selected: false,
         };
       }),
       isMassSelection: true,

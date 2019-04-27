@@ -7,7 +7,9 @@ import {
   updateTripName as updateTripNameAction,
   updateLocationAddress as updateLocationAddressAction,
   updateLocationHighlight as updateLocationHighlightAction,
-  updateLocationDescription as  updateLocationDescriptionAction } from "./actions";
+  updateLocationDescription as  updateLocationDescriptionAction ,
+  updateLocationImages
+} from "./actions";
 import { ThunkResultBase } from "..";
 import { Moment } from "moment";
 import { StoreData, RawJsonData } from "../Interfaces";
@@ -83,7 +85,9 @@ export function updateTripDateRange(tripId: string, fromDate: Moment, toDate: Mo
     };
     return extraArguments.tripApiService.patch(`trips/${tripId}`, { data })
     .then((res) => {
-        dispatch(updateTripDateRangeAction(tripId, data.fromDate, data.toDate));
+        const trip: RawJsonData.TripVM = res.data;
+        //todo need a proper conversion
+        dispatch(updateTripDateRangeAction(tripId, data.fromDate, data.toDate, trip.locations));
     })
     .catch((err) => {
       console.log('error update trip date range api: ', err);
@@ -137,6 +141,7 @@ export function updateLocationActivity(tripId: string, dateIdx: number, location
   };
 }
 
+//todo: shouldn't depend on dateIdx
 export function updateLocationAddress(tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     const data = {
@@ -178,6 +183,25 @@ export function updateLocationDescription(tripId: string, dateIdx: number, locat
     })
     .catch((err) => {
       console.log('error update location description: ', err);
+    });
+  };
+}
+
+export function deleteMultiLocationImages(tripId: string, dateIdx: number, locationId: string,
+  imageIds: string[]): ThunkResultBase {
+    console.log("DELETE location images", imageIds);
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    const data = {
+      deletingIds: imageIds
+    };
+    return extraArguments.tripApiService
+    .patch(`/trips/${tripId}/locations/${locationId}/images`, { data })
+    .then((res) => {
+      const location: StoreData.LocationVM = res.data;
+      dispatch(updateLocationImages(tripId, dateIdx, locationId, location.images));
+    })
+    .catch((err) => {
+      console.log('error delete multiple location images: ', err);
     });
   };
 }

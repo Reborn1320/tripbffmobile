@@ -6,11 +6,12 @@ import { NavigationScreenProp } from 'react-navigation';
 import _ from "lodash";
 import LocationContent from '../../../_organisms/Location/LocationContent';
 import LocationModal from '../../../_organisms/Location/LocationModal'
-import { updateLocationAddress, updateLocationHighlight, updateLocationDescription } from '../../../store/Trip/operations';
+import { updateLocationAddress, updateLocationHighlight, updateLocationDescription, deleteMultiLocationImages } from '../../../store/Trip/operations';
 import { View } from 'react-native';
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
+    deleteLocationImages: (tripId: string, dateIdx: number, locationId: string, locationImageIds: string[]) => Promise<void>
     updateLocationHighlight: (tripId: string, dateIdx: number, locationId: string, highlights: Array<StoreData.LocationLikeItemVM>) => Promise<void>
     updateLocationDescription: (tripId: string, dateIdx: number, locationId: string, description: string) => Promise<void>
 }
@@ -101,6 +102,14 @@ class LocationDetail extends React.Component<Props, State> {
         }
     }
 
+    private onDeleteLocationImages = () => {
+        const { tripId, dateIdx, locationId } = this.props;
+        const selectedImageIds = this.state.selectedImageIds;
+        this.props.deleteLocationImages(tripId, dateIdx, locationId, selectedImageIds)
+        .then(() => {
+            this.setState({ isMassSelection: false, selectedImageIds: [] })
+        })
+    }
     _openUpdateLocationDescriptionModal = () => {
         this.setState({isUpdateLocationDescriptionModalVisible: true});
     }
@@ -133,7 +142,7 @@ class LocationDetail extends React.Component<Props, State> {
                         <Text>CANCEL</Text>
                     </Button>
                     <Button transparent danger
-                        onPress={() => this.setState({ isMassSelection: false, selectedImageIds: [] })}
+                        onPress={this.onDeleteLocationImages}
                     >
                         <Text>DELETE</Text>
                     </Button>
@@ -206,6 +215,7 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     return {
         updateLocationAddress: (tripId, dateIdx, locationId, location) => dispatch(updateLocationAddress(tripId, dateIdx, locationId, location)),
+        deleteLocationImages: (tripId, dateIdx, locationId, locationImageIds) => dispatch(deleteMultiLocationImages(tripId, dateIdx, locationId, locationImageIds)),
         updateLocationHighlight: (tripId, dateIdx, locationId, highlights) => dispatch(updateLocationHighlight(tripId, dateIdx, locationId, highlights)),
         updateLocationDescription: (tripId, dateIdx, locationId, description) => dispatch(updateLocationDescription(tripId, dateIdx, locationId, description))
     };

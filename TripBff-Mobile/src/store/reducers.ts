@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import moment from "moment";
+import moment, { Moment } from "moment";
 import { StoreData } from "./Interfaces";
-import homeScreenReducer from "../screens/home/reducer";
 import { TRIP_ADD } from '../screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './User/actions';
 import { ADD_INFOGRAPHIC_ID } from '../screens/trip/export/actions';
@@ -12,8 +11,12 @@ import { LOCATION_REMOVE,
          TRIP_UPDATE_DATE_RANGE,
          TRIP_UPDATE_TRIP_NAME, 
          LOCATION_UPDATE_ADDRESS,
+         TripActions,
+         LocationActions,
+         LOCATION_UPDATE_IMAGES,
          LOCATION_UPDATE_HIGHLIGHT,
-         LOCATION_UPDATE_DESCRIPTION } from './Trip/actions';
+         LOCATION_UPDATE_DESCRIPTION,
+} from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
 import { IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "../screens/trip/import/actions";
 
@@ -34,29 +37,6 @@ const initState: StoreData.BffStoreData = {
     trips: [] 
 }
 
-function getDateVms(fromDate, toDate, oldDateVms) {
-    var dateVMs: StoreData.DateVM[] = [];
-    const nDays = toDate.diff(fromDate, "days") + 1
-
-    for (let idx = 0; idx < nDays; idx++) {
-
-        var oldDateVM = oldDateVms.find(function(value, index) {
-            var oldDate = moment(value.date).startOf('day');
-            var date = moment(fromDate).add(idx, 'days').startOf('day');
-            return  oldDate.isSame(date);
-        });
-
-        dateVMs.push({
-            dateIdx: idx + 1,
-            date: moment(fromDate.add(idx, 'days')),
-            locationIds: oldDateVM ? oldDateVM.locationIds : [],
-            locations: oldDateVM ? oldDateVM.locations : [],
-        })
-    }
-
-    return dateVMs;  
-}
-
 function compareLocationsFromTime(first, second) {
     var order = 0,
         firstElementFromTime = moment(first.fromTime),
@@ -70,26 +50,22 @@ function compareLocationsFromTime(first, second) {
     return order;
 }
 
-function importSelectedLocations(state: StoreData.TripVM, action) {
-    const { locations } = action
+function getDatesProperty(fromDate: Moment, toDate: Moment, locations: StoreData.LocationVM[]) {
     var dateVMs: StoreData.DateVM[] = [];
-    const nDays = state.toDate.diff(state.fromDate, "days") + 1
+    const nDays = toDate.diff(fromDate, "days") + 1
 
     for (let idx = 0; idx < nDays; idx++) {
-        var locationsOfDate = locations.filter(element => moment(element.fromTime).diff(state.fromDate, "days") == idx);
+        var locationsOfDate = locations.filter(element => moment(element.fromTime).diff(fromDate, "days") == idx);
 
         dateVMs.push({
             dateIdx: idx + 1,
-            date: state.fromDate.clone().add(idx, 'days'),
+            date: fromDate.clone().add(idx, 'days'),
             locationIds: locationsOfDate.map(e => { return e.locationId }),
             locations: locationsOfDate.sort(compareLocationsFromTime).map(e => { return e })
         })
     }
 
-    return {
-        ...state,
-        dates: dateVMs
-    };
+    return dateVMs;
 }
 
 function userReducer(state, action) {
@@ -101,6 +77,7 @@ function userReducer(state, action) {
 }
 
 function imageReducer(state: StoreData.ImportImageVM, action) {
+    console.log('     + location image reducer: ', action.type);
     switch(action.type) {
         case IMPORT_UPLOADED_IMAGE:
             return {
@@ -112,7 +89,8 @@ function imageReducer(state: StoreData.ImportImageVM, action) {
     }
 }
 
-function locationReducer(state: StoreData.LocationVM, action) {
+function locationReducer(state: StoreData.LocationVM, action: LocationActions) {
+    console.log('   + location reducer: ', action.type);
     switch(action.type) {
         case LOCATION_UPDATE_FEELING:
             return {
@@ -145,8 +123,14 @@ function locationReducer(state: StoreData.LocationVM, action) {
                 description: action.description
             };
         //TODO: upload images
-        //TODO: remove images
+        case LOCATION_UPDATE_IMAGES:
+            console.log("LOCATION_UPDATE_IMAGES", action.locationImages.length)
+            return {
+                ...state,
+                images: action.locationImages
+            }
         default:
+            //todo: action should start with image...
             return {
                 ...state,
                 images: state.images.map(item => {
@@ -156,7 +140,9 @@ function locationReducer(state: StoreData.LocationVM, action) {
     }    
 }
 
+//date + locations reducer
 function dateReducer(state: StoreData.DateVM, action) {
+    console.log(' + date reducer: ', action.type);
     switch(action.type) {
         case LOCATION_REMOVE:
             return {
@@ -183,21 +169,28 @@ function dateReducer(state: StoreData.DateVM, action) {
     }    
 }
 
+function tripReducer(state: StoreData.TripVM, action: TripActions) {
+    console.log('trip reducer: ', action.type);
+    // console.log('come here trip reducer: ', action);
 
-function tripReducer(state: StoreData.TripVM, action) {
     switch(action.type) {
         case ADD_INFOGRAPHIC_ID: 
             return Object.assign({}, state, {
                 infographicId: action.infographicId
               });              
         case IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS:
-            return importSelectedLocations(state, action);        
-        case TRIP_UPDATE_DATE_RANGE:
+            const { locations } = action;
+            return {
+                ...state,
+                locations,
+                dates: getDatesProperty(state.fromDate, state.toDate, locations)
+            }
+        case TRIP_UPDATE_DATE_RANGE: //todo check this again, why do I need to process something in frontend now ?
             return {
                 ...state,
                 fromDate: action.fromDate,
                 toDate: action.toDate,
-                dates: getDateVms(action.fromDate.clone(), action.toDate.clone(), state.dates)
+                dates: getDatesProperty(action.fromDate, action.toDate, action.locations)
             }
         case TRIP_UPDATE_TRIP_NAME:
             return {
@@ -217,10 +210,16 @@ function tripReducer(state: StoreData.TripVM, action) {
 function tripsReducer(state: Array<StoreData.TripVM>, action) {
     const actionType: string = action.type;
 
+    // console.log("actionType", actionType);
+    // console.log("action", JSON.stringify(action));
     if (_.startsWith(actionType, "TRIPS")) {
         //handle trips
-        //todo clearly something wrong here
-        return action.trips.map(trip => importSelectedLocations(trip, { locations: trip.locations }));
+        return action.trips.map(trip => {
+            return {
+                ...trip,
+                dates: getDatesProperty(trip.fromDate, trip.toDate, trip.locations)
+            }
+        });
     }
     else if (actionType == TRIP_ADD) {
         return [...state, action.trip];
@@ -260,9 +259,10 @@ export default function bffApp(state: StoreData.BffStoreData = initState, action
     console.log('action :' + action.type);
 
     return {
-        repo: homeScreenReducer(state.repo, action),
         user: userReducer(state.user, action),
         trips: tripsReducer(state.trips, action),
+        //todo trips shouldn't handle too much things in here!!!!!
+        //todo: should it be trip, location, in respect to each page ?
         dataSource: dataSourceReducer(state.dataSource, action)
     }
 }

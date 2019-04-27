@@ -60,8 +60,8 @@ export module StoreData {
         name: string
         fromDate: moment.Moment
         toDate: moment.Moment   
-        dates: Array<DateVM>     
-        infographicId: string        
+        dates?: Array<DateVM>     
+        infographicId?: string        
     }
 
     export interface UserVM {

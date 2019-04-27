@@ -5,12 +5,14 @@ export var mockLoginApiService: IApiService = {
   get: (url: string, args?: ApiServiceArguments) => login(),
   post: (url: string, args?: ApiServiceArguments) => login(),
   delete: (url: string, args?: ApiServiceArguments) => login(),
+  patch: (url: string, args?: ApiServiceArguments) => login(),
 }
 
 export var mockTripApiService: IApiService = {
   get: (url: string, args?: ApiServiceArguments) => tripGetMock(url, args),
   post: (url: string, args?: ApiServiceArguments) => new Promise(() => true),
   delete: (url: string, args?: ApiServiceArguments) => tripDeleteMock(args),
+  patch: (url: string, args?: ApiServiceArguments) => new Promise(() => true),
 }
 
 function login() {
