@@ -94,8 +94,6 @@ export class TripDetailsComponent extends Component<Props, State> {
             })
         }
 
-        console.log('dateVMs : ' + JSON.stringify(dayVMs));
-
         return (
             <View>
                 <View style={{

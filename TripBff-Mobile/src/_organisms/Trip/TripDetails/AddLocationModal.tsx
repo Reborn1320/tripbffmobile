@@ -115,9 +115,31 @@ class AddLocationModalComponent extends React.Component<Props, State> {
     });
   }
 
+  _onSelectedLocation = (item) => {
+    this.setState({ 
+      query: item.placeName,
+      address: item.address,
+      long: item.long,
+      lat: item.lat,
+      places: [] })
+  }
+
+  _renderItem = (item) => {
+    var placeAddress =  item.address.replace(item.placeName + ',', '');
+
+    return (
+        <TouchableOpacity onPress={() => this._onSelectedLocation(item)}>
+          <View style={styles.listViewContainer}>
+            <Text numberOfLines={1} style={styles.placeNameText}>{item.placeName}</Text>
+            <Text numberOfLines={1} style={styles.addressText}>{placeAddress}</Text>
+          </View>          
+        </TouchableOpacity>
+      )
+  }
+
   render() {
     const { isVisible } = this.props;
-    console.log('add location modal selected date : ' + this.props.date);
+    //console.log('add location modal selected date : ' + this.props.date);
     return (
         <RNModal style={styles.modal} 
             isVisible={isVisible} hideModalContentWhileAnimating 
@@ -127,7 +149,7 @@ class AddLocationModalComponent extends React.Component<Props, State> {
                     <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
                     <Button transparent onPress={this._onConfirm}><Text>Add</Text></Button>
                 </View>
-                <View style={{ flex: 1 }}>
+                <View style={styles.timeContainer}>
                   <TouchableOpacity onPress={this._showDateTimePicker}>
                     <Text>From Time: {this.state.displayTime}</Text>
                   </TouchableOpacity>
@@ -140,23 +162,16 @@ class AddLocationModalComponent extends React.Component<Props, State> {
                   />
                 </View>
                 <View style={styles.placesContainer}>
-                  <Text style={{ margin: 5 }}>Search Places: </Text>
+                  <Text>Search Places: </Text>
                   <Autocomplete                    
                     autoCapitalize="none"
                     autoCorrect={false}
                     defaultValue={this.state.query}
                     data={this.state.places}
                     onChangeText={text => this.searchPlaces(text)}
-                    renderItem={({ placeName, id, address, long, lat}) => (
-                      <TouchableOpacity onPress={() => this.setState({ 
-                            query: placeName,
-                            address: address,
-                            long: long,
-                            lat: lat,
-                            places: [] })}>
-                        <Text>{placeName}</Text>
-                      </TouchableOpacity>
-                    )}
+                    inputContainerStyle={styles.inputContainerStyle}
+                    listStyle={styles.listStyle}
+                    renderItem={this._renderItem}
                   />
               </View>
             </View>
@@ -169,7 +184,14 @@ interface Style {
   modal: ViewStyle,
   buttons: ViewStyle;
   modalInnerContainer: ViewStyle;
+  timeContainer: ViewStyle;
   placesContainer: ViewStyle;
+  searchPlacesLabel: TextStyle;
+  inputContainerStyle: ViewStyle;
+  listViewContainer: ViewStyle;
+  listStyle: ViewStyle;
+  placeNameText: TextStyle;
+  addressText: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -181,7 +203,6 @@ const styles = StyleSheet.create<Style>({
     backgroundColor: "white"
   },
   buttons: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between"
   },
@@ -190,8 +211,42 @@ const styles = StyleSheet.create<Style>({
     width: "100%",
     height: "100%"
   },
+  listViewContainer: {
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    borderBottomWidth: 0.5,
+    height: 50,
+    borderColor: '#d6d7da'
+  },
   placesContainer: {
-    flex: 6
+    flex: 1,
+    margin: 5
+  },
+  timeContainer: {
+    margin: 5
+  },
+  searchPlacesLabel: {
+    marginBottom: 5
+  },
+  inputContainerStyle: {    
+    borderRadius: 2,
+    borderWidth: 1,
+    borderColor: '#d6d7da',
+  },
+  listStyle: {
+    margin: 0,
+    borderRightWidth: 0.5,
+    borderLeftWidth: 0.5
+  },
+  placeNameText: {
+    fontSize: 16,
+    paddingLeft: 2,
+    paddingTop: 2,
+    fontWeight: 'bold'    
+  },
+  addressText: {
+    fontSize: 14, 
+    fontWeight: 'normal'
   }
 })
   

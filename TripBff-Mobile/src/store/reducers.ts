@@ -13,7 +13,10 @@ import { LOCATION_REMOVE,
          LOCATION_UPDATE_ADDRESS,
          TripActions,
          LocationActions,
-         LOCATION_UPDATE_IMAGES} from './Trip/actions';
+         LOCATION_UPDATE_IMAGES,
+         LOCATION_UPDATE_HIGHLIGHT,
+         LOCATION_UPDATE_DESCRIPTION,
+} from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
 import { IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "../screens/trip/import/actions";
 
@@ -107,6 +110,16 @@ function locationReducer(state: StoreData.LocationVM, action: LocationActions) {
                     long: action.location.long,
                     lat: action.location.lat
                 }
+            };
+        case LOCATION_UPDATE_HIGHLIGHT:
+            return {
+                ...state,
+                likeItems: [...action.highlights]
+            };
+        case LOCATION_UPDATE_DESCRIPTION:
+            return {
+                ...state,
+                description: action.description
             };
         //TODO: upload images
         case LOCATION_UPDATE_IMAGES:
@@ -211,15 +224,7 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
         return [...state, action.trip];
     }
     else if (_.startsWith(actionType, "TRIP")) {
-        //handle single trip
-        var trip = _.find(state, (item) => item.tripId == action.tripId)
-
-        var newState = [
-            ...state.slice(0, action.tripId),
-            tripReducer(trip, action),
-            ...state.slice(action.tripId + 1)
-        ];
-
+        var newState = state.map(trip => trip.tripId == action.tripId ? tripReducer(trip, action) : trip);
         return newState
     }
 
@@ -245,11 +250,13 @@ function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
             }
         default:
             return state;
-    }
+    } 
 }
 
 //todo small refactor to move each reducer to files
 export default function bffApp(state: StoreData.BffStoreData = initState, action): StoreData.BffStoreData {
+    console.log('action :' + action.type);
+
     return {
         user: userReducer(state.user, action),
         trips: tripsReducer(state.trips, action),

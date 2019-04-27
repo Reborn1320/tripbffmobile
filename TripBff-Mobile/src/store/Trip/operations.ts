@@ -5,8 +5,11 @@ import {
   updateLocationActivity as updateLocationActivityAction,
   updateTripDateRange as updateTripDateRangeAction,
   updateTripName as updateTripNameAction,
-  updateLocationAddress as updateLocationAddressAction, 
-  updateLocationImages} from "./actions";
+  updateLocationAddress as updateLocationAddressAction,
+  updateLocationHighlight as updateLocationHighlightAction,
+  updateLocationDescription as  updateLocationDescriptionAction ,
+  updateLocationImages
+} from "./actions";
 import { ThunkResultBase } from "..";
 import { Moment } from "moment";
 import { StoreData, RawJsonData } from "../Interfaces";
@@ -152,7 +155,34 @@ export function updateLocationAddress(tripId: string, dateIdx: number, locationI
       dispatch(updateLocationAddressAction(tripId, dateIdx, locationId, location));
     })
     .catch((err) => {
-      console.log('error update location activity: ', err);
+      console.log('error update location address: ', err);
+    });
+  };
+}
+
+
+export function updateLocationHighlight(tripId: string, dateIdx: number, locationId: string, highlights: Array<StoreData.LocationLikeItemVM>): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    const data = [...highlights];
+    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/highlights`, { data })
+    .then((res) => {
+      dispatch(updateLocationHighlightAction(tripId, dateIdx, locationId, highlights));
+    })
+    .catch((err) => {
+      console.log('error update location highlights: ', err);
+    });
+  };
+}
+
+export function updateLocationDescription(tripId: string, dateIdx: number, locationId: string, description: string): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    const data = { description };
+    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/description`, { data })
+    .then((res) => {
+      dispatch(updateLocationDescriptionAction(tripId, dateIdx, locationId, description));
+    })
+    .catch((err) => {
+      console.log('error update location description: ', err);
     });
   };
 }

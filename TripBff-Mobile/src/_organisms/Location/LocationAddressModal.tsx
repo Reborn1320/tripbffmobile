@@ -71,8 +71,9 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
                     <Button transparent onPress={this._onConfirm}><Text>Save</Text></Button>
                 </View>
                 <SearchLocation 
-                  confirmHandler={this._selectedLocationHandler}></SearchLocation>
-                <View style={{ flex: 4 }}>
+                    confirmHandler={this._selectedLocationHandler}>
+                  </SearchLocation>
+                <View style={styles.mapContainer}>
                     <Mapbox.MapView
                         styleURL={Mapbox.StyleURL.Street}
                         zoomLevel={15}
@@ -91,7 +92,7 @@ interface Style {
   modal: ViewStyle,
   buttons: ViewStyle;
   modalInnerContainer: ViewStyle;
-  placesContainer: ViewStyle;
+  mapContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -103,7 +104,6 @@ const styles = StyleSheet.create<Style>({
     backgroundColor: "white"
   },
   buttons: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between"
   },
@@ -112,8 +112,8 @@ const styles = StyleSheet.create<Style>({
     width: "100%",
     height: "100%"
   },
-  placesContainer: {
-    flex: 6
+  mapContainer: {
+    flex: 1
   }
 })
   

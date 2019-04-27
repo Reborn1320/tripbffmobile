@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import axiosMiddleware from "redux-axios-middleware";
 
 import { Root } from "native-base";
-import { createStackNavigator } from "react-navigation";
+import { createStackNavigator, createAppContainer, createSwitchNavigator } from "react-navigation";
 
 import HomeScreen from "./screens/home/index";
 import TripDetailScreenContainer from "./screens/trip/detail/TripDetailScreenContainer";
@@ -47,33 +47,57 @@ const store = createStore(
   )
 );
 
-const AppNavigator = createStackNavigator(
+const TripCreationNavigator = createStackNavigator(
   {
-    TestComponent: {screen: TestComponentScreen },
-    Home: { screen: HomeScreen },
-    Login: { screen: LoginScreen },
-    Profile: {screen: ProfileScreenContainer },
-    TripDetail: { screen: TripDetailScreenContainer },
-    LocationDetail: { screen: LocationDetailScreen },
     TripCreation: { screen: TripCreation },
-    TripImportation: { screen: TripImportationScreen },
-    TripEdition: { screen: TripEditScreenContainer },
-    InfographicPreview: { screen: InfographicPreviewScreen }
+    TripImportation: { screen: TripImportationScreen }, 
   },
   {
-    initialRouteName: "Login",
-    // initialRouteName: "TestComponent",
-    initialRouteParams: {
-      tripId: 3
-    },
     headerMode: "none"
   }
 );
 
+const TripDetailsNavigator = createStackNavigator(
+  {
+    TripDetail: { screen: TripDetailScreenContainer },
+    LocationDetail: { screen: LocationDetailScreen }   
+  },
+  {
+    headerMode: "none"
+  }
+);
+
+const ProfileNavigator = createStackNavigator(
+  {
+    Profile: {screen: ProfileScreenContainer },
+    TripEdition: { screen: TripEditScreenContainer }, 
+    LocationDetail: { screen: LocationDetailScreen } 
+  },
+  {
+    headerMode: "none"
+  }
+);
+
+const AppNavigator = createSwitchNavigator(
+  {
+    Login: { screen: LoginScreen },
+    TripCreation: TripCreationNavigator,
+    TripDetails: TripDetailsNavigator,
+    InfographicPreview: { screen: InfographicPreviewScreen },
+    Profile: ProfileNavigator,
+    TestComponent: {screen: TestComponentScreen },
+    Home: { screen: HomeScreen },   
+  },
+  {
+    initialRouteName: "Login"
+  });
+
+let Navigation = createAppContainer(AppNavigator);
+
 export default () => (
   <Provider store={store}>
     <Root>
-      <AppNavigator />
+      <Navigation />
     </Root>
   </Provider>
 );

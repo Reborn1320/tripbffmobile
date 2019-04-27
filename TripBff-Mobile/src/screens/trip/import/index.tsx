@@ -271,10 +271,10 @@ class TripImportation extends Component<Props, State> {
 
     componentDidUpdate() {
 
-        console.log("component did update");
+        //console.log("component did update");
         
         if (this.state.UIState == "import images") {
-        console.log("component will update with import images");
+        //console.log("component will update with import images");
 
             var totalImages = 0;
             var uploadedImages = 0;
@@ -309,7 +309,6 @@ class TripImportation extends Component<Props, State> {
     
             if (uploadedImages == totalImages && uploadedImages > 0) {
                 isStartUploadImage = false;
-                console.log("now I can move to next page");
                 //navigate to next page
                 this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId })
             }
@@ -342,7 +341,7 @@ class TripImportation extends Component<Props, State> {
 
 
     render() {
-        console.log("render")
+        console.log('trip import screen render');
         const { name, locations, isLoading, loadingMessage } = this.state
         return (
             <Container>

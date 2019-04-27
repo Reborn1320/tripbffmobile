@@ -9,6 +9,8 @@ export const TRIP_UPDATE_DATE_RANGE = "TRIP_UPDATE_DATE_RANGE"
 export const TRIP_UPDATE_TRIP_NAME = "TRIP_UPDATE_TRIP_NAME"
 export const LOCATION_UPDATE_ADDRESS = "TRIP_LOCATION_UPDATE_ADDRESS"
 export const LOCATION_UPDATE_IMAGES = "TRIP_LOCATION_UPDATE_IMAGES"
+export const LOCATION_UPDATE_HIGHLIGHT = "TRIP_LOCATION_UPDATE_HIGHLIGHT"
+export const LOCATION_UPDATE_DESCRIPTION = "TRIP_LOCATION_UPDATE_DESCRIPTION"
 
 export type TripActions = RemoveLocation
 | UpdateTripDateRange
@@ -109,5 +111,17 @@ export function updateLocationAddress(tripId: string, dateIdx: number, locationI
 export function updateLocationImages(tripId: string, dateIdx: number, locationId: string, locationImages: StoreData.ImportImageVM[]) {
     return {
         type: LOCATION_UPDATE_IMAGES, tripId, dateIdx, locationId, locationImages
+    }
+}
+
+export function updateLocationHighlight(tripId: string, dateIdx: number, locationId: string, highlights: Array<StoreData.LocationLikeItemVM>) {
+    return {
+        type: LOCATION_UPDATE_HIGHLIGHT, tripId, dateIdx, locationId, highlights
+    }
+}
+
+export function updateLocationDescription(tripId: string, dateIdx: number, locationId: string, description: string) {
+    return {
+        type: LOCATION_UPDATE_DESCRIPTION, tripId, dateIdx, locationId, description
     }
 }

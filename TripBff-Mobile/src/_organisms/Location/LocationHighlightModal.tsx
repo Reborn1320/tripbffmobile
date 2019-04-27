@@ -6,42 +6,39 @@ import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
 import { getAllHighlights } from "../../store/DataSource/operations";
 import { StoreData } from "../../store/Interfaces";
-import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { TabView } from 'react-native-tab-view';
 import { SearchBar } from 'react-native-elements';
 
-interface IMapDispatchToProps {
-    getAllHighlights: () => Promise<StoreData.PreDefinedHighlightVM>
-}
-
-export interface Props {
-  isVisible: boolean;
-  preDefinedHighlights?: Array<StoreData.PreDefinedHighlightVM>
-  confirmHandler: () => void;
-  cancelHandler?: () => void;
-}
-
-interface State {
-  index: number,
-  routes: Array<any>,
-}
-
-class HighlightItem extends React.PureComponent<any> {
-   _onPress = () => {
-    // this.props.onPressItem({
-    //   feelingId: this.props.id,
-    //   label: this.props.label,
-    //   icon: this.props.icon
-    // });
+class SelectedHighlightItem extends React.PureComponent<any> {
+  _onPress = () => {
+    this.props.onPressItem(this.props.item);
   };
 
   render() {
     return (
       <TouchableOpacity onPress={this._onPress}       
-        style={styles.highlightItemContainer}>
-        <View style={styles.highlightItem}>
-          <Icon style={{ marginRight: 5}} type="FontAwesome5" name={this.props.icon} />  
-          <Text>{this.props.label}</Text>
-        </View>
+          style={styles.highlightItemContainer}>
+          <View style={styles.highlightItem}>          
+            <Text>{this.props.item.label}</Text>   
+            <Icon name='trash-alt' type="FontAwesome5" style={{fontSize: 20, marginLeft: 10}}/>           
+          </View>
+      </TouchableOpacity>
+    );
+  }
+}
+
+class HighlightItem extends React.PureComponent<any> {
+   _onPress = () => {
+    this.props.onPressItem(this.props.item);
+  };
+
+  render() {
+    return (
+      <TouchableOpacity onPress={this._onPress}       
+          style={styles.highlightItemContainer}>
+          <View style={styles.highlightItem}>          
+            <Text>{this.props.item.label}</Text>               
+          </View>
       </TouchableOpacity>
     );
   }
@@ -54,32 +51,21 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
     this.state = {
       search: '',
       preDefinedItems: [],
-      newDefinedItem: {}
+      newDefinedItem: null,
+      selectedItems: []
     }
   }
 
   componentDidMount() {
-    this.setState({ preDefinedItems: this.props.items});
+    this.setState({
+      preDefinedItems: this.props.items.filter(item => !this.props.selectedItems.includes(item)),
+      selectedItems: this.props.selectedItems
+    });
   }
-
-  _onConfirm(highlight) { 
-    //this.props.confirmHandler(this.props.locationId, feeling);
-  }
-
-  _keyExtractor = (item, index) => item.highlightId;
-
-  _renderItem = ({item}) => (
-    <HighlightItem
-      id={item.highlightId}
-      label={item.label}
-      type={item.type}
-      onPressItem={(item) => this._onConfirm(item)}
-    />
-  );
 
   updateSearch = search => {
-    var filterItems = this.props.items;
-    var newItem = {};
+    var filterItems = this.props.items.filter(item => !this.state.selectedItems.includes(item));
+    var newItem = null;
 
     if (search) {
       var searchLower = search.toLowerCase();
@@ -92,30 +78,87 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
 
       if (!exactItem) {
         var lastPredefinedItem = this.props.items.slice(-1);
-        newItem = {
-          highlightId: -(lastPredefinedItem.highlightId),
+
+        newItem = {          
+          highlightId: lastPredefinedItem[0].highlightId + 1000000,
           label: search,
-          type: lastPredefinedItem.type
+          highlightType: lastPredefinedItem[0].highlightType
         };
-        filterItems.push(newItem); 
+        filterItems.push(newItem);         
       }     
     }
     
     this.setState({ preDefinedItems: filterItems, search: search, newDefinedItem: newItem });
   };
 
+  _onConfirm = (selectedItem) => {
+    var selectedItems = [...this.state.selectedItems, selectedItem];
+    this.setState({
+      preDefinedItems: this.props.items.filter(item => !selectedItems.includes(item)),
+      selectedItems: selectedItems,
+      newDefinedItem: {},
+      search: ''
+    });
+    this.props.addSelectedHighlights(selectedItem);
+  }
 
-  render() {
-    
+  _onDeselectConfirm = (deSelectedItem) => {
+    var selectedItems = this.state.selectedItems.filter(item => item.highlightId != deSelectedItem.highlightId);
+    var existedPreDefinedItem = this.props.items.find(item => item.highlightId == deSelectedItem.highlightId);
+    var preDefinedItems = existedPreDefinedItem 
+                    ? [...this.state.preDefinedItems, deSelectedItem]
+                    : this.state.preDefinedItems;
+    var search = this.state.search;
+
+    if (search) {
+      var searchLower = search.toLowerCase();
+      preDefinedItems = preDefinedItems.filter(item => item.label.toLowerCase().includes(searchLower));
+    }
+
+    this.setState({
+      preDefinedItems: preDefinedItems,
+      selectedItems: selectedItems
+    });
+    this.props.removeSelectedHighlights(deSelectedItem);
+  }
+
+  _keySelectedExtractor = (item, index) => item.highlightId;
+
+  _renderSelectedItem = ({item}) => (
+    <SelectedHighlightItem
+      item={item}
+      onPressItem={this._onDeselectConfirm}
+    />
+  );
+
+  _keyExtractor = (item, index) => item.highlightId;
+
+  _renderItem = ({item}) => (
+    <HighlightItem
+      item={item}
+      onPressItem={this._onConfirm}
+    />
+  );
+  
+  render() {       
     return (
        <View style={this.props.styles}>
+           <View>
+            <FlatList             
+                style={{marginVertical: 20}}
+                data={this.state.selectedItems}
+                keyExtractor={this._keySelectedExtractor}
+                renderItem={this._renderSelectedItem}
+                numColumns={2}
+              />
+           </View>
            <View>
               <SearchBar
                 placeholder="Search"
                 onChangeText={this.updateSearch}
                 value={this.state.search}
               />
-          </View> 
+          </View>
           <View style={{flex: 1}}>
             <FlatList             
               style={{flex: 1, marginVertical: 20}}
@@ -130,7 +173,8 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
   }
 }
 
-class AddHighlightModalComponent extends React.Component<Props & IMapDispatchToProps, State> {
+class AddHighlightModalContentComponent extends React.PureComponent<any, any> {
+
   constructor(props: Props & IMapDispatchToProps) {
     super(props);  
     this.state = {
@@ -138,53 +182,142 @@ class AddHighlightModalComponent extends React.Component<Props & IMapDispatchToP
       routes: [
         { key: 'first', title: 'Like' },
         { key: 'second', title: 'Dislike' },
-      ],
+      ]
+    }
+  }
+
+  _addSelectedHighlights = (item) => {    
+      this.props.addSelectedHighlights(item);
+  }
+
+  _removeSelectedHighlights = (deSelectedItem) => {
+    this.props.removeSelectedHighlights(deSelectedItem);
+  }
+
+  render() {
+    const likePreDefinedItems = this.props.preDefinedHighlights.filter(item =>  item.highlightType == "Like" );
+    const dislikePreDefinedItems = this.props.preDefinedHighlights.filter(item => item.highlightType == "Dislike" );
+
+    let likeHighlightItems = [];
+    let disLikeHighlightItems = [];
+
+    if (this.props.selectedHighlightItems && this.props.selectedHighlightItems.length > 0) {
+      var selectedHighlights = this.props.preDefinedHighlights.filter(item => {
+          let selectedHighlight = this.props.selectedHighlightItems.find(selectedItem => selectedItem.highlightId == item.highlightId);
+
+          if (selectedHighlight)
+              return true;
+          return false;
+      });
+      likeHighlightItems = selectedHighlights.filter(item =>  item.highlightType == "Like" );
+      disLikeHighlightItems = selectedHighlights.filter(item =>  item.highlightType == "Dislike" );
+    }
+
+    return (
+      <TabView
+        navigationState={this.state}
+        renderScene={({ route }) => {
+          switch (route.key) {
+            case 'first':
+              return <TabHighlightComponent items={likePreDefinedItems}
+                                            selectedItems={likeHighlightItems}
+                                            addSelectedHighlights={this._addSelectedHighlights} 
+                                            removeSelectedHighlights={this._removeSelectedHighlights}
+                                            styles={styles.tabScene} />;
+            case 'second':
+              return <TabHighlightComponent items={dislikePreDefinedItems}
+                                            selectedItems={disLikeHighlightItems}
+                                            addSelectedHighlights={this._addSelectedHighlights} 
+                                            removeSelectedHighlights={this._removeSelectedHighlights}
+                                            styles={styles.tabScene} />;
+            default:
+              return null;
+          }
+        }}
+        onIndexChange={index => this.setState({ index })}
+        initialLayout={{ width: Dimensions.get('window').width }}
+      />
+  );
+  }
+}
+
+interface IMapDispatchToProps {
+  getAllHighlights: () => Promise<StoreData.PreDefinedHighlightVM>
+}
+
+export interface Props {
+  isVisible: boolean;
+  preDefinedHighlights?: Array<StoreData.PreDefinedHighlightVM>,
+  likeItems: Array<StoreData.LocationLikeItemVM>,
+  confirmHandler: (highlights: Array<StoreData.LocationLikeItemVM>) => void;
+  cancelHandler?: () => void;
+}
+
+interface State {
+  selectedHighlights: Array<StoreData.LocationLikeItemVM>
+}
+
+class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatchToProps, State> {
+  constructor(props: Props & IMapDispatchToProps) {
+    super(props);  
+    this.state = {
+      selectedHighlights: []
     }
   }
 
   componentDidMount() {
-    this.props.getAllHighlights();
+    if (this.props.likeItems && this.props.likeItems.length > 0) {
+      this.setState({
+        selectedHighlights: [...this.props.likeItems]
+      });
+    }
+  }
+
+  _onModalWillShow = () => {
+    if (!this.props.preDefinedHighlights) {
+      this.props.getAllHighlights();
+    }
   }
 
   _onCancel = () => {
     this.props.cancelHandler();
   };
 
-  _renderContent() {
-    const likePreDefinedItems = this.props.preDefinedHighlights.filter(item =>  item.type == "Like" );
-    const dislikePreDefinedItems = this.props.preDefinedHighlights.filter(item => item.type == "Dislike" );
+  _onSave = () => {
+    this.props.confirmHandler(this.state.selectedHighlights);
+  }
 
-    return (
-        <TabView
-          navigationState={this.state}
-          renderScene={({ route }) => {
-            switch (route.key) {
-              case 'first':
-                return <TabHighlightComponent items={likePreDefinedItems} styles={styles.tabScene} />;
-              case 'second':
-                return <TabHighlightComponent items={dislikePreDefinedItems} styles={styles.tabScene} />;
-              default:
-                return null;
-            }
-          }}
-          onIndexChange={index => this.setState({ index })}
-          initialLayout={{ width: Dimensions.get('window').width }}
-        />
-    );
+  _addSelectedHighlights = (item) => {    
+    this.setState({
+      selectedHighlights: [...this.state.selectedHighlights, item]
+    });
+  }
+
+  _removeSelectedHighlights = (deSelectedItem) => {
+    this.setState({
+      selectedHighlights: this.state.selectedHighlights.filter(item => item.highlightId != deSelectedItem.highlightId)
+    });
   }
 
   render() {
     const { isVisible } = this.props;
     var contentElement = this.props.preDefinedHighlights
-          ? this._renderContent() 
+          ? <AddHighlightModalContentComponent
+              preDefinedHighlights={this.props.preDefinedHighlights}
+              selectedHighlightItems={this.props.likeItems}
+              addSelectedHighlights={this._addSelectedHighlights}
+              removeSelectedHighlights={this._removeSelectedHighlights}>            
+          </AddHighlightModalContentComponent>
           : <ActivityIndicator size="small" color="#00ff00" />
           
     return (
         <RNModal style={styles.modal} 
+            onModalShow={this._onModalWillShow}
             isVisible={isVisible} hideModalContentWhileAnimating>
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
                     <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
+                    <Button transparent onPress={this._onSave}><Text>Save</Text></Button>
                 </View>
                 <View style={styles.modalContentContainer}>
                   {contentElement}
@@ -203,7 +336,7 @@ interface Style {
   tabScene: ViewStyle;
   highlightItemContainer: ViewStyle;
   highlightItem: ViewStyle;
-  highlightContentContainer: ViewStyle;
+  iconRemoved: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -229,11 +362,6 @@ const styles = StyleSheet.create<Style>({
   tabScene: {
     flex: 1,
   },
-  highlightContentContainer: {
-    flexDirection:"row",
-    justifyContent: "space-between",
-    flexWrap: 'wrap'
-  },
   highlightItemContainer: {
     width: Dimensions.get('window').width / 2,
     height: 40,
@@ -244,8 +372,11 @@ const styles = StyleSheet.create<Style>({
   highlightItem: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: "center"
+  },
+  iconRemoved: {
+    
   }
 })
   
