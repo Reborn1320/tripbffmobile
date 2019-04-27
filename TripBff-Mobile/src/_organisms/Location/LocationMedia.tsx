@@ -1,8 +1,8 @@
 import React from "react";
-import { StyleSheet, Image, ViewStyle, TextStyle } from 'react-native'
+import { StyleSheet, ViewStyle, TextStyle } from 'react-native'
 import { View, H3 } from "native-base";
 import _, { } from "lodash";
-import ImageList, { calculateImageListWidth } from "../../_molecules/ImageList/ImageList";
+import ImageList, { calculateImageListWidth, isFirstItemInRow, N_ITEMS_PER_ROW } from "../../_molecules/ImageList/ImageList";
 import NBTheme from "../../theme/variables/material.js";
 import { ImageSelection } from "../../_molecules/ImageList/ImageSelection";
 
@@ -46,15 +46,18 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
     this.itemWidth = itemWidth;
   }
 
-  private renderItem2 = (itemInfo: { item: ILocationMediaImage, index: number }) => {
+  private renderItem2 = (itemInfo: { item: ILocationMediaImage, index: number, styleContainer: ViewStyle }) => {
     const img = itemInfo.item;
     // console.log("render item ", img.imageId)
 
-    //todo group all these calculation into one component with shouldUpdate
-    // const { itemWidth } = calculateImageListWidth();
     const itemWidth = this.itemWidth;
     return (
-      <ImageSelection imageUrl={img.url} width={itemWidth}
+      <ImageSelection
+        key={img.imageId}
+        imageUrl={img.url} width={itemWidth}
+        isFirstItemInRow={itemInfo.index % N_ITEMS_PER_ROW == 0}
+        isFirstRow={ itemInfo.index < N_ITEMS_PER_ROW }
+
         isChecked={!!this.props.selectedImageIds.find(imgId => imgId == img.imageId)}
         onPress={() => this.props.onSelect(img.imageId) }
         onLongPress={this.props.onMassSelection}
@@ -62,14 +65,13 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
     )
   }
 
-
   //todo move Photo & Videos up
   render() {
     return (
       <View style={styles.locationMediaContainer}>
         <H3 style={styles.headerText}>Photos & Videos</H3>
         <ImageList
-          items={this.props.images.map(img => ({ ...img, data: img }))}
+          items={this.props.images}
           renderItem={this.renderItem2}
 
           onSelect={this.onSelect}

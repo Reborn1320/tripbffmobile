@@ -10,6 +10,9 @@ export interface Props {
 
   onPress: () => void
   onLongPress: () => void
+
+  isFirstRow: boolean
+  isFirstItemInRow: boolean
 }
 
 export interface State {
@@ -28,33 +31,32 @@ export class ImageSelection extends React.Component<Props, State> {
   }
 
   render() {
-    const { width, isChecked } = this.props;
+    const { width, isChecked, isFirstRow, isFirstItemInRow } = this.props;
     return (
+      <View style={{
+        marginTop: isFirstRow ? 0 : 2,
+        marginLeft: isFirstItemInRow ? 0 : 2,
+      }}>
       <TouchableHighlight
         onPress={this.props.onPress}
         onLongPress={this.props.onLongPress}
       >
-      <View style={{width, height: width, backgroundColor: isChecked ? "green" : "white" }}></View>
+        <View
+        style={{
+            width, height: width,
+            position: "relative",
+          }}
+        >
+          {!isChecked && <Icon style={styles.unCheckIcon} type="FontAwesome5" name="circle" />}
+          {/* this is not an issue, use solid to pass option into react-native-icons */}
+          {isChecked && <Icon style={styles.checkIcon} active solid type="FontAwesome5" name="check-circle" />}
+          <Image
+            style={Object.assign({ width, height: width }, isChecked ? styles.checkImage : styles.image)}
+            source={{ uri: this.props.imageUrl }}
+          />
+        </View>
       </TouchableHighlight>
-      // <TouchableHighlight
-      //   onPress={this.props.onPress}
-      //   onLongPress={this.props.onLongPress}
-      // >
-      //   <View
-      //     style={{
-      //       width, height: width,
-      //       position: "relative"
-      //     }}
-      //   >
-      //     {!isChecked && <Icon style={styles.unCheckIcon} type="FontAwesome5" name="circle" />}
-      //     {/* this is not an issue, use solid to pass option into react-native-icons */}
-      //     {isChecked && <Icon style={styles.checkIcon} active solid type="FontAwesome5" name="check-circle" />}
-      //     <Image
-      //       style={Object.assign({ width, height: width }, isChecked ? styles.checkImage : styles.image)}
-      //       source={{ uri: this.props.imageUrl }}
-      //     />
-      //   </View>
-      // </TouchableHighlight>
+      </View>
     );
   }
 
