@@ -1,12 +1,5 @@
-import { StoreData } from '../../../store/Interfaces';
 import { ThunkResultBase } from '../../../store/index';
-export const IMPORT_UPLOADED_IMAGE = "TRIP/IMPORT_UPLOADED_IMAGE"
-
-export function uploadedImage(tripId: number, dateIdx, locationId: string, imageId: string, externalStorageId: string) {
-    return {
-        type: IMPORT_UPLOADED_IMAGE, tripId, dateIdx, locationId, imageId, externalStorageId,
-    }
-}
+import { uploadedImage } from '../../../store/Trip/actions';
 
 export function uploadImage(tripId, locationId, imageId, imgUrl): ThunkResultBase {
     //todo check getState param ?? is it state of the store ????

@@ -3,10 +3,92 @@
 exports[`trip reducer should handle TRIP_ADD 1`] = `
 Array [
   Object {
-    "fromDate": "2018-12-31T17:00:00.000Z",
+    "fromDate": "2019-03-16T17:00:00.000Z",
     "name": "name",
-    "toDate": "2019-01-09T17:00:00.000Z",
+    "toDate": "2019-03-23T16:59:59.999Z",
     "tripId": "tripId01",
+  },
+]
+`;
+
+exports[`trip reducer should handle TRIPS_ADD 1`] = `
+Array [
+  Object {
+    "dates": Array [
+      Object {
+        "date": "2019-03-16T17:00:00.000Z",
+        "dateIdx": 1,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-17T17:00:00.000Z",
+        "dateIdx": 2,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-18T17:00:00.000Z",
+        "dateIdx": 3,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-19T17:00:00.000Z",
+        "dateIdx": 4,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-20T17:00:00.000Z",
+        "dateIdx": 5,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-21T17:00:00.000Z",
+        "dateIdx": 6,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-22T17:00:00.000Z",
+        "dateIdx": 7,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+    ],
+    "fromDate": "2019-03-16T17:00:00.000Z",
+    "locations": Array [
+      Object {
+        "activity": Object {},
+        "feeling": Object {},
+        "fromTime": "2019-03-13T08:37:55.844Z",
+        "images": Array [
+          Object {
+            "externalUrl": "",
+            "imageId": "829ba1a6-b9ee-4c09-8ee4-225b37c47111",
+            "thumbnailExternalUrl": "",
+            "url": "file:///storage/emulated/0/DCIM/Camera/20190313_153828.jpg",
+          },
+          Object {
+            "externalUrl": "",
+            "imageId": "2ad22ba0-0434-4352-8d72-d048599dfbe7",
+            "thumbnailExternalUrl": "",
+            "url": "file:///storage/emulated/0/DCIM/Camera/20190313_153755.jpg",
+          },
+        ],
+        "location": Object {
+          "lat": 10.801314353942871,
+          "long": 106.64141845703125,
+        },
+        "locationId": "c0ee8221-270e-41b9-beaa-9cbc11eb779d",
+        "toTime": "2019-03-13T08:38:28.099Z",
+      },
+    ],
+    "name": "Ffggc 7f7",
+    "toDate": "2019-03-23T16:59:59.999Z",
+    "tripId": "36f626c0-47cd-11e9-b7e2-efb95b29f029",
   },
 ]
 `;
@@ -14,9 +96,6 @@ Array [
 exports[`trip reducer should return the initial state 1`] = `
 Object {
   "dataSource": Object {},
-  "repo": Object {
-    "repos": Array [],
-  },
   "trips": Array [],
   "user": Object {
     "email": "asdf@gmail.com",
