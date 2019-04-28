@@ -3,7 +3,6 @@ import moment, { Moment } from "moment";
 import { StoreData } from "./Interfaces";
 import { TRIP_ADD } from '../screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './User/actions';
-import { ADD_INFOGRAPHIC_ID } from '../screens/trip/export/actions';
 import { LOCATION_REMOVE, 
          LOCATION_ADD,
          LOCATION_UPDATE_FEELING,
@@ -16,9 +15,11 @@ import { LOCATION_REMOVE,
          LOCATION_UPDATE_IMAGES,
          LOCATION_UPDATE_HIGHLIGHT,
          LOCATION_UPDATE_DESCRIPTION,
+         ADD_INFOGRAPHIC_ID,
+         IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS,
 } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
-import { IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "../screens/trip/import/actions";
+import { IMPORT_UPLOADED_IMAGE } from "../screens/trip/import/actions";
 
 
 const userInitState: StoreData.UserVM = {

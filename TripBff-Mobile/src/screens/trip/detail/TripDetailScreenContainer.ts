@@ -1,9 +1,9 @@
 import { connect } from "react-redux";
 import _ from "lodash";
 import { TripDetailScreen } from "./TripDetailScreen";
-import { addInfographicId } from '../export/actions';
 import { StoreData } from "../../../store/Interfaces";
 import { Props, IMapDispatchToProps } from "./TripDetailScreen"
+import { addInfographicId } from "../../../store/Trip/actions";
 
 const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
   return {
