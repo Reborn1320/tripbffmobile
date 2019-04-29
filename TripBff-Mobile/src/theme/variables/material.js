@@ -110,6 +110,7 @@ export default {
   brandWarning: "#FFB900",
   brandDark: "#2A2E43",
   brandLight: "#f4f4f4",
+  colorRed: "#960018",
 
   //Date Picker
   datePickerTextColor: "#000",

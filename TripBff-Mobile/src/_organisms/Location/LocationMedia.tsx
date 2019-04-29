@@ -5,6 +5,7 @@ import _, { } from "lodash";
 import ImageList, { calculateImageListWidth, isFirstItemInRow, N_ITEMS_PER_ROW } from "../../_molecules/ImageList/ImageList";
 import NBTheme from "../../theme/variables/material.js";
 import { ImageSelection } from "../../_molecules/ImageList/ImageSelection";
+import { ImageFavorable } from "../../_molecules/ImageList/ImageFavorable";
 
 export interface Props {
   images: Array<ILocationMediaImage>
@@ -48,9 +49,24 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
 
   private renderItem2 = (itemInfo: { item: ILocationMediaImage, index: number, styleContainer: ViewStyle }) => {
     const img = itemInfo.item;
-    // console.log("render item ", img.imageId)
 
     const itemWidth = this.itemWidth;
+    const { massSelection } = this.props;
+
+    if (massSelection == false) {
+      return (
+        <ImageFavorable
+          key={img.imageId}
+          imageUrl={img.url} width={itemWidth}
+          isFirstItemInRow={itemInfo.index % N_ITEMS_PER_ROW == 0}
+          isFirstRow={ itemInfo.index < N_ITEMS_PER_ROW }
+  
+          isChecked={ false }
+          onPressedOnFavoriteIcon={() => this.props.onSelect(img.imageId) }
+          onLongPress={this.props.onMassSelection}
+        />
+        )
+    }
     return (
       <ImageSelection
         key={img.imageId}
@@ -67,7 +83,7 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
 
   //todo move Photo & Videos up
   render() {
-    console.log("n images ", this.props.images.length);
+    // console.log("n images ", this.props.images.length);
     return (
       <View style={styles.locationMediaContainer}>
         <H3 style={styles.headerText}>Photos & Videos</H3>
