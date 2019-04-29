@@ -3,7 +3,6 @@ import moment, { Moment } from "moment";
 import { StoreData } from "./Interfaces";
 import { TRIP_ADD } from '../screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './User/actions';
-import { ADD_INFOGRAPHIC_ID } from '../screens/trip/export/actions';
 import { LOCATION_REMOVE, 
          LOCATION_ADD,
          LOCATION_UPDATE_FEELING,
@@ -16,10 +15,12 @@ import { LOCATION_REMOVE,
          LOCATION_UPDATE_IMAGES,
          LOCATION_UPDATE_HIGHLIGHT,
          LOCATION_UPDATE_DESCRIPTION,
+         ADD_INFOGRAPHIC_ID,
+         IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS,
+         IMPORT_UPLOADED_IMAGE,
+         ImageActions,
 } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
-import { IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, IMPORT_UPLOADED_IMAGE } from "../screens/trip/import/actions";
-
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -76,7 +77,7 @@ function userReducer(state, action) {
     return state;
 }
 
-function imageReducer(state: StoreData.ImportImageVM, action) {
+function imageReducer(state: StoreData.ImportImageVM, action: ImageActions) {
     console.log('     + location image reducer: ', action.type);
 
     switch(action.type) {
@@ -133,13 +134,18 @@ function locationReducer(state: StoreData.LocationVM, action: LocationActions) {
                 images: action.locationImages
             }
         default:
-            //todo: action should start with image...
-            return {
-                ...state,
-                images: state.images.map(item => {
-                    return item.imageId == action.imageId ? imageReducer(item, action) : item;
-                })
-            };
+            //todo: action should start with image... TRIP_LOCATION_IMAGE...
+            if (action.type.startsWith("TRIP/IMPORT")) {
+                return {
+                    ...state,
+                    images: state.images.map(item => {
+                        return item.imageId == (action as any).imageId ? imageReducer(item, action) : item;
+                    })
+                };
+            }
+
+            console.error("unhandled action", action.type);
+            return state;
     }    
 }
 
@@ -174,7 +180,6 @@ function dateReducer(state: StoreData.DateVM, action) {
 
 function tripReducer(state: StoreData.TripVM, action: TripActions) {
     console.log('trip reducer: ', action.type);
-    // console.log('come here trip reducer: ', action);
 
     switch(action.type) {
         case ADD_INFOGRAPHIC_ID: 
@@ -188,7 +193,7 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
                 locations,
                 dates: getDatesProperty(state.fromDate, state.toDate, locations)
             }
-        case TRIP_UPDATE_DATE_RANGE: //todo check this again, why do I need to process something in frontend now ?
+        case TRIP_UPDATE_DATE_RANGE:
             return {
                 ...state,
                 fromDate: action.fromDate,
@@ -201,20 +206,27 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
                 name: action.tripName
             }
         default: 
-            return {
-                ...state,
-                dates: state.dates.map(item => {
-                    return item.dateIdx == action.dateIdx ? dateReducer(item, action) : item;
-                })
+        {
+            //todo should start with TRIP_LOCATION
+            if (action.type.startsWith("TRIP")) {
+                return {
+                    ...state,
+                    dates: state.dates.map(item => {
+                        return item.dateIdx == action.dateIdx ? dateReducer(item, action) : item;
+                    })
+                }
             }
+
+            console.error("unhandled action", action.type);
+            return state;
+        }
+        
     }    
 }
 
 function tripsReducer(state: Array<StoreData.TripVM>, action) {
     const actionType: string = action.type;
 
-    // console.log("actionType", actionType);
-    // console.log("action", JSON.stringify(action));
     if (_.startsWith(actionType, "TRIPS")) {
         //handle trips
         return action.trips.map(trip => {
@@ -260,6 +272,8 @@ function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
 //todo small refactor to move each reducer to files
 export default function bffApp(state: StoreData.BffStoreData = initState, action): StoreData.BffStoreData {
     console.log('action :' + action.type);
+
+    //todo if 
 
     return {
         user: userReducer(state.user, action),
