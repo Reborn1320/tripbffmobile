@@ -85,6 +85,11 @@ function imageReducer(state: StoreData.ImportImageVM, action: ImageActions) {
                 ...state,
                 externalStorageId: action.externalStorageId
             }
+        case "TRIP_LOCATION_IMAGE_FAVOR":
+            return {
+                ...state,
+                isFavorite: !action.isFavorite
+            }
         default: 
             return state;
     }

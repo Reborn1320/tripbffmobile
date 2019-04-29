@@ -16,6 +16,8 @@ export const LOCATION_UPDATE_IMAGES = "TRIP_LOCATION_UPDATE_IMAGES"
 export const LOCATION_UPDATE_HIGHLIGHT = "TRIP_LOCATION_UPDATE_HIGHLIGHT"
 export const LOCATION_UPDATE_DESCRIPTION = "TRIP_LOCATION_UPDATE_DESCRIPTION"
 
+export const LOCATION_IMAGE_FAVOR = "TRIP_LOCATION_IMAGE_FAVOR"
+
 export type TripActions = {
     type: "TRIP/...",
     tripId: string,
@@ -37,6 +39,7 @@ export type ImageActions = {
     imageId: string,
 }
 | ImportUploadedImage
+| FavorLocationImage
 ;
 
 type RemoveLocation = {
@@ -175,6 +178,16 @@ type UpdateLocationDescription = {
     description: string,
 }
 
+
+type FavorLocationImage = {
+    type: "TRIP_LOCATION_IMAGE_FAVOR",
+    tripId: string,
+    dateIdx: number,
+    locationId: string,
+    imageId: string,
+    isFavorite: boolean,
+}
+
 export function updateLocationFeeling(tripId: string, dateIdx: number, locationId: string, feeling: StoreData.FeelingVM) {
     return {
         type: LOCATION_UPDATE_FEELING, tripId, dateIdx, locationId, feeling
@@ -208,5 +221,11 @@ export function updateLocationHighlight(tripId: string, dateIdx: number, locatio
 export function updateLocationDescription(tripId: string, dateIdx: number, locationId: string, description: string) {
     return {
         type: LOCATION_UPDATE_DESCRIPTION, tripId, dateIdx, locationId, description
+    }
+}
+
+export function favorLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string, isFavorite: boolean): FavorLocationImage {
+    return {
+        type: LOCATION_IMAGE_FAVOR, tripId, dateIdx, locationId, imageId, isFavorite
     }
 }

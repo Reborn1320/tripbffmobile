@@ -12,6 +12,7 @@ import { View } from 'react-native';
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
     deleteLocationImages: (tripId: string, dateIdx: number, locationId: string, locationImageIds: string[]) => Promise<void>
+    favoriteLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, isFavorite: boolean) => Promise<void>
     updateLocationHighlight: (tripId: string, dateIdx: number, locationId: string, highlights: Array<StoreData.LocationLikeItemVM>) => Promise<void>
     updateLocationDescription: (tripId: string, dateIdx: number, locationId: string, description: string) => Promise<void>
 }
@@ -90,6 +91,15 @@ class LocationDetail extends React.Component<Props, State> {
     }
 
     private onSelect = (imageId: string) => {
+        if (!this.state.isMassSelection) {
+            this.props.favoriteLocationImage(this.props.tripId,
+                this.props.dateIdx,
+                this.props.locationId,
+                imageId,
+                !_.find(this.props.images, im => im.imageId == imageId).isFavorite);
+            return;
+        }
+
         if (_.indexOf(this.state.selectedImageIds, imageId) == -1) {
         this.setState({
             selectedImageIds: [...this.state.selectedImageIds, imageId]
