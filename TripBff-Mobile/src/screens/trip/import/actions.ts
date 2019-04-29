@@ -17,7 +17,7 @@ export function uploadImage(tripId, locationId, imageId, imgUrl): ThunkResultBas
         .then((res) => {
             console.log('result after upload image: ' + JSON.stringify(res));
             console.log('result after upload image: ' + JSON.stringify(res.data));
-            var externalStorageId: string = res.response;      
+            var externalStorageId: string = res.data;      
             dispatch(uploadedImage(tripId, 0, locationId, imageId, externalStorageId))
             //todo replace by stop on error
         })

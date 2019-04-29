@@ -12,14 +12,13 @@ import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
 import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
-import { uploadedImage } from "./actions";
 import Loading from "../../../_atoms/Loading/Loading";
 import {ThunkDispatch} from 'redux-thunk';
 import { TripImportLocationVM } from "./TripImportViewModels";
 import { uploadFileApi } from "../../_services/apis";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { ThunkResultBase } from "../../../store";
-import { importSelectedLocations } from "../../../store/Trip/actions";
+import { importSelectedLocations, uploadedImage } from "../../../store/Trip/actions";
 
 type ThunkResult<R> = ThunkResultBase<R, State>;
 
