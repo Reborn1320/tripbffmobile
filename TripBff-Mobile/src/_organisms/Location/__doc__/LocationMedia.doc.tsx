@@ -78,8 +78,8 @@ class LocationMediaDoc extends Component<Props, State> {
           <View>
             <Text>some thing here</Text>
             <Text>test selection image</Text>
-            <ImageSelection imageUrl="https://placekitten.com/g/200/200" width={120} isChecked={false} />
-            <ImageSelection imageUrl="https://placekitten.com/g/200/200" width={120} isChecked={true} />
+            <ImageSelection imageUrl="https://placekitten.com/g/200/200" width={120} isChecked={false} onPress={() => true} isFirstRow={true} isFirstItemInRow={true} />
+            <ImageSelection imageUrl="https://placekitten.com/g/200/200" width={120} isChecked={true} onPress={() => true} isFirstRow={true} isFirstItemInRow={true} />
             <Text>some thing here</Text>
 
           </View>

@@ -12,13 +12,13 @@ import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
 import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
-import { importSelectedLocations, uploadedImage } from "./actions";
 import Loading from "../../../_atoms/Loading/Loading";
 import {ThunkDispatch} from 'redux-thunk';
 import { TripImportLocationVM } from "./TripImportViewModels";
 import { uploadFileApi } from "../../_services/apis";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { ThunkResultBase } from "../../../store";
+import { importSelectedLocations, uploadedImage } from "../../../store/Trip/actions";
 
 type ThunkResult<R> = ThunkResultBase<R, State>;
 
@@ -28,8 +28,6 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 }
 
 interface IMapDispatchToProps {
-    // importImageSelectUnselectImage: (tripId: number, locationIdx: number, imageIdx: number) => void
-    // importImageSelectUnselectAllImages: (tripId: number, locationIdx: number) => void
     importSelectedLocations: (tripId: number, locations: StoreData.LocationVM[]) => void
 }
 
@@ -113,7 +111,7 @@ class TripImportation extends Component<Props, State> {
         this.setState({ locations: adapterResult, isLoading: false });
     }
 
-    _importImageSelectUnselectImage = (locationIdx: number, imageIdx: number) => {
+    private _importImageSelectUnselectImage = (locationIdx: number, imageIdx: number) => {
 
         var newLocations = cloneDeep(this.state.locations)
         var img = newLocations[locationIdx].images[imageIdx]
@@ -126,7 +124,7 @@ class TripImportation extends Component<Props, State> {
         })
     }
 
-    _importImageSelectUnselectAllImages = (locationIdx: number) => {
+    private _importImageSelectUnselectAllImages = (locationIdx: number) => {
 
         var newLocations = cloneDeep(this.state.locations)
 
@@ -402,8 +400,6 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 function mapDispatchToProps(dispatch) {
     return {
         dispatch, //https://stackoverflow.com/questions/36850988/this-props-dispatch-not-a-function-react-redux
-        // importImageSelectUnselectImage,
-        // importImageSelectUnselectAllImages
         importSelectedLocations
     }
 };

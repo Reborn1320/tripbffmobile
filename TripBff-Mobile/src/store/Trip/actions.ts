@@ -7,13 +7,36 @@ export const LOCATION_UPDATE_FEELING = "TRIP_LOCATION_UPDATE_FEELING"
 export const LOCATION_UPDATE_ACTIVITY = "TRIP_LOCATION_UPDATE_ACTIVITY"
 export const TRIP_UPDATE_DATE_RANGE = "TRIP_UPDATE_DATE_RANGE"
 export const TRIP_UPDATE_TRIP_NAME = "TRIP_UPDATE_TRIP_NAME"
+export const IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS = "TRIP/IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS"
+export const IMPORT_UPLOADED_IMAGE = "TRIP/IMPORT_UPLOADED_IMAGE"
+export const ADD_INFOGRAPHIC_ID = "TRIP/ADD_INFOGRAPHIC_ID"
+
 export const LOCATION_UPDATE_ADDRESS = "TRIP_LOCATION_UPDATE_ADDRESS"
 export const LOCATION_UPDATE_IMAGES = "TRIP_LOCATION_UPDATE_IMAGES"
 export const LOCATION_UPDATE_HIGHLIGHT = "TRIP_LOCATION_UPDATE_HIGHLIGHT"
 export const LOCATION_UPDATE_DESCRIPTION = "TRIP_LOCATION_UPDATE_DESCRIPTION"
 
-export type TripActions = RemoveLocation
+export type TripActions = {
+    type: "TRIP/...",
+    tripId: string,
+    dateIdx: number,
+}
+| RemoveLocation
 | UpdateTripDateRange
+| UpdateTripName
+| AddInfographicId
+| ImportSelectedLocations
+;
+
+
+export type ImageActions = {
+    type: "TRIP/IMPORT...",
+    tripId: string,
+    dateIdx: number,
+    locationId: string,
+    imageId: string,
+}
+| ImportUploadedImage
 ;
 
 type RemoveLocation = {
@@ -31,7 +54,35 @@ type UpdateTripDateRange = {
     locations: StoreData.LocationVM[]
 }
 
-export function removeLocation(tripId: string, dateIdx: number, locationId: string) {
+type UpdateTripName = {
+    type: "TRIP_UPDATE_TRIP_NAME",
+    tripId: string,
+    tripName: string
+}
+
+type ImportSelectedLocations = {
+    type: "TRIP/IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS",
+    tripId: string
+    locations: StoreData.LocationVM[]
+}
+
+type ImportUploadedImage = {
+    type: "TRIP/IMPORT_UPLOADED_IMAGE",
+    tripId: string,
+    dateIdx: number,
+    locationId: string,
+    imageId: string,
+    externalStorageId: string
+}
+
+
+type AddInfographicId = {
+    type: "TRIP/ADD_INFOGRAPHIC_ID",
+    tripId: string,
+    infographicId: string
+}
+
+export function removeLocation(tripId: string, dateIdx: number, locationId: string): RemoveLocation {
     return {
         type: LOCATION_REMOVE, tripId, dateIdx, locationId
     }
@@ -42,7 +93,6 @@ export function addLocation(tripId: string, dateIdx: number, location: StoreData
         type: LOCATION_ADD, tripId, dateIdx, location
     }
 }
-
 
 export function updateTripDateRange(tripId: string, fromDate: moment.Moment, toDate: moment.Moment, locations: StoreData.LocationVM[]) {
     return {
@@ -56,10 +106,31 @@ export function updateTripName(tripId: string, tripName: string) {
     }
 }
 
+export function importSelectedLocations(tripId: string, locations: StoreData.LocationVM[]): ImportSelectedLocations {
+    return {
+        type: IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, tripId, locations,
+    }
+}
+
+export function uploadedImage(tripId: string, dateIdx, locationId: string, imageId: string, externalStorageId: string): ImportUploadedImage {
+    return {
+        type: IMPORT_UPLOADED_IMAGE, tripId, dateIdx, locationId, imageId, externalStorageId,
+    }
+}
+
+export function addInfographicId(tripId: string, infographicId: string): AddInfographicId {
+    return {
+        type: ADD_INFOGRAPHIC_ID, tripId, infographicId
+    }
+}
+
 export type LocationActions = UpdateLocationFeeling
 | UpdateLocationActivity
 | UpdateLocationAddress
 | UpdateLocationImages
+| UpdateLocationHighlight
+| UpdateLocationDescription
+| ImageActions
 ;
 
 type UpdateLocationFeeling = {
@@ -83,13 +154,27 @@ type UpdateLocationAddress = {
     location: RawJsonData.LocationAddressVM
 }
 
-
 type UpdateLocationImages = {
     type: "TRIP_LOCATION_UPDATE_IMAGES",
     dateIdx: number,
     locationId: string,
     locationImages: StoreData.ImportImageVM[]
 }
+
+type UpdateLocationHighlight = {
+    type: "TRIP_LOCATION_UPDATE_HIGHLIGHT",
+    dateIdx: number,
+    locationId: string,
+    highlights: StoreData.LocationLikeItemVM[]
+}
+
+type UpdateLocationDescription = {
+    type: "TRIP_LOCATION_UPDATE_DESCRIPTION",
+    dateIdx: number,
+    locationId: string,
+    description: string,
+}
+
 export function updateLocationFeeling(tripId: string, dateIdx: number, locationId: string, feeling: StoreData.FeelingVM) {
     return {
         type: LOCATION_UPDATE_FEELING, tripId, dateIdx, locationId, feeling

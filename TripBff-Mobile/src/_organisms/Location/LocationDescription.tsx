@@ -3,7 +3,6 @@ import { Dimensions, ViewStyle, StyleSheet, TextStyle } from 'react-native'
 import { Text, View, Icon } from "native-base";
 import _, { } from "lodash";
 import { connectStyle } from 'native-base';
-import  ReadMore from 'react-native-read-more-text';
 import ViewMoreText from 'react-native-view-more-text';
 import { TextInput } from "react-native-gesture-handler";
 

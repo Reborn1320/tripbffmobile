@@ -15,7 +15,7 @@ import { updateLocationFeeling,
     addLocation } from "../../../store/Trip/operations";
   import { updateTripDateRange, updateTripName } from "../../../store/Trip/operations";
 import { connect } from "react-redux";
-import { addInfographicId } from "../export/actions";
+import { addInfographicId } from "../../../store/Trip/actions";
 
 export interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
