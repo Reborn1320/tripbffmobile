@@ -24,9 +24,10 @@ export function importSelectedLocations(tripId: number, locations: StoreData.Loc
     }
 }
 
-export function uploadedImage(tripId: number, dateIdx, locationId: string, imageId: string, externalStorageId: string) {
+export function uploadedImage(tripId: number, dateIdx, locationId: string, imageId: string, externalStorageId: string, thumbnailExternalUrl: string) {
+    
     return {
-        type: IMPORT_UPLOADED_IMAGE, tripId, dateIdx, locationId, imageId, externalStorageId,
+        type: IMPORT_UPLOADED_IMAGE, tripId, dateIdx, locationId, imageId, externalStorageId, thumbnailExternalUrl
     }
 }
 

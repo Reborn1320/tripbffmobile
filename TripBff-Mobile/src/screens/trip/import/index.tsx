@@ -227,10 +227,11 @@ class TripImportation extends Component<Props, State> {
 
             return uploadFileApi.upload(url, imgUrl, additionalData)
             .then((res) => {
-                console.log('result after upload image: ' + JSON.stringify(res));
-                console.log('result after upload image: ' + JSON.stringify(res.data));
-                var externalStorageId: string = res.response;      
-                dispatch(uploadedImage(tripId, dateIdx, locationId, imageId, externalStorageId))
+                //console.log('result after upload image: ' + JSON.stringify(res));
+                //console.log('result after upload image: ' + JSON.stringify(res.data));
+                var { externalId, thumbnailExternalUrl } = JSON.parse(res.response);      
+
+                dispatch(uploadedImage(tripId, dateIdx, locationId, imageId, externalId, thumbnailExternalUrl))
                 //todo replace by stop on error
             })
             .catch((err) => {
