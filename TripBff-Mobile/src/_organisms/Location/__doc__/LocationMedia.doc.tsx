@@ -17,7 +17,7 @@ interface State {
 
   isChecked3: boolean;
 
-  images: { imageId: string, url: string, selected: boolean }[];
+  images: { imageId: string, url: string, isFavorite: boolean }[];
   isMassSelection: boolean;
   selectedImageIds: string[]
 }
@@ -34,7 +34,7 @@ class LocationMediaDoc extends Component<Props, State> {
         return {
           imageId: i.toString(),
           url: "https://placekitten.com/g/200/200",
-          selected: false,
+          isFavorite: false,
         };
       }),
       isMassSelection: false,
@@ -47,6 +47,23 @@ class LocationMediaDoc extends Component<Props, State> {
   }
 
   private onSelect = (imageId: string) => {
+    if (!this.state.isMassSelection) {
+      let imgIdx = _.findIndex(this.state.images, im => im.imageId == imageId);
+      let img = this.state.images[imgIdx];
+
+      this.setState({
+        images: [
+          ..._.slice(this.state.images, 0, imgIdx),
+          {
+            ...img,
+            isFavorite: !img.isFavorite,
+          },
+          ..._.slice(this.state.images, imgIdx + 1),
+        ]
+      })
+      return;
+    }
+
     if (_.indexOf(this.state.selectedImageIds, imageId) == -1) {
       this.setState({
         selectedImageIds: [...this.state.selectedImageIds, imageId]
