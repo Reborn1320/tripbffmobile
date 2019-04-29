@@ -79,11 +79,14 @@ function userReducer(state, action) {
 
 function imageReducer(state: StoreData.ImportImageVM, action: ImageActions) {
     console.log('     + location image reducer: ', action.type);
+
     switch(action.type) {
         case IMPORT_UPLOADED_IMAGE:
+            
             return {
                 ...state,
-                externalStorageId: action.externalStorageId
+                externalStorageId: action.externalStorageId,
+                thumbnailExternalUrl: action.thumbnailExternalUrl
             }
         default: 
             return state;

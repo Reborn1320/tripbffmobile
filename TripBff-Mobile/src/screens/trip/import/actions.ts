@@ -15,10 +15,10 @@ export function uploadImage(tripId, locationId, imageId, imgUrl): ThunkResultBas
 
         return extraArguments.uploadApi.upload(url, imgUrl, additionalData)
         .then((res) => {
-            console.log('result after upload image: ' + JSON.stringify(res));
-            console.log('result after upload image: ' + JSON.stringify(res.data));
-            var externalStorageId: string = res.data;      
-            dispatch(uploadedImage(tripId, 0, locationId, imageId, externalStorageId))
+            //console.log('result after upload image: ' + JSON.stringify(res));
+            //console.log('result after upload image: ' + JSON.stringify(res.data));
+            var { externalId, thumbnailExternalUrl } = JSON.parse(res.response);      
+            dispatch(uploadedImage(tripId, 0, locationId, imageId, externalId, thumbnailExternalUrl))
             //todo replace by stop on error
         })
         .catch((err) => {

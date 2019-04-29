@@ -72,7 +72,8 @@ type ImportUploadedImage = {
     dateIdx: number,
     locationId: string,
     imageId: string,
-    externalStorageId: string
+    externalStorageId: string,
+    thumbnailExternalUrl: string
 }
 
 
@@ -112,9 +113,9 @@ export function importSelectedLocations(tripId: string, locations: StoreData.Loc
     }
 }
 
-export function uploadedImage(tripId: string, dateIdx, locationId: string, imageId: string, externalStorageId: string): ImportUploadedImage {
+export function uploadedImage(tripId: string, dateIdx, locationId: string, imageId: string, externalStorageId: string, thumbnailExternalUrl: string): ImportUploadedImage {
     return {
-        type: IMPORT_UPLOADED_IMAGE, tripId, dateIdx, locationId, imageId, externalStorageId,
+        type: IMPORT_UPLOADED_IMAGE, tripId, dateIdx, locationId, imageId, externalStorageId, thumbnailExternalUrl
     }
 }
 
