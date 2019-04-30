@@ -8,7 +8,6 @@ export const LOCATION_UPDATE_ACTIVITY = "TRIP_LOCATION_UPDATE_ACTIVITY"
 export const TRIP_UPDATE_DATE_RANGE = "TRIP_UPDATE_DATE_RANGE"
 export const TRIP_UPDATE_TRIP_NAME = "TRIP_UPDATE_TRIP_NAME"
 export const IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS = "TRIP/IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS"
-export const IMPORT_UPLOADED_IMAGE = "TRIP/IMPORT_UPLOADED_IMAGE"
 export const ADD_INFOGRAPHIC_ID = "TRIP/ADD_INFOGRAPHIC_ID"
 
 export const LOCATION_UPDATE_ADDRESS = "TRIP_LOCATION_UPDATE_ADDRESS"
@@ -32,7 +31,7 @@ export type TripActions = {
 
 
 export type ImageActions = {
-    type: "TRIP/IMPORT...",
+    type: "TRIP_LOCATION_IMAGE...",
     tripId: string,
     dateIdx: number,
     locationId: string,
@@ -70,7 +69,7 @@ type ImportSelectedLocations = {
 }
 
 type ImportUploadedImage = {
-    type: "TRIP/IMPORT_UPLOADED_IMAGE",
+    type: "TRIP_LOCATION_IMAGE_UPLOADED",
     tripId: string,
     dateIdx: number,
     locationId: string,
@@ -117,7 +116,7 @@ export function importSelectedLocations(tripId: string, locations: StoreData.Loc
 
 export function uploadedImage(tripId: string, dateIdx, locationId: string, imageId: string, externalStorageId: string): ImportUploadedImage {
     return {
-        type: IMPORT_UPLOADED_IMAGE, tripId, dateIdx, locationId, imageId, externalStorageId,
+        type: "TRIP_LOCATION_IMAGE_UPLOADED", tripId, dateIdx, locationId, imageId, externalStorageId,
     }
 }
 

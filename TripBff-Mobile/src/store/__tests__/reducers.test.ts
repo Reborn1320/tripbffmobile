@@ -2,7 +2,6 @@ import reducer from "../reducers";
 import { TRIP_ADD } from "../../screens/trip/create/actions";
 import moment = require("moment");
 import { StoreData } from "../Interfaces";
-import { TRIPS_ADD } from "../Trips/actions";
 
 describe('trip reducer', () => {
   it('should return the initial state', () => {
