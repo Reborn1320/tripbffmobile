@@ -24,6 +24,7 @@ import bffApp from "./store/reducers";
 import ReduxThunk from "redux-thunk";
 import { ThunkExtraArgumentsBase } from "./store";
 import { mockLoginApiService, mockTripApiService } from "./store/MockApiService";
+import LocationImageDetailScreen from "./screens/location/LocationImageDetail/LocationImageDetailScreen";
 
 var mockLoginApi = mockLoginApiService;
 var mockTripApi = mockTripApiService;
@@ -60,7 +61,8 @@ const TripCreationNavigator = createStackNavigator(
 const TripDetailsNavigator = createStackNavigator(
   {
     TripDetail: { screen: TripDetailScreenContainer },
-    LocationDetail: { screen: LocationDetailScreen }   
+    LocationDetail: { screen: LocationDetailScreen },
+    LocationImageDetail: { screen: LocationImageDetailScreen },
   },
   {
     headerMode: "none"
@@ -71,7 +73,8 @@ const ProfileNavigator = createStackNavigator(
   {
     Profile: {screen: ProfileScreenContainer },
     TripEdition: { screen: TripEditScreenContainer }, 
-    LocationDetail: { screen: LocationDetailScreen } 
+    LocationDetail: { screen: LocationDetailScreen },
+    LocationImageDetail: { screen: LocationImageDetailScreen },
   },
   {
     headerMode: "none"

@@ -61,7 +61,13 @@ class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, S
 }
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
-    return ownProps;
+    const { tripId, dateIdx, locationId, imageId, url, isFavorite } = ownProps.navigation.state.params;
+    return {
+        tripId,
+        dateIdx,
+        locationId,
+        imageId, url, isFavorite
+    };
 };
 
 const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {

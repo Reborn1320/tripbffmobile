@@ -49,7 +49,8 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
           isFirstRow={itemInfo.index < N_ITEMS_PER_ROW}
 
           isChecked={img.isFavorite}
-          onPressedOnFavoriteIcon={() => this.props.onSelect(img.imageId)}
+          onPressedOnFavoriteIcon={() => this.props.onFavorite(img.imageId)}
+          onPress={() => this.props.onSelect(img.imageId)}
           onLongPress={this.props.onMassSelection}
         />
       )

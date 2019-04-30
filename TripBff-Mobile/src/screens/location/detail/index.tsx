@@ -107,11 +107,11 @@ class LocationDetail extends React.Component<Props, State> {
         if (!this.state.isMassSelection) {
             const { tripId, dateIdx, locationId, images } = this.props;
             const img = _.find(images, im => im.imageId == imageId);
-            const { url, isFavorite } = img;
+            const { externalUrl, isFavorite } = img;
             this.props.navigation.navigate(NavigationConstants.Screens.LocationImageDetails,
                 { 
                     tripId, dateIdx, locationId,
-                    imageId, url, isFavorite
+                    imageId, url: externalUrl, isFavorite
                 });
         }
 
