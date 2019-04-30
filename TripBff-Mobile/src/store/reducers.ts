@@ -78,11 +78,13 @@ function userReducer(state, action) {
 
 function imageReducer(state: StoreData.ImportImageVM, action: ImageActions) {
     console.log('     + location image reducer: ', action.type);
+
     switch(action.type) {
         case "TRIP_LOCATION_IMAGE_UPLOADED":
             return {
                 ...state,
-                externalStorageId: action.externalStorageId
+                externalStorageId: action.externalStorageId,
+                thumbnailExternalUrl: action.thumbnailExternalUrl
             }
         case "TRIP_LOCATION_IMAGE_FAVOR":
             return {
