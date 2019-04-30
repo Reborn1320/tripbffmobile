@@ -48,6 +48,24 @@ class LocationMediaDoc extends Component<Props, State> {
 
   private onSelect = (imageId: string) => {
     if (!this.state.isMassSelection) {
+      this.onFavorite(imageId);
+      return;
+    }
+
+    if (_.indexOf(this.state.selectedImageIds, imageId) == -1) {
+      this.setState({
+        selectedImageIds: [...this.state.selectedImageIds, imageId]
+      })
+    }
+    else {
+      this.setState({
+        selectedImageIds: _.remove(this.state.selectedImageIds, (id) => id != imageId)
+      })
+    }
+  }
+
+  private onFavorite = (imageId: string) => {
+    if (!this.state.isMassSelection) {
       let imgIdx = _.findIndex(this.state.images, im => im.imageId == imageId);
       let img = this.state.images[imgIdx];
 
@@ -60,18 +78,6 @@ class LocationMediaDoc extends Component<Props, State> {
           },
           ..._.slice(this.state.images, imgIdx + 1),
         ]
-      })
-      return;
-    }
-
-    if (_.indexOf(this.state.selectedImageIds, imageId) == -1) {
-      this.setState({
-        selectedImageIds: [...this.state.selectedImageIds, imageId]
-      })
-    }
-    else {
-      this.setState({
-        selectedImageIds: _.remove(this.state.selectedImageIds, (id) => id != imageId)
       })
     }
   }
@@ -120,6 +126,7 @@ class LocationMediaDoc extends Component<Props, State> {
               onMassSelection={this.onMassSelection}
               images={images}
               onSelect={this.onSelect}
+              onFavorite={this.onFavorite}
               selectedImageIds={this.state.selectedImageIds}
             />
           </View>

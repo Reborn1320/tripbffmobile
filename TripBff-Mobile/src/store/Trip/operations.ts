@@ -214,7 +214,7 @@ export function favorLocationImage(tripId: string, dateIdx: number, locationId: 
     return extraArguments.tripApiService
     .patch(`/trips/${tripId}/locations/${locationId}/images/${imageId}`, { data })
     .then((res) => {
-      console.log("return data", res)
+      // console.log("return data", res)
       dispatch(favorLocationImageAction(tripId, dateIdx, locationId, imageId, isFavorite));
     })
     .catch((err) => {
