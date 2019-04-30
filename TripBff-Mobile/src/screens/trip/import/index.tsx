@@ -5,7 +5,6 @@ import { StoreData } from "../../../store/Interfaces";
 import _ from "lodash";
 import { connect } from "react-redux";
 import { cloneDeep } from 'lodash';
-import 'react-native-console-time-polyfill';
 
 import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
 import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
@@ -28,7 +27,7 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 }
 
 interface IMapDispatchToProps {
-    importSelectedLocations: (tripId: number, locations: StoreData.LocationVM[]) => void
+    importSelectedLocations: (tripId: string, locations: StoreData.LocationVM[]) => void
 }
 
 interface State {
