@@ -8,6 +8,7 @@ import LocationContent from '../../../_organisms/Location/LocationContent';
 import LocationModal from '../../../_organisms/Location/LocationModal'
 import { updateLocationAddress, updateLocationHighlight, updateLocationDescription, deleteMultiLocationImages } from '../../../store/Trip/operations';
 import { View } from 'react-native';
+import { favorLocationImage } from '../../../store/Trip/actions';
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
@@ -226,6 +227,7 @@ const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     return {
         updateLocationAddress: (tripId, dateIdx, locationId, location) => dispatch(updateLocationAddress(tripId, dateIdx, locationId, location)),
         deleteLocationImages: (tripId, dateIdx, locationId, locationImageIds) => dispatch(deleteMultiLocationImages(tripId, dateIdx, locationId, locationImageIds)),
+        favoriteLocationImage: (tripId, dateIdx, locationId, imageId, isFavorite) => dispatch(favorLocationImage(tripId, dateIdx, locationId, imageId, isFavorite)),
         updateLocationHighlight: (tripId, dateIdx, locationId, highlights) => dispatch(updateLocationHighlight(tripId, dateIdx, locationId, highlights)),
         updateLocationDescription: (tripId, dateIdx, locationId, description) => dispatch(updateLocationDescription(tripId, dateIdx, locationId, description))
     };
