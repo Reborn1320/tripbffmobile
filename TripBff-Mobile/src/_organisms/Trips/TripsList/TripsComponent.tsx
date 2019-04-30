@@ -23,7 +23,7 @@ export class TripsComponent extends Component<Props & IStateProps, State> {
     super(props);
   }
 
-  _renderItem = itemInfo => {
+  private _renderItem = itemInfo => {
     const trip: StoreData.TripVM = itemInfo.item;
     return (
       <TouchableHighlight key={itemInfo.index} onPress={() => this.props.handleClick(trip)}>

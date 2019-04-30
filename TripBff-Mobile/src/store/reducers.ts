@@ -17,7 +17,6 @@ import { LOCATION_REMOVE,
          LOCATION_UPDATE_DESCRIPTION,
          ADD_INFOGRAPHIC_ID,
          IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS,
-         IMPORT_UPLOADED_IMAGE,
          ImageActions,
 } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
@@ -81,12 +80,16 @@ function imageReducer(state: StoreData.ImportImageVM, action: ImageActions) {
     console.log('     + location image reducer: ', action.type);
 
     switch(action.type) {
-        case IMPORT_UPLOADED_IMAGE:
-            
+        case "TRIP_LOCATION_IMAGE_UPLOADED":
             return {
                 ...state,
                 externalStorageId: action.externalStorageId,
                 thumbnailExternalUrl: action.thumbnailExternalUrl
+            }
+        case "TRIP_LOCATION_IMAGE_FAVOR":
+            return {
+                ...state,
+                isFavorite: action.isFavorite
             }
         default: 
             return state;
@@ -134,8 +137,7 @@ function locationReducer(state: StoreData.LocationVM, action: LocationActions) {
                 images: action.locationImages
             }
         default:
-            //todo: action should start with image... TRIP_LOCATION_IMAGE...
-            if (action.type.startsWith("TRIP/IMPORT")) {
+            if (action.type.startsWith("TRIP_LOCATION_IMAGE")) {
                 return {
                     ...state,
                     images: state.images.map(item => {
@@ -240,6 +242,13 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
         return [...state, action.trip];
     }
     else if (_.startsWith(actionType, "TRIP")) {
+        // var tripIdx = _.findIndex(state, trip => trip.tripId == action.tripId);
+
+        // return [
+        //     ..._.slice(state, 0, tripIdx),
+        //     tripReducer(state[tripIdx], action),
+        //     ..._.slice(state, tripIdx + 1)
+        // ]
         var newState = state.map(trip => trip.tripId == action.tripId ? tripReducer(trip, action) : trip);
         return newState
     }
@@ -273,13 +282,15 @@ function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
 export default function bffApp(state: StoreData.BffStoreData = initState, action): StoreData.BffStoreData {
     console.log('action :' + action.type);
 
-    //todo if 
-
-    return {
+    // const now = moment();
+    const newState =  {
         user: userReducer(state.user, action),
         trips: tripsReducer(state.trips, action),
         //todo trips shouldn't handle too much things in here!!!!!
         //todo: should it be trip, location, in respect to each page ?
         dataSource: dataSourceReducer(state.dataSource, action)
     }
+
+    // console.info(`executed ${moment.duration(moment().diff(now)).asMilliseconds()} milliseconds`);
+    return newState;
 }

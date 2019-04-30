@@ -52,7 +52,11 @@ export default class LocationContent extends React.PureComponent<Props, State> {
                 </LocationDescription>
 
                 <LocationMedia
-                    images={this.props.images.map(img => ({ imageId: img.imageId, url: img.thumbnailExternalUrl }))}
+                    images={this.props.images.map(img => ({
+                        imageId: img.imageId,
+                        url: img.thumbnailExternalUrl,
+                        isFavorite: img.isFavorite
+                    }))}
                     massSelection={isMassSelection}
                     onMassSelection={this.props.onMassSelection}
                     onSelect={this.props.onSelect}

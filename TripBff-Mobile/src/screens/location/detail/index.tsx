@@ -8,10 +8,12 @@ import LocationContent from '../../../_organisms/Location/LocationContent';
 import LocationModal from '../../../_organisms/Location/LocationModal'
 import { updateLocationAddress, updateLocationHighlight, updateLocationDescription, deleteMultiLocationImages } from '../../../store/Trip/operations';
 import { View } from 'react-native';
+import { favorLocationImage } from '../../../store/Trip/operations';
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
     deleteLocationImages: (tripId: string, dateIdx: number, locationId: string, locationImageIds: string[]) => Promise<void>
+    favoriteLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, isFavorite: boolean) => Promise<void>
     updateLocationHighlight: (tripId: string, dateIdx: number, locationId: string, highlights: Array<StoreData.LocationLikeItemVM>) => Promise<void>
     updateLocationDescription: (tripId: string, dateIdx: number, locationId: string, description: string) => Promise<void>
 }
@@ -90,6 +92,15 @@ class LocationDetail extends React.Component<Props, State> {
     }
 
     private onSelect = (imageId: string) => {
+        if (!this.state.isMassSelection) {
+            this.props.favoriteLocationImage(this.props.tripId,
+                this.props.dateIdx,
+                this.props.locationId,
+                imageId,
+                !_.find(this.props.images, im => im.imageId == imageId).isFavorite);
+            return;
+        }
+
         if (_.indexOf(this.state.selectedImageIds, imageId) == -1) {
         this.setState({
             selectedImageIds: [...this.state.selectedImageIds, imageId]
@@ -216,6 +227,7 @@ const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     return {
         updateLocationAddress: (tripId, dateIdx, locationId, location) => dispatch(updateLocationAddress(tripId, dateIdx, locationId, location)),
         deleteLocationImages: (tripId, dateIdx, locationId, locationImageIds) => dispatch(deleteMultiLocationImages(tripId, dateIdx, locationId, locationImageIds)),
+        favoriteLocationImage: (tripId, dateIdx, locationId, imageId, isFavorite) => dispatch(favorLocationImage(tripId, dateIdx, locationId, imageId, isFavorite)),
         updateLocationHighlight: (tripId, dateIdx, locationId, highlights) => dispatch(updateLocationHighlight(tripId, dateIdx, locationId, highlights)),
         updateLocationDescription: (tripId, dateIdx, locationId, description) => dispatch(updateLocationDescription(tripId, dateIdx, locationId, description))
     };
