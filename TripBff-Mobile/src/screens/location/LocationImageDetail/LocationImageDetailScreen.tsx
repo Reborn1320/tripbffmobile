@@ -4,8 +4,9 @@ import { StoreData } from '../../../store/Interfaces';
 import { connect } from 'react-redux';
 import { NavigationScreenProp } from 'react-navigation';
 import _ from "lodash";
-import { View } from 'react-native';
+import { View, Dimensions } from 'react-native';
 import { favorLocationImage } from '../../../store/Trip/operations';
+import { ImageFavorable } from '../../../_molecules/ImageList/ImageFavorable';
 
 interface IMapDispatchToProps {
     favoriteLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, isFavorite: boolean) => Promise<void>
@@ -35,6 +36,7 @@ class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, S
 
     render() {
         const { url, isFavorite } = this.props;
+        const w = Dimensions.get("window").width;
         return (
             <Container>
                 <Header>
@@ -51,9 +53,13 @@ class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, S
                     </View>
                 </Header>
                 <Content>
-                    <Text>location image page</Text>
-                    <Text>{url}</Text>
-                    <Text>{isFavorite}</Text>
+                    <ImageFavorable
+                        imageUrl={url} width={w}
+                        isFirstItemInRow={true}
+                        isFirstRow={true}
+
+                        isChecked={isFavorite}
+                        />
                 </Content>
             </Container>
         )

@@ -81,6 +81,24 @@ const ProfileNavigator = createStackNavigator(
   }
 );
 
+
+const TestComponentNavigator = createStackNavigator(
+  {
+    Test: {screen: LocationImageDetailScreen },
+  },
+  {
+    headerMode: "none",
+    initialRouteParams: {
+      tripId: "aaa",
+      dateIdx: 1,
+      locationId: "aa",
+      imageId: "Aaaa",
+      url: "https://placekitten.com/g/500/500",
+      isFavorite: true,
+    },
+  }
+);
+
 const AppNavigator = createSwitchNavigator(
   {
     Login: { screen: LoginScreen },
@@ -88,11 +106,11 @@ const AppNavigator = createSwitchNavigator(
     TripDetails: TripDetailsNavigator,
     InfographicPreview: { screen: InfographicPreviewScreen },
     Profile: ProfileNavigator,
-    TestComponent: {screen: TestComponentScreen },
+    TestComponent: {screen: TestComponentNavigator },
     Home: { screen: HomeScreen },   
   },
   {
-    initialRouteName: "Login"
+    initialRouteName: "Profile",
   });
 
 let Navigation = createAppContainer(AppNavigator);
