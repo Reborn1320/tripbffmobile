@@ -8,7 +8,7 @@ import LocationContent from '../../../_organisms/Location/LocationContent';
 import LocationModal from '../../../_organisms/Location/LocationModal'
 import { updateLocationAddress, updateLocationHighlight, updateLocationDescription, deleteMultiLocationImages } from '../../../store/Trip/operations';
 import { View } from 'react-native';
-import { favorLocationImage } from '../../../store/Trip/actions';
+import { favorLocationImage } from '../../../store/Trip/operations';
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>

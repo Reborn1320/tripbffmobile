@@ -8,7 +8,8 @@ import {
   updateLocationAddress as updateLocationAddressAction,
   updateLocationHighlight as updateLocationHighlightAction,
   updateLocationDescription as  updateLocationDescriptionAction ,
-  updateLocationImages
+  updateLocationImages,
+  favorLocationImage as favorLocationImageAction
 } from "./actions";
 import { ThunkResultBase } from "..";
 import { Moment } from "moment";
@@ -213,7 +214,8 @@ export function favorLocationImage(tripId: string, dateIdx: number, locationId: 
     return extraArguments.tripApiService
     .patch(`/trips/${tripId}/locations/${locationId}/images/${imageId}`, { data })
     .then((res) => {
-      dispatch(favorLocationImage(tripId, dateIdx, locationId, imageId, isFavorite));
+      console.log("return data", res)
+      dispatch(favorLocationImageAction(tripId, dateIdx, locationId, imageId, isFavorite));
     })
     .catch((err) => {
       console.log('error favorLocationImage: ', err);
