@@ -11,7 +11,8 @@ export const NavigationConstants = {
     Home: "HomeScreen",
     Login: "Login",
     Profile: "Profile",
-    LocationDetails: "LocationDetail"
+    LocationDetails: "LocationDetail",
+    LocationImageDetails: "LocationImageDetail",
   }
 };
 

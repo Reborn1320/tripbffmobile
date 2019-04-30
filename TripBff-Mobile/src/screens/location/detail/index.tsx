@@ -9,6 +9,7 @@ import LocationModal from '../../../_organisms/Location/LocationModal'
 import { updateLocationAddress, updateLocationHighlight, updateLocationDescription, deleteMultiLocationImages } from '../../../store/Trip/operations';
 import { View } from 'react-native';
 import { favorLocationImage } from '../../../store/Trip/operations';
+import { NavigationConstants } from '../../_shared/ScreenConstants';
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
@@ -72,18 +73,18 @@ class LocationDetail extends React.Component<Props, State> {
         this.setState({isUpdateLocationAddressModalVisible: false});
     }
 
-    _openUpdateLocationHighlightModal = () => {
+    private _openUpdateLocationHighlightModal = () => {
         this.setState({isUpdateLocationHighlightModalVisible: true});
     }
 
-    _confirmUpdateLocationHighlight = (highlights) => {
+    private _confirmUpdateLocationHighlight = (highlights) => {
         this.props.updateLocationHighlight(this.props.tripId, this.props.dateIdx, this.props.locationId, highlights)
                     .then(() => {
                         this.setState({isUpdateLocationHighlightModalVisible: false})
                     });
     }
 
-    _cancelUpdateLocationHighlight = () => {
+    private _cancelUpdateLocationHighlight = () => {
         this.setState({isUpdateLocationHighlightModalVisible: false});
     }
 
@@ -91,7 +92,7 @@ class LocationDetail extends React.Component<Props, State> {
         this.setState({ isMassSelection: true });
     }
 
-    private onSelect = (imageId: string) => {
+    private onFavorite = (imageId: string) => {
         if (!this.state.isMassSelection) {
             this.props.favoriteLocationImage(this.props.tripId,
                 this.props.dateIdx,
@@ -99,6 +100,19 @@ class LocationDetail extends React.Component<Props, State> {
                 imageId,
                 !_.find(this.props.images, im => im.imageId == imageId).isFavorite);
             return;
+        }
+    }
+
+    private onSelect = (imageId: string) => {
+        if (!this.state.isMassSelection) {
+            const { tripId, dateIdx, locationId, images } = this.props;
+            const img = _.find(images, im => im.imageId == imageId);
+            const { url, isFavorite } = img;
+            this.props.navigation.navigate(NavigationConstants.Screens.LocationImageDetails,
+                { 
+                    tripId, dateIdx, locationId,
+                    imageId, url, isFavorite
+                });
         }
 
         if (_.indexOf(this.state.selectedImageIds, imageId) == -1) {
@@ -121,11 +135,11 @@ class LocationDetail extends React.Component<Props, State> {
             this.setState({ isMassSelection: false, selectedImageIds: [] })
         })
     }
-    _openUpdateLocationDescriptionModal = () => {
+    private _openUpdateLocationDescriptionModal = () => {
         this.setState({isUpdateLocationDescriptionModalVisible: true});
     }
 
-    _confirmUpdateLocationDescription = (description) => {
+    private _confirmUpdateLocationDescription = (description) => {
         console.log('tripId :' + this.props.tripId);
         console.log('locationId :' + this.props.locationId);
         this.props.updateLocationDescription(this.props.tripId, this.props.dateIdx, this.props.locationId, description)
@@ -136,7 +150,7 @@ class LocationDetail extends React.Component<Props, State> {
             });
     }
 
-    _cancelUpdateLocationDescription = () => {
+    private _cancelUpdateLocationDescription = () => {
         this.setState({isUpdateLocationDescriptionModalVisible: false});
     }
 
@@ -170,6 +184,7 @@ class LocationDetail extends React.Component<Props, State> {
 
                         isMassSelection={isMassSelection}
                         onMassSelection={this.onMassSelection}
+                        onFavorite={this.onFavorite}
                         onSelect={this.onSelect}
                         selectedImageIds={this.state.selectedImageIds}
                         

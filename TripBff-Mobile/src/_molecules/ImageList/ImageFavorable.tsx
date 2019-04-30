@@ -10,6 +10,7 @@ export interface Props {
   isChecked: boolean
   width: number
 
+  onPress?: () => void
   onPressedOnFavoriteIcon: () => void
   onLongPress?: () => void
 
@@ -52,6 +53,7 @@ export class ImageFavorable extends React.Component<Props, State> {
         marginLeft: isFirstItemInRow ? 0 : 2,
       }}>
       <TouchableHighlight
+        onPress={() => this.props.onPress ? this.props.onPress() : true }
         onLongPress={() => this.props.onLongPress ? this.props.onLongPress() : true}
       >
         <View style={{

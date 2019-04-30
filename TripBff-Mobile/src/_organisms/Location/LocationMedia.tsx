@@ -10,6 +10,7 @@ import { ImageFavorable } from "../../_molecules/ImageList/ImageFavorable";
 export interface Props {
   images: Array<ILocationMediaImage>
   onSelect: (imageId: string) => void
+  onFavorite: (imageId: string) => void
   selectedImageIds: string[]
 
   onMassSelection: () => void
