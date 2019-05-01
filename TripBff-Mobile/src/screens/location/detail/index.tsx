@@ -2,7 +2,7 @@ import React from 'react'
 import { Container, Header, Content, Button, Text } from 'native-base';
 import { StoreData, RawJsonData } from '../../../store/Interfaces';
 import { connect } from 'react-redux';
-import { NavigationScreenProp } from 'react-navigation';
+import { NavigationScreenProp, ScrollView } from 'react-navigation';
 import _ from "lodash";
 import LocationContent from '../../../_organisms/Location/LocationContent';
 import LocationModal from '../../../_organisms/Location/LocationModal'
@@ -10,6 +10,7 @@ import { updateLocationAddress, updateLocationHighlight, updateLocationDescripti
 import { View } from 'react-native';
 import { favorLocationImage } from '../../../store/Trip/operations';
 import { NavigationConstants } from '../../_shared/ScreenConstants';
+import AddLocationImageButton from '../../../_organisms/Location/AddLocationImageButton';
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
@@ -154,6 +155,10 @@ class LocationDetail extends React.Component<Props, State> {
         this.setState({isUpdateLocationDescriptionModalVisible: false});
     }
 
+    private onAddingImage = (uri: string) => {
+        console.log(uri);
+    }
+
     render() {
         const { isMassSelection } = this.state;
         return (
@@ -174,44 +179,52 @@ class LocationDetail extends React.Component<Props, State> {
                     </View>)
                 }
                 </Header>
-                <Content>
-                    <LocationContent
-                        address={this.props.address}
-                        name={this.props.name}
-                        likeItems={this.props.likeItems}
-                        description={this.props.description}
-                        images={this.props.images}
+                <View style={{ flex: 1 }}>
+                    <ScrollView>
+                        <LocationContent
+                            address={this.props.address}
+                            name={this.props.name}
+                            likeItems={this.props.likeItems}
+                            description={this.props.description}
+                            images={this.props.images}
 
-                        isMassSelection={isMassSelection}
-                        onMassSelection={this.onMassSelection}
-                        onFavorite={this.onFavorite}
-                        onSelect={this.onSelect}
-                        selectedImageIds={this.state.selectedImageIds}
-                        
-                        openUpdateLocationAddressModalHanlder={this._openUpdateLocationAddressModal}
-                        openUpdateLocationHighlightModalHanlder={this._openUpdateLocationHighlightModal}
-                        openUpdateLocationDescriptionModalHandler={this._openUpdateLocationDescriptionModal}>
-                    </LocationContent>
-                    <LocationModal
-                        long={this.props.long}
-                        lat={this.props.lat}
+                            isMassSelection={isMassSelection}
+                            onMassSelection={this.onMassSelection}
+                            onFavorite={this.onFavorite}
+                            onSelect={this.onSelect}
+                            selectedImageIds={this.state.selectedImageIds}
+                            
+                            openUpdateLocationAddressModalHanlder={this._openUpdateLocationAddressModal}
+                            openUpdateLocationHighlightModalHanlder={this._openUpdateLocationHighlightModal}
+                            openUpdateLocationDescriptionModalHandler={this._openUpdateLocationDescriptionModal}>
+                        </LocationContent>
+                        <LocationModal
+                            long={this.props.long}
+                            lat={this.props.lat}
 
-                        isUpdateLocationAddressModalVisible={this.state.isUpdateLocationAddressModalVisible}
-                        confirmUpdateLocationAddressHandler={this._confirmUpdateLocationAddress}
-                        cancelUpdateLocationAddressHandler={this._cancelUpdateLocationAddress}
-                        
-                        isUpdateLocationHighlightModalVisible={this.state.isUpdateLocationHighlightModalVisible}
-                        confirmUpdateLocationHighlightHandler={this._confirmUpdateLocationHighlight}
-                        cancelUpdateLocationHighlightHandler={this._cancelUpdateLocationHighlight}
-                        likeItems={this.props.likeItems}
-                        
-                        isUpdateLocationDescriptionModalVisible={this.state.isUpdateLocationDescriptionModalVisible}
-                        confirmUpdateLocationDescriptionHandler={this._confirmUpdateLocationDescription}
-                        cancelUpdateLocationDescriptionHandler={this._cancelUpdateLocationDescription}
-                        description={this.props.description}
-                        >
-                    </LocationModal>
-                </Content>
+                            isUpdateLocationAddressModalVisible={this.state.isUpdateLocationAddressModalVisible}
+                            confirmUpdateLocationAddressHandler={this._confirmUpdateLocationAddress}
+                            cancelUpdateLocationAddressHandler={this._cancelUpdateLocationAddress}
+                            
+                            isUpdateLocationHighlightModalVisible={this.state.isUpdateLocationHighlightModalVisible}
+                            confirmUpdateLocationHighlightHandler={this._confirmUpdateLocationHighlight}
+                            cancelUpdateLocationHighlightHandler={this._cancelUpdateLocationHighlight}
+                            likeItems={this.props.likeItems}
+                            
+                            isUpdateLocationDescriptionModalVisible={this.state.isUpdateLocationDescriptionModalVisible}
+                            confirmUpdateLocationDescriptionHandler={this._confirmUpdateLocationDescription}
+                            cancelUpdateLocationDescriptionHandler={this._cancelUpdateLocationDescription}
+                            description={this.props.description}
+                            >
+                        </LocationModal>
+                    </ScrollView>
+                </View>
+                <View
+                    style={{ position: "absolute", bottom: 20, right: 20 }}>
+                    <AddLocationImageButton
+                        onSelectImageFromGallery={this.onAddingImage}
+                    />
+                </View>
             </Container>
         )
     }
