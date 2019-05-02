@@ -62,6 +62,43 @@ class TripImportation extends Component<Props, State> {
         console.log("constructor")
     }
 
+    async getLocationFromCoordinate(long, lat) {
+        var url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat +'&lon=' + long;
+
+        return fetch(url)
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    return responseJson;
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+    }
+
+    getAddressFromLocation(locationJson) {
+        let address = "";
+
+        if (locationJson.address) {
+            let houseNumber = locationJson.address.house_number,
+                road = locationJson.address.road,
+                suburb = locationJson.address.suburb,
+                county = locationJson.address.county,
+                city = locationJson.address.city,
+                country = locationJson.address.country;
+
+            if (houseNumber) address = houseNumber
+            if (road) address = address ? address + ', ' + road : road;
+            if (suburb) address = address ? address + ', ' + suburb : suburb;
+            if (county) address = address ? address + ', ' + county : county;
+            if (city)  address = address ? address + ', ' + city : city;
+            if (country) address = address ? address + ', ' + country : country;         
+        }
+        else
+            address = locationJson.display_name;
+
+        return address;
+    }
+
     async componentDidMount() {
         await checkAndRequestPhotoPermissionAsync();
 
@@ -73,22 +110,24 @@ class TripImportation extends Component<Props, State> {
         console.log(`photos result = ${photos.length} photos`);
 
         var groupedPhotos = GroupPhotosIntoLocations(photos);
-        //todo: will be removed
-        var addresses = ["Vinpearl Land, Nha Trang", "Vịnh Ninh Vân, Nha Trang"];
+        var adapterResult: TripImportLocationVM[] = [];
 
-        var adapterResult: TripImportLocationVM[] = []
         for (let idx = 0; idx < groupedPhotos.length; idx++) {
             const element = groupedPhotos[idx];
 
             var maxTimestamp = _.max(element.map(e => e.timestamp))
             var minTimestamp = _.min(element.map(e => e.timestamp))
+
+            //call openstreetmap api to get location name and address
+            var locationJson = await this.getLocationFromCoordinate(element[0].location.longitude, element[0].location.latitude);
+
             var location: TripImportLocationVM = {
                 id: "",
-                name: addresses[idx],
+                name: locationJson.name,
                 location: {
                     lat: element[0].location.latitude,
                     long: element[0].location.longitude,
-                    address: addresses[idx]
+                    address: this.getAddressFromLocation(locationJson)
                 },
                 fromTime: moment(minTimestamp, "X"),
                 toTime: moment(maxTimestamp, "X"),

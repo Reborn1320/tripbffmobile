@@ -74,6 +74,12 @@ class ImportImageLocationItem extends React.Component<Props, State> {
                         style={{ alignSelf: "stretch", marginTop: 5, paddingLeft: 5 }}
                         onPress={() => this.props.handleSelectAll(locationIdx)}
                     >
+                        {location.name}
+                    </Text>
+                    <Text
+                        style={{ alignSelf: "stretch", marginTop: 5, paddingLeft: 5 }}
+                        onPress={() => this.props.handleSelectAll(locationIdx)}
+                    >
                         {location.location.address}
                     </Text>
                     <ImageList
