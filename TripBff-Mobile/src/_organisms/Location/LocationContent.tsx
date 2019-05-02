@@ -22,6 +22,7 @@ export interface Props extends IMapDispatchToProps {
 
     isMassSelection: boolean;
     selectedImageIds: string[]
+    onFavorite: (imageId: string) => void
     onSelect: (imageId: string) => void
     onMassSelection: () => void
 
@@ -52,9 +53,14 @@ export default class LocationContent extends React.PureComponent<Props, State> {
                 </LocationDescription>
 
                 <LocationMedia
-                    images={this.props.images.map(img => ({ imageId: img.imageId, url: img.thumbnailExternalUrl }))}
+                    images={this.props.images.map(img => ({
+                        imageId: img.imageId,
+                        url: img.thumbnailExternalUrl,
+                        isFavorite: img.isFavorite
+                    }))}
                     massSelection={isMassSelection}
                     onMassSelection={this.props.onMassSelection}
+                    onFavorite={this.props.onFavorite}
                     onSelect={this.props.onSelect}
                     selectedImageIds={selectedImageIds}
                 >

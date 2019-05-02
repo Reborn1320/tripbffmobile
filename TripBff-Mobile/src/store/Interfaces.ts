@@ -7,6 +7,7 @@ export module StoreData {
         externalStorageId?: string,
         externalUrl: string;
         thumbnailExternalUrl: string;
+        isFavorite: boolean;
     }
 
     export type LikeTypeVM = "Like" | "Dislike";
@@ -41,7 +42,7 @@ export module StoreData {
         location: LocationDetailVM //TODO: simplify this by removing the interface
         fromTime: moment.Moment
         toTime: moment.Moment
-        images: Array<ImportImageVM>,
+        images: Array<ImportImageVM>, //TODO change class name...
         feeling?: FeelingVM,
         activity?: ActivityVM,
         likeItems?: Array<LocationLikeItemVM>,

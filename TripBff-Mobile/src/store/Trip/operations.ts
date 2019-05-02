@@ -8,7 +8,8 @@ import {
   updateLocationAddress as updateLocationAddressAction,
   updateLocationHighlight as updateLocationHighlightAction,
   updateLocationDescription as  updateLocationDescriptionAction ,
-  updateLocationImages
+  updateLocationImages,
+  favorLocationImage as favorLocationImageAction
 } from "./actions";
 import { ThunkResultBase } from "..";
 import { Moment } from "moment";
@@ -141,7 +142,6 @@ export function updateLocationActivity(tripId: string, dateIdx: number, location
   };
 }
 
-//todo: shouldn't depend on dateIdx
 export function updateLocationAddress(tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     const data = {
@@ -202,6 +202,23 @@ export function deleteMultiLocationImages(tripId: string, dateIdx: number, locat
     })
     .catch((err) => {
       console.log('error delete multiple location images: ', err);
+    });
+  };
+}
+
+export function favorLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string, isFavorite: boolean): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    const data = {
+      isFavorite
+    };
+    return extraArguments.tripApiService
+    .patch(`/trips/${tripId}/locations/${locationId}/images/${imageId}`, { data })
+    .then((res) => {
+      // console.log("return data", res)
+      dispatch(favorLocationImageAction(tripId, dateIdx, locationId, imageId, isFavorite));
+    })
+    .catch((err) => {
+      console.log('error favorLocationImage: ', err);
     });
   };
 }

@@ -8,10 +8,13 @@ import LocationContent from '../../../_organisms/Location/LocationContent';
 import LocationModal from '../../../_organisms/Location/LocationModal'
 import { updateLocationAddress, updateLocationHighlight, updateLocationDescription, deleteMultiLocationImages } from '../../../store/Trip/operations';
 import { View } from 'react-native';
+import { favorLocationImage } from '../../../store/Trip/operations';
+import { NavigationConstants } from '../../_shared/ScreenConstants';
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
     deleteLocationImages: (tripId: string, dateIdx: number, locationId: string, locationImageIds: string[]) => Promise<void>
+    favoriteLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, isFavorite: boolean) => Promise<void>
     updateLocationHighlight: (tripId: string, dateIdx: number, locationId: string, highlights: Array<StoreData.LocationLikeItemVM>) => Promise<void>
     updateLocationDescription: (tripId: string, dateIdx: number, locationId: string, description: string) => Promise<void>
 }
@@ -70,18 +73,18 @@ class LocationDetail extends React.Component<Props, State> {
         this.setState({isUpdateLocationAddressModalVisible: false});
     }
 
-    _openUpdateLocationHighlightModal = () => {
+    private _openUpdateLocationHighlightModal = () => {
         this.setState({isUpdateLocationHighlightModalVisible: true});
     }
 
-    _confirmUpdateLocationHighlight = (highlights) => {
+    private _confirmUpdateLocationHighlight = (highlights) => {
         this.props.updateLocationHighlight(this.props.tripId, this.props.dateIdx, this.props.locationId, highlights)
                     .then(() => {
                         this.setState({isUpdateLocationHighlightModalVisible: false})
                     });
     }
 
-    _cancelUpdateLocationHighlight = () => {
+    private _cancelUpdateLocationHighlight = () => {
         this.setState({isUpdateLocationHighlightModalVisible: false});
     }
 
@@ -89,7 +92,29 @@ class LocationDetail extends React.Component<Props, State> {
         this.setState({ isMassSelection: true });
     }
 
+    private onFavorite = (imageId: string) => {
+        if (!this.state.isMassSelection) {
+            this.props.favoriteLocationImage(this.props.tripId,
+                this.props.dateIdx,
+                this.props.locationId,
+                imageId,
+                !_.find(this.props.images, im => im.imageId == imageId).isFavorite);
+            return;
+        }
+    }
+
     private onSelect = (imageId: string) => {
+        if (!this.state.isMassSelection) {
+            const { tripId, dateIdx, locationId, images } = this.props;
+            const img = _.find(images, im => im.imageId == imageId);
+            const { externalUrl, isFavorite } = img;
+            this.props.navigation.navigate(NavigationConstants.Screens.LocationImageDetails,
+                { 
+                    tripId, dateIdx, locationId,
+                    imageId, url: externalUrl, isFavorite
+                });
+        }
+
         if (_.indexOf(this.state.selectedImageIds, imageId) == -1) {
         this.setState({
             selectedImageIds: [...this.state.selectedImageIds, imageId]
@@ -110,11 +135,11 @@ class LocationDetail extends React.Component<Props, State> {
             this.setState({ isMassSelection: false, selectedImageIds: [] })
         })
     }
-    _openUpdateLocationDescriptionModal = () => {
+    private _openUpdateLocationDescriptionModal = () => {
         this.setState({isUpdateLocationDescriptionModalVisible: true});
     }
 
-    _confirmUpdateLocationDescription = (description) => {
+    private _confirmUpdateLocationDescription = (description) => {
         console.log('tripId :' + this.props.tripId);
         console.log('locationId :' + this.props.locationId);
         this.props.updateLocationDescription(this.props.tripId, this.props.dateIdx, this.props.locationId, description)
@@ -125,7 +150,7 @@ class LocationDetail extends React.Component<Props, State> {
             });
     }
 
-    _cancelUpdateLocationDescription = () => {
+    private _cancelUpdateLocationDescription = () => {
         this.setState({isUpdateLocationDescriptionModalVisible: false});
     }
 
@@ -159,6 +184,7 @@ class LocationDetail extends React.Component<Props, State> {
 
                         isMassSelection={isMassSelection}
                         onMassSelection={this.onMassSelection}
+                        onFavorite={this.onFavorite}
                         onSelect={this.onSelect}
                         selectedImageIds={this.state.selectedImageIds}
                         
@@ -216,6 +242,7 @@ const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     return {
         updateLocationAddress: (tripId, dateIdx, locationId, location) => dispatch(updateLocationAddress(tripId, dateIdx, locationId, location)),
         deleteLocationImages: (tripId, dateIdx, locationId, locationImageIds) => dispatch(deleteMultiLocationImages(tripId, dateIdx, locationId, locationImageIds)),
+        favoriteLocationImage: (tripId, dateIdx, locationId, imageId, isFavorite) => dispatch(favorLocationImage(tripId, dateIdx, locationId, imageId, isFavorite)),
         updateLocationHighlight: (tripId, dateIdx, locationId, highlights) => dispatch(updateLocationHighlight(tripId, dateIdx, locationId, highlights)),
         updateLocationDescription: (tripId, dateIdx, locationId, description) => dispatch(updateLocationDescription(tripId, dateIdx, locationId, description))
     };

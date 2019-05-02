@@ -1,4 +1,6 @@
-export const mixins = {
+import { ViewStyle } from "react-native";
+
+export const mixins: Mixins = {
   themes: {
     debug: {
       borderColor: "orange",
@@ -14,6 +16,22 @@ export const mixins = {
     },
     displayFlex: {
       display: "flex"
-    }
+    },
+    
+  },
+  centering: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   }
+}
+
+type Mixins = {
+  themes: {
+    debug: ViewStyle,
+    debug1: ViewStyle,
+    debug2: ViewStyle,
+    displayFlex: ViewStyle,
+  }
+  centering: ViewStyle
 }
