@@ -3,11 +3,12 @@ module.exports = {
     "module:metro-react-native-babel-preset"
   ],
   "plugins": [
+    "@babel/plugin-transform-flow-strip-types",
     "@babel/plugin-proposal-class-properties"
   ],
   "env": {
     "development": {
-      "plugins": [
+      "plugins": [        
         "@babel/plugin-transform-react-jsx-source",
         '@babel/plugin-transform-runtime'
       ]
