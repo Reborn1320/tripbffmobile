@@ -17,7 +17,7 @@ import { TripImportLocationVM } from "./TripImportViewModels";
 import { uploadFileApi } from "../../_services/apis";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { ThunkResultBase } from "../../../store";
-import { importSelectedLocations, uploadedImage } from "../../../store/Trip/actions";
+import { importSelectedLocations } from "../../../store/Trip/actions";
 import { uploadLocationImage } from "../../../store/Trip/operations";
 
 type ThunkResult<R> = ThunkResultBase<R, State>;

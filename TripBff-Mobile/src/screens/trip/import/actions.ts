@@ -1,5 +1,5 @@
 import { ThunkResultBase } from '../../../store/index';
-import { uploadedImage } from '../../../store/Trip/actions';
+import { uploadLocationImage } from '../../../store/Trip/actions';
 
 export function uploadImage(tripId, locationId, imageId, imgUrl): ThunkResultBase {
     //todo check getState param ?? is it state of the store ????
@@ -18,7 +18,7 @@ export function uploadImage(tripId, locationId, imageId, imgUrl): ThunkResultBas
             //console.log('result after upload image: ' + JSON.stringify(res));
             //console.log('result after upload image: ' + JSON.stringify(res.data));
             var { externalId, thumbnailExternalUrl } = JSON.parse(res.response);      
-            dispatch(uploadedImage(tripId, 0, locationId, imageId, externalId, thumbnailExternalUrl))
+            dispatch(uploadLocationImage(tripId, 0, locationId, imageId, externalId, thumbnailExternalUrl))
             //todo replace by stop on error
         })
         .catch((err) => {

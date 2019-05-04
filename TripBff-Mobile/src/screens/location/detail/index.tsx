@@ -6,7 +6,7 @@ import { NavigationScreenProp, ScrollView } from 'react-navigation';
 import _ from "lodash";
 import LocationContent from '../../../_organisms/Location/LocationContent';
 import LocationModal from '../../../_organisms/Location/LocationModal'
-import { updateLocationAddress, updateLocationHighlight, updateLocationDescription, deleteMultiLocationImages } from '../../../store/Trip/operations';
+import { updateLocationAddress, updateLocationHighlight, updateLocationDescription, deleteMultiLocationImages, addLocationImage, uploadLocationImage } from '../../../store/Trip/operations';
 import { View } from 'react-native';
 import { favorLocationImage } from '../../../store/Trip/operations';
 import { NavigationConstants } from '../../_shared/ScreenConstants';
@@ -15,6 +15,8 @@ import { Moment } from 'moment';
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
+    addLocationImage: (tripId: string, dateIdx: number, locationId: string, url: string, time: Moment) => Promise<string>
+    uploadLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, url: string) => Promise<void>
     deleteLocationImages: (tripId: string, dateIdx: number, locationId: string, locationImageIds: string[]) => Promise<void>
     favoriteLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, isFavorite: boolean) => Promise<void>
     updateLocationHighlight: (tripId: string, dateIdx: number, locationId: string, highlights: Array<StoreData.LocationLikeItemVM>) => Promise<void>
@@ -157,7 +159,13 @@ class LocationDetail extends React.Component<Props, State> {
     }
 
     private onAddingImage = (uri: string, time: Moment) => {
-        console.log(uri);
+        console.log("uri", uri);
+        console.log("time", time);
+        const { tripId, dateIdx, locationId } = this.props;
+        this.props.addLocationImage(tripId, dateIdx, locationId, uri, time)
+        .then(imageId => {
+            this.props.uploadLocationImage(tripId, dateIdx, locationId, imageId, uri);
+        })
     }
 
     render() {
@@ -255,6 +263,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     return {
         updateLocationAddress: (tripId, dateIdx, locationId, location) => dispatch(updateLocationAddress(tripId, dateIdx, locationId, location)),
+        addLocationImage: (tripId, dateIdx, locationId, url, time) => dispatch(addLocationImage(tripId, dateIdx, locationId, url, time)),
+        uploadLocationImage: (tripId, dateIdx, locationId, imageId, url) => dispatch(uploadLocationImage(tripId, dateIdx, locationId, imageId, url)),
         deleteLocationImages: (tripId, dateIdx, locationId, locationImageIds) => dispatch(deleteMultiLocationImages(tripId, dateIdx, locationId, locationImageIds)),
         favoriteLocationImage: (tripId, dateIdx, locationId, imageId, isFavorite) => dispatch(favorLocationImage(tripId, dateIdx, locationId, imageId, isFavorite)),
         updateLocationHighlight: (tripId, dateIdx, locationId, highlights) => dispatch(updateLocationHighlight(tripId, dateIdx, locationId, highlights)),

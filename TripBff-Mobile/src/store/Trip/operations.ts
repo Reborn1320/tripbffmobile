@@ -226,7 +226,7 @@ export function favorLocationImage(tripId: string, dateIdx: number, locationId: 
   };
 }
 
-export function addLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string, imgUrl: string, time: Moment): ThunkResultBase {
+export function addLocationImage(tripId: string, dateIdx: number, locationId: string, imgUrl: string, time: Moment): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     const data = {
       url: imgUrl,
@@ -236,7 +236,11 @@ export function addLocationImage(tripId: string, dateIdx: number, locationId: st
     .post(`/trips/${tripId}/locations/${locationId}/images`, { data })
     .then((res) => {
       // console.log("return data", res)
+      const imageId = res.data;
+      console.log("new image id", res.data);
       dispatch(addLocationImageAction(tripId, dateIdx, locationId, imageId, imgUrl, time));
+
+      return imageId;
     })
     .catch((err) => {
       console.log('error addLocationImage: ', err);
