@@ -80,7 +80,7 @@ function imageReducer(state: StoreData.ImportImageVM, action: ImageActions) {
     console.log('     + location image reducer: ', action.type);
 
     switch(action.type) {
-        case "TRIP_LOCATION_IMAGE_UPLOADED":
+        case "TRIP_LOCATION_IMAGE_UPLOAD":
             return {
                 ...state,
                 externalStorageId: action.externalStorageId,
@@ -91,12 +91,12 @@ function imageReducer(state: StoreData.ImportImageVM, action: ImageActions) {
                 ...state,
                 isFavorite: action.isFavorite
             }
-        case "TRIP_LOCATION_IMAGE_PATCH":
-            let newState = state;
-            if (action.externalUrl) newState.externalUrl = action.externalUrl;
-            if (action.thumbnailExternalUrl) newState.thumbnailExternalUrl = action.thumbnailExternalUrl;
-            if (action.externalStorageId) newState.externalStorageId = action.externalStorageId;
-            return newState;
+        // case "TRIP_LOCATION_IMAGE_PATCH":
+        //     let newState = state;
+        //     if (action.externalUrl) newState.externalUrl = action.externalUrl;
+        //     if (action.thumbnailExternalUrl) newState.thumbnailExternalUrl = action.thumbnailExternalUrl;
+        //     if (action.externalStorageId) newState.externalStorageId = action.externalStorageId;
+        //     return newState;
         default: 
             return state;
     }

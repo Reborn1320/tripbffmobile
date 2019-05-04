@@ -195,14 +195,14 @@ export type ImageActions = {
     locationId: string,
     imageId: string,
 }
-| ImportUploadedImage
+| UploadLocationImage
 | AddLocationImage
 | FavorLocationImage
-| UpdateLocationImageAsPatch
+// | UpdateLocationImageAsPatch
 ;
 
-type ImportUploadedImage = {
-    type: "TRIP_LOCATION_IMAGE_UPLOADED",
+type UploadLocationImage = {
+    type: "TRIP_LOCATION_IMAGE_UPLOAD",
     tripId: string,
     dateIdx: number,
     locationId: string,
@@ -231,6 +231,9 @@ type FavorLocationImage = {
     isFavorite: boolean,
 }
 
+
+//intended to use this action to be all-purpose action for updating location image,
+//but it seems to be very complex
 type UpdateLocationImageAsPatch = {
     type: "TRIP_LOCATION_IMAGE_PATCH",
     tripId: string,
@@ -255,26 +258,14 @@ export function addLocationImage(tripId: string, dateIdx: number, locationId: st
     }
 }
 
-//todo: change this to use the same action to reduce the number of actiosn in reducer file
 export function favorLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string, isFavorite: boolean): FavorLocationImage {
     return {
         type: LOCATION_IMAGE_FAVOR, tripId, dateIdx, locationId, imageId, isFavorite
     }
 }
 
-
-export function uploadedImage(tripId: string, dateIdx, locationId: string, imageId: string, externalStorageId: string, thumbnailExternalUrl: string): ImportUploadedImage {
+export function uploadLocationImage(tripId: string, dateIdx, locationId: string, imageId: string, externalStorageId: string, thumbnailExternalUrl: string): UploadLocationImage {
     return {
-        type: "TRIP_LOCATION_IMAGE_UPLOADED", tripId, dateIdx, locationId, imageId, externalStorageId, thumbnailExternalUrl
-    }
-}
-
-
-export function uploadLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string,
-    externalStorageId: string, externalUrl: string, thumbnailExternalUrl: string): UpdateLocationImageAsPatch {
-    return {
-        type: "TRIP_LOCATION_IMAGE_PATCH",
-        tripId, dateIdx, locationId, imageId,
-        externalStorageId, externalUrl, thumbnailExternalUrl,
+        type: "TRIP_LOCATION_IMAGE_UPLOAD", tripId, dateIdx, locationId, imageId, externalStorageId, thumbnailExternalUrl
     }
 }

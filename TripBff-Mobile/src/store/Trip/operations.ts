@@ -11,7 +11,7 @@ import {
   addLocationImage as addLocationImageAction,
   updateLocationImages,
   favorLocationImage as favorLocationImageAction,
-  uploadedImage as uploadedImageAction
+  uploadLocationImage as uploadLocationImageAction
 } from "./actions";
 import { ThunkResultBase } from "..";
 import { Moment } from "moment";
@@ -259,7 +259,7 @@ export function uploadLocationImage(tripId: string, dateIdx: number, locationId:
         var { externalId, thumbnailExternalUrl } = JSON.parse(res.response);      
 
         //todo perhap missing externalUrl too 
-        return dispatch(uploadedImageAction(tripId, dateIdx, locationId, imageId, externalId, thumbnailExternalUrl))
+        return dispatch(uploadLocationImageAction(tripId, dateIdx, locationId, imageId, externalId, thumbnailExternalUrl))
     })
     .catch((err) => {
         console.log('error uploadLocationImage ', err);
