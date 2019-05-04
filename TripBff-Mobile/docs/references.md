@@ -9,3 +9,6 @@ go into gradle of handler to update to `compile 'com.facebook.infer.annotation:i
 
 use babel.config.js, add `babel runtime`
 https://github.com/facebook/react-native/issues/21052
+
+fix another issue
+https://github.com/facebook/react-native/issues/20588

@@ -18,6 +18,7 @@ import { uploadFileApi } from "../../_services/apis";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { ThunkResultBase } from "../../../store";
 import { importSelectedLocations, uploadedImage } from "../../../store/Trip/actions";
+import { uploadLocationImage } from "../../../store/Trip/operations";
 
 type ThunkResult<R> = ThunkResultBase<R, State>;
 
@@ -214,41 +215,27 @@ class TripImportation extends Component<Props, State> {
     _uploadImage = function uploadImage(tripId, dateIdx, locationId, imageId, imgUrl): ThunkResult<Promise<any>> {
         return async function(dispatch) {
             console.log(`imge url: ${imgUrl}`)
-            var additionalData = {
-                locationId,
-                imageId,
-                fileName: imgUrl,
-            }
+            uploadLocationImage(tripId, dateIdx, locationId, imageId, imgUrl);
+            // var additionalData = {
+            //     locationId,
+            //     imageId,
+            //     fileName: imgUrl,
+            // }
 
-            var url = '/trips/' + tripId +'/uploadImage';
+            // var url = '/trips/' + tripId +'/uploadImage';
 
-            return uploadFileApi.upload(url, imgUrl, additionalData)
-            .then((res) => {
-                //console.log('result after upload image: ' + JSON.stringify(res));
-                //console.log('result after upload image: ' + JSON.stringify(res.data));
-                var { externalId, thumbnailExternalUrl } = JSON.parse(res.response);      
-
-                dispatch(uploadedImage(tripId, dateIdx, locationId, imageId, externalId, thumbnailExternalUrl))
-                //todo replace by stop on error
-            })
-            .catch((err) => {
-                console.log('error after import trip: ' + JSON.stringify(err));
-            });
-
-            // return api
-            // .post(url, data)
+            // return uploadFileApi.upload(url, imgUrl, additionalData)
             // .then((res) => {
-            //     console.log('result after upload image: ' + JSON.stringify(res.data));
-            //     var externalStorageId: string = res.data;      
-            //     dispatch(uploadedImage(tripId, locationId, imageId, externalStorageId))
+            //     //console.log('result after upload image: ' + JSON.stringify(res));
+            //     //console.log('result after upload image: ' + JSON.stringify(res.data));
+            //     var { externalId, thumbnailExternalUrl } = JSON.parse(res.response);      
 
+            //     dispatch(uploadedImage(tripId, dateIdx, locationId, imageId, externalId, thumbnailExternalUrl))
+            //     //todo replace by stop on error
             // })
             // .catch((err) => {
             //     console.log('error after import trip: ' + JSON.stringify(err));
-            // });   
-
-            // var externalStorageId = uuid1();
-            // return dispatch(uploadedImage(tripId, locationId, imageId, externalStorageId))
+            // });
         }
     }
     

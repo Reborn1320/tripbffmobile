@@ -11,6 +11,7 @@ import { View } from 'react-native';
 import { favorLocationImage } from '../../../store/Trip/operations';
 import { NavigationConstants } from '../../_shared/ScreenConstants';
 import AddLocationImageButton from '../../../_organisms/Location/AddLocationImageButton';
+import { Moment } from 'moment';
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
@@ -155,7 +156,7 @@ class LocationDetail extends React.Component<Props, State> {
         this.setState({isUpdateLocationDescriptionModalVisible: false});
     }
 
-    private onAddingImage = (uri: string) => {
+    private onAddingImage = (uri: string, time: Moment) => {
         console.log(uri);
     }
 

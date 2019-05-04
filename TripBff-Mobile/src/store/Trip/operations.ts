@@ -7,14 +7,17 @@ import {
   updateTripName as updateTripNameAction,
   updateLocationAddress as updateLocationAddressAction,
   updateLocationHighlight as updateLocationHighlightAction,
-  updateLocationDescription as  updateLocationDescriptionAction ,
+  updateLocationDescription as  updateLocationDescriptionAction,
+  addLocationImage as addLocationImageAction,
   updateLocationImages,
-  favorLocationImage as favorLocationImageAction
+  favorLocationImage as favorLocationImageAction,
+  uploadedImage as uploadedImageAction
 } from "./actions";
 import { ThunkResultBase } from "..";
 import { Moment } from "moment";
 import { StoreData, RawJsonData } from "../Interfaces";
 import moment from "moment";
+import { uploadFileApi } from "../../screens/_services/apis";
 
 export function removeLocation(tripId: string, dateIdx: number, locationId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
@@ -219,6 +222,47 @@ export function favorLocationImage(tripId: string, dateIdx: number, locationId: 
     })
     .catch((err) => {
       console.log('error favorLocationImage: ', err);
+    });
+  };
+}
+
+export function addLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string, imgUrl: string, time: Moment): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    const data = {
+      url: imgUrl,
+      time
+    };
+    return extraArguments.tripApiService
+    .post(`/trips/${tripId}/locations/${locationId}/images`, { data })
+    .then((res) => {
+      // console.log("return data", res)
+      dispatch(addLocationImageAction(tripId, dateIdx, locationId, imageId, imgUrl, time));
+    })
+    .catch((err) => {
+      console.log('error addLocationImage: ', err);
+    });
+  };
+}
+
+export function uploadLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string, imgUrl: string): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    const additionalData = {
+      locationId,
+      imageId,
+      fileName: imgUrl,
+    };
+    
+    var url = '/trips/' + tripId +'/uploadImage';
+
+    return uploadFileApi.upload(url, imgUrl, additionalData)
+    .then((res) => {
+        var { externalId, thumbnailExternalUrl } = JSON.parse(res.response);      
+
+        //todo perhap missing externalUrl too 
+        return dispatch(uploadedImageAction(tripId, dateIdx, locationId, imageId, externalId, thumbnailExternalUrl))
+    })
+    .catch((err) => {
+        console.log('error uploadLocationImage ', err);
     });
   };
 }

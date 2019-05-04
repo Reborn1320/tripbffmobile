@@ -18,6 +18,7 @@ export default class AddLocationImageButton extends React.PureComponent<Props, S
   private _pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: false,
+      exif: true,
     });
 
     console.log(result);

@@ -91,6 +91,12 @@ function imageReducer(state: StoreData.ImportImageVM, action: ImageActions) {
                 ...state,
                 isFavorite: action.isFavorite
             }
+        case "TRIP_LOCATION_IMAGE_PATCH":
+            let newState = state;
+            if (action.externalUrl) newState.externalUrl = action.externalUrl;
+            if (action.thumbnailExternalUrl) newState.thumbnailExternalUrl = action.thumbnailExternalUrl;
+            if (action.externalStorageId) newState.externalStorageId = action.externalStorageId;
+            return newState;
         default: 
             return state;
     }
