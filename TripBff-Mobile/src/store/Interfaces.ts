@@ -4,6 +4,7 @@ export module StoreData {
     export interface ImportImageVM {
         imageId: string,
         url: string, //url stored in local mobile
+        time: moment.Moment,
         externalStorageId?: string,
         externalUrl: string;
         thumbnailExternalUrl: string;

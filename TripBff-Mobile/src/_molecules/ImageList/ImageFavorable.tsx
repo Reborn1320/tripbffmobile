@@ -29,8 +29,8 @@ export class ImageFavorable extends React.Component<Props, State> {
     }
   }
   shouldComponentUpdate(nextProps: Props, nextState) {
-    // console.log(this.props.isChecked != nextProps.isChecked)
-    return this.props.isChecked != nextProps.isChecked;
+    return this.props.isChecked != nextProps.isChecked
+    || this.props.imageUrl != nextProps.imageUrl;
   }
 
   private renderIcon(isChecked) {

@@ -30,17 +30,6 @@ export type TripActions = {
 ;
 
 
-export type ImageActions = {
-    type: "TRIP_LOCATION_IMAGE...",
-    tripId: string,
-    dateIdx: number,
-    locationId: string,
-    imageId: string,
-}
-| ImportUploadedImage
-| FavorLocationImage
-;
-
 type RemoveLocation = {
     type: "TRIP_LOCATION_REMOVE",
     tripId: string
@@ -65,17 +54,7 @@ type UpdateTripName = {
 type ImportSelectedLocations = {
     type: "TRIP/IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS",
     tripId: string
-    locations: StoreData.LocationVM[]
-}
-
-type ImportUploadedImage = {
-    type: "TRIP_LOCATION_IMAGE_UPLOADED",
-    tripId: string,
-    dateIdx: number,
-    locationId: string,
-    imageId: string,
-    externalStorageId: string,
-    thumbnailExternalUrl: string
+    locations: IImportLocation[]
 }
 
 
@@ -109,15 +88,26 @@ export function updateTripName(tripId: string, tripName: string) {
     }
 }
 
-export function importSelectedLocations(tripId: string, locations: StoreData.LocationVM[]): ImportSelectedLocations {
-    return {
-        type: IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, tripId, locations,
-    }
+type IImportLocation = {
+    locationId: string,
+    name: string,
+    location: {
+        long: number
+        lat: number
+        address: string
+    },
+    fromTime: moment.Moment
+    toTime: moment.Moment
+    images: {
+        imageId: string,
+        url: string, //url stored in local mobile
+        time: Moment,
+    }[]
 }
 
-export function uploadedImage(tripId: string, dateIdx, locationId: string, imageId: string, externalStorageId: string, thumbnailExternalUrl: string): ImportUploadedImage {
+export function importSelectedLocations(tripId: string, locations: IImportLocation[]): ImportSelectedLocations {
     return {
-        type: "TRIP_LOCATION_IMAGE_UPLOADED", tripId, dateIdx, locationId, imageId, externalStorageId, thumbnailExternalUrl
+        type: IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, tripId, locations,
     }
 }
 
@@ -179,15 +169,6 @@ type UpdateLocationDescription = {
 }
 
 
-type FavorLocationImage = {
-    type: "TRIP_LOCATION_IMAGE_FAVOR",
-    tripId: string,
-    dateIdx: number,
-    locationId: string,
-    imageId: string,
-    isFavorite: boolean,
-}
-
 export function updateLocationFeeling(tripId: string, dateIdx: number, locationId: string, feeling: StoreData.FeelingVM) {
     return {
         type: LOCATION_UPDATE_FEELING, tripId, dateIdx, locationId, feeling
@@ -224,8 +205,84 @@ export function updateLocationDescription(tripId: string, dateIdx: number, locat
     }
 }
 
+export type ImageActions = {
+    type: "TRIP_LOCATION_IMAGE...",
+    tripId: string,
+    dateIdx: number,
+    locationId: string,
+    imageId: string,
+}
+| UploadLocationImage
+| AddLocationImage
+| FavorLocationImage
+// | UpdateLocationImageAsPatch
+;
+
+type UploadLocationImage = {
+    type: "TRIP_LOCATION_IMAGE_UPLOAD",
+    tripId: string,
+    dateIdx: number,
+    locationId: string,
+    imageId: string,
+    externalStorageId: string,
+    thumbnailExternalUrl: string
+}
+
+type AddLocationImage = {
+    type: "TRIP_LOCATION_IMAGE_ADD",
+    tripId: string,
+    dateIdx: number,
+    locationId: string,
+    imageId: string,
+
+    url: string,
+    time: Moment,
+}
+
+type FavorLocationImage = {
+    type: "TRIP_LOCATION_IMAGE_FAVOR",
+    tripId: string,
+    dateIdx: number,
+    locationId: string,
+    imageId: string,
+    isFavorite: boolean,
+}
+
+
+//intended to use this action to be all-purpose action for updating location image,
+//but it seems to be very complex
+type UpdateLocationImageAsPatch = {
+    type: "TRIP_LOCATION_IMAGE_PATCH",
+    tripId: string,
+    dateIdx: number,
+    locationId: string,
+    imageId: string,
+
+    //patch data
+    url?: string,
+    time?: Moment,
+    externalStorageId?: string,
+    externalUrl?: string;
+    thumbnailExternalUrl?: string;
+    isFavorite?: boolean,
+}
+
+export function addLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string, url: string, time: Moment): AddLocationImage {
+    return {
+        type: "TRIP_LOCATION_IMAGE_ADD",
+        tripId, dateIdx, locationId, imageId,
+        url, time,
+    }
+}
+
 export function favorLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string, isFavorite: boolean): FavorLocationImage {
     return {
         type: LOCATION_IMAGE_FAVOR, tripId, dateIdx, locationId, imageId, isFavorite
+    }
+}
+
+export function uploadLocationImage(tripId: string, dateIdx, locationId: string, imageId: string, externalStorageId: string, thumbnailExternalUrl: string): UploadLocationImage {
+    return {
+        type: "TRIP_LOCATION_IMAGE_UPLOAD", tripId, dateIdx, locationId, imageId, externalStorageId, thumbnailExternalUrl
     }
 }
