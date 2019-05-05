@@ -54,7 +54,7 @@ type UpdateTripName = {
 type ImportSelectedLocations = {
     type: "TRIP/IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS",
     tripId: string
-    locations: StoreData.LocationVM[]
+    locations: IImportLocation[]
 }
 
 
@@ -88,7 +88,24 @@ export function updateTripName(tripId: string, tripName: string) {
     }
 }
 
-export function importSelectedLocations(tripId: string, locations: StoreData.LocationVM[]): ImportSelectedLocations {
+type IImportLocation = {
+    locationId: string,
+    name: string,
+    location: {
+        long: number
+        lat: number
+        address: string
+    },
+    fromTime: moment.Moment
+    toTime: moment.Moment
+    images: {
+        imageId: string,
+        url: string, //url stored in local mobile
+        time: Moment,
+    }[]
+}
+
+export function importSelectedLocations(tripId: string, locations: IImportLocation[]): ImportSelectedLocations {
     return {
         type: IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS, tripId, locations,
     }

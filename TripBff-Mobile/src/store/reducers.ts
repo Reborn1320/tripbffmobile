@@ -209,10 +209,21 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
               });              
         case IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS:
             const { locations } = action;
+            const mappedLocations: StoreData.LocationVM[] = locations.map(loc => ({
+                ...loc,
+                images: loc.images.map(im => ({
+                    ...im,
+                    externalUrl: "",
+                    thumbnailExternalUrl: "",
+                    isFavorite: false,
+                }))
+
+            }));
+            
             return {
                 ...state,
-                locations,
-                dates: getDatesProperty(state.fromDate, state.toDate, locations)
+                locations, //todo: remove this property
+                dates: getDatesProperty(state.fromDate, state.toDate, mappedLocations)
             }
         case TRIP_UPDATE_DATE_RANGE:
             return {
