@@ -1,7 +1,8 @@
 import { connect } from "react-redux";
 import _ from "lodash";
 import { TripEditScreen } from "./TripEditScreen";
-// import { addInfographicId } from '../export/actions';
+import { addInfographicId } from "../../../store/Trip/actions";
+
 // import { updateTripDateRange } from "../../../store/Trip/operations";
 
 const mapStateToProps = (storeState, ownProps) => {
@@ -16,7 +17,7 @@ const mapStateToProps = (storeState, ownProps) => {
 const mapDispatchToProps = dispatch => {
   return {
     // updateTripDateRange: (tripId, fromDate, toDate) => dispatch(updateTripDateRange(tripId, fromDate, toDate)),
-    // addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
+    addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
   };
 };
 
