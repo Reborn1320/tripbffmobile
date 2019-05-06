@@ -26,7 +26,9 @@ import {
 
   export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
     dispatch: ThunkDispatch<any, null, any>;
-    navigation: RNa.NavigationScreenProp<any, any>
+    navigation: RNa.NavigationScreenProp<any, any>,
+    tripId: string,
+    infographicId: string
   }
   
   interface IMapDispatchToProps {
@@ -34,8 +36,6 @@ import {
   }
 
   interface State {
-    tripId: string,
-    infographicId: string,
     isLoaded: boolean,
     imageUri: string,
     sharePhotoContent: any
@@ -50,9 +50,7 @@ import {
         photos: []
       };
 
-      this.state = {
-            tripId: props.trip.id,    
-            infographicId: props.trip.infographicId,      
+      this.state = { 
             isLoaded: false,
             imageUri: "",
             sharePhotoContent: sharePhotoContent
@@ -64,8 +62,10 @@ import {
     }
 
     getInfographic() {
+      console.log('tripId: ' + this.props.tripId);
+
         tripApi
-        .get(`/trips/${this.state.tripId}/infographics/${this.state.infographicId}`)
+        .get(`/trips/${this.props.tripId}/infographics/${this.props.infographicId}`)
         .then(res => {
             this.setState({imageUri: res.data});     
             
@@ -173,9 +173,11 @@ import {
 
   const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId } = ownProps.navigation.state.params;
+    console.log('tripId from params: ' + tripId);
     var trip = _.find(storeState.trips, (item) => item.tripId == tripId)
     return {
-        trip
+      tripId: tripId,
+      infographicId: trip.infographicId,
     };
   };
 

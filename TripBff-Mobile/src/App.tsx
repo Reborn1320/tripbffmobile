@@ -63,6 +63,7 @@ const TripDetailsNavigator = createStackNavigator(
     TripDetail: { screen: TripDetailScreenContainer },
     LocationDetail: { screen: LocationDetailScreen },
     LocationImageDetail: { screen: LocationImageDetailScreen },
+    InfographicPreview: { screen: InfographicPreviewScreen },
   },
   {
     headerMode: "none"
@@ -75,6 +76,7 @@ const ProfileNavigator = createStackNavigator(
     TripEdition: { screen: TripEditScreenContainer }, 
     LocationDetail: { screen: LocationDetailScreen },
     LocationImageDetail: { screen: LocationImageDetailScreen },
+    InfographicPreview: { screen: InfographicPreviewScreen },
   },
   {
     headerMode: "none"
@@ -103,8 +105,7 @@ const AppNavigator = createSwitchNavigator(
   {
     Login: { screen: LoginScreen },
     TripCreation: TripCreationNavigator,
-    TripDetails: TripDetailsNavigator,
-    InfographicPreview: { screen: InfographicPreviewScreen },
+    TripDetails: TripDetailsNavigator,    
     Profile: ProfileNavigator,
     TestComponent: {screen: TestComponentNavigator },
     Home: { screen: HomeScreen },   
