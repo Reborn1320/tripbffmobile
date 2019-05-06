@@ -12,22 +12,17 @@ import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
 import Loading from "../../../_atoms/Loading/Loading";
-import {ThunkDispatch} from 'redux-thunk';
 import { TripImportLocationVM } from "./TripImportViewModels";
-import { uploadFileApi } from "../../_services/apis";
 import { PropsBase } from "../../_shared/LayoutContainer";
-import { ThunkResultBase } from "../../../store";
-import { importSelectedLocations, uploadedImage } from "../../../store/Trip/actions";
-
-type ThunkResult<R> = ThunkResultBase<R, State>;
+import { uploadLocationImage, addLocations, IImportLocation } from "../../../store/Trip/operations";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
-    dispatch: ThunkDispatch<State, null, any>
     trip: StoreData.TripVM
 }
 
 interface IMapDispatchToProps {
-    importSelectedLocations: (tripId: string, locations: StoreData.LocationVM[]) => void
+    addLocations: (tripId: string, locations: IImportLocation[]) => Promise<void>;
+    uploadLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, imageUrl: string) => Promise<void>;
 }
 
 interface State {
@@ -138,6 +133,7 @@ class TripImportation extends Component<Props, State> {
                 location.images.push({
                     imageId: "",
                     url: img.image.uri,
+                    time: moment(img.timestamp * 1000),
                     isSelected: true
                 })
             })
@@ -180,19 +176,25 @@ class TripImportation extends Component<Props, State> {
         })
     }
 
-    _toLocationVM = () => {
-        var selectedLocations = []
+    private _toLocationVM = () => {
+        var selectedLocations: IImportLocation[] = []
         
         _.reverse(this.state.locations).forEach((element) => {
             var isLocationSelected = element.images.filter((img) => img.isSelected).length > 0;
 
             if (isLocationSelected) {
-                var locationVM = {
+                var locationVM: IImportLocation = {
                     name: element.name,
                     location: element.location,
                     fromTime: element.fromTime,
                     toTime: element.toTime,
-                    images: element.images.filter((img) => img.isSelected).map(img => {return {url: img.url}})
+                    images: element.images.filter((img) => img.isSelected)
+                        .map(img => {
+                            return {
+                                url: img.url,
+                                time: moment(img.time),
+                            }
+                        })
                 }
                 return selectedLocations.push(locationVM);
             }
@@ -201,97 +203,21 @@ class TripImportation extends Component<Props, State> {
         return selectedLocations
     }
 
-    _skip = () => {
+    private _skip = () => {
         this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId })
     }
 
-    _import = () => {
+    private _import = () => {
 
         var selectedLocations = this._toLocationVM();
-        this.setState({ UIState: "import images" })
         console.log('selected locations: ' + JSON.stringify(selectedLocations))
-        this.props.dispatch(this._postLocations(this.state.tripId, selectedLocations));
-    }
-
-    _postLocations = function postLocations(tripId, selectedLocations): ThunkResult<void> {
-        return function(dispatch, getState, extraArgument) {
-            // call API to import locations and images
-            var url = '/trips/' + tripId +'/locations';
-            console.log(`fetch: ${url}`)
-            extraArgument.api
-            .post(url, selectedLocations)
-            .then((res) => {
-                console.log("import trip succeeded")
-                console.log('result after import trip: ',res.data);      
-                dispatch(importSelectedLocations(tripId, res.data.locations));
-                // this.setState({ UIState: "import images" })
-            })
-            .catch(function (error) {
-                // console.log(JSON.stringify(error));
-                if (error.response) {
-                  // The request was made and the server responded with a status code
-                  // that falls out of the range of 2xx
-                //   console.log(error.response.data);
-                  console.log(error.response.status);
-                  console.log(error.response.headers);
-                } else if (error.request) {
-                  // The request was made but no response was received
-                  // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                  // http.ClientRequest in node.js
-                  console.log(error.request);
-                } else {
-                  // Something happened in setting up the request that triggered an Error
-                  console.log('Error', error.message);
-                }
-                console.log(error.config);
-              });  
-            
-            return 
-        }
-    }
-
-    _uploadImage = function uploadImage(tripId, dateIdx, locationId, imageId, imgUrl): ThunkResult<Promise<any>> {
-        return async function(dispatch) {
-            console.log(`imge url: ${imgUrl}`)
-            var additionalData = {
-                locationId,
-                imageId,
-                fileName: imgUrl,
-            }
-
-            var url = '/trips/' + tripId +'/uploadImage';
-
-            return uploadFileApi.upload(url, imgUrl, additionalData)
-            .then((res) => {
-                //console.log('result after upload image: ' + JSON.stringify(res));
-                //console.log('result after upload image: ' + JSON.stringify(res.data));
-                var { externalId, thumbnailExternalUrl } = JSON.parse(res.response);      
-
-                dispatch(uploadedImage(tripId, dateIdx, locationId, imageId, externalId, thumbnailExternalUrl))
-                //todo replace by stop on error
-            })
-            .catch((err) => {
-                console.log('error after import trip: ' + JSON.stringify(err));
-            });
-
-            // return api
-            // .post(url, data)
-            // .then((res) => {
-            //     console.log('result after upload image: ' + JSON.stringify(res.data));
-            //     var externalStorageId: string = res.data;      
-            //     dispatch(uploadedImage(tripId, locationId, imageId, externalStorageId))
-
-            // })
-            // .catch((err) => {
-            //     console.log('error after import trip: ' + JSON.stringify(err));
-            // });   
-
-            // var externalStorageId = uuid1();
-            // return dispatch(uploadedImage(tripId, locationId, imageId, externalStorageId))
-        }
+        this.props.addLocations(this.state.tripId, selectedLocations)
+        .then(() => {
+            this.setState({ UIState: "import images" });
+        })
     }
     
-    _renderItem = (itemInfo) => {
+    private _renderItem = (itemInfo) => {
         var location: TripImportLocationVM = itemInfo.item;
         var locIdx: number = itemInfo.index;
 
@@ -361,7 +287,7 @@ class TripImportation extends Component<Props, State> {
                 console.log("component will update with uploading image");
 
 
-                this.props.dispatch(this._uploadImage(this.state.tripId, dateIdx, locId, imageIdToUpload, imageUrlToUpload))
+                this.props.uploadLocationImage(this.state.tripId, dateIdx, locId, imageIdToUpload, imageUrlToUpload)
                 .then(() => {
                     this.setState({UIState: "import images"});
                 })
@@ -436,10 +362,11 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
     };
 };
 
-function mapDispatchToProps(dispatch) {
+const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     return {
-        dispatch, //https://stackoverflow.com/questions/36850988/this-props-dispatch-not-a-function-react-redux
-        importSelectedLocations
+        // dispatch, //https://stackoverflow.com/questions/36850988/this-props-dispatch-not-a-function-react-redux
+        addLocations: (tripId, selectedLocations) => dispatch(addLocations(tripId, selectedLocations)),
+        uploadLocationImage: (tripId, dateIdx, locationId, imageId, imgUrl) => dispatch(uploadLocationImage(tripId, dateIdx, locationId, imageId, imgUrl)),
     }
 };
 

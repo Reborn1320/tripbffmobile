@@ -82,6 +82,7 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
             
             if (!result.hasNextPage) break;
         }
+        console.log("photos", photos[0]);
 
         return photos;
         // return _.orderBy(photos, 'timestamp', 'desc')

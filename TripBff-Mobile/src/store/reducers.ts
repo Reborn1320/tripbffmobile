@@ -20,6 +20,7 @@ import { LOCATION_REMOVE,
          ImageActions,
 } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
+import { AppStateIOS } from 'react-native';
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -80,7 +81,7 @@ function imageReducer(state: StoreData.ImportImageVM, action: ImageActions) {
     console.log('     + location image reducer: ', action.type);
 
     switch(action.type) {
-        case "TRIP_LOCATION_IMAGE_UPLOADED":
+        case "TRIP_LOCATION_IMAGE_UPLOAD":
             return {
                 ...state,
                 externalStorageId: action.externalStorageId,
@@ -91,6 +92,12 @@ function imageReducer(state: StoreData.ImportImageVM, action: ImageActions) {
                 ...state,
                 isFavorite: action.isFavorite
             }
+        // case "TRIP_LOCATION_IMAGE_PATCH":
+        //     let newState = state;
+        //     if (action.externalUrl) newState.externalUrl = action.externalUrl;
+        //     if (action.thumbnailExternalUrl) newState.thumbnailExternalUrl = action.thumbnailExternalUrl;
+        //     if (action.externalStorageId) newState.externalStorageId = action.externalStorageId;
+        //     return newState;
         default: 
             return state;
     }
@@ -128,6 +135,18 @@ function locationReducer(state: StoreData.LocationVM, action: LocationActions) {
             return {
                 ...state,
                 description: action.description
+            };
+        case "TRIP_LOCATION_IMAGE_ADD": 
+            const newImage = {
+                imageId: action.imageId,
+                url: action.url,
+                time: action.time,
+                isFavorite: false,
+            }
+            //todo: sorting
+            return {
+                ...state,
+                images: [...state.images, newImage ]
             };
         //TODO: upload images
         case LOCATION_UPDATE_IMAGES:
@@ -190,10 +209,21 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
               });              
         case IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS:
             const { locations } = action;
+            const mappedLocations: StoreData.LocationVM[] = locations.map(loc => ({
+                ...loc,
+                images: loc.images.map(im => ({
+                    ...im,
+                    externalUrl: "",
+                    thumbnailExternalUrl: "",
+                    isFavorite: false,
+                }))
+
+            }));
+            
             return {
                 ...state,
-                locations,
-                dates: getDatesProperty(state.fromDate, state.toDate, locations)
+                locations, //todo: remove this property
+                dates: getDatesProperty(state.fromDate, state.toDate, mappedLocations)
             }
         case TRIP_UPDATE_DATE_RANGE:
             return {

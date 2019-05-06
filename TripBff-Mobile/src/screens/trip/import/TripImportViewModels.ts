@@ -1,5 +1,5 @@
 
-import moment from "moment";
+import moment, { Moment } from "moment";
 export interface TripImportLocationVM {
   id: string,
   name: string,
@@ -7,12 +7,13 @@ export interface TripImportLocationVM {
   fromTime: moment.Moment
   toTime: moment.Moment
 
-  images: Array<TripImportImageVM>
+  images: TripImportImageVM[]
 }
 
 export interface TripImportImageVM {
   imageId: string,
   url: string, //url stored in local mobile
+  time: Moment,
   externalStorageId?: string,
   isSelected: boolean
 }

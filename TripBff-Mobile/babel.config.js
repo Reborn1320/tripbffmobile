@@ -8,7 +8,8 @@ module.exports = {
   ],
   "env": {
     "development": {
-      "plugins": [        
+      "plugins": [
+        '@babel/transform-flow-strip-types',
         "@babel/plugin-transform-react-jsx-source",
         '@babel/plugin-transform-runtime'
       ]
