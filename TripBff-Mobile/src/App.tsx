@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import axiosMiddleware from "redux-axios-middleware";
 
 import { Root } from "native-base";
-import { createStackNavigator, createAppContainer, createSwitchNavigator } from "react-navigation";
+import { createStackNavigator, createAppContainer, createSwitchNavigator, createTabNavigator } from "react-navigation";
 
 import HomeScreen from "./screens/home/index";
 import TripDetailScreenContainer from "./screens/trip/detail/TripDetailScreenContainer";
@@ -101,6 +101,7 @@ const TestComponentNavigator = createStackNavigator(
   }
 );
 
+
 const AppNavigator = createSwitchNavigator(
   {
     Login: { screen: LoginScreen },
@@ -111,7 +112,7 @@ const AppNavigator = createSwitchNavigator(
     Home: { screen: HomeScreen },   
   },
   {
-    initialRouteName: "Profile",
+    initialRouteName: "Login",
   });
 
 let Navigation = createAppContainer(AppNavigator);

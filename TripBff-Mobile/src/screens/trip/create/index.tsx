@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Text, View } from 'native-base';
+import { Container, Header, Content, Text, View, Footer } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import { connect } from "react-redux";
 import { createTrip } from './actions';
@@ -8,6 +8,8 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import { TripCreationForm } from "./TripCreationForm";
 import { createTrip as createTripAsync } from "../../../store/Trip/operations";
 import { loginUsingUserPass } from "../../../store/User/operations";
+import AppFooter from "../../shared/AppFooter"
+import { NavigationConstants } from "../../_shared/ScreenConstants";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
   user: StoreData.UserVM
@@ -54,6 +56,9 @@ class TripCreation extends Component<Props, any> {
         <Content>
           <TripCreationForm createTrip={this.props.createTripAsync} onTripCreated={this.onTripCreated} />
         </Content>
+        <Footer>
+          <AppFooter navigation={this.props.navigation} activeScreen={NavigationConstants.Screens.TripCreation} />
+        </Footer>
       </Container>
     );
   }
