@@ -58,10 +58,10 @@ import {
     }
 
     componentDidMount() {
-        this.getInfographic();
+        this._getInfographic();
     }
 
-    getInfographic() {
+    private _getInfographic = () => {
       console.log('tripId: ' + this.props.tripId);
 
         tripApi
@@ -96,7 +96,7 @@ import {
         });
     }
 
-    sharePhotoWithShareDialog() {
+    private _sharePhotoWithShareDialog = () => {
         var tmp = this;
 
         AccessToken.getCurrentAccessToken().then(
@@ -132,7 +132,7 @@ import {
                           "Login success with permissions: " +
                             result.grantedPermissions.toString()
                         );
-                        tmp.sharePhotoWithShareDialog();
+                        tmp._sharePhotoWithShareDialog();
                       }
                     },
                     function(error) {
@@ -144,16 +144,34 @@ import {
         );    
       }
 
+    private _cancel = () => {
+      this.props.navigation.navigate(NavigationConstants.Screens.Profile)
+    }
+
     render() {
         return (
           <Container>
-            <Header />
+            <Header style={{
+                        justifyContent: "space-between", alignItems: "stretch", padding: 0,
+                        shadowColor: "black", elevation: 10,
+                        backgroundColor: "white"
+                    }}>
+                  <Button transparent style={{
+                            alignSelf: "stretch", margin: 6,
+                        }}
+                    onPress={this._cancel}>
+                     <Text style={{ color: "grey" }}>Cancel</Text>
+                  </Button>
+
+                  <Button transparent style={{
+                            alignSelf: "stretch", margin: 6,
+                        }}
+                    onPress={this._sharePhotoWithShareDialog}>
+                     <Text style={{ color: "blue" }}> Share to Facebook</Text>
+                  </Button>
+            </Header>
             <Content>
               <View>             
-                  <Button style={{ margin: 10 }}
-                    onPress={() => this.sharePhotoWithShareDialog()}>
-                     <Text> Share on Facebook</Text>
-                  </Button>
                 <Text style={{ margin: 10 }}>Preview infographic:</Text>
                 <Image
                     source={{
