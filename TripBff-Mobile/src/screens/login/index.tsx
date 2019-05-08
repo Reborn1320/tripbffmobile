@@ -8,8 +8,9 @@ import {
 import { ThunkDispatch } from "redux-thunk";
 import { PropsBase } from "../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
-
 import { loginUsingUserPass } from "../../store/User/operations";
+import DeviceInfo from 'react-native-device-info';
+
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
   navigation: RNa.NavigationScreenProp<any, any>;
@@ -80,6 +81,10 @@ class Login extends Component<Props, any>{
 
   //todo move LoginButton to atoms
   render() {
+
+    const uniqueId = DeviceInfo.getUniqueID();
+    console.log('unique device Id: ' + uniqueId);
+    
     return (
       <Container>
         <Content
