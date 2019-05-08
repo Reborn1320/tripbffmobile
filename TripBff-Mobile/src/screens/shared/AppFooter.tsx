@@ -48,7 +48,7 @@ export default class AppFooter extends Component<Props, any> {
           <Icon name="person" />
           <Text>Profile</Text>
         </Button>
-        <Button
+        {/* <Button
           vertical
           active={this.props.activeScreen === NavigationConstants.Screens.TripsInfographicPreivew}
           onPress={() =>
@@ -59,6 +59,18 @@ export default class AppFooter extends Component<Props, any> {
         >
           <Icon type="FontAwesome" name="eye" />
           <Text>Preview</Text>
+        </Button> */}
+        <Button
+          vertical
+          active={this.props.activeScreen === NavigationConstants.Screens.Home}
+          onPress={() =>
+            this.props.navigation.navigate(
+              NavigationConstants.Screens.Home
+            )
+          }
+        >
+          <Icon type="FontAwesome" name="eye" />
+          <Text>Home</Text>
         </Button>
       </FooterTab>
     );

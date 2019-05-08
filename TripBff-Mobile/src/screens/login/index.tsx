@@ -1,16 +1,14 @@
 import React, { Component } from "react";
-import { Container, Content, View, Button, Text, Footer } from 'native-base';
+import { Container, Content, View, Button, Text } from 'native-base';
 import { connect, DispatchProp } from "react-redux";
 import {
   LoginButton,
   AccessToken
 } from "react-native-fbsdk";
-import { NavigationConstants } from "../_shared/ScreenConstants";
 import { ThunkDispatch } from "redux-thunk";
 import { PropsBase } from "../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
 
-import AppFooter from "../shared/AppFooter"
 import { loginUsingUserPass } from "../../store/User/operations";
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
@@ -103,9 +101,6 @@ class Login extends Component<Props, any>{
             </Button>
           </View>
         </Content>
-        <Footer>
-          <AppFooter navigation={this.props.navigation} activeScreen={NavigationConstants.Screens.Login} />
-        </Footer>
       </Container>
     );
   }

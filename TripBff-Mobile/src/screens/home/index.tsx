@@ -310,15 +310,15 @@ class Home extends React.Component<Props, any> {
               }
               onLogoutFinished={() => console.log("logout.")}
             />
-            {/* <Button style={{ margin: 5 }} onPress={() => this.requestPublishPermissions()}>
+            <Button style={{ margin: 5 }} onPress={() => this.requestPublishPermissions()}>
               <Text>Request publish permissions on FB</Text>
-            </Button> */}
-            {/* <Button style={{ margin: 5 }} onPress={() => this.shareLinkWithShareDialog()}>
+            </Button>
+            <Button style={{ margin: 5 }} onPress={() => this.shareLinkWithShareDialog()}>
               <Text>Share Link on Facebook</Text>
             </Button>
             <Button style={{ margin: 5 }} onPress={() => this.sharePhotoWithShareDialog()}>
               <Text>Share Photos on Facebook</Text>
-            </Button> */}
+            </Button>
             {/* <Button style={{ margin: 5 }} onPress={() => this.loginLocal()}>
               <Text>Login Local</Text>
             </Button> */}
@@ -331,7 +331,7 @@ class Home extends React.Component<Props, any> {
               <Text>Get Image from server</Text>
             </Button> */}
 
-            <Button style={{ margin: 5 }} onPress={() => this.getAddressFromCoordinate()}>
+            {/* <Button style={{ margin: 5 }} onPress={() => this.getAddressFromCoordinate()}>
               <Text>Mapbox - Get address from coordinate</Text>
             </Button>        
 
@@ -342,10 +342,10 @@ class Home extends React.Component<Props, any> {
                 style={{width: 400, height: 600}}
               />
 
-            <Loading message="aaaaaasdad asd asd asd asda sdas da sdas dasd as" />
+            <Loading message="aaaaaasdad asd asd asd asda sdas da sdas dasd as" /> */}
           </View>
 
-          <View style={{flex: 1}}>
+          {/* <View style={{flex: 1}}>
               <Text style={{ margin: 5 }}>Mapbox - Search Places: </Text>
               <Autocomplete
                 autoCapitalize="none"
@@ -359,9 +359,9 @@ class Home extends React.Component<Props, any> {
                   </TouchableOpacity>
                 )}
               />
-          </View>
+          </View> */}
 
-          <View style={{flex: 2}}>
+          {/* <View style={{flex: 2}}>
             <Mapbox.MapView
                 styleURL={Mapbox.StyleURL.Street}
                 zoomLevel={15}
@@ -369,7 +369,7 @@ class Home extends React.Component<Props, any> {
                 style={{ flex: 1 }}
                 >
             </Mapbox.MapView>
-          </View>
+          </View> */}
 
         </Content>
         <Footer>
@@ -401,7 +401,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 const HomeScreen = connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(Home);
 export default HomeScreen;
