@@ -15,6 +15,8 @@ import com.facebook.FacebookSdk;
 
 // Needed for `react-native link`
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.swmansion.reanimated.ReanimatedPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -39,6 +41,8 @@ public class MainApplication extends ExpoApplication implements ReactApplication
 
               // Needed for `react-native link`
               new MainReactPackage(),
+              new AsyncStoragePackage(),
+              new RNDeviceInfo(),
               new RNGestureHandlerPackage(),
               new ReanimatedPackage(),
               new VectorIconsPackage(),
@@ -70,6 +74,8 @@ public class MainApplication extends ExpoApplication implements ReactApplication
         //**  ADD THE FOLLOWING LINE **//
         //new RNGestureHandlerPackage(),
         //new ReanimatedPackage(),
+        new AsyncStoragePackage(),
+        new RNDeviceInfo(),
         new VectorIconsPackage(),
         new RNFSPackage(),
         new RCTMGLPackage(),

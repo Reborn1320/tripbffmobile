@@ -8,8 +8,11 @@ import {
 import { ThunkDispatch } from "redux-thunk";
 import { PropsBase } from "../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
-
 import { loginUsingUserPass } from "../../store/User/operations";
+import DeviceInfo from 'react-native-device-info';
+const uuidv4 = require('uuid/v4');
+import AsyncStorage from "@react-native-community/async-storage";
+
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
   navigation: RNa.NavigationScreenProp<any, any>;
@@ -78,8 +81,61 @@ class Login extends Component<Props, any>{
       });
   }
 
+  private _storeDataIntoStorage = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, value)
+    } catch (e) {
+      // saving error
+    }
+
+    console.log('Done store data');
+  }
+
+  private _getDataFromStorage = async (key) => {
+    let value = '';
+
+    try {
+      value = await AsyncStorage.getItem(key)
+    } catch(e) {
+      // error reading value
+    }
+
+    console.log('Done get data');
+
+    return value;
+  }
+
+  removeValue = async (key) => {
+    try {
+      await AsyncStorage.removeItem(key)
+    } catch(e) {
+      // remove error
+    }
+  
+    console.log('Done remove data.')
+  }
+
+  private _loginUniqueDevice = async () => {    
+    let key = "uniqueDeviceUUID";
+    let uniqueDeviceUuid = await this._getDataFromStorage(key);
+
+    if (!uniqueDeviceUuid) {
+      uniqueDeviceUuid = uuidv4();
+      await this._storeDataIntoStorage(key, uniqueDeviceUuid);
+    } 
+
+    console.log('uuid: ' + uniqueDeviceUuid);
+
+    var postUser = {
+      email: uniqueDeviceUuid.toString(),
+      password: uniqueDeviceUuid.toString()
+    };
+    this.loginDetails(postUser.email, postUser.password);
+  }
+
   //todo move LoginButton to atoms
   render() {
+    
     return (
       <Container>
         <Content
@@ -97,7 +153,11 @@ class Login extends Component<Props, any>{
               onLogoutFinished={() => console.log("logout.")}
             />
             <Button style={{ margin: 5 }} onPress={() => this.loginLocal()}>
-              <Text>Continue without logging in</Text>
+              <Text>[Local] Continue without logging in</Text>
+            </Button>
+
+            <Button style={{ margin: 5 }} onPress={this._loginUniqueDevice}>
+              <Text>[Unique Device] Continue without logging in</Text>
             </Button>
           </View>
         </Content>
