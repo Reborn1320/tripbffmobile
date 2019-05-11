@@ -13,6 +13,7 @@ const baseClient = mbxClient({ accessToken: 'pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFt
 const geoCodingService = mbxGeocoding(baseClient);
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from "moment";
+import SearchLocation from '../../../_molecules/Trip/SearchLocationComponent';
 
 export interface Props {
   isVisible: boolean;
@@ -115,27 +116,26 @@ class AddLocationModalComponent extends React.Component<Props, State> {
     });
   }
 
-  _onSelectedLocation = (item) => {
+  _selectedLocationHandler = (name, address, long, lat) => {
     this.setState({ 
-      query: item.placeName,
-      address: item.address,
-      long: item.long,
-      lat: item.lat,
-      places: [] })
+      query: name,
+      address: address,
+      long: long,
+      lat: lat})
   }
 
-  _renderItem = (item) => {
-    var placeAddress =  item.address.replace(item.placeName + ',', '');
+  // _renderItem = (item) => {
+  //   var placeAddress =  item.address.replace(item.placeName + ',', '');
 
-    return (
-        <TouchableOpacity onPress={() => this._onSelectedLocation(item)}>
-          <View style={styles.listViewContainer}>
-            <Text numberOfLines={1} style={styles.placeNameText}>{item.placeName}</Text>
-            <Text numberOfLines={1} style={styles.addressText}>{placeAddress}</Text>
-          </View>          
-        </TouchableOpacity>
-      )
-  }
+  //   return (
+  //       <TouchableOpacity onPress={() => this._onSelectedLocation(item)}>
+  //         <View style={styles.listViewContainer}>
+  //           <Text numberOfLines={1} style={styles.placeNameText}>{item.placeName}</Text>
+  //           <Text numberOfLines={1} style={styles.addressText}>{placeAddress}</Text>
+  //         </View>          
+  //       </TouchableOpacity>
+  //     )
+  // }
 
   render() {
     const { isVisible } = this.props;
@@ -163,16 +163,9 @@ class AddLocationModalComponent extends React.Component<Props, State> {
                 </View>
                 <View style={styles.placesContainer}>
                   <Text>Search Places: </Text>
-                  <Autocomplete                    
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    defaultValue={this.state.query}
-                    data={this.state.places}
-                    onChangeText={text => this.searchPlaces(text)}
-                    inputContainerStyle={styles.inputContainerStyle}
-                    listStyle={styles.listStyle}
-                    renderItem={this._renderItem}
-                  />
+                  <SearchLocation 
+                    confirmHandler={this._selectedLocationHandler}>
+                  </SearchLocation>
               </View>
             </View>
         </RNModal>

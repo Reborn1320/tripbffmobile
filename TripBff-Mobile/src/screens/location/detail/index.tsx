@@ -189,7 +189,7 @@ class LocationDetail extends React.Component<Props, State> {
                 }
                 </Header>
                 <View style={{ flex: 1 }}>
-                    <ScrollView>
+                    <ScrollView keyboardShouldPersistTaps={'handled'}>
                         <LocationContent
                             address={this.props.address}
                             name={this.props.name}
@@ -207,6 +207,7 @@ class LocationDetail extends React.Component<Props, State> {
                             openUpdateLocationHighlightModalHanlder={this._openUpdateLocationHighlightModal}
                             openUpdateLocationDescriptionModalHandler={this._openUpdateLocationDescriptionModal}>
                         </LocationContent>
+                    </ScrollView>
                         <LocationModal
                             long={this.props.long}
                             lat={this.props.lat}
@@ -226,7 +227,6 @@ class LocationDetail extends React.Component<Props, State> {
                             description={this.props.description}
                             >
                         </LocationModal>
-                    </ScrollView>
                 </View>
                 <View
                     style={{ position: "absolute", bottom: 20, right: 20 }}>

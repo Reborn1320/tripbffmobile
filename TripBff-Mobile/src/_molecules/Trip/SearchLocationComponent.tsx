@@ -3,14 +3,9 @@
 
 import * as React from "react";
 import { View, Text } from "native-base";
-import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle, Dimensions } from "react-native";
+import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle } from "react-native";
 import { connectStyle } from 'native-base';
 import  Autocomplete  from "react-native-autocomplete-input";
-
-const mbxClient = require('@mapbox/mapbox-sdk');
-const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
-const baseClient = mbxClient({ accessToken: 'pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g' });
-const geoCodingService = mbxGeocoding(baseClient);
 
 export interface Props {
   confirmHandler: (name, address, long, lat) => void;
@@ -37,26 +32,52 @@ class SearchLocationComponent extends React.Component<Props, State> {
     };    
   }
 
+  getAddressFromLocation(locationJson) {
+    let address = "";
+
+    if (locationJson.address) {
+        let houseNumber = locationJson.address.house_number,
+            road = locationJson.address.road,
+            suburb = locationJson.address.suburb,
+            county = locationJson.address.county,
+            city = locationJson.address.city,
+            country = locationJson.address.country;
+
+        if (houseNumber) address = houseNumber
+        if (road) address = address ? address + ', ' + road : road;
+        if (suburb) address = address ? address + ', ' + suburb : suburb;
+        if (county) address = address ? address + ', ' + county : county;
+        if (city)  address = address ? address + ', ' + city : city;
+        if (country) address = address ? address + ', ' + country : country;         
+    }
+    else
+        address = locationJson.display_name;
+
+    return address;
+}
+
   searchPlaces(query){
-    geoCodingService.forwardGeocode({
-      query: query,
-      countries: ['vn']
-    })
-    .send()
-    .then(response => {
-      const match = response.body;
-      //console.log('Places result: ' + JSON.stringify(match.features));
-      var places = match.features.map((place) => {
-        return {
-          placeName: place.text,
-          address: place.place_name,
-          id: place.id,
-          long: place.geometry.coordinates[0],
-          lat: place.geometry.coordinates[1]
-        };
-      });
-      this.setState({places: places});
-    });
+    var url = 'https://nominatim.openstreetmap.org/search?q=' + query +
+                 '&format=jsonv2&addressdetails=1&namedetails=1&countrycodes=vn';
+
+    return fetch(url)
+            .then((response) => response.json())
+            .then((jsonPlaces) => {
+                let places = jsonPlaces.map(place => {
+                  return {
+                    placeName: place.namedetails.name,
+                    address: this.getAddressFromLocation(place),
+                    id: place.place_id,
+                    long: parseFloat(place.lon),
+                    lat: parseFloat(place.lat)
+                  }
+                });
+   
+                this.setState({places: places});
+            })
+            .catch((error) => {
+                console.error(error);
+            });
   }
  
   _onSelectedLocation(item) {
@@ -68,6 +89,16 @@ class SearchLocationComponent extends React.Component<Props, State> {
         places: [] 
     });
     this.props.confirmHandler(item.placeName, item.address, item.long, item.lat);
+  }
+
+  _clearInputData = () => {
+    this.setState({
+        places: [],
+        query: '',
+        address: '',
+        long: 0,
+        lat: 0,
+    });
   }
 
   _renderItem = (item) => {
