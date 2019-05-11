@@ -8,7 +8,7 @@ import {
 import { ThunkDispatch } from "redux-thunk";
 import { PropsBase } from "../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
-import { loginUsingUserPass } from "../../store/User/operations";
+import { loginUsingUserPass, loginUsingFacebookAccessToken } from "../../store/User/operations";
 import DeviceInfo from 'react-native-device-info';
 const uuidv4 = require('uuid/v4');
 import AsyncStorage from "@react-native-community/async-storage";
@@ -40,33 +40,41 @@ class Login extends Component<Props, any>{
         console.log(data.accessToken.toString());
         console.log("getCurrentAccessToken data", data);
 
-        const access_token = data.accessToken;
-        const user_id = data.userID;
-        //todo login using `facebook/verify` withc `access_token` and `user_id`
+        this.loginFacebookAccess(data.accessToken, data.userID);
 
-        //todo user axios instead of fetch
-        const responseBasicUser = fetch(`https://graph.facebook.com/me?fields=id,name,first_name,last_name&access_token=${data.accessToken}`);
-        responseBasicUser
-          .then((response) => response.json())
-          .then((json) => {
-            console.log("user data from graph", json);
-            var user = {
-              // Some user object has been set up somewhere, build that user here
-              email: json.email ? json.email : json.id,
-              password: '123456',
-              username: json.name,
-              lastName: "",
-              firstName: "",
-              fullName: json.name
-            };
-            console.log(user);
-            tmp.loginDetails(user.email, user.password);
-          })
-          .catch(() => {
-            console.log('ERROR GETTING DATA FROM FACEBOOK');
-          });
+        // //todo user axios instead of fetch
+        // const responseBasicUser = fetch(`https://graph.facebook.com/me?fields=id,name,first_name,last_name&access_token=${data.accessToken}`);
+        // responseBasicUser
+        //   .then((response) => response.json())
+        //   .then((json) => {
+        //     console.log("user data from graph", json);
+        //     var user = {
+        //       // Some user object has been set up somewhere, build that user here
+        //       email: json.email ? json.email : json.id,
+        //       password: '123456',
+        //       username: json.name,
+        //       lastName: "",
+        //       firstName: "",
+        //       fullName: json.name
+        //     };
+        //     console.log(user);
+        //     tmp.loginDetails(user.email, user.password);
+        //   })
+        //   .catch(() => {
+        //     console.log('ERROR GETTING DATA FROM FACEBOOK');
+        //   });
       });
     }
+  }
+
+  loginFacebookAccess(facebookUserId, accessToken, isMoveToCreate = true) {
+    return this.props
+      .dispatch<Promise<any>>(loginUsingFacebookAccessToken(facebookUserId, accessToken))
+      .then(() => {
+        if (isMoveToCreate) {
+          this.props.navigation.navigate("TripCreation");
+        }
+      });
   }
 
 

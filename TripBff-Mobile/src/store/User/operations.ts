@@ -12,10 +12,41 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
 
     return extraArguments.loginApiService.post("local/login", { data: loginUser })
     .then(res => {
-      console.log("user info", res.data);
-      // store token into Store
-      console.log("token " + res.data.token);
-      const { email, token } = res.data;
+      const { user: { id, email }, token } = res.data;
+      console.log(`user info id=${id}, userName=${email}`);
+      console.log("token ", token);
+
+      const user: StoreData.UserVM = {
+        username: email,
+        lastName: "asdf",
+        firstName: "asdf",
+        fullName: "adffff",
+        email: email,
+        token: token,
+      };
+
+      dispatch(addToken(user));
+      setAuthorizationHeader(res.data.token);
+    })
+    .catch(error => {
+      console.log("error login", error);
+    });
+  };
+}
+
+export function loginUsingFacebookAccessToken(facebookUserId: string, accessToken: string): ThunkResultBase {
+  return async function(dispatch, getState, extraArguments): Promise<any> {
+    var loginUser = {
+      access_token: accessToken,
+      user_id: facebookUserId
+    };
+
+    return extraArguments.loginApiService.post("facebook/verify", { data: loginUser })
+    .then(res => {
+      const { user: { id, email }, token } = res.data;
+      console.log(`user info id=${id}, userName=${email}`);
+      console.log("token ", token);
+
       const user: StoreData.UserVM = {
         username: email,
         lastName: "asdf",
