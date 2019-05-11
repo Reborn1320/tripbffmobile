@@ -36,13 +36,20 @@ class Login extends Component<Props, any>{
       console.log("login is cancelled.");
     } else {
       AccessToken.getCurrentAccessToken().then(data => {
+
         console.log(data.accessToken.toString());
+        console.log("getCurrentAccessToken data", data);
+
+        const access_token = data.accessToken;
+        const user_id = data.userID;
+        //todo login using `facebook/verify` withc `access_token` and `user_id`
 
         //todo user axios instead of fetch
-        const responseBasicUser = fetch(`https://graph.facebook.com/me?fields=email,name&access_token=${data.accessToken}`);
+        const responseBasicUser = fetch(`https://graph.facebook.com/me?fields=id,name,first_name,last_name&access_token=${data.accessToken}`);
         responseBasicUser
           .then((response) => response.json())
           .then((json) => {
+            console.log("user data from graph", json);
             var user = {
               // Some user object has been set up somewhere, build that user here
               email: json.email ? json.email : json.id,
