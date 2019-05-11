@@ -87,28 +87,6 @@ class AddLocationModalComponent extends React.Component<Props, State> {
     this._hideDateTimePicker();
   };
 
-  searchPlaces(query){
-    geoCodingService.forwardGeocode({
-      query: query,
-      countries: ['vn']
-    })
-    .send()
-    .then(response => {
-      const match = response.body;
-      console.log('Places result: ' + JSON.stringify(match.features));
-      var places = match.features.map((place) => {
-        return {
-          placeName: place.text,
-          address: place.place_name,
-          id: place.id,
-          long: place.geometry.coordinates[0],
-          lat: place.geometry.coordinates[1]
-        };
-      });
-      this.setState({places: places});
-    });
-  }
-
   onModalHide() {
     this.setState({
       places: [],
@@ -124,22 +102,9 @@ class AddLocationModalComponent extends React.Component<Props, State> {
       lat: lat})
   }
 
-  // _renderItem = (item) => {
-  //   var placeAddress =  item.address.replace(item.placeName + ',', '');
-
-  //   return (
-  //       <TouchableOpacity onPress={() => this._onSelectedLocation(item)}>
-  //         <View style={styles.listViewContainer}>
-  //           <Text numberOfLines={1} style={styles.placeNameText}>{item.placeName}</Text>
-  //           <Text numberOfLines={1} style={styles.addressText}>{placeAddress}</Text>
-  //         </View>          
-  //       </TouchableOpacity>
-  //     )
-  // }
-
   render() {
     const { isVisible } = this.props;
-    //console.log('add location modal selected date : ' + this.props.date);
+
     return (
         <RNModal style={styles.modal} 
             isVisible={isVisible} hideModalContentWhileAnimating 
