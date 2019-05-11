@@ -13,6 +13,7 @@ const baseClient = mbxClient({ accessToken: 'pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFt
 const geoCodingService = mbxGeocoding(baseClient);
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from "moment";
+import SearchLocation from '../../../_molecules/Trip/SearchLocationComponent';
 
 export interface Props {
   isVisible: boolean;
@@ -86,28 +87,6 @@ class AddLocationModalComponent extends React.Component<Props, State> {
     this._hideDateTimePicker();
   };
 
-  searchPlaces(query){
-    geoCodingService.forwardGeocode({
-      query: query,
-      countries: ['vn']
-    })
-    .send()
-    .then(response => {
-      const match = response.body;
-      console.log('Places result: ' + JSON.stringify(match.features));
-      var places = match.features.map((place) => {
-        return {
-          placeName: place.text,
-          address: place.place_name,
-          id: place.id,
-          long: place.geometry.coordinates[0],
-          lat: place.geometry.coordinates[1]
-        };
-      });
-      this.setState({places: places});
-    });
-  }
-
   onModalHide() {
     this.setState({
       places: [],
@@ -115,31 +94,17 @@ class AddLocationModalComponent extends React.Component<Props, State> {
     });
   }
 
-  _onSelectedLocation = (item) => {
+  _selectedLocationHandler = (name, address, long, lat) => {
     this.setState({ 
-      query: item.placeName,
-      address: item.address,
-      long: item.long,
-      lat: item.lat,
-      places: [] })
-  }
-
-  _renderItem = (item) => {
-    var placeAddress =  item.address.replace(item.placeName + ',', '');
-
-    return (
-        <TouchableOpacity onPress={() => this._onSelectedLocation(item)}>
-          <View style={styles.listViewContainer}>
-            <Text numberOfLines={1} style={styles.placeNameText}>{item.placeName}</Text>
-            <Text numberOfLines={1} style={styles.addressText}>{placeAddress}</Text>
-          </View>          
-        </TouchableOpacity>
-      )
+      query: name,
+      address: address,
+      long: long,
+      lat: lat})
   }
 
   render() {
     const { isVisible } = this.props;
-    //console.log('add location modal selected date : ' + this.props.date);
+
     return (
         <RNModal style={styles.modal} 
             isVisible={isVisible} hideModalContentWhileAnimating 
@@ -163,16 +128,9 @@ class AddLocationModalComponent extends React.Component<Props, State> {
                 </View>
                 <View style={styles.placesContainer}>
                   <Text>Search Places: </Text>
-                  <Autocomplete                    
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    defaultValue={this.state.query}
-                    data={this.state.places}
-                    onChangeText={text => this.searchPlaces(text)}
-                    inputContainerStyle={styles.inputContainerStyle}
-                    listStyle={styles.listStyle}
-                    renderItem={this._renderItem}
-                  />
+                  <SearchLocation 
+                    confirmHandler={this._selectedLocationHandler}>
+                  </SearchLocation>
               </View>
             </View>
         </RNModal>

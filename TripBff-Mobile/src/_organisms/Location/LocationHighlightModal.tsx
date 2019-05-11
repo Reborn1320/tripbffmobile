@@ -144,7 +144,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
     return (
        <View style={this.props.styles}>
            <View>
-            <FlatList             
+            <FlatList keyboardShouldPersistTaps={'handled'}            
                 style={{marginVertical: 20}}
                 data={this.state.selectedItems}
                 keyExtractor={this._keySelectedExtractor}
@@ -160,7 +160,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
               />
           </View>
           <View style={{flex: 1}}>
-            <FlatList             
+            <FlatList keyboardShouldPersistTaps={'handled'}            
               style={{flex: 1, marginVertical: 20}}
               data={this.state.preDefinedItems}
               keyExtractor={this._keyExtractor}
