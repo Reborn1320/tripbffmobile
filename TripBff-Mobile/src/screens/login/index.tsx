@@ -40,7 +40,7 @@ class Login extends Component<Props, any>{
         console.log(data.accessToken.toString());
         console.log("getCurrentAccessToken data", data);
 
-        this.loginFacebookAccess(data.accessToken, data.userID);
+        this.loginFacebookAccess(data.userID, data.accessToken);
 
         // //todo user axios instead of fetch
         // const responseBasicUser = fetch(`https://graph.facebook.com/me?fields=id,name,first_name,last_name&access_token=${data.accessToken}`);

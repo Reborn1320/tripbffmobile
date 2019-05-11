@@ -7,11 +7,13 @@ import AppFooter from "../shared/AppFooter";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import { PropsBase } from "../_shared/LayoutContainer";
 import { StoreData } from "../../store/Interfaces";
+import { AccessToken } from "react-native-fbsdk";
 
 export interface IStateProps { }
 
 interface IMapDispatchToProps {
     loginUsingUserPass: (email: string, password: string) => Promise<any>;
+    loginUsingFacebookAccessToken: (userId: string, accessToken: string) => Promise<any>;
     fetchTrips: () => Promise<any>;
     addTrips: (trips: Array<StoreData.TripVM>) => void;
 }
@@ -41,13 +43,26 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     }
 
     componentWillMount() {
-        //dispatch redux-thunk login
-        this.props.loginUsingUserPass("aaa", "bbb").then(() => {
-            this.setState({
-                loadingMessage: "loading trips belong to this user",
-                UIState: "LOADING_TRIP"
+      AccessToken.getCurrentAccessToken().then(data => {
+          if (data) {
+            this.props.loginUsingFacebookAccessToken(data.userID, data.accessToken).then(() => {
+                this.setState({
+                    loadingMessage: "loading trips belong to this user",
+                    UIState: "LOADING_TRIP"
+                });
             });
-        });
+          }
+          else {
+            //dispatch redux-thunk login
+            this.props.loginUsingUserPass("aaa", "bbb").then(() => {
+                this.setState({
+                    loadingMessage: "loading trips belong to this user",
+                    UIState: "LOADING_TRIP"
+                });
+            });
+          }
+      });
+      
     }
 
     componentDidUpdate() {

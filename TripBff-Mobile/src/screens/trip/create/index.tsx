@@ -30,7 +30,7 @@ class TripCreation extends Component<Props, any> {
   }
 
   componentWillMount() {
-    this.props.loginUsingUserPass("aaa", "bbb");
+    // this.props.loginUsingUserPass("aaa", "bbb");
   }
 
   setDate(newDate) {
