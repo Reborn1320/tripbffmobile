@@ -62,7 +62,7 @@ class TripCreation extends Component<Props, any> {
       </Container>
     );
   }
-}``
+}
 
 const mapDispatchToProps = dispatch => {
   return {

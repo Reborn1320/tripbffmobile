@@ -74,7 +74,9 @@ export module StoreData {
         fullName: string
 
         token: string,
-        fbToken?: string
+        facebook?: {
+            accessToken
+        }
         //TODO: expired time...
     }
 
