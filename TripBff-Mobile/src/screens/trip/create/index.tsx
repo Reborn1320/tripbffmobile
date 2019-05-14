@@ -6,7 +6,7 @@ import { createTrip } from './actions';
 import moment, { Moment } from "moment";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { TripCreationForm } from "./TripCreationForm";
-import { createTrip as createTripAsync } from "../../../store/Trip/operations";
+import { createTrip as createTripAsync, updateTrip } from "../../../store/Trip/operations";
 import { loginUsingUserPass } from "../../../store/User/operations";
 import AppFooter from "../../shared/AppFooter"
 import { NavigationConstants } from "../../_shared/ScreenConstants";
@@ -53,7 +53,8 @@ class TripCreation extends Component<Props, any> {
 
 const mapDispatchToProps = dispatch => {
   return {
-    createTripAsync: (name, fromDate, toDate) => dispatch(createTripAsync(name, fromDate, toDate))
+    createTripAsync: (name, fromDate, toDate) => dispatch(createTripAsync(name, fromDate, toDate)),
+    updateTrip: (tripId, name, fromDate, toDate) => dispatch(updateTrip(tripId, name, fromDate, toDate))
   }
 };
 

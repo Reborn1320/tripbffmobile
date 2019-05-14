@@ -146,9 +146,9 @@ export function updateTrip(tripId: string,name: string, fromDate: Moment, toDate
   return async function (dispatch, getState, extraArguments): Promise<any> {
 
     var data = {
-      tripId, name, fromDate, toDate
+      name, fromDate, toDate
     }
-    return extraArguments.tripApiService.patch('/trips', { data })
+    return extraArguments.tripApiService.patch('/trips/' + tripId, { data })
     .then((res) => {
        dispatch(updateTripAction(tripId, name, fromDate, toDate));
     })

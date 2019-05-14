@@ -25,10 +25,10 @@ export class TripCreationForm extends Component<Props, any> {
         toDate = moment(this.state.toDate).endOf('day');
 
     if (tripId) {
-      console.log('tripId: ' + tripId);
+      console.log('update trip: ');
       this.props.updateTrip(tripId, tripName, fromDate, toDate)
       .then(() => {
-        this.props.onTripCreatedUpdatedHandler(this.state.tripId, this.state.name);
+        this.props.onTripCreatedUpdatedHandler(tripId, tripName);
       });       
     }
     else {
