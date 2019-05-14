@@ -4,6 +4,7 @@ import { TripImportLocationVM , TripImportImageVM} from "../TripImportViewModels
 import ImageList, { calculateImageListWidth, N_ITEMS_PER_ROW } from "../../../../_molecules/ImageList/ImageList";
 import { ImageSelection } from "../../../../_molecules/ImageList/ImageSelection";
 import { Image } from "react-native";
+import moment, { Moment } from "moment";
 
 export interface Props {
     locationIdx: number,
@@ -53,6 +54,7 @@ class ImportImageLocationItem extends React.Component<Props, State> {
 
         var location: TripImportLocationVM = this.props.location;
         var locationIdx: number = this.props.locationIdx;
+        var dateOfLocation: string = moment(location.fromTime).startOf("day").format('MMM DD')
 
         return (
             <ListItem noIndent
@@ -80,7 +82,7 @@ class ImportImageLocationItem extends React.Component<Props, State> {
                         style={{ alignSelf: "stretch", marginTop: 5, paddingLeft: 5 }}
                         onPress={() => this.props.handleSelectAll(locationIdx)}
                     >
-                        {location.location.address}
+                        {dateOfLocation + " - " + location.location.address}
                     </Text>
                     <ImageList
                         items={location.images.map(img => ({ ...img, data: img }))}
