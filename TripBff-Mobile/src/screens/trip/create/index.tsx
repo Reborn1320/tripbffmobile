@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Text, View, Footer } from 'native-base';
+import { Keyboard } from "react-native";
+import { Container, Content, Footer } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import { connect } from "react-redux";
-import { createTrip } from './actions';
-import moment, { Moment } from "moment";
+import { Moment } from "moment";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { TripCreationForm } from "./TripCreationForm";
 import { createTrip as createTripAsync, updateTrip } from "../../../store/Trip/operations";
-import { loginUsingUserPass } from "../../../store/User/operations";
 import AppFooter from "../../shared/AppFooter"
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 
@@ -21,12 +20,50 @@ interface IMapDispatchToProps {
 }
 
 class TripCreation extends Component<Props, any> {
+  keyboardDidShowListener: any;
+  keyboardDidHideListener: any;
 
   static navigationOptions = ({ navigation, navigationOptions }) => {
     return {
       title: 'Create new trip'
     };
   };
+  
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isHideAppFooter: false
+    };
+  }
+
+  componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this._keyboardDidShow,
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this._keyboardDidHide,
+    );
+  }
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+
+  private _keyboardDidShow = () => {
+    this.setState({
+      isHideAppFooter: true
+    });
+  }
+
+  private _keyboardDidHide = () => {
+    this.setState({
+      isHideAppFooter: false
+    });
+  }
 
   private _onCreatedOrUpdatedHandler = (tripId, tripName) => {
     this.props.navigation.navigate(NavigationConstants.Screens.TripImport, {
@@ -42,9 +79,12 @@ class TripCreation extends Component<Props, any> {
                             updateTrip={this.props.updateTrip}
                             onTripCreatedUpdatedHandler={this._onCreatedOrUpdatedHandler} />
         </Content>
-        <Footer>
-          <AppFooter navigation={this.props.navigation} activeScreen={NavigationConstants.Screens.TripCreation} />
-        </Footer>
+        {
+          this.state.isHideAppFooter ||
+            <Footer>
+              <AppFooter navigation={this.props.navigation} activeScreen={NavigationConstants.Screens.TripCreation} />
+            </Footer>
+        }
       </Container>
     );
   }

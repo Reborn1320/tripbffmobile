@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent, Component } from "react";
 import { Button, Text, View } from 'native-base';
 import { Form, Item, Label, Input, DatePicker } from 'native-base';
 import moment, { Moment } from "moment";
@@ -10,7 +10,7 @@ export interface Props {
     updateTrip: (tripId: string, name: string, fromDate: Moment, toDate: Moment) => Promise<any>;
 }
 
-export class TripCreationForm extends Component<Props, any> {
+export class TripCreationForm extends PureComponent<Props, any> {
 
   constructor(props) {
     super(props);
@@ -29,14 +29,12 @@ export class TripCreationForm extends Component<Props, any> {
         toDate = moment(this.state.toDate).endOf('day');
 
     if (tripId) {
-      console.log('update trip: ');
       this.props.updateTrip(tripId, tripName, fromDate, toDate)
       .then(() => {
         this.props.onTripCreatedUpdatedHandler(tripId, tripName);
       });       
     }
     else {
-      console.log('create new trip: ');
       this.props.createTrip(tripName, fromDate, toDate)
       .then(tripId => {
           this.setState({ tripId: tripId });
@@ -52,9 +50,6 @@ export class TripCreationForm extends Component<Props, any> {
   }
 
   private _confirmHandler = (fromDate: Moment, toDate: Moment) => {
-    console.log('fromDate: ' + fromDate);
-    console.log('toDate: ' + toDate);
-
     this.setState({
       isOpenDateRangePickerModal: false,
       fromDate: fromDate,
