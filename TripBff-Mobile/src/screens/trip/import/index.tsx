@@ -68,8 +68,10 @@ class TripImportation extends Component<Props, State> {
       };
 
     async getLocationFromCoordinate(long, lat) {
-        var url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat +'&lon=' + long;
+        if (long == 0 && lat == 0)
+            return "";
 
+        var url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat +'&lon=' + long;
         return fetch(url)
                 .then((response) => response.json())
                 .then((responseJson) => {
@@ -109,11 +111,11 @@ class TripImportation extends Component<Props, State> {
 
             var location: TripImportLocationVM = {
                 id: "",
-                name: locationJson.name,
+                name: locationJson ? locationJson.name : "Location Unknown",
                 location: {
                     lat: element[0].location.latitude,
                     long: element[0].location.longitude,
-                    address: getAddressFromLocation(locationJson)
+                    address: locationJson ? getAddressFromLocation(locationJson) : "Location Unknown"
                 },
                 fromTime: moment(minTimestamp, "X"),
                 toTime: moment(maxTimestamp, "X"),
