@@ -9,6 +9,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { PropsBase } from "../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
 import { loginUsingUserPass, loginUsingFacebookAccessToken, loginUsingDeviceId } from "../../store/User/operations";
+import { NavigationConstants } from "../_shared/ScreenConstants";
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
@@ -69,7 +70,7 @@ class Login extends Component<Props, any>{
       .dispatch<Promise<any>>(loginUsingFacebookAccessToken(facebookUserId, accessToken))
       .then(() => {
         if (isMoveToCreate) {
-          this.props.navigation.navigate("TripCreation");
+          this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
         }
       });
   }
@@ -88,7 +89,7 @@ class Login extends Component<Props, any>{
       .dispatch<Promise<any>>(loginUsingUserPass(email, password))
       .then(() => {
         if (isMoveToCreate) {
-          this.props.navigation.navigate("TripCreation");
+          this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
         }
       });
   }
@@ -98,7 +99,7 @@ class Login extends Component<Props, any>{
       .dispatch<Promise<any>>(loginUsingDeviceId())
       .then(() => {
         if (isMoveToCreate) {
-          this.props.navigation.navigate("TripCreation");
+          this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
         }
       });
   }

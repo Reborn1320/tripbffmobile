@@ -1,48 +1,65 @@
-import React, { Component } from "react";
+import React, { PureComponent, Component } from "react";
 import { Button, Text, View } from 'native-base';
 import { Form, Item, Label, Input, DatePicker } from 'native-base';
-import { StoreData } from "../../../store/Interfaces";
-import { tripApi } from "../../_services/apis";
 import moment, { Moment } from "moment";
+import DateRangePicker from "../../../_atoms/DatePicker/DateRangePicker";
 
 export interface Props {
     createTrip: (name: string, fromDate: Moment, toDate: Moment) => Promise<string>;
-    onTripCreated?: (tripVM: StoreData.TripVM) => void;
+    onTripCreatedUpdatedHandler?: (tripId: string, name: string) => void;
+    updateTrip: (tripId: string, name: string, fromDate: Moment, toDate: Moment) => Promise<any>;
 }
 
-export class TripCreationForm extends Component<Props, any> {
+export class TripCreationForm extends PureComponent<Props, any> {
 
   constructor(props) {
     super(props);
-    this.state = { chosenDate: new Date() };
-    this.setDate = this.setDate.bind(this); //todo handler this properly
-  }
-
-  setDate(newDate) {
-    this.setState({ chosenDate: newDate });
-  }
-
-  //todo move to redux-thunk
-  onClickCreateTrip() {
-    console.log('cliked')
-
-    // call ajax to create trip and get tripId
-    var tripPost = {
-      name: this.state.tripName,
-      fromDate: moment(this.state.fromDate).startOf('day'),
-      toDate: moment(this.state.toDate).endOf('day')
+    this.state = { 
+      tripId: '',
+      isOpenDateRangePickerModal: false,
+      fromDate: moment(),
+      toDate: moment()
     };
-    this.props.createTrip(tripPost.name, tripPost.fromDate, tripPost.toDate)
-    .then(tripId => {
-      // map trip info into Store
-      var trip: StoreData.TripVM = {
-        tripId: tripId,
-        ...tripPost,
-        locations: [],
-        infographicId: ''
-      };
+  }
 
-      this.props.onTripCreated(trip);
+  private _onClickCreateTrip = () => {
+    let tripId = this.state.tripId,
+        tripName = this.state.tripName,
+        fromDate = moment(this.state.fromDate).startOf('day'),
+        toDate = moment(this.state.toDate).endOf('day');
+
+    if (tripId) {
+      this.props.updateTrip(tripId, tripName, fromDate, toDate)
+      .then(() => {
+        this.props.onTripCreatedUpdatedHandler(tripId, tripName);
+      });       
+    }
+    else {
+      this.props.createTrip(tripName, fromDate, toDate)
+      .then(tripId => {
+          this.setState({ tripId: tripId });
+          this.props.onTripCreatedUpdatedHandler(tripId, tripName);
+      });
+    }    
+  }  
+
+  private _openDateRangePickerModal = () => {
+    this.setState({
+      isOpenDateRangePickerModal: true
+    });
+  }
+
+  private _confirmHandler = (fromDate: Moment, toDate: Moment) => {
+    this.setState({
+      isOpenDateRangePickerModal: false,
+      fromDate: fromDate,
+      toDate: toDate
+    });
+  }
+
+  private _cancelHandler = () => {
+    this.setState({
+      isOpenDateRangePickerModal: false
     });
   }
 
@@ -50,62 +67,48 @@ export class TripCreationForm extends Component<Props, any> {
     return (
       <Button
         style={{ alignSelf: 'center' }}
-        onPress={() => this.onClickCreateTrip()}>
-        <Text>Import</Text>
+        onPress={this._onClickCreateTrip}>
+        <Text>Create</Text>
       </Button>
     );
   }
 
   render() {
-    //todo move datepicker with complicated configuration to atom, only expose simple props
     //todo move style to dedicated var
     return (
-      <Form>
-        <Item fixedLabel>
-          <Label>Trip Name</Label>
-          <Input
-            onChangeText={(tripName) => this.setState({ tripName })} />
-        </Item>
-        <Item>
-          <Label>From Date</Label>
-          <DatePicker
-            locale={"en"}
-            timeZoneOffsetInMinutes={undefined}
-            modalTransparent={false}
-            animationType={"fade"}
-            androidMode={"default"}
-            placeHolderText="Select Date"
-            textStyle={{ color: "orange" }}
-            placeHolderTextStyle={{ color: "#a6a6a6" }}
-            onDateChange={(fromDate: Date) => this.setState({ fromDate })}
-
-          />
-        </Item>
-        <Item>
-          <Label>End Date</Label>
-          <DatePicker
-            locale={"en"}
-            timeZoneOffsetInMinutes={undefined}
-            modalTransparent={false}
-            animationType={"fade"}
-            androidMode={"default"}
-            placeHolderText="Select Date"
-            textStyle={{ color: "orange" }}
-            placeHolderTextStyle={{ color: "#a6a6a6" }}
-            onDateChange={(toDate: Date) => this.setState({ toDate })}
-
-          />
-        </Item>
-        <View style={{
-          width: '100%',
-          height: '30%',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-          {!(this.state.tripName && this.state.fromDate && this.state.toDate) || this.renderImportBtn()}
-        </View>
-
-      </Form>
+      <View>
+        <Form>
+            <Item fixedLabel>
+              <Label>Trip Name</Label>
+              <Input
+                onChangeText={(tripName) => this.setState({ tripName })} />
+            </Item>
+            <Item style={{height: 50}}>
+              <Label>From Date</Label>
+              <Text onPress={this._openDateRangePickerModal}>{this.state.fromDate.format('DD/MM/YYYY')}</Text>
+            </Item>
+            <Item style={{height: 50}}>
+              <Label>End Date</Label>
+              <Text onPress={this._openDateRangePickerModal}>{this.state.toDate.format('DD/MM/YYYY')}</Text>
+            </Item>
+          
+            <View style={{
+              width: '100%',
+              height: '30%',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+              {!(this.state.tripName && this.state.fromDate && this.state.toDate) || this.renderImportBtn()}
+            </View>
+        </Form>
+        <DateRangePicker 
+            isVisible={this.state.isOpenDateRangePickerModal}
+            fromDate={this.state.fromDate}
+            toDate={this.state.toDate}
+            cancelHandler={this._cancelHandler}
+            confirmHandler={this._confirmHandler}>            
+        </DateRangePicker>    
+      </View>   
     );
   }
 }

@@ -9,6 +9,7 @@ export const TRIP_UPDATE_DATE_RANGE = "TRIP_UPDATE_DATE_RANGE"
 export const TRIP_UPDATE_TRIP_NAME = "TRIP_UPDATE_TRIP_NAME"
 export const IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS = "TRIP/IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS"
 export const ADD_INFOGRAPHIC_ID = "TRIP/ADD_INFOGRAPHIC_ID"
+export const TRIP_UPDATE = "TRIP_UPDATE"
 
 export const LOCATION_UPDATE_ADDRESS = "TRIP_LOCATION_UPDATE_ADDRESS"
 export const LOCATION_UPDATE_IMAGES = "TRIP_LOCATION_UPDATE_IMAGES"
@@ -27,6 +28,7 @@ export type TripActions = {
 | UpdateTripName
 | AddInfographicId
 | ImportSelectedLocations
+| UpdateBasicTrip
 ;
 
 
@@ -64,6 +66,14 @@ type AddInfographicId = {
     infographicId: string
 }
 
+type UpdateBasicTrip = {
+    type: "TRIP_UPDATE",
+    tripId: string,
+    name: string,
+    fromDate: Moment,
+    toDate: Moment
+}
+
 export function removeLocation(tripId: string, dateIdx: number, locationId: string): RemoveLocation {
     return {
         type: LOCATION_REMOVE, tripId, dateIdx, locationId
@@ -85,6 +95,12 @@ export function updateTripDateRange(tripId: string, fromDate: moment.Moment, toD
 export function updateTripName(tripId: string, tripName: string) {
     return {
         type: TRIP_UPDATE_TRIP_NAME, tripId, tripName
+    }
+}
+
+export function updateTrip(tripId: string, name: string, fromDate: moment.Moment, toDate: moment.Moment) : UpdateBasicTrip {
+    return {
+        type: TRIP_UPDATE, tripId, name, fromDate, toDate
     }
 }
 

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, View, BackHandler } from "react-native";
 import { Container, Header, Content, Button, Text, Footer } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import _ from "lodash";
@@ -15,6 +15,8 @@ import Loading from "../../../_atoms/Loading/Loading";
 import { TripImportLocationVM } from "./TripImportViewModels";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { uploadLocationImage, addLocations, IImportLocation } from "../../../store/Trip/operations";
+import { getAddressFromLocation } from "../../../_function/commonFunc";
+import { NavigationConstants } from "../../_shared/ScreenConstants";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -57,9 +59,19 @@ class TripImportation extends Component<Props, State> {
         console.log("constructor")
     }
 
-    async getLocationFromCoordinate(long, lat) {
-        var url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat +'&lon=' + long;
+    static navigationOptions = ({ navigation, navigationOptions }) => {
+        const { params } = navigation.state;
+    
+        return {
+          title: params ? params.otherParam : ''
+        };
+      };
 
+    async getLocationFromCoordinate(long, lat) {
+        if (long == 0 && lat == 0)
+            return "";
+
+        var url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat +'&lon=' + long;
         return fetch(url)
                 .then((response) => response.json())
                 .then((responseJson) => {
@@ -68,33 +80,14 @@ class TripImportation extends Component<Props, State> {
                 .catch((error) => {
                     console.error(error);
                 });
-    }
+    }    
 
-    getAddressFromLocation(locationJson) {
-        let address = "";
-
-        if (locationJson.address) {
-            let houseNumber = locationJson.address.house_number,
-                road = locationJson.address.road,
-                suburb = locationJson.address.suburb,
-                county = locationJson.address.county,
-                city = locationJson.address.city,
-                country = locationJson.address.country;
-
-            if (houseNumber) address = houseNumber
-            if (road) address = address ? address + ', ' + road : road;
-            if (suburb) address = address ? address + ', ' + suburb : suburb;
-            if (county) address = address ? address + ', ' + county : county;
-            if (city)  address = address ? address + ', ' + city : city;
-            if (country) address = address ? address + ', ' + country : country;         
-        }
-        else
-            address = locationJson.display_name;
-
-        return address;
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this._handleBackPress);
     }
 
     async componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this._handleBackPress);
         await checkAndRequestPhotoPermissionAsync();
 
         console.log("from date: " + this.state.fromDate.toDate());
@@ -118,11 +111,11 @@ class TripImportation extends Component<Props, State> {
 
             var location: TripImportLocationVM = {
                 id: "",
-                name: locationJson.name,
+                name: locationJson ? locationJson.name : "Location Unknown",
                 location: {
                     lat: element[0].location.latitude,
                     long: element[0].location.longitude,
-                    address: this.getAddressFromLocation(locationJson)
+                    address: locationJson ? getAddressFromLocation(locationJson) : "Location Unknown"
                 },
                 fromTime: moment(minTimestamp, "X"),
                 toTime: moment(maxTimestamp, "X"),
@@ -143,6 +136,11 @@ class TripImportation extends Component<Props, State> {
         // console.log(adapterResult)
 
         this.setState({ locations: adapterResult, isLoading: false });
+    }
+
+    private _handleBackPress = () => {
+        this.props.navigation.goBack();
+        return true;
     }
 
     private _importImageSelectUnselectImage = (locationIdx: number, imageIdx: number) => {
@@ -302,17 +300,11 @@ class TripImportation extends Component<Props, State> {
 
     }
 
-
     render() {
         console.log('trip import screen render');
         const { name, locations, isLoading, loadingMessage } = this.state
         return (
-            <Container>
-                <Header>
-                    <View style={{ height: 100, paddingTop: 30, flex: 1 }}>
-                        <Text style={{ color: "white" }}>{name}</Text>
-                    </View>
-                </Header>
+            <Container> 
                 <Content>
                     {isLoading && <Loading message={loadingMessage} />}
                     {!isLoading &&

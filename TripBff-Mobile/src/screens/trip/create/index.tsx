@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Text, View, Footer } from 'native-base';
+import { Keyboard } from "react-native";
+import { Container, Content, Footer } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import { connect } from "react-redux";
-import { createTrip } from './actions';
-import moment, { Moment } from "moment";
+import { Moment } from "moment";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { TripCreationForm } from "./TripCreationForm";
-import { createTrip as createTripAsync } from "../../../store/Trip/operations";
-import { loginUsingUserPass } from "../../../store/User/operations";
+import { createTrip as createTripAsync, updateTrip } from "../../../store/Trip/operations";
 import AppFooter from "../../shared/AppFooter"
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 
@@ -17,48 +16,75 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 
 interface IMapDispatchToProps {
   createTripAsync: (name: string, fromDate: Moment, toDate: Moment) => Promise<string>;
-  loginUsingUserPass: (email: string, password: string) => Promise<any>;
-  createTrip: (trip: StoreData.TripVM) => void
+  updateTrip: (tripId: string, name: string, fromDate: Moment, toDate: Moment) => Promise<any>;
 }
 
 class TripCreation extends Component<Props, any> {
+  keyboardDidShowListener: any;
+  keyboardDidHideListener: any;
 
+  static navigationOptions = ({ navigation, navigationOptions }) => {
+    return {
+      title: 'Create new trip'
+    };
+  };
+  
   constructor(props) {
     super(props);
-    this.state = { chosenDate: new Date() };
-    this.setDate = this.setDate.bind(this);
+
+    this.state = {
+      isHideAppFooter: false
+    };
   }
 
-  componentWillMount() {
-    // this.props.loginUsingUserPass("aaa", "bbb");
+  componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this._keyboardDidShow,
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this._keyboardDidHide,
+    );
   }
 
-  setDate(newDate) {
-    this.setState({ chosenDate: newDate });
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
   }
 
-  onTripCreated = (tripVM: StoreData.TripVM) => {
-    console.log("tripVM", tripVM);
-    this.props.createTrip(tripVM);
-    // navigate to Trip Import page
-    this.props.navigation.navigate("TripImportation", { tripId: tripVM.tripId });
+  private _keyboardDidShow = () => {
+    this.setState({
+      isHideAppFooter: true
+    });
+  }
+
+  private _keyboardDidHide = () => {
+    this.setState({
+      isHideAppFooter: false
+    });
+  }
+
+  private _onCreatedOrUpdatedHandler = (tripId, tripName) => {
+    this.props.navigation.navigate(NavigationConstants.Screens.TripImport, {
+        tripId: tripId,
+        otherParam: tripName });
   }
 
   render() {
-
     return (
       <Container>
-        <Header>
-          <View style={{ height: 100, paddingTop: 30, flex: 1 }}>
-            <Text style={{ color: "white" }}>Create new trip</Text>
-          </View>
-        </Header>
         <Content>
-          <TripCreationForm createTrip={this.props.createTripAsync} onTripCreated={this.onTripCreated} />
+          <TripCreationForm createTrip={this.props.createTripAsync} 
+                            updateTrip={this.props.updateTrip}
+                            onTripCreatedUpdatedHandler={this._onCreatedOrUpdatedHandler} />
         </Content>
-        <Footer>
-          <AppFooter navigation={this.props.navigation} activeScreen={NavigationConstants.Screens.TripCreation} />
-        </Footer>
+        {
+          this.state.isHideAppFooter ||
+            <Footer>
+              <AppFooter navigation={this.props.navigation} activeScreen={NavigationConstants.Screens.TripCreation} />
+            </Footer>
+        }
       </Container>
     );
   }
@@ -66,9 +92,8 @@ class TripCreation extends Component<Props, any> {
 
 const mapDispatchToProps = dispatch => {
   return {
-    createTrip: (trip) => dispatch(createTrip(trip)),
     createTripAsync: (name, fromDate, toDate) => dispatch(createTripAsync(name, fromDate, toDate)),
-    loginUsingUserPass: (email, password) => dispatch(loginUsingUserPass(email, password)),
+    updateTrip: (tripId, name, fromDate, toDate) => dispatch(updateTrip(tripId, name, fromDate, toDate))
   }
 };
 
