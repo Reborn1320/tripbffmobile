@@ -36,55 +36,27 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
 
         this.state = {
             isLoaded: true,
-            loadingMessage: "Logining",
             trips: [],
-            UIState: "LOGIN",
+            loadingMessage: "loading trips belong to this user",
+            UIState: "LOADING_TRIP"
         };
     }
 
     componentWillMount() {
-      AccessToken.getCurrentAccessToken().then(data => {
-          if (data) {
-            this.props.loginUsingFacebookAccessToken(data.userID, data.accessToken).then(() => {
-                this.setState({
-                    loadingMessage: "loading trips belong to this user",
-                    UIState: "LOADING_TRIP"
-                });
+        this.props.fetchTrips().then(trips => {
+            // console.log("fetched Trips", trips);
+
+            this.props.addTrips(trips);
+
+            this.setState({
+                isLoaded: false,
+                loadingMessage: "",
+                UIState: "NORMAL",
+                trips: trips
             });
-          }
-          else {
-            //dispatch redux-thunk login
-            this.props.loginUsingUserPass("aaa", "bbb").then(() => {
-                this.setState({
-                    loadingMessage: "loading trips belong to this user",
-                    UIState: "LOADING_TRIP"
-                });
-            });
-          }
-      });
-      
+        });
     }
-
-    componentDidUpdate() {
-        if (this.state.UIState === "LOADING_TRIP") {
-            //trigger event to load data
-            console.log("LOADING_TRIP");
-
-            this.props.fetchTrips().then(trips => {
-                // console.log("fetched Trips", trips);
-
-                this.props.addTrips(trips);
-
-                this.setState({
-                    isLoaded: false,
-                    loadingMessage: "",
-                    UIState: "NORMAL",
-                    trips: trips
-                });
-            });
-        }
-    }
-
+    
     handleTripItemClick(trip: any) {
         const { tripId } = trip;
         this.props.navigation.navigate(

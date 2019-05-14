@@ -8,10 +8,7 @@ import {
 import { ThunkDispatch } from "redux-thunk";
 import { PropsBase } from "../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
-import { loginUsingUserPass, loginUsingFacebookAccessToken } from "../../store/User/operations";
-import DeviceInfo from 'react-native-device-info';
-const uuidv4 = require('uuid/v4');
-import AsyncStorage from "@react-native-community/async-storage";
+import { loginUsingUserPass, loginUsingFacebookAccessToken, loginUsingDeviceId } from "../../store/User/operations";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
@@ -73,7 +70,7 @@ class Login extends Component<Props, any>{
       .dispatch<Promise<any>>(loginUsingFacebookAccessToken(facebookUserId, accessToken))
       .then(() => {
         if (isMoveToCreate) {
-          this.props.navigation.navigate("TripCreation");
+          this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
         }
       });
   }
@@ -97,56 +94,14 @@ class Login extends Component<Props, any>{
       });
   }
 
-  private _storeDataIntoStorage = async (key, value) => {
-    try {
-      await AsyncStorage.setItem(key, value)
-    } catch (e) {
-      // saving error
-    }
-
-    console.log('Done store data');
-  }
-
-  private _getDataFromStorage = async (key) => {
-    let value = '';
-
-    try {
-      value = await AsyncStorage.getItem(key)
-    } catch(e) {
-      // error reading value
-    }
-
-    console.log('Done get data');
-
-    return value;
-  }
-
-  removeValue = async (key) => {
-    try {
-      await AsyncStorage.removeItem(key)
-    } catch(e) {
-      // remove error
-    }
-  
-    console.log('Done remove data.')
-  }
-
-  private _loginUniqueDevice = async () => {    
-    let key = "uniqueDeviceUUID";
-    let uniqueDeviceUuid = await this._getDataFromStorage(key);
-
-    if (!uniqueDeviceUuid) {
-      uniqueDeviceUuid = uuidv4();
-      await this._storeDataIntoStorage(key, uniqueDeviceUuid);
-    } 
-
-    console.log('uuid: ' + uniqueDeviceUuid);
-
-    var postUser = {
-      email: uniqueDeviceUuid.toString(),
-      password: uniqueDeviceUuid.toString()
-    };
-    this.loginDetails(postUser.email, postUser.password);
+  private _loginUniqueDevice = async (isMoveToCreate = true) => {    
+    this.props
+      .dispatch<Promise<any>>(loginUsingDeviceId())
+      .then(() => {
+        if (isMoveToCreate) {
+          this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
+        }
+      });
   }
 
   //todo move LoginButton to atoms
@@ -158,22 +113,38 @@ class Login extends Component<Props, any>{
           contentContainerStyle={{
             justifyContent: 'center',
             alignItems: 'center',
-            flex: 1
+            flex: 1,
+            backgroundColor: "white"
           }}>
           <View>
             <LoginButton
+              style={{
+                width: 300,
+                height: 30,
+                marginLeft: 5,
+                marginRight: 5,
+              }}
               readPermissions={["public_profile", "user_photos", "user_posts"]}
               onLoginFinished={(error, result) =>
                 this.loginFacebookSdk(error, result)
               }
               onLogoutFinished={() => console.log("logout.")}
             />
-            <Button style={{ margin: 5 }} onPress={() => this.loginLocal()}>
+            <Button style={{ margin: 5 }} block onPress={() => this.loginLocal()}>
               <Text>[Local] Continue without logging in</Text>
             </Button>
+            <Text style={{
+              margin: 10,
+              marginTop: 20,
+              alignSelf: "center"
+            }}>---- OR ----</Text>
 
-            <Button style={{ margin: 5 }} onPress={this._loginUniqueDevice}>
-              <Text>[Unique Device] Continue without logging in</Text>
+            <Button style={{
+              margin: 5,
+              alignSelf: "center",
+            }}
+              transparent dark onPress={this._loginUniqueDevice}>
+              <Text>SKIP</Text>
             </Button>
           </View>
         </Content>

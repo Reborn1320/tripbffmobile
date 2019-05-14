@@ -90,7 +90,6 @@ class TripCreation extends Component<Props, any> {
   }
 }
 
-
 const mapDispatchToProps = dispatch => {
   return {
     createTripAsync: (name, fromDate, toDate) => dispatch(createTripAsync(name, fromDate, toDate)),
