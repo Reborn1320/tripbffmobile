@@ -54,7 +54,16 @@ const TripCreationNavigator = createStackNavigator(
     TripImportation: { screen: TripImportationScreen }, 
   },
   {
-    headerMode: "none"
+    headerMode: "screen",
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: '#ff9900'
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold'
+      }
+    },
   }
 );
 
@@ -112,7 +121,7 @@ const AppNavigator = createSwitchNavigator(
     Home: { screen: HomeScreen },   
   },
   {
-    initialRouteName: "Login",
+    initialRouteName: "Login"
   });
 
 let Navigation = createAppContainer(AppNavigator);

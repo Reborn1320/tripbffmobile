@@ -12,6 +12,7 @@ import { loginUsingUserPass, loginUsingFacebookAccessToken } from "../../store/U
 import DeviceInfo from 'react-native-device-info';
 const uuidv4 = require('uuid/v4');
 import AsyncStorage from "@react-native-community/async-storage";
+import { NavigationConstants } from "../_shared/ScreenConstants";
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
@@ -91,7 +92,7 @@ class Login extends Component<Props, any>{
       .dispatch<Promise<any>>(loginUsingUserPass(email, password))
       .then(() => {
         if (isMoveToCreate) {
-          this.props.navigation.navigate("TripCreation");
+          this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
         }
       });
   }

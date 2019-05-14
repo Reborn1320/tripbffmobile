@@ -12,13 +12,15 @@ import {
   updateLocationImages,
   favorLocationImage as favorLocationImageAction,
   uploadLocationImage as uploadLocationImageAction,
-  importSelectedLocations
+  importSelectedLocations,
+  updateTrip as updateTripAction
 } from "./actions";
 import { ThunkResultBase } from "..";
 import { Moment } from "moment";
 import { StoreData, RawJsonData } from "../Interfaces";
 import moment from "moment";
 import { uploadFileApi } from "../../screens/_services/apis";
+import { createTrip as createTripAction } from "../../screens/trip/create/actions";
 
 export function removeLocation(tripId: string, dateIdx: number, locationId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
@@ -125,7 +127,30 @@ export function createTrip(name: string, fromDate: Moment, toDate: Moment): Thun
     .then((res) => {
       const tripId: string = res.data;
       console.log('trip id: ', tripId);
+      var trip = {
+        tripId: tripId,
+        name: name,
+        fromDate: fromDate,
+        toDate: toDate
+      };
+      dispatch(createTripAction(trip));
       return tripId;
+    })
+    .catch((err) => {
+      console.log('error create trip api: ', err);
+    });
+  };
+}
+
+export function updateTrip(tripId: string,name: string, fromDate: Moment, toDate: Moment): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+
+    var data = {
+      name, fromDate, toDate
+    }
+    return extraArguments.tripApiService.patch('/trips/' + tripId, { data })
+    .then((res) => {
+       dispatch(updateTripAction(tripId, name, fromDate, toDate));
     })
     .catch((err) => {
       console.log('error create trip api: ', err);
