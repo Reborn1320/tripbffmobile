@@ -18,6 +18,7 @@ import { LOCATION_REMOVE,
          ADD_INFOGRAPHIC_ID,
          IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS,
          ImageActions,
+         TRIP_UPDATE
 } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
 import { AppStateIOS } from 'react-native';
@@ -237,6 +238,13 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
                 ...state,
                 name: action.tripName
             }
+        case TRIP_UPDATE:
+            return {
+                ...state,
+                name: action.name,
+                fromDate: action.fromDate,
+                toDate: action.toDate
+            };        
         default: 
         {
             //todo should start with TRIP_LOCATION
@@ -272,13 +280,6 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
         return [...state, action.trip];
     }
     else if (_.startsWith(actionType, "TRIP")) {
-        // var tripIdx = _.findIndex(state, trip => trip.tripId == action.tripId);
-
-        // return [
-        //     ..._.slice(state, 0, tripIdx),
-        //     tripReducer(state[tripIdx], action),
-        //     ..._.slice(state, tripIdx + 1)
-        // ]
         var newState = state.map(trip => trip.tripId == action.tripId ? tripReducer(trip, action) : trip);
         return newState
     }

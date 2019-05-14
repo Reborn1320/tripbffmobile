@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, View, BackHandler } from "react-native";
 import { Container, Header, Content, Button, Text, Footer } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import _ from "lodash";
@@ -16,6 +16,7 @@ import { TripImportLocationVM } from "./TripImportViewModels";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { uploadLocationImage, addLocations, IImportLocation } from "../../../store/Trip/operations";
 import { getAddressFromLocation } from "../../../_function/commonFunc";
+import { NavigationConstants } from "../../_shared/ScreenConstants";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -58,6 +59,14 @@ class TripImportation extends Component<Props, State> {
         console.log("constructor")
     }
 
+    static navigationOptions = ({ navigation, navigationOptions }) => {
+        const { params } = navigation.state;
+    
+        return {
+          title: params ? params.otherParam : ''
+        };
+      };
+
     async getLocationFromCoordinate(long, lat) {
         var url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat +'&lon=' + long;
 
@@ -71,7 +80,12 @@ class TripImportation extends Component<Props, State> {
                 });
     }    
 
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this._handleBackPress);
+    }
+
     async componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this._handleBackPress);
         await checkAndRequestPhotoPermissionAsync();
 
         console.log("from date: " + this.state.fromDate.toDate());
@@ -120,6 +134,11 @@ class TripImportation extends Component<Props, State> {
         // console.log(adapterResult)
 
         this.setState({ locations: adapterResult, isLoading: false });
+    }
+
+    private _handleBackPress = () => {
+        this.props.navigation.goBack();
+        return true;
     }
 
     private _importImageSelectUnselectImage = (locationIdx: number, imageIdx: number) => {
@@ -279,17 +298,11 @@ class TripImportation extends Component<Props, State> {
 
     }
 
-
     render() {
         console.log('trip import screen render');
         const { name, locations, isLoading, loadingMessage } = this.state
         return (
-            <Container>
-                <Header>
-                    <View style={{ height: 100, paddingTop: 30, flex: 1 }}>
-                        <Text style={{ color: "white" }}>{name}</Text>
-                    </View>
-                </Header>
+            <Container> 
                 <Content>
                     {isLoading && <Loading message={loadingMessage} />}
                     {!isLoading &&

@@ -17,44 +17,30 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 
 interface IMapDispatchToProps {
   createTripAsync: (name: string, fromDate: Moment, toDate: Moment) => Promise<string>;
-  loginUsingUserPass: (email: string, password: string) => Promise<any>;
-  createTrip: (trip: StoreData.TripVM) => void
+  updateTrip: (tripId: string, name: string, fromDate: Moment, toDate: Moment) => Promise<any>;
 }
 
 class TripCreation extends Component<Props, any> {
 
-  constructor(props) {
-    super(props);
-    this.state = { chosenDate: new Date() };
-    this.setDate = this.setDate.bind(this);
-  }
+  static navigationOptions = ({ navigation, navigationOptions }) => {
+    return {
+      title: 'Create new trip'
+    };
+  };
 
-  componentWillMount() {
-    // this.props.loginUsingUserPass("aaa", "bbb");
-  }
-
-  setDate(newDate) {
-    this.setState({ chosenDate: newDate });
-  }
-
-  onTripCreated = (tripVM: StoreData.TripVM) => {
-    console.log("tripVM", tripVM);
-    this.props.createTrip(tripVM);
-    // navigate to Trip Import page
-    this.props.navigation.navigate("TripImportation", { tripId: tripVM.tripId });
+  private _onCreatedOrUpdatedHandler = (tripId, tripName) => {
+    this.props.navigation.navigate(NavigationConstants.Screens.TripImport, {
+        tripId: tripId,
+        otherParam: tripName });
   }
 
   render() {
-
     return (
       <Container>
-        <Header>
-          <View style={{ height: 100, paddingTop: 30, flex: 1 }}>
-            <Text style={{ color: "white" }}>Create new trip</Text>
-          </View>
-        </Header>
         <Content>
-          <TripCreationForm createTrip={this.props.createTripAsync} onTripCreated={this.onTripCreated} />
+          <TripCreationForm createTrip={this.props.createTripAsync} 
+                            updateTrip={this.props.updateTrip}
+                            onTripCreatedUpdatedHandler={this._onCreatedOrUpdatedHandler} />
         </Content>
         <Footer>
           <AppFooter navigation={this.props.navigation} activeScreen={NavigationConstants.Screens.TripCreation} />
@@ -62,13 +48,12 @@ class TripCreation extends Component<Props, any> {
       </Container>
     );
   }
-}``
+}
+
 
 const mapDispatchToProps = dispatch => {
   return {
-    createTrip: (trip) => dispatch(createTrip(trip)),
-    createTripAsync: (name, fromDate, toDate) => dispatch(createTripAsync(name, fromDate, toDate)),
-    loginUsingUserPass: (email, password) => dispatch(loginUsingUserPass(email, password)),
+    createTripAsync: (name, fromDate, toDate) => dispatch(createTripAsync(name, fromDate, toDate))
   }
 };
 

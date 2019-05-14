@@ -7,51 +7,46 @@ import moment, { Moment } from "moment";
 
 export interface Props {
     createTrip: (name: string, fromDate: Moment, toDate: Moment) => Promise<string>;
-    onTripCreated?: (tripVM: StoreData.TripVM) => void;
+    onTripCreatedUpdatedHandler?: (tripId: string, name: string) => void;
+    updateTrip: (tripId: string, name: string, fromDate: Moment, toDate: Moment) => Promise<any>;
 }
 
 export class TripCreationForm extends Component<Props, any> {
 
   constructor(props) {
     super(props);
-    this.state = { chosenDate: new Date() };
-    this.setDate = this.setDate.bind(this); //todo handler this properly
+    this.state = { tripId: '', chosenDate: new Date() };
   }
 
-  setDate(newDate) {
-    this.setState({ chosenDate: newDate });
-  }
+  private _onClickCreateTrip = () => {
+    let tripId = this.state.tripId,
+        tripName = this.state.tripName,
+        fromDate = moment(this.state.fromDate).startOf('day'),
+        toDate = moment(this.state.toDate).endOf('day');
 
-  //todo move to redux-thunk
-  onClickCreateTrip() {
-    console.log('cliked')
-
-    // call ajax to create trip and get tripId
-    var tripPost = {
-      name: this.state.tripName,
-      fromDate: moment(this.state.fromDate).startOf('day'),
-      toDate: moment(this.state.toDate).endOf('day')
-    };
-    this.props.createTrip(tripPost.name, tripPost.fromDate, tripPost.toDate)
-    .then(tripId => {
-      // map trip info into Store
-      var trip: StoreData.TripVM = {
-        tripId: tripId,
-        ...tripPost,
-        locations: [],
-        infographicId: ''
-      };
-
-      this.props.onTripCreated(trip);
-    });
+    if (tripId) {
+      console.log('tripId: ' + tripId);
+      this.props.updateTrip(tripId, tripName, fromDate, toDate)
+      .then(() => {
+        this.props.onTripCreatedUpdatedHandler(this.state.tripId, this.state.name);
+      });       
+    }
+    else {
+      console.log('create new trip: ');
+      this.props.createTrip(tripName, fromDate, toDate)
+      .then(tripId => {
+          this.setState({ tripId: tripId });
+          this.props.onTripCreatedUpdatedHandler(tripId, tripName);
+      });
+    }    
   }
 
   renderImportBtn() {
     return (
       <Button
         style={{ alignSelf: 'center' }}
-        onPress={() => this.onClickCreateTrip()}>
-        <Text>Import</Text>
+        onPress={this._onClickCreateTrip}>
+        <Text>Create</Text>
       </Button>
     );
   }
