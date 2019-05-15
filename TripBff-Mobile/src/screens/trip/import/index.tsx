@@ -302,7 +302,7 @@ class TripImportation extends Component<Props, State> {
 
     render() {
         console.log('trip import screen render');
-        const { name, locations, isLoading, loadingMessage } = this.state
+        const { tripId, locations, isLoading, loadingMessage } = this.state
         return (
             <Container> 
                 <Content>
@@ -324,7 +324,7 @@ class TripImportation extends Component<Props, State> {
                     }}
                 >
                     <Button transparent success
-                        onPress={() => this.props.navigation.navigate("TripDetail", { locations: [] })}
+                        onPress={() => this.props.navigation.navigate(NavigationConstants.Screens.TripDetail, { tripId: tripId })}
                         style={{
                             alignSelf: "stretch", margin: 5,
                         }}
