@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { FlatList, View, BackHandler } from "react-native";
-import { Container, Header, Content, Button, Text, Footer } from 'native-base';
+import { FlatList, View, BackHandler, StyleSheet } from "react-native";
+import { Container, Content, Button, Text, Footer } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import _ from "lodash";
 import { connect } from "react-redux";
@@ -137,7 +137,7 @@ class TripImportation extends Component<Props, State> {
         }
 
         // console.log(adapterResult)
-        this.refs.toast.show('Location maybe does not accurate, you can change it later!');
+        this.refs.toast.show('Location might not accurate, you can change it later!');
         this.setState({ locations: adapterResult, isLoading: false, isHideFooter: false });
     }
 
@@ -318,6 +318,15 @@ class TripImportation extends Component<Props, State> {
                             removeClippedSubviews={false}
                         />
                     }
+                    <Toast
+                        ref="toast"
+                        style={{backgroundColor:'#3498db', borderRadius: 5, padding: 10, margin: 50}}
+                        position='top'
+                        positionValue={30}
+                        fadeInDuration={750}
+                        fadeOutDuration={4000}
+                        textStyle={{color:'white', fontSize: 16}}
+                    />  
                 </Content>
                 {
                     isHideFooter || 
@@ -346,20 +355,21 @@ class TripImportation extends Component<Props, State> {
                             <Text style={{ color: "orange" }}>Import</Text>
                         </Button>
                     </Footer>
-                }  
-                <Toast
-                    ref="toast"
-                    style={{backgroundColor:'#3498db'}}
-                    position='top'
-                    positionValue={50}
-                    fadeInDuration={750}
-                    fadeOutDuration={4000}
-                    textStyle={{color:'white', fontSize: 16,}}
-                />         
+                }             
+                      
             </Container>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    toastContainer: {
+        //flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF',
+    },
+});
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId } = ownProps.navigation.state.params;
@@ -376,6 +386,8 @@ const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
         uploadLocationImage: (tripId, dateIdx, locationId, imageId, imgUrl) => dispatch(uploadLocationImage(tripId, dateIdx, locationId, imageId, imgUrl)),
     }
 };
+
+
 
 const TripImportationScreen = connect(mapStateToProps, mapDispatchToProps)(TripImportation);
 
