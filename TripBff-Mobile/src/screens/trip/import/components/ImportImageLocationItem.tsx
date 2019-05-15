@@ -55,6 +55,7 @@ class ImportImageLocationItem extends React.Component<Props, State> {
         var location: TripImportLocationVM = this.props.location;
         var locationIdx: number = this.props.locationIdx;
         var dateOfLocation: string = moment(location.fromTime).startOf("day").format('MMM DD')
+        let isLocationChecked = location.images.find((item) => item.isSelected) != null;
 
         return (
             <ListItem noIndent
@@ -63,7 +64,7 @@ class ImportImageLocationItem extends React.Component<Props, State> {
                 <View
                     style={{ position: "absolute", right: 20, top: 10 }}
                 >
-                    <CheckBox checked={location.images.filter((item) => item.isSelected).length == location.images.length}
+                    <CheckBox checked={isLocationChecked}
                         onPress={() => this.props.handleSelectAll(locationIdx)}
                         style={{ borderRadius: 10, backgroundColor: "green", borderColor: "white", borderWidth: 1, shadowColor: "black", elevation: 2 }}
                     ></CheckBox>

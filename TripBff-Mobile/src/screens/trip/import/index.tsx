@@ -17,6 +17,7 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import { uploadLocationImage, addLocations, IImportLocation } from "../../../store/Trip/operations";
 import { getAddressFromLocation } from "../../../_function/commonFunc";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
+import Toast from 'react-native-easy-toast';
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -36,7 +37,8 @@ interface State {
     isLoading: boolean
     loadingMessage: string
     forceUpdateOnlyItemIdx?: number
-    UIState: UIState
+    UIState: UIState,
+    isHideFooter: boolean
 }
 
 type UIState = "select image" | "import images" | "uploading image" 
@@ -53,7 +55,8 @@ class TripImportation extends Component<Props, State> {
             locations: [],
             isLoading: true,
             loadingMessage: "Loading image from your gallery",
-            UIState: "select image"
+            UIState: "select image",
+            isHideFooter: true
         }
 
         console.log("constructor")
@@ -134,8 +137,8 @@ class TripImportation extends Component<Props, State> {
         }
 
         // console.log(adapterResult)
-
-        this.setState({ locations: adapterResult, isLoading: false });
+        this.refs.toast.show('Location maybe does not accurate, you can change it later!');
+        this.setState({ locations: adapterResult, isLoading: false, isHideFooter: false });
     }
 
     private _handleBackPress = () => {
@@ -211,7 +214,7 @@ class TripImportation extends Component<Props, State> {
         console.log('selected locations: ' + JSON.stringify(selectedLocations))
         this.props.addLocations(this.state.tripId, selectedLocations)
         .then(() => {
-            this.setState({ UIState: "import images" });
+            this.setState({ UIState: "import images", isHideFooter: true });
         })
     }
     
@@ -302,7 +305,7 @@ class TripImportation extends Component<Props, State> {
 
     render() {
         console.log('trip import screen render');
-        const { name, locations, isLoading, loadingMessage } = this.state
+        const { tripId, locations, isLoading, loadingMessage, isHideFooter } = this.state
         return (
             <Container> 
                 <Content>
@@ -316,31 +319,43 @@ class TripImportation extends Component<Props, State> {
                         />
                     }
                 </Content>
-                <Footer
-                    style={{
-                        justifyContent: "space-between", alignItems: "stretch", padding: 0,
-                        shadowColor: "black", elevation: 10,
-                        backgroundColor: "white"
-                    }}
-                >
-                    <Button transparent success
-                        onPress={() => this.props.navigation.navigate("TripDetail", { locations: [] })}
+                {
+                    isHideFooter || 
+                    <Footer
                         style={{
-                            alignSelf: "stretch", margin: 5,
+                            justifyContent: "space-between", alignItems: "stretch", padding: 0,
+                            shadowColor: "black", elevation: 10,
+                            backgroundColor: "white"
                         }}
-                    >
-                        <Text
-                            style={{ color: "grey" }}
-                        >Skip</Text>
-                    </Button>
+                        >
+                        <Button transparent success
+                            onPress={() => this.props.navigation.navigate(NavigationConstants.Screens.TripDetail, { tripId: tripId })}
+                            style={{
+                                alignSelf: "stretch", margin: 5,
+                            }}
+                        >
+                            <Text
+                                style={{ color: "grey" }}
+                            >Skip</Text>
+                        </Button>
 
-                    <Button transparent success
-                        onPress={this._import}
-                        style={{ alignSelf: "stretch", margin: 5, }}
-                    >
-                        <Text style={{ color: "orange" }}>Import</Text>
-                    </Button>
-                </Footer>
+                        <Button transparent success
+                            onPress={this._import}
+                            style={{ alignSelf: "stretch", margin: 5, }}
+                        >
+                            <Text style={{ color: "orange" }}>Import</Text>
+                        </Button>
+                    </Footer>
+                }  
+                <Toast
+                    ref="toast"
+                    style={{backgroundColor:'#3498db'}}
+                    position='top'
+                    positionValue={50}
+                    fadeInDuration={750}
+                    fadeOutDuration={4000}
+                    textStyle={{color:'white', fontSize: 16,}}
+                />         
             </Container>
         );
     }

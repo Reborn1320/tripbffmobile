@@ -29,8 +29,7 @@ const userInitState: StoreData.UserVM = {
     firstName: "asdf",
     fullName: "adffff",
     email: "asdf@gmail.com",
-    token: "ASdf",
-    fbToken: ""
+    token: "ASdf"
 }
 
 const initState: StoreData.BffStoreData = {
@@ -243,7 +242,8 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
                 ...state,
                 name: action.name,
                 fromDate: action.fromDate,
-                toDate: action.toDate
+                toDate: action.toDate,
+                dates: getDatesProperty(action.fromDate, action.toDate, [])
             };        
         default: 
         {
@@ -277,7 +277,11 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
         });
     }
     else if (actionType == TRIP_ADD) {
-        return [...state, action.trip];
+        var trip = {
+            ...action.trip,
+            dates: getDatesProperty(action.trip.fromDate, action.trip.toDate, [])
+        }
+        return [...state, trip];
     }
     else if (_.startsWith(actionType, "TRIP")) {
         var newState = state.map(trip => trip.tripId == action.tripId ? tripReducer(trip, action) : trip);
