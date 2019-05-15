@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { Container, Content, View, Button, Text } from 'native-base';
+import { Container, Content, View, Button, Text, Icon } from 'native-base';
 import { connect, DispatchProp } from "react-redux";
 import {
   LoginButton,
-  AccessToken
+  AccessToken,
+  LoginManager
 } from "react-native-fbsdk";
 import { ThunkDispatch } from "redux-thunk";
 import { PropsBase } from "../_shared/LayoutContainer";
@@ -23,49 +24,53 @@ class Login extends Component<Props, any>{
 
   constructor(props) {
     super(props);
+  } 
+
+  private _loginFacebook = () => {
+    var tmp =  this;
+
+    LoginManager.logInWithReadPermissions(["public_profile", "user_photos", "user_posts"]).then(
+      function(result) {
+        if (result.isCancelled) {
+          console.log("Login cancelled");
+        } else {
+          AccessToken.getCurrentAccessToken().then(data => {
+            //console.log(data.accessToken.toString());
+            console.log("getCurrentAccessToken data", data);
+    
+            tmp._loginFacebookAccess(data.userID, data.accessToken);
+    
+            // //todo user axios instead of fetch
+            // const responseBasicUser = fetch(`https://graph.facebook.com/me?fields=id,name,first_name,last_name&access_token=${data.accessToken}`);
+            // responseBasicUser
+            //   .then((response) => response.json())
+            //   .then((json) => {
+            //     console.log("user data from graph", json);
+            //     var user = {
+            //       // Some user object has been set up somewhere, build that user here
+            //       email: json.email ? json.email : json.id,
+            //       password: '123456',
+            //       username: json.name,
+            //       lastName: "",
+            //       firstName: "",
+            //       fullName: json.name
+            //     };
+            //     console.log(user);
+            //     tmp.loginDetails(user.email, user.password);
+            //   })
+            //   .catch(() => {
+            //     console.log('ERROR GETTING DATA FROM FACEBOOK');
+            //   });
+          });
+        }
+      },
+      function(error) {
+        console.log("Login fail with error: " + error);
+      }
+    );
   }
 
-  //todo move login facebook to store User
-  loginFacebookSdk(error, result) {
-    var tmp = this;
-    if (error) {
-      console.log("login has error: " + result.error);
-    } else if (result.isCancelled) {
-      console.log("login is cancelled.");
-    } else {
-      AccessToken.getCurrentAccessToken().then(data => {
-
-        console.log(data.accessToken.toString());
-        console.log("getCurrentAccessToken data", data);
-
-        this.loginFacebookAccess(data.userID, data.accessToken);
-
-        // //todo user axios instead of fetch
-        // const responseBasicUser = fetch(`https://graph.facebook.com/me?fields=id,name,first_name,last_name&access_token=${data.accessToken}`);
-        // responseBasicUser
-        //   .then((response) => response.json())
-        //   .then((json) => {
-        //     console.log("user data from graph", json);
-        //     var user = {
-        //       // Some user object has been set up somewhere, build that user here
-        //       email: json.email ? json.email : json.id,
-        //       password: '123456',
-        //       username: json.name,
-        //       lastName: "",
-        //       firstName: "",
-        //       fullName: json.name
-        //     };
-        //     console.log(user);
-        //     tmp.loginDetails(user.email, user.password);
-        //   })
-        //   .catch(() => {
-        //     console.log('ERROR GETTING DATA FROM FACEBOOK');
-        //   });
-      });
-    }
-  }
-
-  loginFacebookAccess(facebookUserId, accessToken, isMoveToCreate = true) {
+  private _loginFacebookAccess = (facebookUserId, accessToken, isMoveToCreate = true) => {
     return this.props
       .dispatch<Promise<any>>(loginUsingFacebookAccessToken(facebookUserId, accessToken))
       .then(() => {
@@ -73,26 +78,7 @@ class Login extends Component<Props, any>{
           this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
         }
       });
-  }
-
-
-  loginLocal() {
-    var postUser = {
-      email: "bbb",
-      password: "123456"
-    };
-    this.loginDetails(postUser.email, postUser.password);
-  }
-
-  loginDetails(email, password, isMoveToCreate = true) {
-    return this.props
-      .dispatch<Promise<any>>(loginUsingUserPass(email, password))
-      .then(() => {
-        if (isMoveToCreate) {
-          this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
-        }
-      });
-  }
+  }  
 
   private _loginUniqueDevice = async (isMoveToCreate = true) => {    
     this.props
@@ -117,34 +103,27 @@ class Login extends Component<Props, any>{
             backgroundColor: "white"
           }}>
           <View>
-            <LoginButton
+            <Button
+              onPress={this._loginFacebook}
               style={{
-                width: 300,
-                height: 30,
-                marginLeft: 5,
-                marginRight: 5,
-              }}
-              readPermissions={["public_profile", "user_photos", "user_posts"]}
-              onLoginFinished={(error, result) =>
-                this.loginFacebookSdk(error, result)
-              }
-              onLogoutFinished={() => console.log("logout.")}
-            />
-            <Button style={{ margin: 5 }} block onPress={() => this.loginLocal()}>
-              <Text>[Local] Continue without logging in</Text>
+                margin: 5,
+                alignSelf: "center",
+                backgroundColor: "#4267B2"              
+              }}              
+            >
+              <Icon name='facebook-square' type="FontAwesome5"/> 
+              <Text>Continue with Facebook</Text>
             </Button>
             <Text style={{
-              margin: 10,
-              marginTop: 20,
               alignSelf: "center"
             }}>---- OR ----</Text>
 
             <Button style={{
-              margin: 5,
+              margin: 5,              
               alignSelf: "center",
             }}
-              transparent dark onPress={this._loginUniqueDevice}>
-              <Text>SKIP</Text>
+              dark onPress={this._loginUniqueDevice}>
+              <Text>Continue without login</Text>
             </Button>
           </View>
         </Content>
