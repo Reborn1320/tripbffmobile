@@ -29,8 +29,7 @@ const userInitState: StoreData.UserVM = {
     firstName: "asdf",
     fullName: "adffff",
     email: "asdf@gmail.com",
-    token: "ASdf",
-    fbToken: ""
+    token: "ASdf"
 }
 
 const initState: StoreData.BffStoreData = {
