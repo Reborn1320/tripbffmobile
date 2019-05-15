@@ -17,6 +17,7 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import { uploadLocationImage, addLocations, IImportLocation } from "../../../store/Trip/operations";
 import { getAddressFromLocation } from "../../../_function/commonFunc";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
+import Toast from 'react-native-easy-toast';
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -136,7 +137,7 @@ class TripImportation extends Component<Props, State> {
         }
 
         // console.log(adapterResult)
-
+        this.refs.toast.show('Location maybe does not accurate, you can change it later!');
         this.setState({ locations: adapterResult, isLoading: false, isHideFooter: false });
     }
 
@@ -345,7 +346,16 @@ class TripImportation extends Component<Props, State> {
                             <Text style={{ color: "orange" }}>Import</Text>
                         </Button>
                     </Footer>
-                }                
+                }  
+                <Toast
+                    ref="toast"
+                    style={{backgroundColor:'#3498db'}}
+                    position='top'
+                    positionValue={50}
+                    fadeInDuration={750}
+                    fadeOutDuration={4000}
+                    textStyle={{color:'white', fontSize: 16,}}
+                />         
             </Container>
         );
     }
