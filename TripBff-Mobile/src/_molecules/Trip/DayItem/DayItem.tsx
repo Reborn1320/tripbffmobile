@@ -32,11 +32,12 @@ export class DayItemComponent extends Component<Props, State> {
 
     render() {
         const { dateIdx } = this.props
+        let currentDate = moment(this.props.date).startOf("day").format('MMMM DD, YYYY');
 
         return (
             <View>
                 <View style={{display: "flex", alignItems: "stretch", flexDirection: "row", paddingLeft: 10, paddingRight: 10}}>
-                    <Text style={{color: "darkred", fontSize: 20}}>Day {dateIdx}</Text>
+                    <Text style={{color: "darkred", fontSize: 20}}>Day {dateIdx} - {currentDate}</Text>
                     <Button small transparent
                             onPress= {this._openAddLocationModal}>
                         <Icon type={"FontAwesome"} name="plus" />

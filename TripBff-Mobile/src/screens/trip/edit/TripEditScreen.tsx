@@ -31,7 +31,7 @@ export class TripEditScreen extends Component<Props, State> {
     }
 
     private _cancelExportInfographic = () => {
-        this.props.navigation.navigate(NavigationConstants.Screens.TripsList);
+        this.props.navigation.navigate(NavigationConstants.Screens.Profile);
     }
 
     private _exportInfographic = () => {

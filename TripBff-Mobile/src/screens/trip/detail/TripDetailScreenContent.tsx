@@ -59,29 +59,7 @@ class TripDetailScreenContentInternal extends Component<Props & IMapDispatchToPr
             isUpdateDateRangeModalVisible: false,
             isUpdateNameModalVisible: false
         }
-    }
-
-    private _cancelExportInfographic = () => {
-        this.props.navigation.navigate(NavigationConstants.Screens.TripsList);
-    }
-
-    private _exportInfographic = () => {
-        // call api to request export infographic
-        var tripId = this.props.tripId;
-        
-        tripApi
-            .post('/trips/' + tripId + '/infographics')
-            .then(res => {
-                var infographicId = res.data;
-                // store infogphicId into store
-                this.props.addInfographicId(tripId, infographicId);
-                console.log('infographic id: ' + infographicId);
-                this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, { tripId: tripId });
-            })
-            .catch(error => {
-                console.log("error: " + JSON.stringify(error));
-            });
-    }
+    }    
 
     private _openRemoveLocationModal = (dateIdx, locationId) => {
         this.setState({

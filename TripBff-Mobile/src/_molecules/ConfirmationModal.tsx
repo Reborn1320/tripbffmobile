@@ -17,7 +17,7 @@ export interface Props {
 interface State {
 }
 
-class ConfirmationModal extends React.Component<Props, State> {
+class ConfirmationModal extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
   }

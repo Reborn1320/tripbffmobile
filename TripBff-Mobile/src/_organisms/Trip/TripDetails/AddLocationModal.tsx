@@ -33,7 +33,7 @@ interface State {
   selectedTime: moment.Moment
 }
 
-class AddLocationModalComponent extends React.Component<Props, State> {
+class AddLocationModalComponent extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 

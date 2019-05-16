@@ -46,7 +46,7 @@ class ActivityItem extends React.PureComponent<any> {
   }
 }
 
-class AddActivityModalComponent extends React.Component<Props & IMapDispatchToProps, State> {
+class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatchToProps, State> {
   constructor(props: Props & IMapDispatchToProps) {
     super(props);  
   }

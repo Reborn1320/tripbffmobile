@@ -6,7 +6,6 @@ export const NavigationConstants = {
     TripCreation: "TripCreation",
     TripEdit: "TripEdition",
     TripDetail: "TripDetail",
-    TripsList: "TripsList",
     TripsInfographicPreivew: "InfographicPreview",
     Home: "Home",
     Login: "Login",

@@ -1,15 +1,12 @@
 import React, { Component } from "react";
 import { Text, Card, CardItem, Left, Button, Right, Icon } from "native-base";
-import { Dimensions, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
-import Carousel, { Pagination } from 'react-native-snap-carousel';
-import SliderEntry from './SliderEntry'
-import styles from './SliderEntry.styles';
-import { colors } from './index.style';
 import { NavigationConstants } from "../../../screens/_shared/ScreenConstants";
+import CarouselItem from "../DayItem/CarouselItem";
 
 const SLIDER_1_FIRST_ITEM = 0;
 
@@ -27,8 +24,7 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 
 export interface State {
     isAddFeelingModalVisible: boolean,
-    isAddActivityModalVisible: boolean,
-    slider1ActiveSlide: number
+    isAddActivityModalVisible: boolean
 }
 
 class LocationItemComponent extends Component<Props, State> { 
@@ -37,12 +33,9 @@ class LocationItemComponent extends Component<Props, State> {
 
         this.state = {
             isAddFeelingModalVisible: false,
-            isAddActivityModalVisible: false,
-            slider1ActiveSlide: SLIDER_1_FIRST_ITEM
+            isAddActivityModalVisible: false
         }
     } 
-
-    _slider1Ref;
 
     _openRemoveLocationModal = () => {
         this.props.removeLocationHandler(this.props.dateIdx, this.props.location.locationId)
@@ -59,22 +52,7 @@ class LocationItemComponent extends Component<Props, State> {
     _toLocationDetail = () => {
         var { tripId, dateIdx, location: { locationId }  } = this.props;
         this.props.navigation.navigate(NavigationConstants.Screens.LocationDetails, { tripId, locationId, dateIdx })
-    }
-
-    _renderItemWithParallax = ({item, index}, parallaxProps) => {
-        return (
-            <SliderEntry
-              data={item}
-              tripId={this.props.tripId}
-              locationId={this.props.location.locationId}
-              dateIdx={this.props.dateIdx}
-              even={(index + 1) % 2 === 0}
-              parallax={false}
-              parallaxProps={parallaxProps}
-              navigation={this.props.navigation}
-            />
-        );
-    }
+    }   
 
     render() {
 
@@ -86,19 +64,13 @@ class LocationItemComponent extends Component<Props, State> {
         var feelingLabel = location.feeling && location.feeling.label ? location.feeling.label : "";
         var feelingIcon = location.feeling && location.feeling.icon ? location.feeling.icon : "smile";
         var activityLabel = location.activity && location.activity.label ? location.activity.label : "Activity";
-        var activityIcon = location.activity && location.activity.icon ? location.activity.icon : "running";
+        var activityIcon = location.activity && location.activity.icon ? location.activity.icon : "running";        
 
-        const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
+        let locationImages = location.images.filter(item => item.isFavorite);
 
-        function wp (percentage) {
-            const value = (percentage * viewportWidth) / 100;
-            return Math.round(value);
+        if (locationImages.length == 0) {
+            locationImages = location.images.length > 3 ? location.images.slice(0, 3) : location.images;
         }
-
-        const slideWidth = wp(75);
-        const itemHorizontalMargin = wp(2);
-        const itemWidth = slideWidth + itemHorizontalMargin * 2;
-        const sliderWidth = viewportWidth;
 
         return (
             <Card style={{ marginLeft: MARGIN_LEFT, marginRight: MARGIN_RIGHT }}>
@@ -119,39 +91,12 @@ class LocationItemComponent extends Component<Props, State> {
                         onPress={this._openRemoveLocationModal}
                         >
                         <Icon name="times" type="FontAwesome5" />
-                </Button>
+                </Button>                              
 
-                <TouchableOpacity onPress={this._toLocationDetail}>
-                    <CardItem cardBody>
-                        <Carousel       
-                                ref={c => this._slider1Ref = c}             
-                                data={location.images}
-                                renderItem={this._renderItemWithParallax}
-                                sliderWidth={sliderWidth}
-                                itemWidth={itemWidth}
-                                firstItem={SLIDER_1_FIRST_ITEM}
-                                onSnapToItem={(index) => this.setState({ slider1ActiveSlide: index }) }
-                            /> 
-                    </CardItem>  
-                </TouchableOpacity>                 
-                
-
-                <TouchableOpacity onPress={this._toLocationDetail}>
-                    <CardItem cardBody style={{ justifyContent:"center" }}>
-                        <Pagination 
-                                dotsLength={location.images.length}
-                                activeDotIndex={this.state.slider1ActiveSlide}
-                                containerStyle={styles.paginationContainer}
-                                dotColor={'rgba(64, 130, 237, 0.92)'}
-                                dotStyle={styles.paginationDot}
-                                inactiveDotColor={colors.black}
-                                inactiveDotOpacity={0.4}
-                                inactiveDotScale={0.6}
-                                carouselRef={this._slider1Ref}
-                                tappableDots={!!this._slider1Ref}
-                            />                    
-                    </CardItem>   
-                </TouchableOpacity>                
+                <CarouselItem
+                    images={locationImages}
+                    toLocationDetailsHanlder={this._toLocationDetail}>
+                </CarouselItem>
 
                 <CardItem>
                     <Left>

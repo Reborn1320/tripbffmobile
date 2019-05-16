@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { ParallaxImage } from 'react-native-snap-carousel';
 import styles from './SliderEntry.styles';
-import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import { StoreData } from "../../../store/Interfaces";
 
-export interface Props extends PropsBase {
-    tripId: string,
-    locationId: string,
-    dateIdx: number,
+interface IMapDispatchToProps {
+    toLocationDetailsHanlder: () => void
+}
+
+export interface Props extends IMapDispatchToProps {   
     data: StoreData.ImportImageVM,
     parallax: boolean,
     parallaxProps: any,
@@ -20,12 +20,7 @@ export default class SliderEntry extends Component<Props, any> {
         super(props)
     } 
 
-    _toLocationDetail = () => {
-        var { tripId, dateIdx, locationId } = this.props;
-        this.props.navigation.navigate("LocationDetail", { tripId, locationId, dateIdx })
-    }
-
-     get image() {
+    get image() {
         const { data: { thumbnailExternalUrl }, parallax, parallaxProps, even } = this.props;
 
         return parallax ? (
@@ -53,7 +48,7 @@ export default class SliderEntry extends Component<Props, any> {
             <TouchableOpacity
               activeOpacity={1}
               style={styles.slideInnerContainer}
-              onPress={this._toLocationDetail}
+              onPress={this.props.toLocationDetailsHanlder}
               >
                 <View style={styles.shadow} />
                 <View style={[styles.imageContainer, even ? styles.imageContainerEven : {}]}>

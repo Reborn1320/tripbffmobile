@@ -29,8 +29,8 @@ export default class EditPopupMenu extends React.Component<Props, State> {
               optionText: styles.item,
             }
           }>
-            <MenuOption value={1} text='Edit date range' />
             <MenuOption value={2} text='Edit trip name' />
+            <MenuOption value={1} text='Edit date range' />
           </MenuOptions>
         </Menu>
       </View>

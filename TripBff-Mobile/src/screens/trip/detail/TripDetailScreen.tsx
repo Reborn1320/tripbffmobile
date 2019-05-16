@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Header, Content, Button, Text, View } from 'native-base';
-import { Alert } from "react-native";
+import { Alert, BackHandler } from "react-native";
 import _, { } from "lodash";
 import { tripApi } from "../../_services/apis";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
@@ -21,8 +21,21 @@ interface State {
 
 export class TripDetailScreen extends Component<Props & IMapDispatchToProps, State> {
 
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this._handleBackPress);
+    }
+
+    componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this._handleBackPress);
+    }
+
+    private _handleBackPress = () => {
+        this.props.navigation.navigate(NavigationConstants.Screens.Profile);
+        return true;
+    }
+
     private _cancelExportInfographic = () => {
-        this.props.navigation.navigate(NavigationConstants.Screens.TripsList);
+        this.props.navigation.navigate(NavigationConstants.Screens.Profile);
     }
 
     private _exportInfographic = () => {

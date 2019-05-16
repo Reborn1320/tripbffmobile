@@ -1,10 +1,9 @@
 import React from "react";
-import { Dimensions, ViewStyle, StyleSheet, TextStyle } from 'react-native'
+import { Dimensions, ViewStyle, StyleSheet, TextStyle, TextInput } from 'react-native'
 import { Text, View, Icon } from "native-base";
 import _, { } from "lodash";
 import { connectStyle } from 'native-base';
 import ViewMoreText from 'react-native-view-more-text';
-import { TextInput } from "react-native-gesture-handler";
 
 export interface Props {
     description: string,
