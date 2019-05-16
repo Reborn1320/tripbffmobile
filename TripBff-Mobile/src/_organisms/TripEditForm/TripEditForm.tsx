@@ -98,12 +98,12 @@ class TripEditFormComponent extends Component<Props, State> {
           </Item>
         }
         <View style={styles.buttonsContainer}>
-          {this.formValid() && this.renderEditBtn()}
           <Button transparent light
             style={{ alignSelf: 'center' }}
             onPress={() => { if (this.props.onCancel) this.props.onCancel() }}>
             <Text>Cancel</Text>
           </Button>
+          {this.formValid() && this.renderEditBtn()}
         </View>
       </Form>
 
