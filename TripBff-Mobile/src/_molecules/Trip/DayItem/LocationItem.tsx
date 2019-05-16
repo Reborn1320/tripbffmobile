@@ -66,6 +66,12 @@ class LocationItemComponent extends Component<Props, State> {
         var activityLabel = location.activity && location.activity.label ? location.activity.label : "Activity";
         var activityIcon = location.activity && location.activity.icon ? location.activity.icon : "running";        
 
+        let locationImages = location.images.filter(item => item.isFavorite);
+
+        if (locationImages.length == 0) {
+            locationImages = location.images.length > 3 ? location.images.slice(0, 3) : location.images;
+        }
+
         return (
             <Card style={{ marginLeft: MARGIN_LEFT, marginRight: MARGIN_RIGHT }}>
                 <TouchableOpacity onPress={this._toLocationDetail}>
@@ -88,7 +94,7 @@ class LocationItemComponent extends Component<Props, State> {
                 </Button>                              
 
                 <CarouselItem
-                    images={location.images}
+                    images={locationImages}
                     toLocationDetailsHanlder={this._toLocationDetail}>
                 </CarouselItem>
 
