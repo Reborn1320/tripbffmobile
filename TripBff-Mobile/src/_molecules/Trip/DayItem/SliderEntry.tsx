@@ -2,15 +2,17 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { ParallaxImage } from 'react-native-snap-carousel';
 import styles from './SliderEntry.styles';
-import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import { StoreData } from "../../../store/Interfaces";
 
-export interface Props {   
+interface IMapDispatchToProps {
+    toLocationDetailsHanlder: () => void
+}
+
+export interface Props extends IMapDispatchToProps {   
     data: StoreData.ImportImageVM,
     parallax: boolean,
     parallaxProps: any,
-    even: boolean,
-    toLocationDetailsHanlder: () => void
+    even: boolean
 }
 
 export default class SliderEntry extends Component<Props, any> {
