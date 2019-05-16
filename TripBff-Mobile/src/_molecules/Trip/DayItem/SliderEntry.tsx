@@ -5,14 +5,12 @@ import styles from './SliderEntry.styles';
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import { StoreData } from "../../../store/Interfaces";
 
-export interface Props extends PropsBase {
-    tripId: string,
-    locationId: string,
-    dateIdx: number,
+export interface Props {   
     data: StoreData.ImportImageVM,
     parallax: boolean,
     parallaxProps: any,
-    even: boolean
+    even: boolean,
+    toLocationDetailsHanlder: () => void
 }
 
 export default class SliderEntry extends Component<Props, any> {
@@ -20,12 +18,7 @@ export default class SliderEntry extends Component<Props, any> {
         super(props)
     } 
 
-    _toLocationDetail = () => {
-        var { tripId, dateIdx, locationId } = this.props;
-        this.props.navigation.navigate("LocationDetail", { tripId, locationId, dateIdx })
-    }
-
-     get image() {
+    get image() {
         const { data: { thumbnailExternalUrl }, parallax, parallaxProps, even } = this.props;
 
         return parallax ? (
@@ -53,7 +46,7 @@ export default class SliderEntry extends Component<Props, any> {
             <TouchableOpacity
               activeOpacity={1}
               style={styles.slideInnerContainer}
-              onPress={this._toLocationDetail}
+              onPress={this.props.toLocationDetailsHanlder}
               >
                 <View style={styles.shadow} />
                 <View style={[styles.imageContainer, even ? styles.imageContainerEven : {}]}>
