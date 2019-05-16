@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 import { View } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
@@ -6,9 +6,11 @@ import AddFeelingModal from "../../../_organisms/Trip/TripDetails/AddFeelingModa
 import AddActivityModal from "../../../_organisms/Trip/TripDetails/AddActivityModal";
 import ConfirmationModal from "../../../_molecules/ConfirmationModal";
 import AddLocationModal from "../../../_organisms/Trip/TripDetails/AddLocationModal"
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { Modal } from "../../../_atoms";
 import TripEditForm, { TripEditFormEnum } from "../../TripEditForm/TripEditForm";
+import DateRangePicker from "../../../_atoms/DatePicker/DateRangePicker";
+import { connect } from "react-redux";
 
 interface IMapDispatchToProps {
     confirmUpdateLocationFeelingHandler: (dateIdx: number, locationId: string, feeling: StoreData.FeelingVM) => void
@@ -27,6 +29,9 @@ interface IMapDispatchToProps {
 
 export interface Props extends IMapDispatchToProps {
     tripId: string,
+    tripName?: string,
+    fromDate?: Moment,
+    toDate?: Moment,
     dateIdx: number,
     locationId: string,
     isAddFeelingModalVisible: boolean,
@@ -41,7 +46,7 @@ export interface Props extends IMapDispatchToProps {
 interface State {
 }
 
-class TripDetailsModal extends Component<Props, State> { 
+class TripDetailsModalComponent extends PureComponent<Props, State> { 
 
     _removeLocationConfirmed = () => {
         this.props.removeLocationConfirmedHandler(this.props.dateIdx, this.props.locationId);
@@ -92,7 +97,7 @@ class TripDetailsModal extends Component<Props, State> {
         this.props.cancelAddLocationModalHandler();
     }
 
-    _onUpdateDateRange = (name: string, fromDate: moment.Moment, toDate: moment.Moment) => {
+    _onUpdateDateRange = (fromDate: moment.Moment, toDate: moment.Moment) => {
         this.props.updateTripDateRangeHandler(fromDate, toDate);            
     }
 
@@ -130,21 +135,19 @@ class TripDetailsModal extends Component<Props, State> {
                     date={this.props.selectedDate}
                     confirmHandler={this._addLocationConfirmed}
                     cancelHandler={this._cancelAddLocationModal} />
-                <Modal isVisible={this.props.isUpdateDateRangeModalVisible}
-                    title="Edit date range"
-                >
-                    <TripEditForm
-                        fields={[TripEditFormEnum.DateRange]}
-                        tripId={this.props.tripId}
-                        onClickEdit={this._onUpdateDateRange}
-                        onCancel={this._cancelUpdateDateRangeModal} />
-                </Modal>
+                <DateRangePicker 
+                    isVisible={this.props.isUpdateDateRangeModalVisible}
+                    fromDate={this.props.fromDate}
+                    toDate={this.props.toDate}
+                    cancelHandler={this._cancelUpdateDateRangeModal}
+                    confirmHandler={this._onUpdateDateRange}>            
+                </DateRangePicker> 
                 <Modal isVisible={this.props.isUpdateNameModalVisible}
                     title="Edit trip name"
                 >
                     <TripEditForm
                         fields={[TripEditFormEnum.Name]}
-                        tripId={this.props.tripId}
+                        tripName={this.props.tripName}
                         onClickEdit={this._onUpdateTripName}
                         onCancel={this._cancelUpdateNameModal} />
                 </Modal>
@@ -152,6 +155,22 @@ class TripDetailsModal extends Component<Props, State> {
         );
     }
 }
+
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+    var tripId  = ownProps.tripId;
+    var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
+  
+    return {
+        tripName: trip.name,
+        fromDate: trip.fromDate,
+        toDate: trip.toDate
+    };
+  };
+  
+  const TripDetailsModal = connect(
+    mapStateToProps,
+    null
+  )(TripDetailsModalComponent);
 
 export default TripDetailsModal;
 
