@@ -3,8 +3,6 @@ import React, { Component } from "react";
 import { View } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
-import { tripApi } from "../../_services/apis";
-import { NavigationConstants } from "../../_shared/ScreenConstants";
 import * as RNa from "react-navigation";
 import TripDetails from "../../../_organisms/Trip/TripDetails/TripDetails";
 import TripDetailsModal from "../../../_organisms/Trip/TripDetails/TripDetailsModal"

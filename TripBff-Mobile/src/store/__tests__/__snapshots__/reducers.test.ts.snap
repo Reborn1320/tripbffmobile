@@ -1,17 +1,38 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`trip reducer should handle TRIP_ADD 1`] = `
+exports[`trip reducer TRIPS_ADD generate number of dates correctly 1`] = `
 Array [
   Object {
-    "fromDate": "2019-03-16T17:00:00.000Z",
-    "name": "name",
-    "toDate": "2019-03-23T16:59:59.999Z",
-    "tripId": "tripId01",
+    "dates": Array [
+      Object {
+        "date": "2019-03-16T00:00:00.000Z",
+        "dateIdx": 1,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-17T00:00:00.000Z",
+        "dateIdx": 2,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-18T00:00:00.000Z",
+        "dateIdx": 3,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+    ],
+    "fromDate": "2019-03-16T00:00:00.000Z",
+    "locations": Array [],
+    "name": "Ffggc 7f7",
+    "toDate": "2019-03-18T00:00:00.000Z",
+    "tripId": "36f626c0-47cd-11e9-b7e2-efb95b29f029",
   },
 ]
 `;
 
-exports[`trip reducer should handle TRIPS_ADD 1`] = `
+exports[`trip reducer should handle TRIP_ADD 1`] = `
 Array [
   Object {
     "dates": Array [
@@ -59,6 +80,61 @@ Array [
       },
     ],
     "fromDate": "2019-03-16T17:00:00.000Z",
+    "name": "name",
+    "toDate": "2019-03-23T16:59:59.999Z",
+    "tripId": "tripId01",
+  },
+]
+`;
+
+exports[`trip reducer should handle TRIPS_ADD 1`] = `
+Array [
+  Object {
+    "dates": Array [
+      Object {
+        "date": "2019-03-17T00:00:00.000Z",
+        "dateIdx": 1,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-18T00:00:00.000Z",
+        "dateIdx": 2,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-19T00:00:00.000Z",
+        "dateIdx": 3,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-20T00:00:00.000Z",
+        "dateIdx": 4,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-21T00:00:00.000Z",
+        "dateIdx": 5,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-22T00:00:00.000Z",
+        "dateIdx": 6,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-23T00:00:00.000Z",
+        "dateIdx": 7,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+    ],
+    "fromDate": "2019-03-17T00:00:00.000Z",
     "locations": Array [
       Object {
         "activity": Object {},
@@ -87,7 +163,7 @@ Array [
       },
     ],
     "name": "Ffggc 7f7",
-    "toDate": "2019-03-23T16:59:59.999Z",
+    "toDate": "2019-03-23T00:00:00.000Z",
     "tripId": "36f626c0-47cd-11e9-b7e2-efb95b29f029",
   },
 ]
@@ -99,7 +175,6 @@ Object {
   "trips": Array [],
   "user": Object {
     "email": "asdf@gmail.com",
-    "fbToken": "",
     "firstName": "asdf",
     "fullName": "adffff",
     "lastName": "asdf",

@@ -61,5 +61,21 @@ describe('trip reducer', () => {
     var result = reducer(undefined, {});
     expect(reducer(result, startAction).trips).toMatchSnapshot();
   });
+
+
+  it('TRIPS_ADD generate number of dates correctly', () => {
+    const startAction = {
+      type: "TRIPS_ADD",
+      trips: [{
+        tripId: "36f626c0-47cd-11e9-b7e2-efb95b29f029",
+        name: "Ffggc 7f7",
+        fromDate: moment("2019-03-16T00:00:00.000Z"),
+        toDate: moment("2019-03-18T00:59:59.999Z"),
+        locations: []
+      }]
+    };
+    var result = reducer(undefined, {});
+    expect(reducer(result, startAction).trips).toMatchSnapshot();
+  });
 })
 

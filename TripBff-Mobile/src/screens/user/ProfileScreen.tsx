@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Footer, View } from "native-base";
+import { Container, Content, Footer, View } from "native-base";
 import _ from "lodash";
 import Loading from "../../_atoms/Loading/Loading";
 import { TripsComponent } from "../../_organisms/Trips/TripsList/TripsComponent";
 import AppFooter from "../shared/AppFooter";
 import { NavigationConstants } from "../_shared/ScreenConstants";
-import { PropsBase } from "../_shared/LayoutContainer";
 import { StoreData } from "../../store/Interfaces";
-import { AccessToken } from "react-native-fbsdk";
+import { NavigationScreenProp } from "react-navigation";
 
 export interface IStateProps { }
 
@@ -18,12 +17,14 @@ interface IMapDispatchToProps {
     addTrips: (trips: Array<StoreData.TripVM>) => void;
 }
 
-export interface Props extends IMapDispatchToProps, PropsBase { }
+export interface Props extends IMapDispatchToProps {
+  navigation: NavigationScreenProp<any, any>;
+  trips: Array<any>;
+}
 
 interface State {
     isLoaded: boolean;
     loadingMessage: string;
-    trips: Array<any>;
     UIState: UIState;
 }
 
@@ -36,7 +37,6 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
 
         this.state = {
             isLoaded: true,
-            trips: [],
             loadingMessage: "loading trips belong to this user",
             UIState: "LOADING_TRIP"
         };
@@ -56,7 +56,6 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                 isLoaded: false,
                 loadingMessage: "",
                 UIState: "NORMAL",
-                trips: trips
             });
         });
     }
@@ -70,7 +69,8 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     }
 
     render() {
-        const { trips, isLoaded } = this.state;
+        const { trips } = this.props;
+        const { isLoaded } = this.state;
         // console.log("screen render", isLoaded);
         // console.log("screen render", trips);
         return (
