@@ -39,19 +39,6 @@ class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, S
         const w = Dimensions.get("window").width;
         return (
             <Container>
-                <Header>
-                <View style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "stretch" }}>
-                    <Button transparent
-                    >
-                        <Text>BACK</Text>
-                    </Button>
-                    {/* <Button transparent danger
-                        onPress={this.onDeleteLocationImages}
-                    >
-                        <Text>DELETE</Text>
-                    </Button> */}
-                    </View>
-                </Header>
                 <Content>
                     <ImageFavorable
                         imageUrl={url} width={w}

@@ -1,11 +1,9 @@
 import React, { PureComponent } from "react";
-import {  Image, Dimensions, ActivityIndicator } from "react-native";
+import {  Image, Dimensions, ActivityIndicator, StyleSheet } from "react-native";
 import {
   Container,
-  Header,
   Content,
   Button,
-  Icon,
   Text,
   View
 } from "native-base";
@@ -26,7 +24,8 @@ import { NavigationConstants } from "../../_shared/ScreenConstants";
 import { TabView } from 'react-native-tab-view';
 import ImageList, { calculateImageListWidth, N_ITEMS_PER_ROW } from "../../../_molecules/ImageList/ImageList";
 import { ImageSelection } from "../../../_molecules/ImageList/ImageSelection";
-import { tripApiService } from "../../../store/ApisAsAService";
+import ActionButton from 'react-native-action-button';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 interface ImageProps {
   tripId: string,
@@ -41,7 +40,7 @@ interface ImageProps {
         this.state = {
             images: []
         };
-      }
+      }    
 
       componentDidMount() {
         if (this.props.images) {
@@ -130,7 +129,7 @@ interface ImageProps {
       this.state = { 
         imageUri: ""
       };
-    }
+    }    
 
     componentDidMount() {
       this._getInfographic();
@@ -210,6 +209,24 @@ interface ImageProps {
         imageUrls: []
       }
     } 
+
+    static navigationOptions = ({ navigation, navigationOptions }) => {
+      return {
+        title: '',
+        headerRight: (
+          <Button transparent style={{
+            alignSelf: "stretch"
+                }}
+            onPress={navigation.getParam('_cancel')}>
+            <Text style={{ color: "white" }}>Cancel</Text>
+          </Button>
+        ),
+      };
+    };
+
+    componentDidMount() {
+      this.props.navigation.setParams({ _cancel: this._cancel });
+    }
 
     private _updateShareInfographicUrl = (imageUrl) => {
       this.setState({infographicUrl: imageUrl});
@@ -295,25 +312,6 @@ interface ImageProps {
     render() {
         return (
           <Container>
-            <Header style={{
-                        justifyContent: "space-between", alignItems: "stretch", padding: 0,
-                        shadowColor: "black", elevation: 10,
-                        backgroundColor: "white"
-                    }}>
-                  <Button transparent style={{
-                            alignSelf: "stretch", margin: 6,
-                        }}
-                    onPress={this._cancel}>
-                     <Text style={{ color: "grey" }}>Cancel</Text>
-                  </Button>
-
-                  <Button transparent style={{
-                            alignSelf: "stretch", margin: 6,
-                        }}
-                    onPress={this._sharePhotoWithShareDialog}>
-                     <Text style={{ color: "blue" }}> Share to Facebook</Text>
-                  </Button>
-            </Header>
             <Content>
               <View>             
                     <TabView
@@ -337,7 +335,19 @@ interface ImageProps {
                       initialLayout={{ width: Dimensions.get('window').width }}
                     />
               </View>              
-            </Content>            
+            </Content>    
+            <ActionButton
+                    buttonColor="blue"
+                    position="center"
+                    onPress={this._sharePhotoWithShareDialog}
+                    renderIcon={() => 
+                      <View style={{alignItems: "center"}}>
+                          <Icon name="share" style={styles.actionButtonIcon} />
+                          <Text style={{color: "white"}}>Share</Text>
+                      </View>
+                    }
+                    >                    
+                </ActionButton>        
           </Container>
         );
       }
@@ -366,3 +376,11 @@ interface ImageProps {
     mapDispatchToProps
   )(InfographicPreview);
   export default InfographicPreviewScreen;
+
+  const styles = StyleSheet.create({
+    actionButtonIcon: {
+      fontSize: 20,
+      height: 22,
+      color: 'white',
+    },
+  });
