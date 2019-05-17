@@ -5,7 +5,7 @@ Array [
   Object {
     "dates": Array [
       Object {
-        "date": "2019-03-13T17:00:00.000Z",
+        "date": "2019-03-14T00:00:00.000Z",
         "dateIdx": 1,
         "locationIds": Array [
           "locationId01",
@@ -40,61 +40,61 @@ Array [
         ],
       },
       Object {
-        "date": "2019-03-14T17:00:00.000Z",
+        "date": "2019-03-15T00:00:00.000Z",
         "dateIdx": 2,
         "locationIds": Array [],
         "locations": Array [],
       },
       Object {
-        "date": "2019-03-15T17:00:00.000Z",
+        "date": "2019-03-16T00:00:00.000Z",
         "dateIdx": 3,
         "locationIds": Array [],
         "locations": Array [],
       },
       Object {
-        "date": "2019-03-16T17:00:00.000Z",
+        "date": "2019-03-17T00:00:00.000Z",
         "dateIdx": 4,
         "locationIds": Array [],
         "locations": Array [],
       },
       Object {
-        "date": "2019-03-17T17:00:00.000Z",
+        "date": "2019-03-18T00:00:00.000Z",
         "dateIdx": 5,
         "locationIds": Array [],
         "locations": Array [],
       },
       Object {
-        "date": "2019-03-18T17:00:00.000Z",
+        "date": "2019-03-19T00:00:00.000Z",
         "dateIdx": 6,
         "locationIds": Array [],
         "locations": Array [],
       },
       Object {
-        "date": "2019-03-19T17:00:00.000Z",
+        "date": "2019-03-20T00:00:00.000Z",
         "dateIdx": 7,
         "locationIds": Array [],
         "locations": Array [],
       },
       Object {
-        "date": "2019-03-20T17:00:00.000Z",
+        "date": "2019-03-21T00:00:00.000Z",
         "dateIdx": 8,
         "locationIds": Array [],
         "locations": Array [],
       },
       Object {
-        "date": "2019-03-21T17:00:00.000Z",
+        "date": "2019-03-22T00:00:00.000Z",
         "dateIdx": 9,
         "locationIds": Array [],
         "locations": Array [],
       },
       Object {
-        "date": "2019-03-22T17:00:00.000Z",
+        "date": "2019-03-23T00:00:00.000Z",
         "dateIdx": 10,
         "locationIds": Array [],
         "locations": Array [],
       },
     ],
-    "fromDate": "2019-03-13T17:00:00.000Z",
+    "fromDate": "2019-03-14T00:00:00.000Z",
     "locations": Array [
       Object {
         "activity": Object {},
@@ -123,7 +123,7 @@ Array [
       },
     ],
     "name": "Ffggc 7f7",
-    "toDate": "2019-03-23T16:59:59.999Z",
+    "toDate": "2019-03-23T00:00:00.000Z",
     "tripId": "tripId01",
   },
 ]

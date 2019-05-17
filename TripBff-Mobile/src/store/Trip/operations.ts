@@ -153,7 +153,7 @@ export function updateTrip(tripId: string,name: string, fromDate: Moment, toDate
        dispatch(updateTripAction(tripId, name, fromDate, toDate));
     })
     .catch((err) => {
-      console.log('error create trip api: ', err);
+      console.log('error update trip api: ', err);
     });
   };
 }

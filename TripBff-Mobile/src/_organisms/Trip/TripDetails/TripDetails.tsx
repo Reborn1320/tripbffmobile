@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import { Spinner, View, H1, Icon } from 'native-base';
+import { Spinner, View } from 'native-base';
 import { FlatList } from "react-native";
 import _, { } from "lodash";
 import DayItem from "../../../_molecules/Trip/DayItem/DayItem";
-import * as RNa from "react-navigation";
 import EditPopupMenu from "../../../_molecules/Trip/EditPopupMenu/EditPopupMenu";
-import moment, { Moment } from "moment";
+import moment from "moment";
 import { StoreData } from "../../../store/Interfaces";
 import { connect } from "react-redux";
 import TripName from "../../../_molecules/Trip/TripName";

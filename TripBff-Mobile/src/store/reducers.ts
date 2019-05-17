@@ -22,6 +22,7 @@ import { LOCATION_REMOVE,
 } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
 import { AppStateIOS } from 'react-native';
+import { toDateUtc } from '../_function/dateFuncs';
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -272,14 +273,18 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
         return action.trips.map(trip => {
             return {
                 ...trip,
-                dates: getDatesProperty(trip.fromDate, trip.toDate, trip.locations)
+                fromDate: toDateUtc(trip.fromDate),
+                toDate: toDateUtc(trip.toDate),
+                dates: getDatesProperty(toDateUtc(trip.fromDate), toDateUtc(trip.toDate), trip.locations)
             }
         });
     }
     else if (actionType == TRIP_ADD) {
         var trip = {
             ...action.trip,
-            dates: getDatesProperty(action.trip.fromDate, action.trip.toDate, [])
+            fromDate: toDateUtc(action.trip.fromDate),
+            toDate: toDateUtc(action.trip.toDate),
+            dates: getDatesProperty(toDateUtc(action.trip.fromDate), toDateUtc(action.trip.toDate), [])
         }
         return [...state, trip];
     }

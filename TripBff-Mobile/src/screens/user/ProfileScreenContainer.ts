@@ -5,8 +5,11 @@ import { fetchTrips } from "../../store/Trips/operations";
 import { addTrips } from "../../store/Trips/actions";
 import { ProfileScreen } from "./ProfileScreen";
 
-const mapStateToProps = () => {
-  return {};
+
+const mapStateToProps = (storeState, ownProps) => {
+  return {
+    trips: storeState.trips
+  };
 };
 
 const mapDispatchToProps = dispatch => {

@@ -5,6 +5,7 @@ import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
 import CalendarPicker from 'react-native-calendar-picker';
 import { Moment } from "moment";
+import { toDateUtc } from "../../_function/dateFuncs";
 
 export interface Props {
   isVisible: boolean;
@@ -19,7 +20,7 @@ interface State {
   toDate: Moment;
 }
 
-class DateRangePickerModalComponent extends React.PureComponent<Props, State> {
+class DateRangePickerModalComponent extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);  
     this.state = {
@@ -34,7 +35,12 @@ class DateRangePickerModalComponent extends React.PureComponent<Props, State> {
 
   private _onSave = () => {
     let { fromDate, toDate } = this.state;
-    this.props.confirmHandler(fromDate, toDate);
+    const newFromDate = toDateUtc(fromDate);
+    const newToDate = toDateUtc(toDate);
+    console.log("on date range save");
+    console.log(newFromDate.format(), newToDate.format());
+
+    this.props.confirmHandler(newFromDate, newToDate);
   }  
 
   private onDateChange = (date, type) => {
@@ -51,7 +57,14 @@ class DateRangePickerModalComponent extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isVisible } = this.props;    
+    const { isVisible } = this.props;
+    const fromDate = this.state.fromDate;
+    const toDate = this.state.toDate ? this.state.toDate.startOf("day") : null;
+
+    // if (fromDate && toDate) {
+    //   console.log("date range picker render");
+    //   console.log(fromDate.format(), toDate.format());
+    // }
           
     return (
         <RNModal style={styles.modal}            
@@ -65,8 +78,8 @@ class DateRangePickerModalComponent extends React.PureComponent<Props, State> {
                     <CalendarPicker
                         startFromMonday={true}
                         allowRangeSelection={true} 
-                        selectedStartDate={this.state.fromDate}
-                        selectedEndDate={this.state.toDate} 
+                        selectedStartDate={fromDate}
+                        selectedEndDate={toDate} 
                         todayBackgroundColor="#f2e6ff"
                         selectedDayColor="#7300e6"
                         selectedDayTextColor="#FFFFFF"
