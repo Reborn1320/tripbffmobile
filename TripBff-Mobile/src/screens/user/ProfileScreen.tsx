@@ -42,6 +42,10 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         };
     }
 
+    static navigationOptions = {
+        header: null
+    };
+
     componentWillMount() {
         this.props.fetchTrips().then(trips => {
             // console.log("fetched Trips", trips);

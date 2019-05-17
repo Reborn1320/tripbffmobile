@@ -6,9 +6,11 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
 import { mixins } from "../../../_utils";
 import TripDetailScreenContent from "../detail/TripDetailScreenContent";
-import { Alert } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import { tripApi } from "../../_services/apis";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
+import ActionButton from 'react-native-action-button';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 interface IMapDispatchToProps {
      addInfographicId: (tripId: string, infographicId: string) => void
@@ -28,7 +30,7 @@ export class TripEditScreen extends Component<Props, State> {
         super(props)
         this.state = {
         }
-    }
+    }   
 
     private _cancelExportInfographic = () => {
         this.props.navigation.navigate(NavigationConstants.Screens.Profile);
@@ -68,21 +70,30 @@ export class TripEditScreen extends Component<Props, State> {
         const { trip, navigation } = this.props;
         return (
             <Container>
-                <Header>
-                    <View>
-                        <Button
-                            style={{ marginLeft: 'auto' }}
-                            onPress={() => this._confirmExportInfographic()}>
-                            <Text style={{ paddingTop: 15 }}>Done</Text>
-                        </Button>
-                    </View>
-
-                </Header>
                 <Content>
                     <TripDetailScreenContent tripId={trip.tripId} navigation={navigation} />
                 </Content>
+                <ActionButton
+                    buttonColor="#2eb82e"
+                    position="center"
+                    onPress={this._confirmExportInfographic}
+                    renderIcon={() => 
+                        <View style={{alignItems: "center"}}>
+                            <Icon name="md-checkmark" style={styles.actionButtonIcon} />
+                            <Text style={{color: "white"}}>Done</Text>
+                        </View> }
+                    >                    
+                </ActionButton>
             </Container>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    actionButtonIcon: {
+      fontSize: 20,
+      height: 22,
+      color: 'white'
+    },
+  });
 

@@ -48,23 +48,25 @@ const store = createStore(
   )
 );
 
+const navigationOptions =  {
+  headerMode: "screen",
+  defaultNavigationOptions: {
+    headerStyle: {
+      backgroundColor: '#ff9900'
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold'
+    }
+  },
+} as any;
+
 const TripCreationNavigator = createStackNavigator(
   {
     TripCreation: { screen: TripCreation },
     TripImportation: { screen: TripImportationScreen }, 
   },
-  {
-    headerMode: "screen",
-    defaultNavigationOptions: {
-      headerStyle: {
-        backgroundColor: '#ff9900'
-      },
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontWeight: 'bold'
-      }
-    },
-  }
+  navigationOptions
 );
 
 const TripDetailsNavigator = createStackNavigator(
@@ -74,9 +76,7 @@ const TripDetailsNavigator = createStackNavigator(
     LocationImageDetail: { screen: LocationImageDetailScreen },
     InfographicPreview: { screen: InfographicPreviewScreen },
   },
-  {
-    headerMode: "none"
-  }
+  navigationOptions
 );
 
 const ProfileNavigator = createStackNavigator(
@@ -87,9 +87,7 @@ const ProfileNavigator = createStackNavigator(
     LocationImageDetail: { screen: LocationImageDetailScreen },
     InfographicPreview: { screen: InfographicPreviewScreen },
   },
-  {
-    headerMode: "none"
-  }
+  navigationOptions
 );
 
 

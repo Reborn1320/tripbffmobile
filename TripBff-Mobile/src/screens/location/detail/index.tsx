@@ -172,22 +172,23 @@ class LocationDetail extends React.Component<Props, State> {
         const { isMassSelection } = this.state;
         return (
             <Container>
-                <Header>
                 {isMassSelection &&
-                (<View style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "stretch" }}>
-                    <Button transparent
-                        onPress={() => this.setState({ isMassSelection: false, selectedImageIds: [] })}
-                    >
-                        <Text>CANCEL</Text>
-                    </Button>
-                    <Button transparent danger
-                        onPress={this.onDeleteLocationImages}
-                    >
-                        <Text>DELETE</Text>
-                    </Button>
-                    </View>)
+                (
+                    <Header>
+                        <View style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "stretch" }}>
+                        <Button transparent
+                            onPress={() => this.setState({ isMassSelection: false, selectedImageIds: [] })}
+                        >
+                            <Text>CANCEL</Text>
+                        </Button>
+                        <Button transparent danger
+                            onPress={this.onDeleteLocationImages}
+                        >
+                            <Text>DELETE</Text>
+                        </Button>
+                        </View>
+                    </Header>)
                 }
-                </Header>
                 <View style={{ flex: 1 }}>
                     <ScrollView keyboardShouldPersistTaps={'handled'}>
                         <LocationContent

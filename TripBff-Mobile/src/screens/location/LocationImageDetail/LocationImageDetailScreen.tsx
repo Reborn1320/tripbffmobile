@@ -23,6 +23,7 @@ export interface Props {
 }
 
 interface State {
+    isChecked: boolean
 }
 
 class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, State> {
@@ -31,7 +32,19 @@ class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, S
         super(props);
 
         this.state = {
+            isChecked: this.props.isFavorite
         }
+    }
+
+    private _onFavorite = () => {
+        this.props.favoriteLocationImage(this.props.tripId,
+            this.props.dateIdx,
+            this.props.locationId,
+            this.props.imageId,
+            !this.props.isFavorite);
+        this.setState({
+            isChecked: !this.props.isFavorite
+        });
     }
 
     render() {
@@ -39,26 +52,13 @@ class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, S
         const w = Dimensions.get("window").width;
         return (
             <Container>
-                <Header>
-                <View style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "stretch" }}>
-                    <Button transparent
-                    >
-                        <Text>BACK</Text>
-                    </Button>
-                    {/* <Button transparent danger
-                        onPress={this.onDeleteLocationImages}
-                    >
-                        <Text>DELETE</Text>
-                    </Button> */}
-                    </View>
-                </Header>
                 <Content>
                     <ImageFavorable
                         imageUrl={url} width={w}
                         isFirstItemInRow={true}
                         isFirstRow={true}
-
-                        isChecked={isFavorite}
+                        onPressedOnFavoriteIcon={this._onFavorite}
+                        isChecked={this.state.isChecked}
                         />
                 </Content>
             </Container>

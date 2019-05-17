@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { Container, Header, Content, Button, Text, View } from 'native-base';
-import { Alert, BackHandler } from "react-native";
+import { Alert, BackHandler, StyleSheet } from "react-native";
 import _, { } from "lodash";
 import { tripApi } from "../../_services/apis";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import * as RNa from "react-navigation";
 import TripDetailScreenContent from "./TripDetailScreenContent";
+import ActionButton from 'react-native-action-button';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void;
@@ -73,19 +75,29 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
 
         return (
             <Container>
-                <Header>
-                    <View style={{ height: 100, flex: 1, paddingTop: 10 }}>
-                        <Button
-                            style={{ marginLeft: 'auto' }}
-                            onPress={this._confirmExportInfographic}>
-                            <Text style={{ paddingTop: 15 }}>Done</Text>
-                        </Button>
-                    </View>
-                </Header>
                 <Content>
                     <TripDetailScreenContent tripId={tripId} navigation={navigation} />
                 </Content>
+                <ActionButton
+                    buttonColor="#2eb82e"
+                    position="center"
+                    onPress={this._confirmExportInfographic}
+                    renderIcon={() => 
+                        <View style={{alignItems: "center"}}>
+                            <Icon name="md-checkmark" style={styles.actionButtonIcon} />
+                            <Text style={{color: "white"}}>Done</Text>
+                        </View> }
+                    >                    
+                </ActionButton>
             </Container>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    actionButtonIcon: {
+      fontSize: 20,
+      height: 22,
+      color: 'white',
+    },
+  });
