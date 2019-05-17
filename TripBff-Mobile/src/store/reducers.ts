@@ -85,7 +85,8 @@ function imageReducer(state: StoreData.ImportImageVM, action: ImageActions) {
             return {
                 ...state,
                 externalStorageId: action.externalStorageId,
-                thumbnailExternalUrl: action.thumbnailExternalUrl
+                thumbnailExternalUrl: action.thumbnailExternalUrl,
+                externalUrl: action.externalUrl
             }
         case "TRIP_LOCATION_IMAGE_FAVOR":
             return {

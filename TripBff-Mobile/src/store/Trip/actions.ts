@@ -241,7 +241,8 @@ type UploadLocationImage = {
     locationId: string,
     imageId: string,
     externalStorageId: string,
-    thumbnailExternalUrl: string
+    thumbnailExternalUrl: string,
+    externalUrl: string
 }
 
 type AddLocationImage = {
@@ -297,8 +298,8 @@ export function favorLocationImage(tripId: string, dateIdx: number, locationId: 
     }
 }
 
-export function uploadLocationImage(tripId: string, dateIdx, locationId: string, imageId: string, externalStorageId: string, thumbnailExternalUrl: string): UploadLocationImage {
+export function uploadLocationImage(tripId: string, dateIdx, locationId: string, imageId: string, externalStorageId: string, thumbnailExternalUrl: string, externalUrl: string): UploadLocationImage {
     return {
-        type: "TRIP_LOCATION_IMAGE_UPLOAD", tripId, dateIdx, locationId, imageId, externalStorageId, thumbnailExternalUrl
+        type: "TRIP_LOCATION_IMAGE_UPLOAD", tripId, dateIdx, locationId, imageId, externalStorageId, thumbnailExternalUrl, externalUrl
     }
 }
