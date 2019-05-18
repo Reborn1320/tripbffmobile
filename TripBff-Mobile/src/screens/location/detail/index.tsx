@@ -11,7 +11,8 @@ import { View } from 'react-native';
 import { favorLocationImage } from '../../../store/Trip/operations';
 import { NavigationConstants } from '../../_shared/ScreenConstants';
 import AddLocationImageButton from '../../../_organisms/Location/AddLocationImageButton';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
+import { number } from 'prop-types';
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
@@ -41,6 +42,7 @@ interface State {
     isUpdateLocationAddressModalVisible: boolean,
     isUpdateLocationHighlightModalVisible: boolean,
     isUpdateLocationDescriptionModalVisible: boolean,
+    isOpenImagePickerModalVisible: boolean,
     isMassSelection: boolean;
     selectedImageIds: string[]
 }
@@ -54,6 +56,7 @@ class LocationDetail extends React.Component<Props, State> {
             isUpdateLocationAddressModalVisible: false,
             isUpdateLocationHighlightModalVisible: false,
             isUpdateLocationDescriptionModalVisible: false,
+            isOpenImagePickerModalVisible: false,
             isMassSelection: false,
             selectedImageIds: []
         }
@@ -158,13 +161,46 @@ class LocationDetail extends React.Component<Props, State> {
         this.setState({isUpdateLocationDescriptionModalVisible: false});
     }
 
-    private onAddingImage = (uri: string, time: Moment) => {
-        console.log("uri", uri);
-        console.log("time", time);
+    private _openImagePickerModal = () => {
+        this.setState({
+            isOpenImagePickerModalVisible: true
+        });
+    }
+
+    private _confirmAddImage = async (images: Array<any>) => {
+        let numberImagesUploaded = 0,
+            imagePromises = Array<Promise<any>>();
+
+        _.each(images, img => {
+            let promise = new Promise((resolve, reject) => {
+                this._onAddingImage(img.uri, moment())
+                .then(() => {
+                    numberImagesUploaded++;
+                    resolve(numberImagesUploaded);
+                });
+            })
+            imagePromises.push(promise);
+        })
+
+        return Promise.all(imagePromises).then(results => {
+            console.log('numberImagesUploaded: ' + numberImagesUploaded);
+            return numberImagesUploaded;
+        });
+    }
+
+    private _cancelAddImage = () => {
+        this.setState({
+            isOpenImagePickerModalVisible: false
+        });
+    }
+
+    private _onAddingImage = async (uri: string, time: Moment) => {
+        //console.log("uri", uri);
+        //console.log("time", time);
         const { tripId, dateIdx, locationId } = this.props;
-        this.props.addLocationImage(tripId, dateIdx, locationId, uri, time)
+        return this.props.addLocationImage(tripId, dateIdx, locationId, uri, time)
         .then(imageId => {
-            this.props.uploadLocationImage(tripId, dateIdx, locationId, imageId, uri);
+            return this.props.uploadLocationImage(tripId, dateIdx, locationId, imageId, uri);
         })
     }
 
@@ -226,13 +262,17 @@ class LocationDetail extends React.Component<Props, State> {
                             confirmUpdateLocationDescriptionHandler={this._confirmUpdateLocationDescription}
                             cancelUpdateLocationDescriptionHandler={this._cancelUpdateLocationDescription}
                             description={this.props.description}
+
+                            isOpenImagePickerModalVisible={this.state.isOpenImagePickerModalVisible}
+                            cancelAddImageHandler={this._cancelAddImage}
+                            confirmAddImageHandler={this._confirmAddImage}
                             >
                         </LocationModal>
                 </View>
                 <View
                     style={{ position: "absolute", bottom: 20, right: 20 }}>
                     <AddLocationImageButton
-                        onSelectImageFromGallery={this.onAddingImage}
+                        openImagePickerModal={this._openImagePickerModal}
                     />
                 </View>
             </Container>
