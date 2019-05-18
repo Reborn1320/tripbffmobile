@@ -69,8 +69,6 @@ export module StoreData {
     export interface UserVM {
         username: string
         email: string
-        firstName: string
-        lastName: string
         fullName: string
 
         token: string,

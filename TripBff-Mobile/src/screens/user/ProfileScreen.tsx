@@ -21,6 +21,10 @@ interface IMapDispatchToProps {
 
 export interface Props extends IMapDispatchToProps {
     navigation: NavigationScreenProp<any, any>;
+
+    userName: string;
+    fullName: string;
+
     trips: Array<any>;
 }
 
@@ -32,7 +36,6 @@ interface State {
 
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
 
-//todo add profile component
 export class ProfileScreen extends Component<Props & IStateProps, State> {
     constructor(props: Props) {
         super(props);
@@ -71,7 +74,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     }
 
     render() {
-        const { trips } = this.props;
+        const { userName, fullName, trips } = this.props;
         const { isLoaded } = this.state;
 
         return (
@@ -79,7 +82,12 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                 {/* <Header /> */}
                 <Content>
                     <View>
-                        <UserDetails></UserDetails>
+                        <UserDetails 
+                            userName={userName}
+                            fullName={fullName}
+
+                            nTrips={trips.length}
+                        />
                         <Divider style={
                             {
                                 marginTop: 20,

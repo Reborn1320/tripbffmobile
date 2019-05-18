@@ -26,8 +26,6 @@ import { toDateUtc } from '../_function/dateFuncs';
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
-    lastName: "asdf",
-    firstName: "asdf",
     fullName: "adffff",
     email: "asdf@gmail.com",
     token: "ASdf"

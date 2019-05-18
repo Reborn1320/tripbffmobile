@@ -11,6 +11,10 @@ interface IMapDispatchToProps {
 }
 
 export interface Props extends IMapDispatchToProps {
+  userName: string;
+  fullName: string;
+
+  nTrips: number;
 }
 
 interface State {
@@ -22,10 +26,11 @@ export class UserDetails extends Component<Props & IStateProps, State> {
   }
 
   render() {
+    const { userName, fullName, nTrips } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <H3>nickname here</H3>
+          <H3>{userName.slice(0, userName.length > 10 ? 10 : userName.length )}</H3>
         </View>
 
         <View style={styles.contentContainer}>
@@ -41,7 +46,7 @@ export class UserDetails extends Component<Props & IStateProps, State> {
             <View style={styles.factsContainer}>
               {/* Facts */}
               <View style={styles.factContainer}>
-                <H2>2</H2>
+                <H2>{nTrips}</H2>
                 <Text>Trips</Text>
               </View>
               <View style={styles.factContainer}>
@@ -60,7 +65,7 @@ export class UserDetails extends Component<Props & IStateProps, State> {
         </View>
 
         <View style={styles.footerContainer}>
-          <H3>Full name here</H3>
+          <H3>{fullName}</H3>
         </View>
 
       </View>
