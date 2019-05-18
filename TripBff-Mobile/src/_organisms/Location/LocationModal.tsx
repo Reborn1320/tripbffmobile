@@ -5,7 +5,7 @@ import _, { } from "lodash";
 import LocationAddressModal from "./LocationAddressModal";
 import LocationHighlightModal from "./LocationHighlightModal";
 import UpdateLocationDescriptionModal from "./LocationDescriptionModal";
-
+import ImagePickerModal from "../../_atoms/ImagePickerModal";
 
 interface IMapDispatchToProps {
     confirmUpdateLocationAddressHandler: (name: string, address: string, long: number, lat: number) => void
@@ -14,6 +14,8 @@ interface IMapDispatchToProps {
     cancelUpdateLocationHighlightHandler: () => void
     confirmUpdateLocationDescriptionHandler: (description: string) => void
     cancelUpdateLocationDescriptionHandler: () => void
+    confirmAddImageHandler: (images: Array<any>) => Promise<any>
+    cancelAddImageHandler: () => void
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -22,6 +24,7 @@ export interface Props extends IMapDispatchToProps {
     isUpdateLocationAddressModalVisible: boolean,
     isUpdateLocationHighlightModalVisible: boolean,
     isUpdateLocationDescriptionModalVisible: boolean,
+    isOpenImagePickerModalVisible: boolean,
     likeItems: Array<StoreData.LocationLikeItemVM>,
     description: string
 }
@@ -55,6 +58,14 @@ export default class LocationModal extends PureComponent<Props, State> {
         this.props.cancelUpdateLocationDescriptionHandler();
     }  
 
+    _confirmAddImageHandler = (images: Array<any>) => {
+        return this.props.confirmAddImageHandler(images);
+    }
+
+    _cancelAddImage = () => {
+        this.props.cancelAddImageHandler();
+    }
+
     render() {
         return (
             <View>
@@ -77,6 +88,12 @@ export default class LocationModal extends PureComponent<Props, State> {
                     isVisible={this.props.isUpdateLocationDescriptionModalVisible}
                     description={this.props.description}>                    
                 </UpdateLocationDescriptionModal>
+                <ImagePickerModal
+                     confirmHandler={this._confirmAddImageHandler}
+                     cancelHandler={this._cancelAddImage}
+                     isVisible={this.props.isOpenImagePickerModalVisible}
+                    >
+                </ImagePickerModal>
             </View>
         );
     }
