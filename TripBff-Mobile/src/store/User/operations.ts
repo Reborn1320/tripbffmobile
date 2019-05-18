@@ -14,14 +14,12 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
 
     return extraArguments.loginApiService.post("local/login", { data: loginUser })
       .then(res => {
-        const { user: { id, userName }, token } = res.data;
+        const { user: { id, userName, fullName }, token } = res.data;
         console.log(`user info id=${id}, userName=${userName}`);
         console.log("token ", token);
 
         const user: StoreData.UserVM = {
           username: userName,
-          lastName: "asdf",
-          firstName: "asdf",
           fullName: "adffff",
           email: email,
           token: token,
@@ -45,15 +43,13 @@ export function loginUsingFacebookAccessToken(facebookUserId: string, accessToke
 
     return extraArguments.loginApiService.post("facebook/verify", { data: loginUser })
       .then(res => {
-        const { user: { id, userName, facebook: { accessToken } }, token } = res.data;
+        const { user: { id, userName, fullName, facebook: { accessToken } }, token } = res.data;
         console.log(`user info id=${id}, userName=${userName}`);
         console.log("token ", token);
 
         const user: StoreData.UserVM = {
           username: userName,
-          lastName: "asdf",
-          firstName: "asdf",
-          fullName: "adffff",
+          fullName: fullName,
           email: userName,
           token: token,
           facebook: {
@@ -95,9 +91,7 @@ export function loginUsingDeviceId(): ThunkResultBase {
 
         const user: StoreData.UserVM = {
           username: userName,
-          lastName: "asdf",
-          firstName: "asdf",
-          fullName: "adffff",
+          fullName: "Quest",
           email: userName,
           token: token,
         };

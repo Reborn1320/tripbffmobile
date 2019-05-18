@@ -4,10 +4,13 @@ import { loginUsingUserPass, loginUsingFacebookAccessToken } from "../../store/U
 import { fetchTrips } from "../../store/Trips/operations";
 import { addTrips } from "../../store/Trips/actions";
 import { ProfileScreen } from "./ProfileScreen";
+import { StoreData } from "../../store/Interfaces";
 
 
-const mapStateToProps = (storeState, ownProps) => {
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   return {
+    userName: storeState.user.username,
+    fullName: storeState.user.fullName,
     trips: storeState.trips
   };
 };

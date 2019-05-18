@@ -7,6 +7,8 @@ import AppFooter from "../shared/AppFooter";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import { StoreData } from "../../store/Interfaces";
 import { NavigationScreenProp } from "react-navigation";
+import { Divider } from "react-native-elements";
+import { UserDetails } from "../../_organisms/User/UserDetails";
 
 export interface IStateProps { }
 
@@ -18,8 +20,12 @@ interface IMapDispatchToProps {
 }
 
 export interface Props extends IMapDispatchToProps {
-  navigation: NavigationScreenProp<any, any>;
-  trips: Array<any>;
+    navigation: NavigationScreenProp<any, any>;
+
+    userName: string;
+    fullName: string;
+
+    trips: Array<any>;
 }
 
 interface State {
@@ -30,7 +36,6 @@ interface State {
 
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
 
-//todo add profile component
 export class ProfileScreen extends Component<Props & IStateProps, State> {
     constructor(props: Props) {
         super(props);
@@ -59,8 +64,8 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
             });
         });
     }
-    
-    handleTripItemClick(trip: any) {
+
+    private handleTripItemClick(trip: any) {
         const { tripId } = trip;
         this.props.navigation.navigate(
             NavigationConstants.Screens.TripEdit,
@@ -69,15 +74,26 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     }
 
     render() {
-        const { trips } = this.props;
+        const { userName, fullName, trips } = this.props;
         const { isLoaded } = this.state;
-        // console.log("screen render", isLoaded);
-        // console.log("screen render", trips);
+
         return (
             <Container>
                 {/* <Header /> */}
                 <Content>
                     <View>
+                        <UserDetails 
+                            userName={userName}
+                            fullName={fullName}
+
+                            nTrips={trips.length}
+                        />
+                        <Divider style={
+                            {
+                                marginTop: 20,
+                                marginBottom: 20,
+                            }
+                        }></Divider>
                         {isLoaded && <Loading message={this.state.loadingMessage} />}
                         <TripsComponent
                             trips={trips}
