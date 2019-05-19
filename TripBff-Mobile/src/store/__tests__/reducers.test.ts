@@ -1,5 +1,4 @@
 import reducer from "../reducers";
-import { TRIP_ADD } from "../../screens/trip/create/actions";
 import moment = require("moment");
 import { StoreData } from "../Interfaces";
 
@@ -13,7 +12,7 @@ describe('trip reducer', () => {
 
   it('should handle TRIP_ADD', () => {
     const startAction: { type: string, trip: StoreData.TripVM } = {
-      type: TRIP_ADD,
+      type: "TRIP_ADD",
       trip: {
         tripId: "tripId01",
         name: "name",

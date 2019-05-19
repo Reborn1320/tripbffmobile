@@ -1,5 +1,4 @@
 import reducer from "../reducers";
-import { TRIP_ADD } from "../../screens/trip/create/actions";
 import moment = require("moment");
 import { StoreData } from "../Interfaces";
 

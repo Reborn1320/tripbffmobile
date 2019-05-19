@@ -98,10 +98,9 @@ interface ImageProps {
 
   const imageMapStateToProps = (storeState: StoreData.BffStoreData, ownProps: ImageProps) => {
     const { tripId } = ownProps;
-    var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
     var images = [];
 
-    trip.dates.forEach(date => {
+    storeState.currentTrip.dates.forEach(date => {
       date.locations.forEach(location => {
         images = images.concat(location.images.map(img => {
           return {

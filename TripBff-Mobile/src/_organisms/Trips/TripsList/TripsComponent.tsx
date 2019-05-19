@@ -46,48 +46,79 @@ interface IMapDispatchToProps {
 }
 
 export interface Props extends IMapDispatchToProps {
-  handleClick: (trip: any) => void;
+  handleClick: (tripId: string) => void;
   trips: StoreData.MinimizedTripVM[]
 }
 
 interface State {
+  tripEntries: ITripEntry[]
+}
+
+type ITripEntry = {
+  tripId: string,
+  title: string,
+  subtitle: string,
+  entries: IEntry[]
 }
 
 export class TripsComponent extends Component<Props & IStateProps, State> {
   constructor(props: Props) {
     super(props);
+    this.state = {
+      tripEntries: []
+    }
+  }
 
+  componentWillReceiveProps(nextProps: Props) {
+
+    let tripEntries: ITripEntry[] = [];
+    const { trips } = nextProps;
+
+    trips.forEach(trip => {
+
+      let entries: IEntry[] = trip.locationImages.map((locImg, locImgIdx) => ({
+        title: `image location ${locImgIdx}`,
+        subtitle: `this is image description`,
+        illustration: locImg !== "" ? locImg : 'https://i.imgur.com/pmSqIFZl.jpg',
+      }));
+      if (entries.length == 0) {
+        entries = ENTRIES2;
+      }
+
+      tripEntries.push({
+        tripId: trip.tripId,
+        title: trip.name,
+        subtitle: `${trip.fromDate.format("DD/MMM/YYYY")} - ${trip.toDate.format("DD/MMM/YYYY")}`,
+        entries
+      });
+
+    });
+
+    this.setState({
+      tripEntries
+    });
   }
 
   private _renderItem = itemInfo => {
-    const trip: StoreData.MinimizedTripVM = itemInfo.item;
+    const tripEntry: ITripEntry = itemInfo.item;
     
-    let entries: IEntry[] = trip.locationImages.map((locImg, locImgIdx) => ({
-      title: `image location ${locImgIdx}`,
-      subtitle: `this is image description`,
-      illustration: locImg !== "" ? locImg : 'https://i.imgur.com/pmSqIFZl.jpg',
-    }));
-    if (entries.length == 0) {
-      entries = ENTRIES2;
-    }
-
     return (
       <View key={itemInfo.index} >
         <StyledCarousel
-          title={trip.name}
-          subtitle={`${trip.fromDate.format("DD/MMM/YYYY")} - ${trip.toDate.format("DD/MMM/YYYY")}`}
-          entries={entries}
-          clickHandler={() => this.props.handleClick(trip)}
+          title={tripEntry.title}
+          subtitle={tripEntry.subtitle}
+          entries={tripEntry.entries}
+          clickHandler={() => this.props.handleClick(tripEntry.tripId)}
         />
       </View>
     );
   };
 
   render() {
-    const { trips } = this.props;
+    const { tripEntries } = this.state;
     return (
       <View>
-        {trips.map((trip, index) => this._renderItem({ item: trip, index }))}
+        {tripEntries.map((trip, index) => this._renderItem({ item: trip, index }))}
       </View>
     );
   }

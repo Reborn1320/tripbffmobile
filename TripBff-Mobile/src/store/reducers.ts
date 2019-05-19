@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import moment, { Moment } from "moment";
 import { StoreData } from "./Interfaces";
-import { TRIP_ADD } from '../screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './User/actions';
 import {
     LOCATION_REMOVE,
