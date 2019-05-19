@@ -77,9 +77,9 @@ export class TripsComponent extends Component<Props & IStateProps, State> {
     trips.forEach(trip => {
 
       let entries: IEntry[] = trip.locationImages.map((locImg, locImgIdx) => ({
-        title: `image location ${locImgIdx}`,
-        subtitle: `this is image description`,
-        illustration: locImg !== "" ? locImg : 'https://i.imgur.com/pmSqIFZl.jpg',
+        title: locImg.name,
+        subtitle: locImg.description,
+        illustration: locImg.imageUrl !== "" ? locImg.imageUrl : 'https://i.imgur.com/pmSqIFZl.jpg',
       }));
       if (entries.length == 0) {
         entries = ENTRIES2;

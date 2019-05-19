@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { ImageManipulator } from 'expo';
 
 export module StoreData {
     export interface ImportImageVM {
@@ -72,7 +73,12 @@ export module StoreData {
         name: string
         fromDate: moment.Moment
         toDate: moment.Moment   
-        locationImages: string[]
+        locationImages: {
+            name: string,
+            address: string,
+            description: string,
+            imageUrl: string,
+        }[]
     }
 
     export interface UserVM {
@@ -141,7 +147,12 @@ export namespace RawJsonData {
         name: string
         fromDate: string
         toDate: string
-        locationImages: string[],
+        locationImages: {
+            name: string,
+            address: string,
+            description: string,
+            imageUrl: string,
+        }[]
     }
 
     export interface LocationVM {
