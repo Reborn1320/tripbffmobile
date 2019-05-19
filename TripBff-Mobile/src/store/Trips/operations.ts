@@ -7,15 +7,13 @@ export function fetchTrips(): ThunkResultBase {
 
     return extraArguments.tripApiService.get("trips")
       .then(res => {
-        var rawTripsVM: Array<RawJsonData.TripVM> = res.data;
-        var trips: Array<StoreData.TripVM> = rawTripsVM.map(rawTrip => ({
+        var rawTripsVM: Array<RawJsonData.MinimizedTripVM> = res.data;
+        var trips: Array<StoreData.MinimizedTripVM> = rawTripsVM.map(rawTrip => ({
           tripId: rawTrip.tripId,
           name: rawTrip.name,
           fromDate: moment(rawTrip.fromDate),
           toDate: moment(rawTrip.toDate),
-          locations: rawTrip.locations,
-          dates: [], //todo: just to by-pass error
-          infographicId: rawTrip.infographicId,
+          locationImages: rawTrip.locationImages,
         }));
         return trips;
       })

@@ -283,8 +283,7 @@ class LocationDetail extends React.Component<Props, State> {
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId, dateIdx, locationId } = ownProps.navigation.state.params
     
-    var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
-    var dateVm = _.find(trip.dates, (item) => item.dateIdx == dateIdx);
+    var dateVm = _.find(storeState.currentTrip.dates, (item) => item.dateIdx == dateIdx);
     var location = _.find(dateVm.locations, (item) => item.locationId == locationId); 
 
     return {

@@ -25,7 +25,7 @@ export interface Props extends IMapDispatchToProps {
     userName: string;
     fullName: string;
 
-    trips: Array<any>;
+    trips: StoreData.MinimizedTripVM[];
 }
 
 interface State {
@@ -65,8 +65,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         });
     }
 
-    private handleTripItemClick(trip: any) {
-        const { tripId } = trip;
+    private handleTripItemClick(tripId: string) {
         this.props.navigation.navigate(
             NavigationConstants.Screens.TripEdit,
             { tripId, id: tripId }
@@ -97,7 +96,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                         {isLoaded && <Loading message={this.state.loadingMessage} />}
                         <TripsComponent
                             trips={trips}
-                            handleClick={trip => this.handleTripItemClick(trip)}
+                            handleClick={tripId => this.handleTripItemClick(tripId)}
                         />
                     </View>
                 </Content>

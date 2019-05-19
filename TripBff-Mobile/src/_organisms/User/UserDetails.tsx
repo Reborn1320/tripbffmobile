@@ -49,14 +49,14 @@ export class UserDetails extends Component<Props & IStateProps, State> {
                 <H2>{nTrips}</H2>
                 <Text>Trips</Text>
               </View>
-              <View style={styles.factContainer}>
+              {/* <View style={styles.factContainer}>
                 <H2>2</H2>
                 <Text>Trips</Text>
               </View>
               <View style={styles.factContainer}>
                 <H2>2</H2>
                 <Text>Trips</Text>
-              </View>
+              </View> */}
             </View>
             <Button full light rounded bordered>
               <Text>Edit Profile</Text>
@@ -72,7 +72,6 @@ export class UserDetails extends Component<Props & IStateProps, State> {
     );
   }
 }
-
 
 interface Style {
   container: ViewStyle;

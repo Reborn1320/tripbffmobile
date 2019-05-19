@@ -373,9 +373,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId } = ownProps.navigation.state.params;
-    var trip = _.find(storeState.trips, (item) => item.tripId == tripId)
     return {
-        trip
+        trip: storeState.currentTrip
     };
 };
 

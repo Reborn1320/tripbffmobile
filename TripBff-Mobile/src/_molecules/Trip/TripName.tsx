@@ -31,9 +31,8 @@ class TripNameComponent extends React.Component<Props, State> {
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
     var { tripId } = ownProps;
-    var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
     return {
-        tripName: trip.name
+        tripName: storeState.currentTrip.name
     };
 };
 

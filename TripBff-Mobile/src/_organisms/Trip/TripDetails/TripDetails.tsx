@@ -125,8 +125,8 @@ export class TripDetailsComponent extends Component<Props, State> {
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     var tripId = ownProps.tripId;
-    var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
 
+    var trip = storeState.currentTrip;
     return {
         tripId: trip.tripId,
         tripFromDate: trip.fromDate,

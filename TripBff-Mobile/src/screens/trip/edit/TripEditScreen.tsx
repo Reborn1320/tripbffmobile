@@ -11,17 +11,21 @@ import { tripApi } from "../../_services/apis";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Loading from "../../../_atoms/Loading/Loading";
 
 interface IMapDispatchToProps {
-     addInfographicId: (tripId: string, infographicId: string) => void
+    addInfographicId: (tripId: string, infographicId: string) => void
+    fetchTrip: (tripId: string) => Promise<void>
 }
 
 export interface Props extends IMapDispatchToProps, PropsBase {
+    tripId: string,
     trip: StoreData.TripVM,
     navigation: RNa.NavigationScreenProp<any, any>;
 }
 
 interface State {
+    isLoaded: boolean;
 }
 
 export class TripEditScreen extends Component<Props, State> {
@@ -29,8 +33,16 @@ export class TripEditScreen extends Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {
+            isLoaded: false,
         }
-    }   
+    }
+
+    componentWillMount() {
+        this.props.fetchTrip(this.props.tripId)
+        .then(() => this.setState({
+            isLoaded: true
+        }));
+    }
 
     private _cancelExportInfographic = () => {
         this.props.navigation.navigate(NavigationConstants.Screens.Profile);
@@ -68,10 +80,13 @@ export class TripEditScreen extends Component<Props, State> {
 
     render() {
         const { trip, navigation } = this.props;
+        const { isLoaded } = this.state;
         return (
             <Container>
                 <Content>
-                    <TripDetailScreenContent tripId={trip.tripId} navigation={navigation} />
+                    {!isLoaded && <Loading message="Loading trip" />}
+                    {isLoaded && trip &&
+                        <TripDetailScreenContent tripId={trip.tripId} navigation={navigation} />}
                 </Content>
                 <ActionButton
                     buttonColor="#2eb82e"

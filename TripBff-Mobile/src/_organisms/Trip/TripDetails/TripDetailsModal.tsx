@@ -158,7 +158,7 @@ class TripDetailsModalComponent extends PureComponent<Props, State> {
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     var tripId  = ownProps.tripId;
-    var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
+    var trip = storeState.currentTrip;
   
     return {
         tripName: trip.name,

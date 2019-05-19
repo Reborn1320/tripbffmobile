@@ -2,21 +2,20 @@ import { connect } from "react-redux";
 import _ from "lodash";
 import { TripEditScreen } from "./TripEditScreen";
 import { addInfographicId } from "../../../store/Trip/actions";
+import { StoreData } from "../../../store/Interfaces";
+import { fetchTrip } from "../../../store/Trip/operations";
 
-// import { updateTripDateRange } from "../../../store/Trip/operations";
-
-const mapStateToProps = (storeState, ownProps) => {
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   const { tripId } = ownProps.navigation.state.params;
-  //todo move to getter
-  var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
   return {
-      trip
+      tripId,
+      trip: storeState.currentTrip && storeState.currentTrip.tripId == tripId ? storeState.currentTrip : undefined,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    // updateTripDateRange: (tripId, fromDate, toDate) => dispatch(updateTripDateRange(tripId, fromDate, toDate)),
+    fetchTrip: (tripId) => dispatch(fetchTrip(tripId)),
     addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
   };
 };

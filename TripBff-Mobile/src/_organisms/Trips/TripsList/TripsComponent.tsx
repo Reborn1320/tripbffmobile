@@ -46,58 +46,79 @@ interface IMapDispatchToProps {
 }
 
 export interface Props extends IMapDispatchToProps {
-  handleClick: (trip: any) => void;
-  trips: Array<StoreData.TripVM>
+  handleClick: (tripId: string) => void;
+  trips: StoreData.MinimizedTripVM[]
 }
 
 interface State {
+  tripEntries: ITripEntry[]
+}
+
+type ITripEntry = {
+  tripId: string,
+  title: string,
+  subtitle: string,
+  entries: IEntry[]
 }
 
 export class TripsComponent extends Component<Props & IStateProps, State> {
   constructor(props: Props) {
     super(props);
+    this.state = {
+      tripEntries: []
+    }
+  }
 
+  componentWillReceiveProps(nextProps: Props) {
+
+    let tripEntries: ITripEntry[] = [];
+    const { trips } = nextProps;
+
+    trips.forEach(trip => {
+
+      let entries: IEntry[] = trip.locationImages.map((locImg, locImgIdx) => ({
+        title: locImg.name,
+        subtitle: locImg.description,
+        illustration: locImg.imageUrl !== "" ? locImg.imageUrl : 'https://i.imgur.com/pmSqIFZl.jpg',
+      }));
+      if (entries.length == 0) {
+        entries = ENTRIES2;
+      }
+
+      tripEntries.push({
+        tripId: trip.tripId,
+        title: trip.name,
+        subtitle: `${trip.fromDate.format("DD/MMM/YYYY")} - ${trip.toDate.format("DD/MMM/YYYY")}`,
+        entries
+      });
+
+    });
+
+    this.setState({
+      tripEntries
+    });
   }
 
   private _renderItem = itemInfo => {
-    const trip: StoreData.TripVM = itemInfo.item;
+    const tripEntry: ITripEntry = itemInfo.item;
     
-    const locations = _.flatten(trip.dates.map(date => date.locations));
-    const locationImages = _.flatten(locations.map(loc => loc.images));
-    let entries: IEntry[] = locationImages.map((locImg, locImgIdx) => ({
-      title: `image location ${locImgIdx}`,
-      subtitle: `this is image description`,
-      illustration: locImg.thumbnailExternalUrl,
-    }));
-    if (entries.length == 0) {
-      entries = ENTRIES2;
-    }
-
     return (
       <View key={itemInfo.index} >
         <StyledCarousel
-          title={trip.name}
-          subtitle={`${trip.fromDate.format("DD/MMM/YYYY")} - ${trip.toDate.format("DD/MMM/YYYY")}`}
-          entries={entries}
-          clickHandler={() => this.props.handleClick(trip)}
+          title={tripEntry.title}
+          subtitle={tripEntry.subtitle}
+          entries={tripEntry.entries}
+          clickHandler={() => this.props.handleClick(tripEntry.tripId)}
         />
       </View>
-
-      // <TouchableHighlight key={itemInfo.index} onPress={() => this.props.handleClick(trip)}>
-      //   <View style={styles.itemContainer}>
-      //     <H1>{trip.name}</H1>
-      //     <H3>{trip.fromDate.format()} - {trip.toDate.format()}</H3>
-      //     <H3>locations: {trip.locations.length}</H3>
-      //   </View>
-      // </TouchableHighlight>
     );
   };
 
   render() {
-    const { trips } = this.props;
+    const { tripEntries } = this.state;
     return (
       <View>
-        {trips.map((trip, index) => this._renderItem({ item: trip, index }))}
+        {tripEntries.map((trip, index) => this._renderItem({ item: trip, index }))}
       </View>
     );
   }
