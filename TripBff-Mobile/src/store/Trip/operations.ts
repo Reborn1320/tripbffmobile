@@ -13,14 +13,40 @@ import {
   favorLocationImage as favorLocationImageAction,
   uploadLocationImage as uploadLocationImageAction,
   importSelectedLocations,
-  updateTrip as updateTripAction
+  updateTrip as updateTripAction,
+  replaceTrip,
+  createTrip as createTripAction
 } from "./actions";
 import { ThunkResultBase } from "..";
 import { Moment } from "moment";
 import { StoreData, RawJsonData } from "../Interfaces";
 import moment from "moment";
 import { uploadFileApi } from "../../screens/_services/apis";
-import { createTrip as createTripAction } from "../../screens/trip/create/actions";
+
+export function fetchTrip(tripId: string): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+
+    return extraArguments.tripApiService.get(`trips/${tripId}`)
+      .then(res => {
+        var rawTrip: RawJsonData.TripVM = res.data;
+        var trip: StoreData.TripVM = {
+          tripId: rawTrip.tripId,
+          name: rawTrip.name,
+          fromDate: moment(rawTrip.fromDate),
+          toDate: moment(rawTrip.toDate),
+          locations: rawTrip.locations,
+          infographicId: rawTrip.infographicId,
+        };
+
+        dispatch(replaceTrip(trip));
+
+        return trip;
+      })
+      .catch(error => {
+        console.log("fetch trips error", error);
+      });
+  };
+}
 
 export function removeLocation(tripId: string, dateIdx: number, locationId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {

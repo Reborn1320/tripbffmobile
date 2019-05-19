@@ -23,6 +23,8 @@ export type TripActions = {
     tripId: string,
     dateIdx: number,
 }
+| AddTripAction
+| ReplaceTripAction
 | RemoveLocation
 | UpdateTripDateRange
 | UpdateTripName
@@ -31,6 +33,16 @@ export type TripActions = {
 | UpdateBasicTrip
 ;
 
+
+type AddTripAction = {
+    type: "TRIP_ADD",
+    trip: StoreData.TripVM,
+}
+
+type ReplaceTripAction = {
+    type: "TRIP_REPLACE",
+    trip: StoreData.TripVM,
+}
 
 type RemoveLocation = {
     type: "TRIP_LOCATION_REMOVE",
@@ -72,6 +84,19 @@ type UpdateBasicTrip = {
     name: string,
     fromDate: Moment,
     toDate: Moment
+}
+
+
+export function createTrip(trip: StoreData.TripVM): AddTripAction {
+    return {
+        type: "TRIP_ADD", trip
+    }
+}
+
+export function replaceTrip(trip: StoreData.TripVM): ReplaceTripAction {
+    return {
+        type: "TRIP_REPLACE", trip
+    }
 }
 
 export function removeLocation(tripId: string, dateIdx: number, locationId: string): RemoveLocation {

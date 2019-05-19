@@ -58,10 +58,10 @@ export class DayItemComponent extends Component<Props, State> {
     }
 }
 
+//todo DO NOT MAP DATA DIRECT FROM REDUX, shoul pass data from higher level component
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     var tripId = ownProps.tripId;
-    var trip = _.find(storeState.trips, (item) => item.tripId == tripId);
-    var dateVm = trip.dates.find(d => d.dateIdx == ownProps.dateIdx);
+    var dateVm = storeState.currentTrip.dates.find(d => d.dateIdx == ownProps.dateIdx);
 
     return {
         tripId: tripId,

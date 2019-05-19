@@ -25,7 +25,7 @@ export interface Props extends IMapDispatchToProps {
     userName: string;
     fullName: string;
 
-    trips: Array<any>;
+    trips: StoreData.MinimizedTripVM[];
 }
 
 interface State {

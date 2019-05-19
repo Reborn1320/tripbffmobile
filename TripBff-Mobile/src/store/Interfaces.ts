@@ -66,6 +66,15 @@ export module StoreData {
         infographicId?: string        
     }
 
+
+    export interface MinimizedTripVM {
+        tripId: string
+        name: string
+        fromDate: moment.Moment
+        toDate: moment.Moment   
+        locationImages: string[]
+    }
+
     export interface UserVM {
         username: string
         email: string
@@ -109,9 +118,9 @@ export module StoreData {
     }
 
     export interface BffStoreData {
-        repo?: RepoVM
         user?: UserVM
-        trips?: Array<TripVM>,
+        trips?: Array<MinimizedTripVM>,
+        currentTrip?: TripVM,
         dataSource: DataSourceVM
     }
 }
@@ -125,6 +134,14 @@ export namespace RawJsonData {
         toDate: string
         locations: Array<StoreData.LocationVM>,
         infographicId: string
+    }
+
+    export interface MinimizedTripVM {
+        tripId: string
+        name: string
+        fromDate: string
+        toDate: string
+        locationImages: string[],
     }
 
     export interface LocationVM {

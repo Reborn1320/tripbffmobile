@@ -3,22 +3,23 @@ import moment, { Moment } from "moment";
 import { StoreData } from "./Interfaces";
 import { TRIP_ADD } from '../screens/trip/create/actions';
 import { AUTH_ADD_TOKEN } from './User/actions';
-import { LOCATION_REMOVE, 
-         LOCATION_ADD,
-         LOCATION_UPDATE_FEELING,
-         LOCATION_UPDATE_ACTIVITY,
-         TRIP_UPDATE_DATE_RANGE,
-         TRIP_UPDATE_TRIP_NAME, 
-         LOCATION_UPDATE_ADDRESS,
-         TripActions,
-         LocationActions,
-         LOCATION_UPDATE_IMAGES,
-         LOCATION_UPDATE_HIGHLIGHT,
-         LOCATION_UPDATE_DESCRIPTION,
-         ADD_INFOGRAPHIC_ID,
-         IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS,
-         ImageActions,
-         TRIP_UPDATE
+import {
+    LOCATION_REMOVE,
+    LOCATION_ADD,
+    LOCATION_UPDATE_FEELING,
+    LOCATION_UPDATE_ACTIVITY,
+    TRIP_UPDATE_DATE_RANGE,
+    TRIP_UPDATE_TRIP_NAME,
+    LOCATION_UPDATE_ADDRESS,
+    TripActions,
+    LocationActions,
+    LOCATION_UPDATE_IMAGES,
+    LOCATION_UPDATE_HIGHLIGHT,
+    LOCATION_UPDATE_DESCRIPTION,
+    ADD_INFOGRAPHIC_ID,
+    IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS,
+    ImageActions,
+    TRIP_UPDATE
 } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
 import { AppStateIOS } from 'react-native';
@@ -34,7 +35,7 @@ const userInitState: StoreData.UserVM = {
 const initState: StoreData.BffStoreData = {
     user: userInitState,
     dataSource: {},
-    trips: [] 
+    trips: []
 }
 
 function compareLocationsFromTime(first, second) {
@@ -42,10 +43,10 @@ function compareLocationsFromTime(first, second) {
         firstElementFromTime = moment(first.fromTime),
         secondElementFromTime = moment(second.fromTime);
 
-    if (firstElementFromTime < secondElementFromTime) 
+    if (firstElementFromTime < secondElementFromTime)
         order = -1
     else if (firstElementFromTime > secondElementFromTime)
-        order =  1
+        order = 1
 
     return order;
 }
@@ -79,7 +80,7 @@ function userReducer(state, action) {
 function imageReducer(state: StoreData.ImportImageVM, action: ImageActions) {
     console.log('     + location image reducer: ', action.type);
 
-    switch(action.type) {
+    switch (action.type) {
         case "TRIP_LOCATION_IMAGE_UPLOAD":
             return {
                 ...state,
@@ -98,14 +99,14 @@ function imageReducer(state: StoreData.ImportImageVM, action: ImageActions) {
         //     if (action.thumbnailExternalUrl) newState.thumbnailExternalUrl = action.thumbnailExternalUrl;
         //     if (action.externalStorageId) newState.externalStorageId = action.externalStorageId;
         //     return newState;
-        default: 
+        default:
             return state;
     }
 }
 
 function locationReducer(state: StoreData.LocationVM, action: LocationActions) {
     console.log('   + location reducer: ', action.type);
-    switch(action.type) {
+    switch (action.type) {
         case LOCATION_UPDATE_FEELING:
             return {
                 ...state,
@@ -136,7 +137,7 @@ function locationReducer(state: StoreData.LocationVM, action: LocationActions) {
                 ...state,
                 description: action.description
             };
-        case "TRIP_LOCATION_IMAGE_ADD": 
+        case "TRIP_LOCATION_IMAGE_ADD":
             const newImage = {
                 imageId: action.imageId,
                 url: action.url,
@@ -146,7 +147,7 @@ function locationReducer(state: StoreData.LocationVM, action: LocationActions) {
             //todo: sorting
             return {
                 ...state,
-                images: [...state.images, newImage ]
+                images: [...state.images, newImage]
             };
         //TODO: upload images
         case LOCATION_UPDATE_IMAGES:
@@ -167,19 +168,19 @@ function locationReducer(state: StoreData.LocationVM, action: LocationActions) {
 
             console.error("unhandled action", action.type);
             return state;
-    }    
+    }
 }
 
 //date + locations reducer
 function dateReducer(state: StoreData.DateVM, action) {
     console.log(' + date reducer: ', action.type);
-    switch(action.type) {
+    switch (action.type) {
         case LOCATION_REMOVE:
             return {
                 ...state,
                 locations: state.locations.filter(item => item.locationId !== action.locationId),
                 locationIds: state.locationIds.filter(l => l !== action.locationId)
-            }    
+            }
         case LOCATION_ADD:
             var locations = [...state.locations, action.location];
             locations.sort(compareLocationsFromTime);
@@ -188,25 +189,43 @@ function dateReducer(state: StoreData.DateVM, action) {
                 ...state,
                 locations: locations,
                 locationIds: locations.map((e) => { return e.locationId })
-            }     
+            }
         default:
             return {
                 ...state,
                 locations: state.locations.map(item => {
                     return item.locationId == action.locationId ? locationReducer(item, action) : item;
                 })
-        };
-    }    
+            };
+    }
 }
 
 function tripReducer(state: StoreData.TripVM, action: TripActions) {
+    if (action.type.startsWith("TRIPS")) return state;
+
     console.log('trip reducer: ', action.type);
 
-    switch(action.type) {
-        case ADD_INFOGRAPHIC_ID: 
+    switch (action.type) {
+        case "TRIP_ADD":
+                var trip = {
+                    ...action.trip,
+                    fromDate: toDateUtc(action.trip.fromDate),
+                    toDate: toDateUtc(action.trip.toDate),
+                    dates: getDatesProperty(toDateUtc(action.trip.fromDate), toDateUtc(action.trip.toDate), [])
+                }
+        return trip;
+        case "TRIP_REPLACE":
+            var trip = {
+                ...action.trip,
+                fromDate: toDateUtc(action.trip.fromDate),
+                toDate: toDateUtc(action.trip.toDate),
+                dates: getDatesProperty(toDateUtc(action.trip.fromDate), toDateUtc(action.trip.toDate), action.trip.locations)
+            }
+            return trip;
+        case ADD_INFOGRAPHIC_ID:
             return Object.assign({}, state, {
                 infographicId: action.infographicId
-              });              
+            });
         case IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS:
             const { locations } = action;
             const mappedLocations: StoreData.LocationVM[] = locations.map(loc => ({
@@ -219,7 +238,7 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
                 }))
 
             }));
-            
+
             return {
                 ...state,
                 locations, //todo: remove this property
@@ -244,24 +263,24 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
                 fromDate: action.fromDate,
                 toDate: action.toDate,
                 dates: getDatesProperty(action.fromDate, action.toDate, [])
-            };        
-        default: 
-        {
-            //todo should start with TRIP_LOCATION
-            if (action.type.startsWith("TRIP")) {
-                return {
-                    ...state,
-                    dates: state.dates.map(item => {
-                        return item.dateIdx == action.dateIdx ? dateReducer(item, action) : item;
-                    })
+            };
+        default:
+            {
+                //todo should start with TRIP_LOCATION
+                if (action.type.startsWith("TRIP")) {
+                    return {
+                        ...state,
+                        dates: state.dates.map(item => {
+                            return item.dateIdx == action.dateIdx ? dateReducer(item, action) : item;
+                        })
+                    }
                 }
+
+                // console.error("unhandled action", action.type);
+                return state;
             }
 
-            console.error("unhandled action", action.type);
-            return state;
-        }
-        
-    }    
+    }
 }
 
 function tripsReducer(state: Array<StoreData.TripVM>, action) {
@@ -274,29 +293,28 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
                 ...trip,
                 fromDate: toDateUtc(trip.fromDate),
                 toDate: toDateUtc(trip.toDate),
-                dates: getDatesProperty(toDateUtc(trip.fromDate), toDateUtc(trip.toDate), trip.locations)
             }
         });
     }
-    else if (actionType == TRIP_ADD) {
-        var trip = {
-            ...action.trip,
-            fromDate: toDateUtc(action.trip.fromDate),
-            toDate: toDateUtc(action.trip.toDate),
-            dates: getDatesProperty(toDateUtc(action.trip.fromDate), toDateUtc(action.trip.toDate), [])
-        }
-        return [...state, trip];
-    }
-    else if (_.startsWith(actionType, "TRIP")) {
-        var newState = state.map(trip => trip.tripId == action.tripId ? tripReducer(trip, action) : trip);
-        return newState
-    }
+    // else if (actionType == TRIP_ADD) {
+    //     var trip = {
+    //         ...action.trip,
+    //         fromDate: toDateUtc(action.trip.fromDate),
+    //         toDate: toDateUtc(action.trip.toDate),
+    //         dates: getDatesProperty(toDateUtc(action.trip.fromDate), toDateUtc(action.trip.toDate), [])
+    //     }
+    //     return [...state, trip];
+    // }
+    // else if (_.startsWith(actionType, "TRIP")) {
+    //     var newState = state.map(trip => trip.tripId == action.tripId ? tripReducer(trip, action) : trip);
+    //     return newState
+    // }
 
     return state;
 }
 
 function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
-    switch(action.type) {
+    switch (action.type) {
         case DataSource_GetAllFeeling:
             return {
                 ...state,
@@ -314,7 +332,7 @@ function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
             }
         default:
             return state;
-    } 
+    }
 }
 
 //todo small refactor to move each reducer to files
@@ -322,9 +340,10 @@ export default function bffApp(state: StoreData.BffStoreData = initState, action
     console.log('action :' + action.type);
 
     // const now = moment();
-    const newState =  {
+    const newState = {
         user: userReducer(state.user, action),
         trips: tripsReducer(state.trips, action),
+        currentTrip: tripReducer(state.currentTrip, action),
         //todo trips shouldn't handle too much things in here!!!!!
         //todo: should it be trip, location, in respect to each page ?
         dataSource: dataSourceReducer(state.dataSource, action)

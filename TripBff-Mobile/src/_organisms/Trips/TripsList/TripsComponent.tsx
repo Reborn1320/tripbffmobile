@@ -47,7 +47,7 @@ interface IMapDispatchToProps {
 
 export interface Props extends IMapDispatchToProps {
   handleClick: (trip: any) => void;
-  trips: Array<StoreData.TripVM>
+  trips: StoreData.MinimizedTripVM[]
 }
 
 interface State {
@@ -60,14 +60,12 @@ export class TripsComponent extends Component<Props & IStateProps, State> {
   }
 
   private _renderItem = itemInfo => {
-    const trip: StoreData.TripVM = itemInfo.item;
+    const trip: StoreData.MinimizedTripVM = itemInfo.item;
     
-    const locations = _.flatten(trip.dates.map(date => date.locations));
-    const locationImages = _.flatten(locations.map(loc => loc.images));
-    let entries: IEntry[] = locationImages.map((locImg, locImgIdx) => ({
+    let entries: IEntry[] = trip.locationImages.map((locImg, locImgIdx) => ({
       title: `image location ${locImgIdx}`,
       subtitle: `this is image description`,
-      illustration: locImg.thumbnailExternalUrl,
+      illustration: locImg !== "" ? locImg : 'https://i.imgur.com/pmSqIFZl.jpg',
     }));
     if (entries.length == 0) {
       entries = ENTRIES2;
@@ -82,14 +80,6 @@ export class TripsComponent extends Component<Props & IStateProps, State> {
           clickHandler={() => this.props.handleClick(trip)}
         />
       </View>
-
-      // <TouchableHighlight key={itemInfo.index} onPress={() => this.props.handleClick(trip)}>
-      //   <View style={styles.itemContainer}>
-      //     <H1>{trip.name}</H1>
-      //     <H3>{trip.fromDate.format()} - {trip.toDate.format()}</H3>
-      //     <H3>locations: {trip.locations.length}</H3>
-      //   </View>
-      // </TouchableHighlight>
     );
   };
 
