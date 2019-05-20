@@ -2,6 +2,8 @@ package host.exp.exponent;
 
 import android.os.Bundle;
 
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.react.ReactPackage;
 
 import java.util.ArrayList;
@@ -13,6 +15,10 @@ import expo.core.interfaces.Package;
 import host.exp.exponent.generated.DetachBuildConstants;
 import host.exp.exponent.experience.DetachActivity;
 import android.content.Intent;
+import com.facebook.share.widget.ShareDialog;
+import com.facebook.share.Sharer;
+import com.facebook.FacebookSdk;
+
 
 public class MainActivity extends DetachActivity {
 

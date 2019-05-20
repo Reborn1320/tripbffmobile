@@ -357,7 +357,8 @@ interface ImageProps {
   const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId } = ownProps.navigation.state.params;
     console.log('tripId from params: ' + tripId);
-    var trip = _.find(storeState.trips, (item) => item.tripId == tripId)
+    var trip = storeState.currentTrip;
+    
     return {
       tripId: tripId,
       infographicId: trip.infographicId
