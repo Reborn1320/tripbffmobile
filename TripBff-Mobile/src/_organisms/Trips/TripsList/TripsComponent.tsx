@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { View, H1, H3 } from "native-base";
+import { View } from "native-base";
 import _ from "lodash";
 import { StoreData } from "../../../store/Interfaces";
-import { TouchableHighlight, StyleSheet, ViewStyle } from "react-native";
-import { StyledCarousel, IEntry } from "../../../_atoms/Carousel/StyledCarousel";
+import { IEntry } from "../../../_atoms/Carousel/StyledCarousel";
+import { TripCarousel } from "../../../_molecules/TripCarousel/TripCarousel";
 
 
 export const ENTRIES2 = [
@@ -76,7 +76,7 @@ export class TripsComponent extends Component<Props & IStateProps, State> {
 
     trips.forEach(trip => {
 
-      let entries: IEntry[] = trip.locationImages.map((locImg, locImgIdx) => ({
+      let entries: IEntry[] = trip.locationImages.map((locImg) => ({
         title: locImg.name,
         subtitle: locImg.description,
         illustration: locImg.imageUrl !== "" ? locImg.imageUrl : 'https://i.imgur.com/pmSqIFZl.jpg',
@@ -104,11 +104,9 @@ export class TripsComponent extends Component<Props & IStateProps, State> {
     
     return (
       <View key={itemInfo.index} >
-        <StyledCarousel
-          title={tripEntry.title}
-          subtitle={tripEntry.subtitle}
-          entries={tripEntry.entries}
-          clickHandler={() => this.props.handleClick(tripEntry.tripId)}
+        <TripCarousel 
+          tripEntry={tripEntry}
+          handleClick={() => this.props.handleClick(tripEntry.tripId)}
         />
       </View>
     );
@@ -123,16 +121,3 @@ export class TripsComponent extends Component<Props & IStateProps, State> {
     );
   }
 }
-
-
-interface Style {
-  itemContainer: ViewStyle;
-}
-
-const styles = StyleSheet.create<Style>({
-  itemContainer: {
-    padding: 10,
-    borderBottomColor: "lightgrey",
-    borderBottomWidth: 1
-  }
-})
