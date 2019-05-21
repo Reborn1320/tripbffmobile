@@ -1,0 +1,3 @@
+rootProject.name = 'TripBffMobileV2'
+
+include ':app'
