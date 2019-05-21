@@ -43,7 +43,7 @@ export class TripCarousel extends React.Component<Props, State> {
           </View>
           <View style={styles.headerRightContainer}>
             <Button transparent primary small><Icon type="FontAwesome5" name="share-square" /></Button>
-            <Button transparent danger small><Icon type="FontAwesome5" name="trash-alt" /></Button>
+            <Button transparent dark small><Icon type="FontAwesome5" name="ellipsis-h" /></Button>
           </View>
         </View>
         <StyledCarousel

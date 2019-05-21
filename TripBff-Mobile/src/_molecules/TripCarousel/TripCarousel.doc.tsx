@@ -45,6 +45,8 @@ export interface Props extends IMapDispatchToProps {
 
 interface State {
   tripEntry1: ITripEntry;
+  tripEmpty: ITripEntry;
+  tripEmpty1Location: ITripEntry;
 }
 
 export class TripCarouselDoc extends Component<Props, State> {
@@ -58,13 +60,29 @@ export class TripCarouselDoc extends Component<Props, State> {
       subtitle: "01/May/1018 - 10/May/1028",
       entries: ENTRIES2,
     }
+
+    const tripEmpty: ITripEntry = {
+      tripId: "1",
+      title: "asdfas fads sss",
+      subtitle: "01/May/1018 - 10/May/1028",
+      entries: [],
+    }
+
+    const tripEmpty1Location: ITripEntry = {
+      tripId: "1",
+      title: "asdfas fads sss",
+      subtitle: "01/May/1018 - 10/May/1028",
+      entries: _.cloneDeep(ENTRIES2),
+    }
+    tripEmpty1Location.entries[0].illustration = "";
+
     this.state = {
-      tripEntry1
+      tripEntry1, tripEmpty, tripEmpty1Location
     }
   }
 
   render() {
-    const { tripEntry1 } = this.state
+    const { tripEntry1, tripEmpty, tripEmpty1Location } = this.state
     return (
       <Container>
         <Header></Header>
@@ -76,11 +94,11 @@ export class TripCarouselDoc extends Component<Props, State> {
             }}
           >
             <TripCarousel
-              tripEntry={tripEntry1}
+              tripEntry={tripEmpty}
               handleClick={() => true}
             />
             <TripCarousel
-              tripEntry={tripEntry1}
+              tripEntry={tripEmpty1Location}
               handleClick={() => true}
             />
             <TripCarousel
