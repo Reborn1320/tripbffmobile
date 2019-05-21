@@ -1,3 +1,4 @@
+import { PermissionsAndroid } from "react-native";
 
 export function getAddressFromLocation (locationJson) {
     let address = "";
@@ -22,3 +23,18 @@ export function getAddressFromLocation (locationJson) {
 
     return address;
 }
+
+export async function checkAndRequestPhotoPermissionAsync() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE        
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can read external storage');
+      } else {
+        console.log('Read external storage permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }

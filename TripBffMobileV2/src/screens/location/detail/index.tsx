@@ -1,4 +1,5 @@
 import React from 'react'
+import { PermissionsAndroid } from "react-native";
 import { Container, Header, Content, Button, Text } from 'native-base';
 import { StoreData, RawJsonData } from '../../../store/Interfaces';
 import { connect } from 'react-redux';
@@ -12,7 +13,7 @@ import { favorLocationImage } from '../../../store/Trip/operations';
 import { NavigationConstants } from '../../_shared/ScreenConstants';
 import AddLocationImageButton from '../../../_organisms/Location/AddLocationImageButton';
 import moment, { Moment } from 'moment';
-import { number } from 'prop-types';
+import { checkAndRequestPhotoPermissionAsync } from "../../../_function/commonFunc";
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
@@ -160,8 +161,9 @@ class LocationDetail extends React.Component<Props, State> {
     private _cancelUpdateLocationDescription = () => {
         this.setState({isUpdateLocationDescriptionModalVisible: false});
     }
-
-    private _openImagePickerModal = () => {
+    
+    private _openImagePickerModal = async () => {
+        await checkAndRequestPhotoPermissionAsync();
         this.setState({
             isOpenImagePickerModalVisible: true
         });
@@ -272,8 +274,7 @@ class LocationDetail extends React.Component<Props, State> {
                 <View
                     style={{ position: "absolute", bottom: 20, right: 20 }}>
                     <AddLocationImageButton
-                        openImagePickerModal={this._openImagePickerModal}
-                    />
+                        openImagePickerModal={this._openImagePickerModal}/>
                 </View>
             </Container>
         )
