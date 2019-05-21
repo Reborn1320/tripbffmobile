@@ -1,4 +1,4 @@
-package com.tripbffmobilev2;
+package com.tripbff.android;
 
 import com.facebook.react.ReactActivity;
 import android.content.Intent;

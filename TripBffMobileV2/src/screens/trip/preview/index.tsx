@@ -265,7 +265,7 @@ interface ImageProps {
                       console.log("Share cancelled");
                     } else {
                       console.log("Share success");
-                      this._navigateToProfile();
+                      tmp._navigateToProfile();
                     }
                   },
                   function(error) {
