@@ -1,88 +1,70 @@
 import { PhotoMetaData } from './PhotoInterface';
-import { MediaLibrary } from 'expo';
 import _ from "lodash";
-import { Platform } from "react-native";
+import { CameraRoll, GetPhotosReturnType } from "react-native";
 import moment from "moment";
 
 const PHOTOS_PER_BATCH = 20
-const mediaType = MediaLibrary.MediaType.photo
-//TODO: import filter by camera only
 async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number) {
-    //timestamp from assets in expo use unix to miliseconds
-    fromTimestamp = fromTimestamp * 1000;
-    toTimestamp = toTimestamp * 1000;
+    //timestamp from assets in expo use unix to milliseconds
+    fromTimestamp = fromTimestamp;
+    toTimestamp = toTimestamp;
+    // console.log(fromTimestamp, toTimestamp);
+
     try {
 
         var photos: PhotoMetaData[] = []
-        var result: MediaLibrary.GetAssetsResult
+        var result: GetPhotosReturnType;
 
         getphotos:
         while (fromTimestamp <= toTimestamp) {
 
-            var afterCursor = result == undefined ? undefined : result.endCursor
-            result = await MediaLibrary.getAssetsAsync({
+            var afterCursor = result == undefined ? undefined : result.page_info.end_cursor;
+            result = await CameraRoll.getPhotos({
                 first: PHOTOS_PER_BATCH,
-                mediaType: mediaType,
-                sortBy: MediaLibrary.SortBy.creationTime,
+                assetType: 'Photos',
                 after: afterCursor,
-            })
+            });
 
-            console.log(`get ${result.assets.length} photo(s)`);         
+            console.log(`get ${result.edges.length} photo(s)`);
 
-            if (result.assets.length == 0) break;
+            if (result.edges.length == 0) break;
 
-            var oldestTimeStamp = result.assets[result.assets.length - 1].creationTime;
-            var latestTimeStamp = result.assets[0].creationTime;
-            
+            var oldestTimeStamp = result.edges[result.edges.length - 1].node.timestamp;
+            var latestTimeStamp = result.edges[0].node.timestamp;
+
+            console.log(oldestTimeStamp, latestTimeStamp);
             if (fromTimestamp > latestTimeStamp) break;
             else if (toTimestamp < oldestTimeStamp) continue;
             else {
-                for (let idx = 0; idx < result.assets.length; idx++) {
-                    const element = result.assets[idx];
-    
-                    //console.log('photo created date: ' + moment(element.creationTime).format("YYYY-MM-DD HH:mm"));
-                    
-                    if (fromTimestamp <= element.creationTime && element.creationTime <= toTimestamp) {
-                        var fullElement = await MediaLibrary.getAssetInfoAsync(element)                        
+                for (let idx = 0; idx < result.edges.length; idx++) {
+                    const element = result.edges[idx];
 
-                        if (fullElement) {
-                            console.log('full element: ' + JSON.stringify(fullElement));
-                            
-                            // if ((fullElement.localUri.indexOf("Camera") == -1 && Platform.OS === "android") || 
-                            // (fullElement.localUri.indexOf("Media") == -1 && Platform.OS === "ios")) continue;                   
+                    console.log('photo created date: ' + moment(element.node.timestamp, "X").format("YYYY-MM-DD HH:mm"));
 
-                            if (fullElement.location == null || fullElement.location == undefined) {
-                                fullElement.location = { latitude: 0, longitude: 0 } 
-                            }
+                    if (fromTimestamp <= element.node.timestamp && element.node.timestamp <= toTimestamp) {
 
-                            //TODO: check why can not get long, lat of image
-                            //console.log('full element long : ' + fullElement.location.longitude);
-
-                            console.log(fullElement.uri);
-                            // console.log(fullElement.localUri);
-
-                            photos.push({
+                        photos.push({
                             image: {
-                                uri: fullElement.uri,
-                                width: fullElement.width,
-                                height: fullElement.height,
+                                uri: element.node.image.uri,
+                                width: element.node.image.width,
+                                height: element.node.image.height,
+                                type: element.node.type,
                             },
-                            timestamp: fullElement.creationTime / 1000,
+                            timestamp: element.node.timestamp,
                             location: {
-                                latitude: fullElement.location.latitude,
-                                longitude: fullElement.location.longitude
+                                latitude: element.node.location ? element.node.location.latitude : 0,
+                                longitude: element.node.location ? element.node.location.longitude : 0
                             }
-                            });
-                        }                        
+                        });
+
                     }
-                    else if (element.creationTime < fromTimestamp) break getphotos;
+                    else if (element.node.timestamp < fromTimestamp) break getphotos;
                 }
             }
 
-            
-            if (!result.hasNextPage) break;
+            if (!result.page_info.has_next_page) break;
         }
-        console.log("photos", photos[0]);
+        console.log("first photo", photos[0]);
 
         return photos;
         // return _.orderBy(photos, 'timestamp', 'desc')
