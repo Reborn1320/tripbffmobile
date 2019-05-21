@@ -7,16 +7,16 @@
     "test": "jest"
   },
   "dependencies": {
-    "react": "16.8.3",
-    "react-native": "0.59.8",
     "@mapbox/mapbox-sdk": "^0.5.0",
-    "@mapbox/react-native-mapbox-gl": "^6.1.3",
+    "@mapbox/react-native-mapbox-gl": "https://github.com/nitaliano/react-native-mapbox-gl#master",
     "@react-native-community/async-storage": "^1.3.4",
     "axios": "0.18.0",
     "lodash": "^4.17.11",
     "metro-react-native-babel-preset": "^0.45.0",
     "moment": "^2.22.2",
     "native-base": "2.12.1",
+    "react": "16.5.0",
+    "react-native": "0.57.2",
     "react-native-action-button": "^2.8.5",
     "react-native-autocomplete-input": "^3.6.0",
     "react-native-calendar-picker": "^6.0.0",
@@ -26,7 +26,7 @@
     "react-native-elements": "1.1.0",
     "react-native-fbsdk": "^0.8.0",
     "react-native-fs": "^2.13.3",
-    "react-native-gesture-handler": "^1.1.0",
+    "react-native-gesture-handler": "1.1.0",
     "react-native-modal": "^9.0.0",
     "react-native-modal-datetime-picker": "^6.0.0",
     "react-native-popup-menu": "^0.15.0",
@@ -44,13 +44,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.4.4",
-    "@babel/runtime": "^7.4.4",
-    "babel-jest": "^24.8.0",
-    "jest": "^24.8.0",
-    "metro-react-native-babel-preset": "^0.54.1",
     "@babel/plugin-proposal-class-properties": "^7.4.3",
     "@babel/plugin-transform-flow-strip-types": "^7.4.3",
     "@babel/plugin-transform-runtime": "^7.4.3",
+    "@babel/runtime": "^7.4.4",
     "@types/jest": "^24.0.11",
     "@types/lodash": "^4.14.116",
     "@types/react": "^16.8.14",
@@ -58,6 +55,9 @@
     "@types/react-native-fbsdk": "^0.6.2",
     "@types/react-navigation": "^2.0.21",
     "@types/react-redux": "^6.0.11",
+    "babel-jest": "^24.8.0",
+    "jest": "^24.8.0",
+    "metro-react-native-babel-preset": "^0.54.1",
     "react-native-typescript-transformer": "^1.2.10",
     "react-test-renderer": "^16.8.6",
     "ts-jest": "^24.0.2",
@@ -66,8 +66,8 @@
   "rnpm": {
     "assets": [
       "./assets/fonts/"
-        ]
-    },
+    ]
+  },
   "jest": {
     "preset": "react-native",
     "moduleFileExtensions": [

@@ -6,8 +6,8 @@ import _ from "lodash";
 import { connect } from "react-redux";
 import { cloneDeep } from 'lodash';
 
-import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
-import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
+//import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
+//import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
 import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
@@ -91,13 +91,14 @@ class TripImportation extends Component<Props, State> {
 
     async componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this._handleBackPress);
-        await checkAndRequestPhotoPermissionAsync();
+        //await checkAndRequestPhotoPermissionAsync();
 
         console.log("from date: " + this.state.fromDate.toDate());
         console.log("to date: " + this.state.toDate.toDate());
 
         console.log("request photo permission completed");
-        var photos = await loadPhotosWithinAsync(this.state.fromDate.unix(), this.state.toDate.unix())
+        //var photos = await loadPhotosWithinAsync(this.state.fromDate.unix(), this.state.toDate.unix())
+        var photos = [];
         console.log(`photos result = ${photos.length} photos`);
 
         var groupedPhotos = GroupPhotosIntoLocations(photos);

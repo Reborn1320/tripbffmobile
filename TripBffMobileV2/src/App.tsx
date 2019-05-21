@@ -116,7 +116,7 @@ const AppNavigator = createSwitchNavigator(
     TripDetails: TripDetailsNavigator,    
     Profile: ProfileNavigator,
     TestComponent: {screen: TestComponentNavigator },
-    Home: { screen: HomeScreen },   
+    // Home: { screen: HomeScreen },   
   },
   {
     initialRouteName: "Login"
@@ -127,7 +127,7 @@ let Navigation = createAppContainer(AppNavigator);
 export default () => (
   <Provider store={store}>
     <Root>
-      <Navigation />
+      <Navigation/>
     </Root>
   </Provider>
 );

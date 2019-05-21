@@ -17,7 +17,6 @@ import styles from "./styles";
 import { listRepos } from "./reducer";
 import * as RNa from "react-navigation";
 import Loading from "../../_atoms/Loading/Loading";
-import { FileSystem } from "expo";
 import {
   ShareDialog,
   LoginButton,
@@ -202,31 +201,31 @@ class Home extends React.Component<Props, any> {
       email: "bbb",
       password: "123456"
     };
-    this.loginDetails(postUser.email, postUser.password, false).then(
-      async () => {
-        await checkAndRequestPhotoPermissionAsync();
-        //content://media/external/images/media/2312
-        // var u = "file:///storage/emulated/0/DCIM/Camera/20181106_082919.jpg";
+    // this.loginDetails(postUser.email, postUser.password, false).then(
+    //   async () => {
+    //     await checkAndRequestPhotoPermissionAsync();
+    //     //content://media/external/images/media/2312
+    //     // var u = "file:///storage/emulated/0/DCIM/Camera/20181106_082919.jpg";
 
-        let photos = await CameraRoll.getPhotos({ first: 4 });
-        var u = photos.edges[0].node.image.uri;
-        // console.log(img);
-        console.log(u);
+    //     let photos = await CameraRoll.getPhotos({ first: 4 });
+    //     var u = photos.edges[0].node.image.uri;
+    //     // console.log(img);
+    //     console.log(u);
 
-        const info = await FileSystem.getInfoAsync(u);
-        console.log(info);
-        // const fileData = await FileSystem.readAsStringAsync(u);
-        // console.log(fileData)
-        this.props.uploadSimpleImage(u)
-          .then(() => {
-            console.log("uploaded");
-          })
-          .catch(err => {
-            console.log("err");
-            console.log(err);
-          });
-      }
-    );
+    //     const info = await FileSystem.getInfoAsync(u);
+    //     console.log(info);
+    //     // const fileData = await FileSystem.readAsStringAsync(u);
+    //     // console.log(fileData)
+    //     this.props.uploadSimpleImage(u)
+    //       .then(() => {
+    //         console.log("uploaded");
+    //       })
+    //       .catch(err => {
+    //         console.log("err");
+    //         console.log(err);
+    //       });
+    //   }
+    // );
   }
 
   getImage() {
@@ -317,7 +316,7 @@ class Home extends React.Component<Props, any> {
               <Text>Share Link on Facebook</Text>
             </Button>
             <Button style={{ margin: 5 }} onPress={() => this.sharePhotoWithShareDialog()}>
-              <Text>Share Photos on Facebook</Text>
+              <Text>Share Photos on Facebook11</Text>
             </Button>
             {/* <Button style={{ margin: 5 }} onPress={() => this.loginLocal()}>
               <Text>Login Local</Text>
