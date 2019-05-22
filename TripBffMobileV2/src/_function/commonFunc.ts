@@ -38,3 +38,10 @@ export async function checkAndRequestPhotoPermissionAsync() {
       console.warn(err);
     }
   }
+
+export async function runPromiseSeries(promises) { 
+  var p = Promise.resolve();
+  return promises.reduce(function(pacc, fn) {
+    return pacc = pacc.then(fn);
+  }, p);
+}

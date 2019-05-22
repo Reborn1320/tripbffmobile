@@ -1,5 +1,4 @@
 import * as moment from 'moment';
-import { ImageManipulator } from 'expo';
 
 export module StoreData {
     export interface ImportImageVM {
