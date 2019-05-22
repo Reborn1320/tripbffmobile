@@ -4,6 +4,7 @@ export interface PhotoMetaData {
         height: number;
         width: number;
         based64?: string;
+        type: string;
     };
     timestamp: number; //in seconds, for example: 1537981200
     location: {

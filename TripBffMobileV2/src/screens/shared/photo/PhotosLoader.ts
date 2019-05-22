@@ -1,99 +1,81 @@
-// import { PhotoMetaData } from './PhotoInterface';
-// // import { MediaLibrary } from 'expo';
-// import _ from "lodash";
-// import { Platform } from "react-native";
-// import moment from "moment";
+import { PhotoMetaData } from './PhotoInterface';
+import _ from "lodash";
+import { CameraRoll, GetPhotosReturnType } from "react-native";
+import moment from "moment";
 
-// const PHOTOS_PER_BATCH = 20
-// const mediaType = MediaLibrary.MediaType.photo
-// //TODO: import filter by camera only
-// async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number) {
-//     //timestamp from assets in expo use unix to miliseconds
-//     fromTimestamp = fromTimestamp * 1000;
-//     toTimestamp = toTimestamp * 1000;
-//     try {
+const PHOTOS_PER_BATCH = 20
+async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number) {
+    //timestamp from assets in expo use unix to milliseconds
+    fromTimestamp = fromTimestamp;
+    toTimestamp = toTimestamp;
+    // console.log(fromTimestamp, toTimestamp);
 
-//         var photos: PhotoMetaData[] = []
-//         var result: MediaLibrary.GetAssetsResult
+    try {
 
-//         getphotos:
-//         while (fromTimestamp <= toTimestamp) {
+        var photos: PhotoMetaData[] = []
+        var result: GetPhotosReturnType;
 
-//             var afterCursor = result == undefined ? undefined : result.endCursor
-//             result = await MediaLibrary.getAssetsAsync({
-//                 first: PHOTOS_PER_BATCH,
-//                 mediaType: mediaType,
-//                 sortBy: MediaLibrary.SortBy.creationTime,
-//                 after: afterCursor,
-//             })
+        getphotos:
+        while (fromTimestamp <= toTimestamp) {
 
-//             console.log(`get ${result.assets.length} photo(s)`);         
+            var afterCursor = result == undefined ? undefined : result.page_info.end_cursor;
+            result = await CameraRoll.getPhotos({
+                first: PHOTOS_PER_BATCH,
+                assetType: 'Photos',
+                after: afterCursor,
+            });
 
-//             if (result.assets.length == 0) break;
+            console.log(`get ${result.edges.length} photo(s)`);
 
-//             var oldestTimeStamp = result.assets[result.assets.length - 1].creationTime;
-//             var latestTimeStamp = result.assets[0].creationTime;
-            
-//             if (fromTimestamp > latestTimeStamp) break;
-//             else if (toTimestamp < oldestTimeStamp) continue;
-//             else {
-//                 for (let idx = 0; idx < result.assets.length; idx++) {
-//                     const element = result.assets[idx];
-    
-//                     //console.log('photo created date: ' + moment(element.creationTime).format("YYYY-MM-DD HH:mm"));
-                    
-//                     if (fromTimestamp <= element.creationTime && element.creationTime <= toTimestamp) {
-//                         var fullElement = await MediaLibrary.getAssetInfoAsync(element)                        
+            if (result.edges.length == 0) break;
 
-//                         if (fullElement) {
-//                             console.log('full element: ' + JSON.stringify(fullElement));
-                            
-//                             // if ((fullElement.localUri.indexOf("Camera") == -1 && Platform.OS === "android") || 
-//                             // (fullElement.localUri.indexOf("Media") == -1 && Platform.OS === "ios")) continue;                   
+            var oldestTimeStamp = result.edges[result.edges.length - 1].node.timestamp;
+            var latestTimeStamp = result.edges[0].node.timestamp;
 
-//                             if (fullElement.location == null || fullElement.location == undefined) {
-//                                 fullElement.location = { latitude: 0, longitude: 0 } 
-//                             }
+            console.log(oldestTimeStamp, latestTimeStamp);
+            if (fromTimestamp > latestTimeStamp) break;
+            else if (toTimestamp < oldestTimeStamp) continue;
+            else {
+                for (let idx = 0; idx < result.edges.length; idx++) {
+                    const element = result.edges[idx];
 
-//                             //TODO: check why can not get long, lat of image
-//                             //console.log('full element long : ' + fullElement.location.longitude);
+                    console.log('photo created date: ' + moment(element.node.timestamp, "X").format("YYYY-MM-DD HH:mm"));
 
-//                             console.log(fullElement.uri);
-//                             // console.log(fullElement.localUri);
+                    if (fromTimestamp <= element.node.timestamp && element.node.timestamp <= toTimestamp) {
 
-//                             photos.push({
-//                             image: {
-//                                 uri: fullElement.uri,
-//                                 width: fullElement.width,
-//                                 height: fullElement.height,
-//                             },
-//                             timestamp: fullElement.creationTime / 1000,
-//                             location: {
-//                                 latitude: fullElement.location.latitude,
-//                                 longitude: fullElement.location.longitude
-//                             }
-//                             });
-//                         }                        
-//                     }
-//                     else if (element.creationTime < fromTimestamp) break getphotos;
-//                 }
-//             }
+                        photos.push({
+                            image: {
+                                uri: element.node.image.uri,
+                                width: element.node.image.width,
+                                height: element.node.image.height,
+                                type: element.node.type,
+                            },
+                            timestamp: element.node.timestamp,
+                            location: {
+                                latitude: element.node.location ? element.node.location.latitude : 0,
+                                longitude: element.node.location ? element.node.location.longitude : 0
+                            }
+                        });
 
-            
-//             if (!result.hasNextPage) break;
-//         }
-//         console.log("photos", photos[0]);
+                    }
+                    else if (element.node.timestamp < fromTimestamp) break getphotos;
+                }
+            }
 
-//         return photos;
-//         // return _.orderBy(photos, 'timestamp', 'desc')
+            if (!result.page_info.has_next_page) break;
+        }
+        console.log("first photo", photos[0]);
 
-//     } catch (error) {
-//         console.error(error)
-//     }
-// };
+        return photos;
+        // return _.orderBy(photos, 'timestamp', 'desc')
 
-// function _toTripImage() {
+    } catch (error) {
+        console.error(error)
+    }
+};
 
-// }
+function _toTripImage() {
 
-// export default loadPhotosWithinAsync
+}
+
+export default loadPhotosWithinAsync

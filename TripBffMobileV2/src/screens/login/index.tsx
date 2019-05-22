@@ -11,6 +11,8 @@ import { PropsBase } from "../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
 import { loginUsingUserPass, loginUsingFacebookAccessToken, loginUsingDeviceId } from "../../store/User/operations";
 import { NavigationConstants } from "../_shared/ScreenConstants";
+import { checkAndRequestPhotoPermissionAsync } from "../../_function/commonFunc";
+import { CameraRoll } from "react-native";
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
