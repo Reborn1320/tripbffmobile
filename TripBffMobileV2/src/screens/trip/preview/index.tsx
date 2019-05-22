@@ -26,14 +26,15 @@ import ImageList, { calculateImageListWidth, N_ITEMS_PER_ROW } from "../../../_m
 import { ImageSelection } from "../../../_molecules/ImageList/ImageSelection";
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { runPromiseSeries } from "../../../_function/commonFunc";
+import Loading from "../../../_atoms/Loading/Loading";
 
 interface ImageProps {
-  tripId: string,
-  images?: undefined,
-  updateSelectedImagesUrl: (imageUrls: Array<string>) => void
+  images: Array<StoreData.ImportImageVM>,
+  updateSelectedImagesUrl: (imageUrls: Array<any>) => void
 }
 
-  class PreviewImagesComponent extends PureComponent<ImageProps, any> {
+  class PreviewImages extends PureComponent<ImageProps, any> {
       constructor(props) {
         super(props);
 
@@ -45,7 +46,12 @@ interface ImageProps {
       componentDidMount() {
         if (this.props.images) {
           this.setState({ images: this.props.images });
-          let selectedImageUrls = this.props.images.map(item => item.url); 
+          let selectedImageUrls = this.props.images.map(item => {
+              return {
+                imageId: item.imageId,
+                externalUrl: item.externalUrl
+              }
+            }); 
           this.props.updateSelectedImagesUrl(selectedImageUrls); 
         }
       }
@@ -55,7 +61,12 @@ interface ImageProps {
                                             ...item,
                                             isSelected: !img.isSelected
                                           });        
-        let selectedImageUrls = newImages.filter(item => item.isSelected).map(item => item.url);    
+        let selectedImageUrls = newImages.filter(item => item.isSelected).map(item => {
+          return {
+            imageId: item.imageId,
+            externalUrl: item.externalUrl
+          }
+        });    
 
         this.setState({images: newImages});
         this.props.updateSelectedImagesUrl(selectedImageUrls);  
@@ -68,7 +79,7 @@ interface ImageProps {
         return (
             <ImageSelection
                 key={itemInfo.index}
-                imageUrl={img.url}
+                imageUrl={img.thumbnailExternalUrl}
                 width={itemWidth}
                 isChecked={img.isSelected}
 
@@ -95,31 +106,6 @@ interface ImageProps {
         );
       } 
   }
-
-  const imageMapStateToProps = (storeState: StoreData.BffStoreData, ownProps: ImageProps) => {
-    const { tripId } = ownProps;
-    var images = [];
-
-    storeState.currentTrip.dates.forEach(date => {
-      date.locations.forEach(location => {
-        images = images.concat(location.images.map(img => {
-          return {
-            ...img,
-            isSelected: true
-          }
-        }));
-      })
-    });    
-
-    return {
-      images: images
-    };
-  };
-  
-  const PreviewImages = connect(
-    imageMapStateToProps,
-    null
-  )(PreviewImagesComponent);
 
   class PreviewInfographicComponent extends PureComponent<any, any> {
     constructor(props) {
@@ -181,7 +167,8 @@ interface ImageProps {
     dispatch: ThunkDispatch<any, null, any>;
     navigation: RNa.NavigationScreenProp<any, any>,
     tripId: string,
-    infographicId: string
+    infographicId: string,
+    images: Array<StoreData.ImportImageVM>
   }
   
   interface IMapDispatchToProps {    
@@ -191,7 +178,8 @@ interface ImageProps {
     index: number,
     routes: any,
     infographicUrl: string
-    imageUrls: Array<string>
+    selectedImages: Array<any>,
+    displayLoading: boolean
   } 
 
   class InfographicPreview extends React.PureComponent<Props, State> {
@@ -205,7 +193,8 @@ interface ImageProps {
           { key: 'second', title: 'Images' },
         ],
         infographicUrl: "",
-        imageUrls: []
+        selectedImages: [],
+        displayLoading: false
       }
     } 
 
@@ -231,14 +220,58 @@ interface ImageProps {
       this.setState({infographicUrl: imageUrl});
     }
 
-    private _updateSelectedImagesUrl = (imageUrls) => {     
-      this.setState({imageUrls: imageUrls});
+    private _updateSelectedImagesUrl = (selectedImages) => {     
+      this.setState({selectedImages: selectedImages});
     }
 
-    private _sharePhotoWithShareDialog = () => {
-       var tmp = this;
-       let imageUrls = [this.state.infographicUrl].concat(this.state.imageUrls);        
+    private _downloadExternalImage = async (fileName: any, url: any) => {
+      var path = RNFS.DocumentDirectoryPath + '/' + fileName + '.png';
+      return RNFS.downloadFile({
+        fromUrl: url,
+        toFile: path
+      }).promise.then(response => {
+          const photoUri = "file://" + path;
+          return photoUri;
+      }).catch((error) => {
+         console.log('download images failed.: ' + JSON.stringify(error));
+     });
+    }
 
+    private _storeExternalImageIntoLocalStorage = async (externalImages: Array<any>) => {
+      let localImageUris = [];
+
+      if (externalImages && externalImages.length > 0) {
+        let imageFuncs = [],
+            tmp = this;
+
+        _.each(externalImages, img => {
+            let func = function() {                
+                return tmp._downloadExternalImage(img.imageId, img.externalUrl).then((photoUri) => {
+                  if (photoUri) localImageUris.push(photoUri);
+                });
+            }
+            
+            imageFuncs.push(func);
+        }) 
+
+        return runPromiseSeries(imageFuncs).then(results => {
+          return localImageUris;
+      }); 
+      }
+
+      return localImageUris;
+    }
+
+    private _sharePhotoWithShareDialog = async () => {
+       var tmp = this;
+
+       this.setState({displayLoading: true});
+       let localImageUris = await this._storeExternalImageIntoLocalStorage(this.state.selectedImages);
+       this.setState({displayLoading: false});
+
+       let imageUrls = [this.state.infographicUrl].concat(localImageUris);        
+
+       console.log('final selected image url: ' + JSON.stringify(imageUrls));
        let photos = imageUrls.map(item => {
          return {  imageUrl: item }
        });
@@ -308,6 +341,7 @@ interface ImageProps {
     private _navigateToProfile = () => {
       this.props.navigation.navigate(NavigationConstants.Screens.Profile)
     }
+
     render() {
         return (
           <Container>
@@ -323,7 +357,7 @@ interface ImageProps {
                                       updateShareInfographicUrl={this._updateShareInfographicUrl}>
                                   </PreviewInfographicComponent>;
                           case 'second':
-                            return <PreviewImages tripId={this.props.tripId}
+                            return <PreviewImages images={this.props.images}
                                       updateSelectedImagesUrl={this._updateSelectedImagesUrl}>                              
                                   </PreviewImages>;
                           default:
@@ -333,7 +367,13 @@ interface ImageProps {
                       onIndexChange={index => this.setState({ index })}
                       initialLayout={{ width: Dimensions.get('window').width }}
                     />
-              </View>              
+              </View> 
+              {
+                this.state.displayLoading && 
+                  <View style={styles.loading}>
+                    <Loading message={'loading'}/> 
+                  </View>
+              }           
             </Content>    
             <ActionButton
                     buttonColor="blue"
@@ -358,10 +398,23 @@ interface ImageProps {
     const { tripId } = ownProps.navigation.state.params;
     console.log('tripId from params: ' + tripId);
     var trip = storeState.currentTrip;
+    var images = [];
+
+    storeState.currentTrip.dates.forEach(date => {
+      date.locations.forEach(location => {
+        images = images.concat(location.images.map(img => {
+          return {
+            ...img,
+            isSelected: false
+          }
+        }));
+      })
+    });    
     
     return {
       tripId: tripId,
-      infographicId: trip.infographicId
+      infographicId: trip.infographicId,
+      images: images
     };
   };
 
@@ -383,4 +436,12 @@ interface ImageProps {
       height: 22,
       color: 'white',
     },
+    loading: {  
+      position: "absolute",
+      top: Dimensions.get('window').height / 3,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      alignItems: 'center'
+    }
   });

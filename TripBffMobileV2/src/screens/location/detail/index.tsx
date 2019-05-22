@@ -1,5 +1,4 @@
 import React from 'react'
-import { PermissionsAndroid } from "react-native";
 import { Container, Header, Content, Button, Text } from 'native-base';
 import { StoreData, RawJsonData } from '../../../store/Interfaces';
 import { connect } from 'react-redux';
@@ -13,8 +12,7 @@ import { favorLocationImage } from '../../../store/Trip/operations';
 import { NavigationConstants } from '../../_shared/ScreenConstants';
 import AddLocationImageButton from '../../../_organisms/Location/AddLocationImageButton';
 import moment, { Moment } from 'moment';
-import { checkAndRequestPhotoPermissionAsync } from "../../../_function/commonFunc";
-import { number } from 'prop-types';
+import { checkAndRequestPhotoPermissionAsync, runPromiseSeries } from "../../../_function/commonFunc";
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
@@ -169,18 +167,10 @@ class LocationDetail extends React.Component<Props, State> {
             isOpenImagePickerModalVisible: true
         });
     }
-
-    private _runPromiseSeries = (promises) => {  
-        var p = Promise.resolve();
-        return promises.reduce(function(pacc, fn) {
-          return pacc = pacc.then(fn);
-        }, p);
-      }
-
-      
+    
     private _confirmAddImage = async (images: Array<any>) => {
         let numberImagesUploaded = 0,
-            imagePromises = [],
+            imageFuncs = [],
             tmp = this;
 
         _.each(images, img => {
@@ -190,11 +180,11 @@ class LocationDetail extends React.Component<Props, State> {
                 });
             }
             
-            imagePromises.push(func);
+            imageFuncs.push(func);
         })        
 
-        return this._runPromiseSeries(imagePromises).then(results => {
-            console.log('numberImagesUploaded: ' + numberImagesUploaded);
+        return runPromiseSeries(imageFuncs).then(results => {
+            //console.log('numberImagesUploaded: ' + numberImagesUploaded);
             return numberImagesUploaded;
         }); 
     }
