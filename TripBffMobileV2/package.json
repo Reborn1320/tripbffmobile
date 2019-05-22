@@ -4,7 +4,14 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "show-log": "adb logcat *:S ReactNative:V ReactNativeJS:V",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "test": "jest",
+    "build-ts": "tsc",
+    "watch-ts": "tsc -w",
+    "watch-test": "jest --watch",
+    "reset-cache": "react-native start --reset-cache"
   },
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.5.0",
@@ -57,7 +64,7 @@
     "@types/react-redux": "^6.0.11",
     "babel-jest": "^24.8.0",
     "jest": "^24.8.0",
-    "metro-react-native-babel-preset": "^0.54.1",
+    "metro-react-native-babel-preset": "^0.45.0",
     "react-native-typescript-transformer": "^1.2.10",
     "react-test-renderer": "^16.8.6",
     "ts-jest": "^24.0.2",
