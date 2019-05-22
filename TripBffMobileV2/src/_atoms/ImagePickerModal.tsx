@@ -44,12 +44,12 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
     this.props.confirmHandler(selectedImages)
     .then(numberImagesUploaded => {
         if (numberImagesUploaded == totalImages) {
-           this.props.cancelHandler();
            this.setState({
                 isUploadingImages: false,
                 num: 0,
                 selectedImages: []
             });
+            this.props.cancelHandler();
         }
         else {
             this.setState({

@@ -363,13 +363,13 @@ export function uploadLocationImage(tripId: string, dateIdx: number, locationId:
 
     return uploadFileApi.upload(url, imgUrl, additionalData)
     .then((res) => {
-        var { externalId, thumbnailExternalUrl, externalUrl } = JSON.parse(res.response);      
-
-        //todo perhap missing externalUrl too 
-        return dispatch(uploadLocationImageAction(tripId, dateIdx, locationId, imageId, externalId, thumbnailExternalUrl, externalUrl))
+        var { externalId, thumbnailExternalUrl, externalUrl } = JSON.parse(res.response);
+        dispatch(uploadLocationImageAction(tripId, dateIdx, locationId, imageId, externalId, thumbnailExternalUrl, externalUrl));
+        return true;
     })
     .catch((err) => {
         console.log('error uploadLocationImage ', err);
+        return false;
     });
   };
 }

@@ -14,11 +14,12 @@ import { NavigationConstants } from '../../_shared/ScreenConstants';
 import AddLocationImageButton from '../../../_organisms/Location/AddLocationImageButton';
 import moment, { Moment } from 'moment';
 import { checkAndRequestPhotoPermissionAsync } from "../../../_function/commonFunc";
+import { number } from 'prop-types';
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
     addLocationImage: (tripId: string, dateIdx: number, locationId: string, url: string, time: Moment) => Promise<string>
-    uploadLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, url: string) => Promise<void>
+    uploadLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, url: string) => Promise<any>
     deleteLocationImages: (tripId: string, dateIdx: number, locationId: string, locationImageIds: string[]) => Promise<void>
     favoriteLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, isFavorite: boolean) => Promise<void>
     updateLocationHighlight: (tripId: string, dateIdx: number, locationId: string, highlights: Array<StoreData.LocationLikeItemVM>) => Promise<void>
@@ -169,25 +170,33 @@ class LocationDetail extends React.Component<Props, State> {
         });
     }
 
+    private _runPromiseSeries = (promises) => {  
+        var p = Promise.resolve();
+        return promises.reduce(function(pacc, fn) {
+          return pacc = pacc.then(fn);
+        }, p);
+      }
+
+      
     private _confirmAddImage = async (images: Array<any>) => {
         let numberImagesUploaded = 0,
-            imagePromises = Array<Promise<any>>();
+            imagePromises = [],
+            tmp = this;
 
         _.each(images, img => {
-            let promise = new Promise((resolve, reject) => {
-                this._onAddingImage(img.uri, moment())
-                .then(() => {
-                    numberImagesUploaded++;
-                    resolve(numberImagesUploaded);
+            let func = function() {                
+                return tmp._onAddingImage(img.uri, moment()).then((isSuccess) => {
+                    if (isSuccess) numberImagesUploaded++;
                 });
-            })
-            imagePromises.push(promise);
-        })
+            }
+            
+            imagePromises.push(func);
+        })        
 
-        return Promise.all(imagePromises).then(results => {
+        return this._runPromiseSeries(imagePromises).then(results => {
             console.log('numberImagesUploaded: ' + numberImagesUploaded);
             return numberImagesUploaded;
-        });
+        }); 
     }
 
     private _cancelAddImage = () => {
