@@ -200,7 +200,7 @@ dependencies {
     exclude group: 'com.squareup.okhttp3', module: 'okhttp-urlconnection'
   }
 
-  implementation 'com.facebook.android:facebook-android-sdk:4.34.0'
+  implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
   implementation project(':react-native-fbsdk')
   /* REMOVED_WHEN_DISTRIBUTING_FROM_HERE
 
