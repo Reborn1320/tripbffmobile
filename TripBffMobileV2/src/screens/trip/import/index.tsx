@@ -25,7 +25,7 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 
 interface IMapDispatchToProps {
     addLocations: (tripId: string, locations: IImportLocation[]) => Promise<void>;
-    uploadLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, imageUrl: string) => Promise<void>;
+    uploadLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, imageUrl: string, mimeType: string) => Promise<void>;
 }
 
 interface State {
@@ -247,6 +247,7 @@ class TripImportation extends Component<Props, State> {
             var locId = "";
             var imageIdToUpload: string;
             var imageUrlToUpload = "";
+            let imageMimeTypeToUpload = "";
             
             _.each(this.props.trip.dates, date => {
                 _.each(date.locations, loc => {
@@ -264,6 +265,7 @@ class TripImportation extends Component<Props, State> {
                                     locId = loc.locationId;
                                     imageIdToUpload = img.imageId;
                                     imageUrlToUpload = img.url;
+                                    imageMimeTypeToUpload = img.type
                                 }
                             }
                         }
@@ -288,7 +290,7 @@ class TripImportation extends Component<Props, State> {
                 console.log("component will update with uploading image");
 
 
-                this.props.uploadLocationImage(this.state.tripId, dateIdx, locId, imageIdToUpload, imageUrlToUpload)
+                this.props.uploadLocationImage(this.state.tripId, dateIdx, locId, imageIdToUpload, imageUrlToUpload, imageMimeTypeToUpload)
                 .then(() => {
                     this.setState({UIState: "import images"});
                 })
@@ -382,7 +384,7 @@ const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     return {
         // dispatch, //https://stackoverflow.com/questions/36850988/this-props-dispatch-not-a-function-react-redux
         addLocations: (tripId, selectedLocations) => dispatch(addLocations(tripId, selectedLocations)),
-        uploadLocationImage: (tripId, dateIdx, locationId, imageId, imgUrl) => dispatch(uploadLocationImage(tripId, dateIdx, locationId, imageId, imgUrl)),
+        uploadLocationImage: (tripId, dateIdx, locationId, imageId, imgUrl, mimeType) => dispatch(uploadLocationImage(tripId, dateIdx, locationId, imageId, imgUrl, mimeType)),
     }
 };
 

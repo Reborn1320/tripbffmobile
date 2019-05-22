@@ -351,12 +351,29 @@ export function addLocationImage(tripId: string, dateIdx: number, locationId: st
   };
 }
 
-export function uploadLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string, imgUrl: string): ThunkResultBase {
+type IMimeTypeImage = "image/jpeg"
+| "image/png"
+
+export function uploadLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string, imgUrl: string, mimeType: IMimeTypeImage = "image/jpeg"): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
+
+    let fileExtension: string;
+    switch (mimeType) {
+      case "image/jpeg": {
+        fileExtension = "jpeg"
+        break;
+      }
+      case "image/png": {
+        fileExtension = "png"
+        break;
+      }
+      default:
+        fileExtension = "jpg";
+    }
     const additionalData = {
       locationId,
       imageId,
-      fileName: imgUrl,
+      fileName: `${imgUrl}.${fileExtension}`,
     };
     
     var url = '/trips/' + tripId +'/uploadImage';
