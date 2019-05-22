@@ -6,8 +6,8 @@ import _ from "lodash";
 import { connect } from "react-redux";
 import { cloneDeep } from 'lodash';
 
-//import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
-//import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
+// import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
+import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
 import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
@@ -15,7 +15,7 @@ import Loading from "../../../_atoms/Loading/Loading";
 import { TripImportLocationVM } from "./TripImportViewModels";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { uploadLocationImage, addLocations, IImportLocation } from "../../../store/Trip/operations";
-import { getAddressFromLocation } from "../../../_function/commonFunc";
+import { getAddressFromLocation, checkAndRequestPhotoPermissionAsync } from "../../../_function/commonFunc";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import Toast from 'react-native-easy-toast';
 
@@ -91,14 +91,13 @@ class TripImportation extends Component<Props, State> {
 
     async componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this._handleBackPress);
-        //await checkAndRequestPhotoPermissionAsync();
+        await checkAndRequestPhotoPermissionAsync();
 
         console.log("from date: " + this.state.fromDate.toDate());
         console.log("to date: " + this.state.toDate.toDate());
 
         console.log("request photo permission completed");
-        //var photos = await loadPhotosWithinAsync(this.state.fromDate.unix(), this.state.toDate.unix())
-        var photos = [];
+        var photos = await loadPhotosWithinAsync(this.state.fromDate.unix(), this.state.toDate.unix())
         console.log(`photos result = ${photos.length} photos`);
 
         var groupedPhotos = GroupPhotosIntoLocations(photos);
