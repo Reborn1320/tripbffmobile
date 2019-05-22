@@ -1,0 +1,130 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`location image reducer should handle TRIP_LOCATION_IMAGE_FAVOR 1`] = `
+Array [
+  Object {
+    "dates": Array [
+      Object {
+        "date": "2019-03-14T00:00:00.000Z",
+        "dateIdx": 1,
+        "locationIds": Array [
+          "locationId01",
+        ],
+        "locations": Array [
+          Object {
+            "activity": Object {},
+            "feeling": Object {},
+            "fromTime": "2019-03-13T08:37:55.844Z",
+            "images": Array [
+              Object {
+                "externalUrl": "",
+                "imageId": "imageId01",
+                "thumbnailExternalUrl": "",
+                "url": "url",
+              },
+              Object {
+                "externalUrl": "",
+                "imageId": "imageId02",
+                "isFavorite": true,
+                "thumbnailExternalUrl": "",
+                "url": "url",
+              },
+            ],
+            "location": Object {
+              "lat": 10.801314353942871,
+              "long": 106.64141845703125,
+            },
+            "locationId": "locationId01",
+            "toTime": "2019-03-13T08:38:28.099Z",
+          },
+        ],
+      },
+      Object {
+        "date": "2019-03-15T00:00:00.000Z",
+        "dateIdx": 2,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-16T00:00:00.000Z",
+        "dateIdx": 3,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-17T00:00:00.000Z",
+        "dateIdx": 4,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-18T00:00:00.000Z",
+        "dateIdx": 5,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-19T00:00:00.000Z",
+        "dateIdx": 6,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-20T00:00:00.000Z",
+        "dateIdx": 7,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-21T00:00:00.000Z",
+        "dateIdx": 8,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-22T00:00:00.000Z",
+        "dateIdx": 9,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+      Object {
+        "date": "2019-03-23T00:00:00.000Z",
+        "dateIdx": 10,
+        "locationIds": Array [],
+        "locations": Array [],
+      },
+    ],
+    "fromDate": "2019-03-14T00:00:00.000Z",
+    "locations": Array [
+      Object {
+        "activity": Object {},
+        "feeling": Object {},
+        "fromTime": "2019-03-13T08:37:55.844Z",
+        "images": Array [
+          Object {
+            "externalUrl": "",
+            "imageId": "imageId01",
+            "thumbnailExternalUrl": "",
+            "url": "url",
+          },
+          Object {
+            "externalUrl": "",
+            "imageId": "imageId02",
+            "thumbnailExternalUrl": "",
+            "url": "url",
+          },
+        ],
+        "location": Object {
+          "lat": 10.801314353942871,
+          "long": 106.64141845703125,
+        },
+        "locationId": "locationId01",
+        "toTime": "2019-03-13T08:38:28.099Z",
+      },
+    ],
+    "name": "Ffggc 7f7",
+    "toDate": "2019-03-23T00:00:00.000Z",
+    "tripId": "tripId01",
+  },
+]
+`;
