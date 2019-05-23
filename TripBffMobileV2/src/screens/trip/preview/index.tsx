@@ -5,7 +5,8 @@ import {
   Content,
   Button,
   Text,
-  View
+  View,
+  Toast
 } from "native-base";
 import { ThunkDispatch } from "redux-thunk";
 import { PropsBase } from "../../_shared/LayoutContainer";
@@ -83,6 +84,7 @@ interface ImageProps {
                 imageUrl={img.thumbnailExternalUrl}
                 width={itemWidth}
                 isChecked={img.isSelected}
+                isDisplayFavorited={img.isFavorite}
 
                 isFirstItemInRow={itemInfo.index % N_ITEMS_PER_ROW == 0}
                 isFirstRow={ itemInfo.index < N_ITEMS_PER_ROW }
@@ -199,7 +201,8 @@ interface ImageProps {
     routes: any,
     infographicUrl: string
     selectedImages: Array<any>,
-    displayLoading: boolean
+    displayLoading: boolean,
+    firstRendered: boolean
   } 
 
   class InfographicPreview extends React.PureComponent<Props, State> {
@@ -214,7 +217,8 @@ interface ImageProps {
         ],
         infographicUrl: "",
         selectedImages: [],
-        displayLoading: false
+        displayLoading: true,
+        firstRendered: true
       }
     } 
 
@@ -232,12 +236,12 @@ interface ImageProps {
       };
     };
 
-    componentDidMount() {
+    componentDidMount() {      
       this.props.navigation.setParams({ _cancel: this._cancel });
     }
 
     private _updateShareInfographicUrl = (imageUrl) => {
-      this.setState({infographicUrl: imageUrl});
+      this.setState({infographicUrl: imageUrl, displayLoading: false});
     }
 
     private _updateSelectedImagesUrl = (selectedImages) => {     
@@ -283,76 +287,93 @@ interface ImageProps {
     }
 
     private _sharePhotoWithShareDialog = async () => {
-       var tmp = this;
+       var tmp = this;      
 
-       this.setState({displayLoading: true});
-       let localImageUris = await this._storeExternalImageIntoLocalStorage(this.state.selectedImages);
-       this.setState({displayLoading: false});
+       if (this.state.selectedImages.length > 5) {
+          Toast.show({
+            text: "Please select maximum 5 most favoriate images to share!",
+            buttonText: "Okay",
+            type: "warning",
+            position: "top",
+            duration: 3000
+          });
+       }
+       else {
+        this.setState({displayLoading: true});
+        let localImageUris = await this._storeExternalImageIntoLocalStorage(this.state.selectedImages);
+        let imageUrls = [this.state.infographicUrl].concat(localImageUris);        
+ 
+        console.log('final selected image url: ' + JSON.stringify(imageUrls));
+        let photos = imageUrls.map(item => {
+          return {  imageUrl: item }
+        });
+ 
+        const sharePhotoContent = {
+          contentType: "photo",
+          photos: photos
+        } as any;
+  
+        AccessToken.getCurrentAccessToken().then(
+            (data) => {
+              if (data) {
+                try{
+                  ShareDialog.canShow(sharePhotoContent)
+                  .then(function(canShow) {
+                    tmp.setState({displayLoading: false});
 
-       let imageUrls = [this.state.infographicUrl].concat(localImageUris);        
-
-       console.log('final selected image url: ' + JSON.stringify(imageUrls));
-       let photos = imageUrls.map(item => {
-         return {  imageUrl: item }
-       });
-
-      const sharePhotoContent = {
-        contentType: "photo",
-        photos: photos
-      } as any;
-
-      AccessToken.getCurrentAccessToken().then(
-          (data) => {
-            if (data) {
-              try{
-                ShareDialog.canShow(sharePhotoContent)
-                .then(function(canShow) {
-                  if (canShow) {
-                    return ShareDialog.show(sharePhotoContent)                    
-                  }
-                })
-                .then(
-                  function(result) {
-                    console.log("Share result: " + JSON.stringify(result));
-                    if (result.isCancelled) {
-                      console.log("Share cancelled");
-                    } else {
-                      console.log("Share success");
-                      tmp._navigateToProfile();
+                    if (canShow) {
+                      return ShareDialog.show(sharePhotoContent)                    
+                    }                    
+                  })
+                  .then(
+                    function(result) {
+                      console.log("Share result: " + JSON.stringify(result));
+                      if (result.isCancelled) {
+                        console.log("Share cancelled");
+                      } else {
+                        console.log("Share success");
+                        tmp._navigateToProfile();
+                      }
+                    },
+                    function(error) {
+                      Toast.show({
+                        text: "Got error when share to Facebook. Please try again!",
+                        buttonText: "Okay",
+                        type: "danger",
+                        duration: 3000
+                      });
+                      console.log("Share fail with error: " + error);
                     }
-                  },
-                  function(error) {
-                    console.log("Share fail with error: " + error);
-                  }
-                );
+                  );
+                }
+                catch(error) {
+                    console.log('come here error try catch');
+                }
+                
               }
-              catch(error) {
-                  console.log('come here error try catch');
-              }
-              
-            }
-            else {
-                console.log('need to log-in');
-                LoginManager.logInWithReadPermissions(["public_profile", "user_photos", "user_posts"]).then(
-                  function(result) {
-                    if (result.isCancelled) {
-                      console.log("Login cancelled");
-                    } else {
-                      console.log(
-                        "Login success with permissions: " +
-                          result.grantedPermissions.toString()
-                      );
-                      tmp._sharePhotoWithShareDialog();
+              else {
+                  console.log('need to log-in');
+                  LoginManager.logInWithReadPermissions(["public_profile", "user_photos", "user_posts"]).then(
+                    function(result) {
+                      if (result.isCancelled) {
+                        console.log("Login cancelled");
+                      } else {
+                        console.log(
+                          "Login success with permissions: " +
+                            result.grantedPermissions.toString()
+                        );
+                        tmp._sharePhotoWithShareDialog();
+                      }
+                    },
+                    function(error) {
+                      console.log("Login fail with error: " + error);
                     }
-                  },
-                  function(error) {
-                    console.log("Login fail with error: " + error);
-                  }
-                );
-            }
-          } 
-        );    
-      }
+                  );
+              }
+            } 
+          );    
+       }       
+    }
 
     private _cancel = () => {
       this._navigateToProfile();
@@ -376,7 +397,7 @@ interface ImageProps {
                                       infographicId={this.props.infographicId}
                                       updateShareInfographicUrl={this._updateShareInfographicUrl}>
                                   </PreviewInfographicComponent>;
-                          case 'second':
+                          case 'second':                            
                             return <PreviewImages images={this.props.images}
                                       updateSelectedImagesUrl={this._updateSelectedImagesUrl}>                              
                                   </PreviewImages>;
@@ -384,7 +405,24 @@ interface ImageProps {
                             return null;
                         }
                       }}
-                      onIndexChange={index => this.setState({ index })}
+                      onIndexChange={index =>  {
+                        let displayLoading = false;
+
+                        if (index == 1 && this.state.firstRendered) {
+                          Toast.show({
+                            text: "Please select maximum 5 most favoriate images to share!",
+                            buttonText: "Okay",
+                            type: "success",
+                            position: "top",
+                            duration: 3000
+                          });
+                        }
+                        else if (index == 0 && !this.state.infographicUrl) {
+                          displayLoading = true;
+                        }
+
+                        this.setState({ index, firstRendered: false, displayLoading: displayLoading })
+                      }}
                       initialLayout={{ width: Dimensions.get('window').width }}
                     />
               </View> 

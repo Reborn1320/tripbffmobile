@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { FlatList, View, BackHandler, StyleSheet } from "react-native";
-import { Container, Content, Button, Text, Footer } from 'native-base';
+import { Container, Content, Button, Text, Footer, Toast } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import _ from "lodash";
 import { connect } from "react-redux";
@@ -17,7 +17,6 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import { uploadLocationImage, addLocations, IImportLocation } from "../../../store/Trip/operations";
 import { getAddressFromLocation, checkAndRequestPhotoPermissionAsync } from "../../../_function/commonFunc";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
-import Toast from 'react-native-easy-toast';
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -25,7 +24,7 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 
 interface IMapDispatchToProps {
     addLocations: (tripId: string, locations: IImportLocation[]) => Promise<void>;
-    uploadLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, imageUrl: string, mimeType: string) => Promise<void>;
+    uploadLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, imageUrl: string, mimeType: StoreData.IMimeTypeImage) => Promise<void>;
 }
 
 interface State {
@@ -137,7 +136,14 @@ class TripImportation extends Component<Props, State> {
         }
 
         // console.log(adapterResult)
-        this.refs.toast.show('Location might not accurate, you can change it later!');
+        Toast.show({
+            text: "Location might not accurate, you can change it later!",
+            buttonText: "Okay",
+            position: "top",
+            type: "success",
+            duration: 3000
+        });
+
         this.setState({ locations: adapterResult, isLoading: false, isHideFooter: false });
     }
 
@@ -247,7 +253,7 @@ class TripImportation extends Component<Props, State> {
             var locId = "";
             var imageIdToUpload: string;
             var imageUrlToUpload = "";
-            let imageMimeTypeToUpload = "";
+            let imageMimeTypeToUpload: StoreData.IMimeTypeImage = "image/jpeg";
             
             _.each(this.props.trip.dates, date => {
                 _.each(date.locations, loc => {
@@ -319,16 +325,7 @@ class TripImportation extends Component<Props, State> {
                             keyExtractor={(item, index) => String(index)}
                             removeClippedSubviews={false}
                         />
-                    }
-                    <Toast
-                        ref="toast"
-                        style={{backgroundColor:'#3498db', borderRadius: 5, padding: 10, margin: 50}}
-                        position='top'
-                        positionValue={30}
-                        fadeInDuration={750}
-                        fadeOutDuration={4000}
-                        textStyle={{color:'white', fontSize: 16}}
-                    />  
+                    }    
                 </Content>
                 {
                     isHideFooter || 
@@ -363,15 +360,6 @@ class TripImportation extends Component<Props, State> {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    toastContainer: {
-        //flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-});
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId } = ownProps.navigation.state.params;
