@@ -2,10 +2,13 @@ import React from "react";
 import { View, Icon } from "native-base";
 import { Image, StyleSheet, ViewStyle, TextStyle, TouchableHighlight } from "react-native";
 import NBTheme from "../../theme/variables/material.js";
+import { mixins } from "../../_utils";
+import { symbol } from "prop-types";
 
 export interface Props {
   imageUrl: string
   isChecked?: boolean
+  isDisplayFavorited?: boolean
   width: number
 
   onPress: () => void
@@ -55,6 +58,12 @@ export class ImageSelection extends React.Component<Props, State> {
             style={Object.assign({ width, height: width }, isChecked ? styles.checkImage : styles.image)}
             source={{ uri: this.props.imageUrl }}
           />
+          {
+            this.props.isDisplayFavorited && 
+              <View style={styles.favoriteContainer}>
+                  <Icon style={styles.favoriteIcon} active solid type="FontAwesome5" name="heart" />
+              </View>
+          }
         </View>
       </TouchableHighlight>
       </View>
@@ -69,6 +78,8 @@ interface Style {
   checkImage: ViewStyle;
   unCheckIcon: TextStyle;
   checkIcon: TextStyle;
+  favoriteContainer: ViewStyle,
+  favoriteIcon: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -102,6 +113,22 @@ const styles = StyleSheet.create<Style>({
     borderRadius: 99,
     width: 20,
     height: 20,
+    fontSize: 18,
+    textAlign: "center",
+  },
+  favoriteContainer: {
+    width: 30, height: 30,
+    position: "absolute",
+    left: 0,
+    top: 0,
+    elevation: 50,
+    ...mixins.centering
+  },
+  favoriteIcon: {
+    color: NBTheme.colorRed,
+    width: 20,
+    height: 20,
+    margin: 5,
     fontSize: 18,
     textAlign: "center",
   }

@@ -222,9 +222,10 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
             }
             return trip;
         case ADD_INFOGRAPHIC_ID:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 infographicId: action.infographicId
-            });
+            };
         case IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS:
             const { locations } = action;
             const mappedLocations: StoreData.LocationVM[] = locations.map(loc => ({

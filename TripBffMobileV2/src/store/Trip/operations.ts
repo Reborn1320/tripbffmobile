@@ -22,6 +22,7 @@ import { Moment } from "moment";
 import { StoreData, RawJsonData } from "../Interfaces";
 import moment from "moment";
 import { uploadFileApi } from "../../screens/_services/apis";
+import { Store } from "redux";
 
 export function fetchTrip(tripId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
@@ -351,12 +352,26 @@ export function addLocationImage(tripId: string, dateIdx: number, locationId: st
   };
 }
 
-export function uploadLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string, imgUrl: string): ThunkResultBase {
+export function uploadLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string, imgUrl: string, mimeType: StoreData.IMimeTypeImage = "image/jpeg"): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
+
+    let fileExtension: string;
+    switch (mimeType) {
+      case "image/jpeg": {
+        fileExtension = "jpeg"
+        break;
+      }
+      case "image/png": {
+        fileExtension = "png"
+        break;
+      }
+      default:
+        fileExtension = "jpg";
+    }
     const additionalData = {
       locationId,
       imageId,
-      fileName: imgUrl,
+      fileName: `${imgUrl}.${fileExtension}`,
     };
     
     var url = '/trips/' + tripId +'/uploadImage';

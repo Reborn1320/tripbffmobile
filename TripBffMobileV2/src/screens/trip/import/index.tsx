@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { FlatList, View, BackHandler, StyleSheet } from "react-native";
-import { Container, Content, Button, Text, Footer } from 'native-base';
+import { Container, Content, Button, Text, Footer, Toast } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import _ from "lodash";
 import { connect } from "react-redux";
 import { cloneDeep } from 'lodash';
 
-//import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
-//import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
+// import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
+import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
 import moment from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
@@ -15,9 +15,8 @@ import Loading from "../../../_atoms/Loading/Loading";
 import { TripImportLocationVM } from "./TripImportViewModels";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { uploadLocationImage, addLocations, IImportLocation } from "../../../store/Trip/operations";
-import { getAddressFromLocation } from "../../../_function/commonFunc";
+import { getAddressFromLocation, checkAndRequestPhotoPermissionAsync } from "../../../_function/commonFunc";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
-import Toast from 'react-native-easy-toast';
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -25,7 +24,7 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 
 interface IMapDispatchToProps {
     addLocations: (tripId: string, locations: IImportLocation[]) => Promise<void>;
-    uploadLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, imageUrl: string) => Promise<void>;
+    uploadLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, imageUrl: string, mimeType: StoreData.IMimeTypeImage) => Promise<void>;
 }
 
 interface State {
@@ -91,14 +90,13 @@ class TripImportation extends Component<Props, State> {
 
     async componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this._handleBackPress);
-        //await checkAndRequestPhotoPermissionAsync();
+        await checkAndRequestPhotoPermissionAsync();
 
         console.log("from date: " + this.state.fromDate.toDate());
         console.log("to date: " + this.state.toDate.toDate());
 
         console.log("request photo permission completed");
-        //var photos = await loadPhotosWithinAsync(this.state.fromDate.unix(), this.state.toDate.unix())
-        var photos = [];
+        var photos = await loadPhotosWithinAsync(this.state.fromDate.unix(), this.state.toDate.unix())
         console.log(`photos result = ${photos.length} photos`);
 
         var groupedPhotos = GroupPhotosIntoLocations(photos);
@@ -138,7 +136,14 @@ class TripImportation extends Component<Props, State> {
         }
 
         // console.log(adapterResult)
-        this.refs.toast.show('Location might not accurate, you can change it later!');
+        Toast.show({
+            text: "Location might not accurate, you can change it later!",
+            buttonText: "Okay",
+            position: "top",
+            type: "success",
+            duration: 3000
+        });
+
         this.setState({ locations: adapterResult, isLoading: false, isHideFooter: false });
     }
 
@@ -248,6 +253,7 @@ class TripImportation extends Component<Props, State> {
             var locId = "";
             var imageIdToUpload: string;
             var imageUrlToUpload = "";
+            let imageMimeTypeToUpload: StoreData.IMimeTypeImage = "image/jpeg";
             
             _.each(this.props.trip.dates, date => {
                 _.each(date.locations, loc => {
@@ -265,6 +271,7 @@ class TripImportation extends Component<Props, State> {
                                     locId = loc.locationId;
                                     imageIdToUpload = img.imageId;
                                     imageUrlToUpload = img.url;
+                                    imageMimeTypeToUpload = img.type
                                 }
                             }
                         }
@@ -289,7 +296,7 @@ class TripImportation extends Component<Props, State> {
                 console.log("component will update with uploading image");
 
 
-                this.props.uploadLocationImage(this.state.tripId, dateIdx, locId, imageIdToUpload, imageUrlToUpload)
+                this.props.uploadLocationImage(this.state.tripId, dateIdx, locId, imageIdToUpload, imageUrlToUpload, imageMimeTypeToUpload)
                 .then(() => {
                     this.setState({UIState: "import images"});
                 })
@@ -318,16 +325,7 @@ class TripImportation extends Component<Props, State> {
                             keyExtractor={(item, index) => String(index)}
                             removeClippedSubviews={false}
                         />
-                    }
-                    <Toast
-                        ref="toast"
-                        style={{backgroundColor:'#3498db', borderRadius: 5, padding: 10, margin: 50}}
-                        position='top'
-                        positionValue={30}
-                        fadeInDuration={750}
-                        fadeOutDuration={4000}
-                        textStyle={{color:'white', fontSize: 16}}
-                    />  
+                    }    
                 </Content>
                 {
                     isHideFooter || 
@@ -363,15 +361,6 @@ class TripImportation extends Component<Props, State> {
     }
 }
 
-const styles = StyleSheet.create({
-    toastContainer: {
-        //flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-});
-
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId } = ownProps.navigation.state.params;
     return {
@@ -383,7 +372,7 @@ const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     return {
         // dispatch, //https://stackoverflow.com/questions/36850988/this-props-dispatch-not-a-function-react-redux
         addLocations: (tripId, selectedLocations) => dispatch(addLocations(tripId, selectedLocations)),
-        uploadLocationImage: (tripId, dateIdx, locationId, imageId, imgUrl) => dispatch(uploadLocationImage(tripId, dateIdx, locationId, imageId, imgUrl)),
+        uploadLocationImage: (tripId, dateIdx, locationId, imageId, imgUrl, mimeType) => dispatch(uploadLocationImage(tripId, dateIdx, locationId, imageId, imgUrl, mimeType)),
     }
 };
 

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Container, Header, Content, View, Button, Text } from 'native-base';
+import { Dimensions } from "react-native";
 import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
 import { PropsBase } from "../../_shared/LayoutContainer";
@@ -12,6 +13,7 @@ import { NavigationConstants } from "../../_shared/ScreenConstants";
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Loading from "../../../_atoms/Loading/Loading";
+import NBTheme from "../../../theme/variables/commonColor.js";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
@@ -25,7 +27,7 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 }
 
 interface State {
-    isLoaded: boolean;
+    isDisplayLoading: boolean
 }
 
 export class TripEditScreen extends Component<Props, State> {
@@ -33,72 +35,44 @@ export class TripEditScreen extends Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {
-            isLoaded: false,
+            isDisplayLoading: true,
         }
     }
 
     componentWillMount() {
         this.props.fetchTrip(this.props.tripId)
         .then(() => this.setState({
-            isLoaded: true
+            isDisplayLoading: false
         }));
     }
 
-    private _cancelExportInfographic = () => {
-        this.props.navigation.navigate(NavigationConstants.Screens.Profile);
-    }
-
     private _exportInfographic = () => {
-        // call api to request export infographic
         var tripId = this.props.trip.tripId;
-        
-        tripApi
-            .post('/trips/' + tripId + '/infographics')
-            .then(res => {
-                var infographicId = res.data;
-                // store infogphicId into store
-                this.props.addInfographicId(tripId, infographicId);
-                console.log('infographic id: ' + infographicId);
-                this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, { tripId: tripId });
-            })
-            .catch(error => {
-                console.log("error: " + JSON.stringify(error));
-            });
-    }
-
-    private _confirmExportInfographic = ()  => {
-        Alert.alert(
-            'Confirm',
-            'Export infographic ?',
-            [
-                { text: 'Cancel', onPress: this._cancelExportInfographic, style: 'cancel' },
-                { text: 'OK', onPress: this._exportInfographic },
-            ],
-            { cancelable: false }
-        )
+        this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, { tripId: tripId });       
     }
 
     render() {
         const { trip, navigation } = this.props;
-        const { isLoaded } = this.state;
+        const { isDisplayLoading } = this.state;
         return (
             <Container>
                 <Content>
-                    {!isLoaded && <Loading message="Loading trip" />}
-                    {isLoaded && trip &&
-                        <TripDetailScreenContent tripId={trip.tripId} navigation={navigation} />}
+                    {isDisplayLoading &&  <Loading message={''}/> }
+                    {trip &&
+                        <TripDetailScreenContent tripId={trip.tripId} navigation={navigation} />}                   
                 </Content>
-                <ActionButton
-                    buttonColor="#2eb82e"
-                    position="center"
-                    onPress={this._confirmExportInfographic}
-                    renderIcon={() => 
-                        <View style={{alignItems: "center"}}>
-                            <Icon name="md-checkmark" style={styles.actionButtonIcon} />
-                            <Text style={{color: "white"}}>Done</Text>
-                        </View> }
-                    >                    
-                </ActionButton>
+                {
+                    trip && 
+                    <ActionButton
+                        buttonColor={NBTheme.brandSuccess}
+                        position="center"
+                        onPress={this._exportInfographic}
+                        renderIcon={() => 
+                            <View style={{alignItems: "center"}}>
+                                <Icon name="md-share-alt" style={styles.actionButtonIcon} />
+                            </View> }
+                    />   
+                }                
             </Container>
         );
     }
@@ -109,6 +83,6 @@ const styles = StyleSheet.create({
       fontSize: 20,
       height: 22,
       color: 'white'
-    },
+    }
   });
 
