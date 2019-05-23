@@ -8,6 +8,7 @@ import * as RNa from "react-navigation";
 import TripDetailScreenContent from "./TripDetailScreenContent";
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
+import NBTheme from "../../../theme/variables/commonColor.js";
 
 export interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void;
@@ -19,9 +20,18 @@ export interface Props {
 }
 
 interface State {
+    isDisplayLoading: boolean
 }
 
 export class TripDetailScreen extends Component<Props & IMapDispatchToProps, State> {
+
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            isDisplayLoading: true
+        }
+    }
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this._handleBackPress);
@@ -36,39 +46,11 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
         return true;
     }
 
-    private _cancelExportInfographic = () => {
-        this.props.navigation.navigate(NavigationConstants.Screens.Profile);
-    }
-
     private _exportInfographic = () => {
-        // call api to request export infographic
         var tripId = this.props.tripId;
-        
-        tripApi
-            .post('/trips/' + tripId + '/infographics')
-            .then(res => {
-                var infographicId = res.data;
-                // store infogphicId into store
-                this.props.addInfographicId(tripId, infographicId);
-                console.log('infographic id: ' + infographicId);
-                this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, { tripId: tripId });
-            })
-            .catch(error => {
-                console.log("error: " + JSON.stringify(error));
-            });
+        this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, { tripId: tripId });       
     }
 
-    private _confirmExportInfographic = ()  => {
-        Alert.alert(
-            'Confirm',
-            'Export infographic ?',
-            [
-                { text: 'Cancel', onPress: this._cancelExportInfographic, style: 'cancel' },
-                { text: 'OK', onPress: this._exportInfographic },
-            ],
-            { cancelable: false }
-        )
-    }
     render() {
         const tripId = this.props.tripId;
         const navigation = this.props.navigation;
@@ -76,19 +58,17 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
         return (
             <Container>
                 <Content>
-                    <TripDetailScreenContent tripId={tripId} navigation={navigation} />
+                    <TripDetailScreenContent tripId={tripId} navigation={navigation}/>                    
                 </Content>
                 <ActionButton
-                    buttonColor="#2eb82e"
+                    buttonColor={NBTheme.brandSuccess}
                     position="center"
-                    onPress={this._confirmExportInfographic}
+                    onPress={this._exportInfographic}
                     renderIcon={() => 
                         <View style={{alignItems: "center"}}>
-                            <Icon name="md-checkmark" style={styles.actionButtonIcon} />
-                            <Text style={{color: "white"}}>Done</Text>
+                            <Icon name="md-share-alt" style={styles.actionButtonIcon} />
                         </View> }
-                    >                    
-                </ActionButton>
+                />                     
             </Container>
         );
     }

@@ -22,7 +22,7 @@ export interface IMapDispatchToProps {
     removeLocation: (tripId: string, dateIdx: number, locationId: string) => Promise<void>
     addLocation: (tripId: string, dateIdx: number, location: StoreData.LocationVM) => Promise<void>;
     updateTripDateRange: (tripId: string, fromDate: moment.Moment, toDate: moment.Moment) => Promise<StoreData.TripVM>;
-    updateTripName: (tripId: string, tripName: string) => Promise<StoreData.TripVM>;   
+    updateTripName: (tripId: string, tripName: string) => Promise<StoreData.TripVM>;
 }
 
 export interface Props {

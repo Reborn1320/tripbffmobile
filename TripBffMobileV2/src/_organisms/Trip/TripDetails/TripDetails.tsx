@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Spinner, View } from 'native-base';
-import { FlatList } from "react-native";
+import { Spinner, View, Text } from 'native-base';
+import { FlatList, StyleSheet } from "react-native";
 import _, { } from "lodash";
 import DayItem from "../../../_molecules/Trip/DayItem/DayItem";
 import EditPopupMenu from "../../../_molecules/Trip/EditPopupMenu/EditPopupMenu";
@@ -28,8 +28,7 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 
 interface State {
     isEditDateRangeModalVisible: boolean,
-    isEditNameModalVisible: boolean,
-    isLoaded: boolean
+    isEditNameModalVisible: boolean
 }
 
 export interface DayVM {
@@ -44,8 +43,7 @@ export class TripDetailsComponent extends Component<Props, State> {
 
         this.state = {
             isEditDateRangeModalVisible: false,
-            isEditNameModalVisible: false,
-            isLoaded: true
+            isEditNameModalVisible: false
         }
     }
 
@@ -82,7 +80,6 @@ export class TripDetailsComponent extends Component<Props, State> {
     };
 
     render() {
-        const { isLoaded } = this.state;
         const { tripFromDate, tripToDate } = this.props;
         const nDays = tripToDate.diff(tripFromDate, "days") + 1;
         var dayVMs: DayVM[] = [];
@@ -108,15 +105,12 @@ export class TripDetailsComponent extends Component<Props, State> {
                    <EditPopupMenu onSelect={this.onPopupMenuSelect} />
                 </View>
 
-                {!isLoaded && <Spinner color='green' />}
-                {isLoaded &&   
-                    <FlatList
-                        // styles={styles.container}
-                        data={dayVMs}
-                        renderItem={this._renderItem}
-                        keyExtractor={(item, index) => String(index)}
-                    />
-                }      
+                <FlatList
+                    // styles={styles.container}
+                    data={dayVMs}
+                    renderItem={this._renderItem}
+                    keyExtractor={(item, index) => String(index)}
+                />
 
             </View>
         );
@@ -140,4 +134,3 @@ const TripDetails = connect(
 )(TripDetailsComponent);
 
 export default TripDetails;
-
