@@ -44,8 +44,9 @@ export default class SliderEntry extends Component {
     }
 
     render () {
-        const { data: { title, subtitle }, even, clickHandler } = this.props;
+        const { data: { title, subtitle, illustration }, even, clickHandler } = this.props;
 
+        const isEmpty = illustration == "";
         const uppercaseTitle = title ? (
             <Text
               style={[styles.title, even ? styles.titleEven : {}]}
@@ -64,9 +65,9 @@ export default class SliderEntry extends Component {
                 <View style={styles.shadow} />
                 <View style={[styles.imageContainer, { backgroundColor: "white" }]}>
                     { this.image }
-                    <View style={[styles.radiusMask, even ? styles.radiusMaskEven : {}]} />
+                    {/* <View style={[styles.radiusMask, even ? styles.radiusMaskEven : {}, isEmpty && !even ? styles.radiusMaskBorder : {}]} /> */}
                 </View>
-                <View style={[styles.textContainer, even ? styles.textContainerEven : {}]}>
+                <View style={[styles.textContainer, even ? styles.textContainerEven : {}, isEmpty && !even ? styles.textContainerBorder : {}]}>
                     { uppercaseTitle }
                     <Text
                       style={[styles.subtitle, even ? styles.subtitleEven : {}]}

@@ -61,9 +61,9 @@ export default StyleSheet.create({
         width: "100%",
         height: "100%",
         // backgroundColor: "orange",
-        borderColor: "grey",
+        borderColor: "lightgrey",
         borderWidth: 1,
-        borderStyle: "dashed",
+        // borderStyle: "dashed",
         borderRadius: IS_IOS ? entryBorderRadius : 0,
         borderTopLeftRadius: entryBorderRadius,
         borderTopRightRadius: entryBorderRadius
@@ -80,6 +80,13 @@ export default StyleSheet.create({
     radiusMaskEven: {
         backgroundColor: colors.black
     },
+    radiusMaskBorder: {
+        borderColor: "lightgrey",
+        borderWidth: 1,
+        borderTopWidth: 0,
+        borderBottomWidth: 0,
+        // borderStyle: "dashed",
+    },
     textContainer: {
         justifyContent: 'center',
         paddingTop: 20 - entryBorderRadius,
@@ -91,6 +98,12 @@ export default StyleSheet.create({
     },
     textContainerEven: {
         backgroundColor: colors.black
+    },
+    textContainerBorder: {
+        borderColor: "lightgrey",
+        borderWidth: 1,
+        borderTopWidth: 0,
+        // borderStyle: "dashed",
     },
     title: {
         color: colors.black,

@@ -4,6 +4,7 @@ import { Image, StyleSheet, ViewStyle, TextStyle, TouchableHighlight, TouchableO
 import NBTheme from "../../theme/variables/material.js";
 import { mixins } from "../../_utils";
 import { IEntry, StyledCarousel } from "../../_atoms/Carousel/StyledCarousel";
+import _ from "lodash";
 
 export type ITripEntry = {
   tripId: string,
@@ -18,6 +19,21 @@ export interface Props {
 }
 
 export interface State {
+  tripEntry: ITripEntry,
+}
+
+const EMPTY_TRIP_ENTRIES: IEntry[] = [
+  {
+    title: "NO LOCATION",
+    subtitle: "Click to add location",
+    illustration: ""
+  }
+];
+
+const EMPTY_LOCATION_ENTRY: IEntry = {
+  title: "NO IMAGE",
+  subtitle: "Click to add image",
+  illustration: ""
 }
 
 export class TripCarousel extends React.Component<Props, State> {
@@ -25,11 +41,40 @@ export class TripCarousel extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
+      tripEntry: this.normalizeTripEntry(props.tripEntry),
     }
   }
 
+  normalizeTripEntry(tripEntry: ITripEntry) {
+    let newTripEntry: ITripEntry = tripEntry;
+
+    if (!newTripEntry.entries
+      || (newTripEntry.entries && newTripEntry.entries.length == 0)) {
+      newTripEntry.entries = EMPTY_TRIP_ENTRIES;
+
+      return newTripEntry;
+    }
+
+    if (newTripEntry.entries) {
+      _.each(newTripEntry.entries, (entry, idx) => {
+        if (entry.illustration == "") {
+          newTripEntry.entries[idx] = EMPTY_LOCATION_ENTRY;
+        }
+      })
+    }
+
+    return newTripEntry;
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+
+    this.setState({
+      tripEntry: this.normalizeTripEntry(nextProps.tripEntry),
+    })
+  }
+
   render() {
-    const { tripEntry } = this.props;
+    const { tripEntry } = this.state;
     const { title, subtitle } = tripEntry;
     const isTinder = false;
 

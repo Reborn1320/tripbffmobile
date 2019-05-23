@@ -75,6 +75,7 @@ export class TripCarouselDoc extends Component<Props, State> {
       entries: _.cloneDeep(ENTRIES2),
     }
     tripEmpty1Location.entries[0].illustration = "";
+    tripEmpty1Location.entries[1].illustration = "";
 
     this.state = {
       tripEntry1, tripEmpty, tripEmpty1Location
