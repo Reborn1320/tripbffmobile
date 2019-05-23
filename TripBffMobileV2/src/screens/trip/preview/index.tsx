@@ -28,6 +28,7 @@ import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { runPromiseSeries, calculateByPercentage } from "../../../_function/commonFunc";
 import Loading from "../../../_atoms/Loading/Loading";
+import ImageZoom from 'react-native-image-pan-zoom';
 
 interface ImageProps {
   images: Array<StoreData.ImportImageVM>,
@@ -158,19 +159,25 @@ interface ImageProps {
           <View style={{                        
             width: width,
             height: infoHeight }}>
-              <Image
-                source={{
-                  uri: 'data:image/png;base64,' + this.state.imageUri             
-                }}
-                resizeMode='contain'
-                style= {{
-                  position: 'absolute',
-                  top: -barHeight,
-                  left: 0,
-                  right: 0,
-                  width: width,
-                  height: infoHeight}}
-              />  
+            <ImageZoom cropWidth={Dimensions.get('window').width}
+                       cropHeight={Dimensions.get('window').height}
+                       imageWidth={width}
+                       imageHeight={infoHeight}>
+                <Image
+                  source={{
+                    uri: 'data:image/png;base64,' + this.state.imageUri             
+                  }}
+                  resizeMode='contain'
+                  style= {{
+                    position: 'absolute',
+                    top: -barHeight,
+                    left: 0,
+                    right: 0,
+                    width: width,
+                    height: infoHeight}}
+                />  
+            </ImageZoom>
+              
           </View>
       );
     }
