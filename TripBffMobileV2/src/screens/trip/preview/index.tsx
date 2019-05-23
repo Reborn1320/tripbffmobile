@@ -26,8 +26,9 @@ import ImageList, { calculateImageListWidth, N_ITEMS_PER_ROW } from "../../../_m
 import { ImageSelection } from "../../../_molecules/ImageList/ImageSelection";
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { runPromiseSeries } from "../../../_function/commonFunc";
+import { runPromiseSeries, calculateByPercentage } from "../../../_function/commonFunc";
 import Loading from "../../../_atoms/Loading/Loading";
+import ImageZoom from 'react-native-image-pan-zoom';
 
 interface ImageProps {
   images: Array<StoreData.ImportImageVM>,
@@ -150,15 +151,34 @@ interface ImageProps {
     }
 
     render() {
+      let { width, height } = Dimensions.get('window');
+      let infoHeight = width < height ? calculateByPercentage(height, 90) : calculateByPercentage(height, 98);
+      let barHeight = width < height ? calculateByPercentage(height, 10) : calculateByPercentage(height, 2);
+
       return (
-        <View>
-            <Image
-                source={{
-                  uri: 'data:image/png;base64,' + this.state.imageUri             
-                }}
-                style={{width: 400, height: 600}}
-              />  
-        </View>
+          <View style={{                        
+            width: width,
+            height: infoHeight }}>
+            <ImageZoom cropWidth={Dimensions.get('window').width}
+                       cropHeight={Dimensions.get('window').height}
+                       imageWidth={width}
+                       imageHeight={infoHeight}>
+                <Image
+                  source={{
+                    uri: 'data:image/png;base64,' + this.state.imageUri             
+                  }}
+                  resizeMode='contain'
+                  style= {{
+                    position: 'absolute',
+                    top: -barHeight,
+                    left: 0,
+                    right: 0,
+                    width: width,
+                    height: infoHeight}}
+                />  
+            </ImageZoom>
+              
+          </View>
       );
     }
   }

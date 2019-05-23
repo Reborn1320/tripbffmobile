@@ -45,3 +45,8 @@ export async function runPromiseSeries(promises) {
     return pacc = pacc.then(fn);
   }, p);
 }
+
+export function calculateByPercentage(value, percentage) {
+  const result = (percentage * value) / 100;
+  return Math.round(result);
+}
