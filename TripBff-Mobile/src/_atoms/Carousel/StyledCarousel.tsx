@@ -59,8 +59,7 @@ export class StyledCarousel extends Component<Props & IStateProps, State> {
     const isTinder = type === 'tinder';
     return (
       <View style={[styles.exampleContainer, isTinder ? styles.exampleContainerDark : styles.exampleContainerLight]}>
-        <Text style={[styles.title, isTinder ? {} : styles.titleDark]}>{title}</Text>
-        <Text style={[styles.subtitle, isTinder ? {} : styles.titleDark]}>{subtitle}</Text>
+        
         <Carousel
           data={isTinder ? entries : entries}
           renderItem={isTinder ? this._renderLightItem : this._renderItem}
