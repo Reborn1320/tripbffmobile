@@ -25,6 +25,7 @@ import ReduxThunk from "redux-thunk";
 import { ThunkExtraArgumentsBase } from "./store";
 import { mockLoginApiService, mockTripApiService } from "./store/MockApiService";
 import LocationImageDetailScreen from "./screens/location/LocationImageDetail/LocationImageDetailScreen";
+import { TripCarouselDoc } from "./_molecules/TripCarousel/TripCarousel.doc";
 
 var mockLoginApi = mockLoginApiService;
 var mockTripApi = mockTripApiService;
@@ -93,7 +94,7 @@ const ProfileNavigator = createStackNavigator(
 
 const TestComponentNavigator = createStackNavigator(
   {
-    Test: {screen: LocationImageDetailScreen },
+    Test: {screen: TripCarouselDoc },
   },
   {
     headerMode: "none",
@@ -115,7 +116,7 @@ const AppNavigator = createSwitchNavigator(
     TripCreation: TripCreationNavigator,
     TripDetails: TripDetailsNavigator,    
     Profile: ProfileNavigator,
-    TestComponent: {screen: TestComponentNavigator },
+    Test: {screen: TestComponentNavigator },
     // Home: { screen: HomeScreen },   
   },
   {

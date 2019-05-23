@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { Icon } from 'native-base';
 import PropTypes from 'prop-types';
 import { ParallaxImage } from 'react-native-snap-carousel';
 import styles from './SliderEntry.style';
@@ -16,6 +17,13 @@ export default class SliderEntry extends Component {
 
     get image () {
         const { data: { illustration }, parallax, parallaxProps, even } = this.props;
+
+        if (illustration == "") {
+            return (
+            <View style={styles.imageEmptyContainer}>
+                <Icon type="FontAwesome5" name="plus" style={{ fontSize: 40, color: "lightgrey" }}/>
+            </View>)
+        }
 
         return parallax ? (
             <ParallaxImage
@@ -54,7 +62,7 @@ export default class SliderEntry extends Component {
               onPress={clickHandler}
               >
                 <View style={styles.shadow} />
-                <View style={[styles.imageContainer, even ? styles.imageContainerEven : {}]}>
+                <View style={[styles.imageContainer, { backgroundColor: "white" }]}>
                     { this.image }
                     <View style={[styles.radiusMask, even ? styles.radiusMaskEven : {}]} />
                 </View>
