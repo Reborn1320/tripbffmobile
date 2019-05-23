@@ -86,10 +86,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
 
   componentDidMount() {      
     this.props.navigation.setParams({ _cancel: this._cancel });
-
-    if (!this.props.infographicId) {
-        this._createInfographic(this.props.tripId);
-    }     
+    this._createInfographic(this.props.tripId);  
   }
 
   private _createInfographic = (tripId) => {
