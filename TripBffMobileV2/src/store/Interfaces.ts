@@ -1,6 +1,9 @@
 import * as moment from 'moment';
 
 export module StoreData {
+
+    export type IMimeTypeImage = "image/jpeg" | "image/png"
+
     export interface ImportImageVM {
         imageId: string,
         url: string, //url stored in local mobile
@@ -9,6 +12,7 @@ export module StoreData {
         externalUrl: string;
         thumbnailExternalUrl: string;
         isFavorite: boolean;
+        type: IMimeTypeImage
     }
 
     export type LikeTypeVM = "Like" | "Dislike";
