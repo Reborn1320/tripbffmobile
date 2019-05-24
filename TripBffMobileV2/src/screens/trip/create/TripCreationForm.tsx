@@ -1,6 +1,5 @@
 import React, { PureComponent, Component } from "react";
-import { Button, Text, View } from 'native-base';
-import { Form, Item, Label, Input, DatePicker } from 'native-base';
+import { Button, Text, View, Form, Item, Label, Input } from 'native-base';
 import moment, { Moment } from "moment";
 import DateRangePicker from "../../../_atoms/DatePicker/DateRangePicker";
 
@@ -20,7 +19,7 @@ export class TripCreationForm extends PureComponent<Props, any> {
       fromDate: moment(),
       toDate: moment()
     };
-  }
+  }  
 
   private _onClickCreateTrip = () => {
     let tripId = this.state.tripId,
@@ -93,8 +92,7 @@ export class TripCreationForm extends PureComponent<Props, any> {
             </Item>
           
             <View style={{
-              width: '100%',
-              height: '30%',
+              marginTop: 20,
               justifyContent: 'center',
               alignItems: 'center'
             }}>

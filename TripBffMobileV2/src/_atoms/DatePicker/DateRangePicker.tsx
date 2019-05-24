@@ -1,7 +1,6 @@
 import * as React from "react";
 import { View, Text, Button } from "native-base";
-import { StyleSheet, ViewStyle } from "react-native";
-import RNModal from "react-native-modal";
+import { StyleSheet, ViewStyle, Modal } from "react-native";
 import { connectStyle } from 'native-base';
 import CalendarPicker from 'react-native-calendar-picker';
 import { Moment } from "moment";
@@ -18,6 +17,7 @@ export interface Props {
 interface State {
   fromDate: Moment;
   toDate: Moment;
+  isValid: boolean;
 }
 
 class DateRangePickerModalComponent extends React.Component<Props, State> {
@@ -25,9 +25,10 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
     super(props);  
     this.state = {
         fromDate: this.props.fromDate,
-        toDate: this.props.toDate
+        toDate: this.props.toDate,
+        isValid: this.props.fromDate != null && this.props.toDate != null
     }
-  } 
+  }  
 
   private _onCancel = () => {
     this.props.cancelHandler();
@@ -37,6 +38,7 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
     let { fromDate, toDate } = this.state;
     const newFromDate = toDateUtc(fromDate);
     const newToDate = toDateUtc(toDate);
+    
     console.log("on date range save");
     console.log(newFromDate.format(), newToDate.format());
 
@@ -44,14 +46,16 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
   }  
 
   private onDateChange = (date, type) => {
-    if (type === 'END_DATE') {      
+    if (type === 'END_DATE') {   
       this.setState({
         toDate: date,
+        isValid: date != null && this.state.fromDate != null
       });
     } else {
       this.setState({
         fromDate: date,
         toDate: null,
+        isValid: false
       });
     }
   }
@@ -67,12 +71,16 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
     // }
           
     return (
-        <RNModal style={styles.modal}            
-            isVisible={isVisible} hideModalContentWhileAnimating>
+        <Modal      
+            visible={isVisible} 
+            onRequestClose={this.props.cancelHandler}>
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
                     <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
-                    <Button transparent onPress={this._onSave}><Text>Save</Text></Button>
+                    {
+                      this.state.isValid && 
+                      <Button transparent onPress={this._onSave}><Text>Save</Text></Button>
+                    }
                 </View>
                 <View style={styles.modalContentContainer}>
                     <CalendarPicker
@@ -87,7 +95,7 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
                     />
                 </View>                
             </View>
-        </RNModal>
+        </Modal>
     );
   }
 }
