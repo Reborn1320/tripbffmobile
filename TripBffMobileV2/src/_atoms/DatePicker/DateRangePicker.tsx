@@ -38,6 +38,7 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
     let { fromDate, toDate } = this.state;
     const newFromDate = toDateUtc(fromDate);
     const newToDate = toDateUtc(toDate);
+    
     console.log("on date range save");
     console.log(newFromDate.format(), newToDate.format());
 

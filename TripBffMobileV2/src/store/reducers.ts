@@ -21,8 +21,6 @@ import {
     TRIP_UPDATE
 } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
-import { AppStateIOS } from 'react-native';
-import { toDateUtc } from '../_function/dateFuncs';
 
 const userInitState: StoreData.UserVM = {
     username: "asdf",
@@ -208,17 +206,17 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
         case "TRIP_ADD":
                 var trip = {
                     ...action.trip,
-                    fromDate: toDateUtc(action.trip.fromDate),
-                    toDate: toDateUtc(action.trip.toDate),
-                    dates: getDatesProperty(toDateUtc(action.trip.fromDate), toDateUtc(action.trip.toDate), [])
+                    fromDate: action.trip.fromDate,
+                    toDate: action.trip.toDate,
+                    dates: getDatesProperty(action.trip.fromDate, action.trip.toDate, [])
                 }
         return trip;
         case "TRIP_REPLACE":
             var trip = {
                 ...action.trip,
-                fromDate: toDateUtc(action.trip.fromDate),
-                toDate: toDateUtc(action.trip.toDate),
-                dates: getDatesProperty(toDateUtc(action.trip.fromDate), toDateUtc(action.trip.toDate), action.trip.locations)
+                fromDate: action.trip.fromDate,
+                toDate: action.trip.toDate,
+                dates: getDatesProperty(action.trip.fromDate, action.trip.toDate, action.trip.locations)
             }
             return trip;
         case ADD_INFOGRAPHIC_ID:
@@ -291,24 +289,11 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
         return action.trips.map(trip => {
             return {
                 ...trip,
-                fromDate: toDateUtc(trip.fromDate),
-                toDate: toDateUtc(trip.toDate),
+                fromDate: trip.fromDate,
+                toDate: trip.toDate,
             }
         });
-    }
-    // else if (actionType == TRIP_ADD) {
-    //     var trip = {
-    //         ...action.trip,
-    //         fromDate: toDateUtc(action.trip.fromDate),
-    //         toDate: toDateUtc(action.trip.toDate),
-    //         dates: getDatesProperty(toDateUtc(action.trip.fromDate), toDateUtc(action.trip.toDate), [])
-    //     }
-    //     return [...state, trip];
-    // }
-    // else if (_.startsWith(actionType, "TRIP")) {
-    //     var newState = state.map(trip => trip.tripId == action.tripId ? tripReducer(trip, action) : trip);
-    //     return newState
-    // }
+    }   
 
     return state;
 }

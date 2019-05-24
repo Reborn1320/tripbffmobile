@@ -92,8 +92,8 @@ class TripImportation extends Component<Props, State> {
         BackHandler.addEventListener('hardwareBackPress', this._handleBackPress);
         await checkAndRequestPhotoPermissionAsync();
 
-        console.log("from date: " + this.state.fromDate.toDate());
-        console.log("to date: " + this.state.toDate.toDate());
+        console.log("from date: " + this.state.fromDate.format());
+        console.log("to date: " + this.state.toDate.format());
 
         console.log("request photo permission completed");
         var photos = await loadPhotosWithinAsync(this.state.fromDate.unix(), this.state.toDate.unix())

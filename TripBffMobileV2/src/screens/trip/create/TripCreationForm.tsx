@@ -92,8 +92,7 @@ export class TripCreationForm extends PureComponent<Props, any> {
             </Item>
           
             <View style={{
-              width: '100%',
-              height: '30%',
+              marginTop: 20,
               justifyContent: 'center',
               alignItems: 'center'
             }}>
