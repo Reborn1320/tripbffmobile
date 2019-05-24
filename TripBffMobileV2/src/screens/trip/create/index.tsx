@@ -19,7 +19,11 @@ interface IMapDispatchToProps {
   updateTrip: (tripId: string, name: string, fromDate: Moment, toDate: Moment) => Promise<any>;
 }
 
-class TripCreation extends Component<Props, any> {
+interface State {
+  isHideAppFooter: boolean
+}
+
+class TripCreation extends Component<Props, State> {
   keyboardDidShowListener: any;
   keyboardDidHideListener: any;
 
