@@ -72,6 +72,10 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         );
     }
 
+    private _handleShareBtnClick = (tripId) => {
+        this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, { tripId: tripId })
+    }
+
     render() {
         const { userName, fullName, trips } = this.props;
         const { isLoaded } = this.state;
@@ -97,6 +101,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                         <TripsComponent
                             trips={trips}
                             handleClick={tripId => this.handleTripItemClick(tripId)}
+                            handleShareClick={this._handleShareBtnClick}
                         />
                     </View>
                 </Content>

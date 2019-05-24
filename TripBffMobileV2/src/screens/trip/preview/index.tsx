@@ -31,17 +31,20 @@ import { addInfographicId } from "../../../store/Trip/actions";
 import PreviewInfographicComponent from "./PreviewInfographic";
 import PreviewImages from "./PreviewImage";
 import NBTheme from "../../../theme/variables/commonColor.js";
+import { fetchTrip } from "../../../store/Trip/operations";
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
   navigation: RNa.NavigationScreenProp<any, any>,
   tripId: string,
   infographicId: string,
-  images: Array<StoreData.ImportImageVM>
+  images: Array<StoreData.ImportImageVM>,
+  isExistedCurrentTrip: boolean
 }
 
 interface IMapDispatchToProps {    
   addInfographicId: (tripId: string, infographicId: string) => void;
+  fetchTrip: (tripId: string) => Promise<void>;
 }
 
 interface State {
@@ -86,7 +89,13 @@ class InfographicPreview extends React.PureComponent<Props, State> {
 
   componentDidMount() {      
     this.props.navigation.setParams({ _cancel: this._cancel });
-    this._createInfographic(this.props.tripId);  
+    let tripId = this.props.tripId;
+
+    if(!this.props.isExistedCurrentTrip) {
+      this.props.fetchTrip(tripId);
+    }
+
+    this._createInfographic(tripId);  
   }
 
   private _createInfographic = (tripId) => {
@@ -261,6 +270,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
                                 </PreviewInfographicComponent>;
                         case 'second':                            
                           return <PreviewImages images={this.props.images}
+                                    isExistedCurrentTrip={this.props.isExistedCurrentTrip}
                                     updateSelectedImagesUrl={this._updateSelectedImagesUrl}>                              
                                 </PreviewImages>;
                         default:
@@ -276,7 +286,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
                           buttonText: "Okay",
                           type: "success",
                           position: "top",
-                          duration: 3000
+                          duration: 1500
                         });
                       }
                       else if (index == 0 && !this.state.infographicUrl) {
@@ -315,28 +325,35 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
   const { tripId } = ownProps.navigation.state.params;    
   var trip = storeState.currentTrip;
   var images = [];
+  var isExistedCurrentTrip = false;
 
-  storeState.currentTrip.dates.forEach(date => {
-    date.locations.forEach(location => {
-      images = images.concat(location.images.map(img => {
-        return {
-          ...img,
-          isSelected: false
-        }
-      }));
-    })
-  });    
+  if (trip && trip.tripId == tripId) {
+    isExistedCurrentTrip = true;
+
+    trip.dates.forEach(date => {
+      date.locations.forEach(location => {
+        images = images.concat(location.images.map(img => {
+          return {
+            ...img,
+            isSelected: false
+          }
+        }));
+      })
+    });    
+  }  
   
   return {
     tripId: tripId,
-    infographicId: trip.infographicId,
-    images: images
+    infographicId: trip ? trip.infographicId : "",
+    images: images,
+    isExistedCurrentTrip: isExistedCurrentTrip
   };
 };
 
 const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
   return {
     addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
+    fetchTrip: (tripId) => dispatch(fetchTrip(tripId)),
   };
 };
 

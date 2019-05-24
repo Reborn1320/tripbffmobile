@@ -216,9 +216,9 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
                 ...action.trip,
                 fromDate: action.trip.fromDate,
                 toDate: action.trip.toDate,
-                dates: getDatesProperty(action.trip.fromDate, action.trip.toDate, action.trip.locations)
+                dates: getDatesProperty(action.trip.fromDate, action.trip.toDate, action.trip.rawLocations)
             }
-            return trip;
+            return trip;        
         case ADD_INFOGRAPHIC_ID:
             return {
                 ...state,
