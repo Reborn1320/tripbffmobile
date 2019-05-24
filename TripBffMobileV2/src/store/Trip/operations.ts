@@ -35,7 +35,7 @@ export function fetchTrip(tripId: string): ThunkResultBase {
           name: rawTrip.name,
           fromDate: moment(rawTrip.fromDate),
           toDate: moment(rawTrip.toDate),
-          locations: rawTrip.locations,
+          rawLocations: rawTrip.locations,
           infographicId: rawTrip.infographicId,
         };
 

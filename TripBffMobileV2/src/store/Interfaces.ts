@@ -67,7 +67,8 @@ export module StoreData {
         fromDate: moment.Moment
         toDate: moment.Moment   
         dates?: Array<DateVM>     
-        infographicId?: string        
+        infographicId?: string,
+        rawLocations?: Array<LocationVM>     
     }
 
 

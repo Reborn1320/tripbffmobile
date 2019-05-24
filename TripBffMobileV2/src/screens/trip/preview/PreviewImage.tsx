@@ -8,6 +8,7 @@ import { ImageSelection } from "../../../_molecules/ImageList/ImageSelection";
 
 interface ImageProps {
     images: Array<StoreData.ImportImageVM>,
+    isExistedCurrentTrip: boolean,
     updateSelectedImagesUrl: (imageUrls: Array<any>) => void
   }
   
@@ -16,21 +17,32 @@ export default class PreviewImages extends PureComponent<ImageProps, any> {
         super(props);
 
         this.state = {
-            images: []
+            images: [],
+            loadedImages: false
         };
     }    
 
     componentDidMount() {
+        // handle when navigate from Trip Detaisl/Edit
+        if (this.props.isExistedCurrentTrip) this._handleInitImages(true);
+    }
+
+    componentDidUpdate() {
+        // handle when navigate from Profile
+        if (!this.state.loadedImages) this._handleInitImages(true);
+    }
+
+    private _handleInitImages = (loadedImages) => {
         if (this.props.images) {
-        this.setState({ images: this.props.images });
-        let selectedImageUrls = this.props.images.map(item => {
-            return {
-                imageId: item.imageId,
-                externalUrl: item.externalUrl
+            this.setState({ images: this.props.images, loadedImages: loadedImages });
+            let selectedImageUrls = this.props.images.map(item => {
+                return {
+                    imageId: item.imageId,
+                    externalUrl: item.externalUrl
+                }
+                }); 
+            this.props.updateSelectedImagesUrl(selectedImageUrls); 
             }
-            }); 
-        this.props.updateSelectedImagesUrl(selectedImageUrls); 
-        }
     }
 
     private _handleSelect(img) {
@@ -73,7 +85,7 @@ export default class PreviewImages extends PureComponent<ImageProps, any> {
         return (
         <View>
             {
-            this.state.images.length > 0 ?
+            this.state.images ?
                 <ImageList
                 items={this.state.images}
                 renderItem={this.renderItem}

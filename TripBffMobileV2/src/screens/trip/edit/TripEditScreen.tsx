@@ -35,19 +35,21 @@ export class TripEditScreen extends Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {
-            isDisplayLoading: true,
+            isDisplayLoading: !this.props.trip,
         }
     }
 
-    componentWillMount() {
-        this.props.fetchTrip(this.props.tripId)
-        .then(() => this.setState({
-            isDisplayLoading: false
-        }));
+    componentDidMount() {
+        if (!this.props.trip) {
+            this.props.fetchTrip(this.props.tripId)
+            .then(() => this.setState({
+                isDisplayLoading: false
+            }));
+        } 
     }
 
     private _exportInfographic = () => {
-        var tripId = this.props.trip.tripId;
+        var tripId = this.props.tripId;
         this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, { tripId: tripId });       
     }
 

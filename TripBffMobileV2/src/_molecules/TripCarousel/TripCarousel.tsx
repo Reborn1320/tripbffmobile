@@ -16,6 +16,7 @@ export type ITripEntry = {
 export interface Props {
   tripEntry: ITripEntry,
   handleClick: (tripId: string) => void;
+  handleShareClick: (tripId: string) => void;
 }
 
 export interface State {
@@ -73,6 +74,10 @@ export class TripCarousel extends React.Component<Props, State> {
     })
   }
 
+  private _handleShareClick = () => {
+    this.props.handleShareClick(this.props.tripEntry.tripId);
+  }
+
   render() {
     const { tripEntry } = this.state;
     const { title, subtitle } = tripEntry;
@@ -87,7 +92,10 @@ export class TripCarousel extends React.Component<Props, State> {
             <Text style={[styles.subtitle, isTinder ? {} : styles.titleDark]}>{subtitle}</Text>
           </View>
           <View style={styles.headerRightContainer}>
-            <Button transparent primary small><Icon type="FontAwesome5" name="share-square" /></Button>
+            <Button transparent primary small
+                onPress={this._handleShareClick}>
+                <Icon type="Ionicons" name="md-share-alt" />
+            </Button>
             <Button transparent dark small><Icon type="FontAwesome5" name="ellipsis-h" /></Button>
           </View>
         </View>
