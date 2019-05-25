@@ -50,6 +50,7 @@ export interface Props extends IMapDispatchToProps {
   handleClick: (tripId: string) => void;
   trips: StoreData.MinimizedTripVM[];
   handleShareClick: (tripId: string) => void;
+  handleDeleteTrip: (tripId:string) => void;
 }
 
 interface State {
@@ -110,6 +111,7 @@ export class TripsComponent extends Component<Props & IStateProps, State> {
           tripEntry={tripEntry}
           handleClick={() => this.props.handleClick(tripEntry.tripId)}
           handleShareClick={this.props.handleShareClick}
+          handleDeleteTrip={this.props.handleDeleteTrip}
         />
       </View>
     );

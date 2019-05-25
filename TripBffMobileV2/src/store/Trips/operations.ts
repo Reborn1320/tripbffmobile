@@ -1,6 +1,7 @@
 import { StoreData, RawJsonData } from "../Interfaces";
 import moment from "moment";
 import { ThunkResultBase } from "..";
+import { deleteTrip as deleteTripAction } from "./actions";
 
 export function fetchTrips(): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
@@ -20,5 +21,17 @@ export function fetchTrips(): ThunkResultBase {
       .catch(error => {
         console.log("fetch trips error", error);
       });
+  };
+}
+
+export function deleteTrip(tripId: string): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    return extraArguments.tripApiService.delete(`trips/${tripId}`)
+    .then((res) => {
+        dispatch(deleteTripAction(tripId));
+    })
+    .catch((err) => {
+      console.log('error delete trip api: ', err);
+    });
   };
 }

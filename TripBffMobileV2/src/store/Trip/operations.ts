@@ -386,5 +386,5 @@ export function uploadLocationImage(tripId: string, dateIdx: number, locationId:
         console.log('error uploadLocationImage ', err);
         return false;
     });
-  };
+  };  
 }

@@ -1,10 +1,16 @@
 import React from "react";
 import { View, Icon, Text, Button } from "native-base";
 import { Image, StyleSheet, ViewStyle, TextStyle, TouchableHighlight, TouchableOpacity } from "react-native";
-import NBTheme from "../../theme/variables/material.js";
+import NBTheme from "../../theme/variables/commonColor.js";
 import { mixins } from "../../_utils";
 import { IEntry, StyledCarousel } from "../../_atoms/Carousel/StyledCarousel";
 import _ from "lodash";
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 
 export type ITripEntry = {
   tripId: string,
@@ -17,6 +23,7 @@ export interface Props {
   tripEntry: ITripEntry,
   handleClick: (tripId: string) => void;
   handleShareClick: (tripId: string) => void;
+  handleDeleteTrip: (tripId: string) => void;
 }
 
 export interface State {
@@ -78,6 +85,10 @@ export class TripCarousel extends React.Component<Props, State> {
     this.props.handleShareClick(this.props.tripEntry.tripId);
   }
 
+  private _handleDeleteTrip = () => {
+    this.props.handleDeleteTrip(this.props.tripEntry.tripId);
+  }
+
   render() {
     const { tripEntry } = this.state;
     const { title, subtitle } = tripEntry;
@@ -96,7 +107,16 @@ export class TripCarousel extends React.Component<Props, State> {
                 onPress={this._handleShareClick}>
                 <Icon type="Ionicons" name="md-share-alt" />
             </Button>
-            <Button transparent dark small><Icon type="FontAwesome5" name="ellipsis-h" /></Button>
+            <Menu>
+              <MenuTrigger>
+                <Icon type="Ionicons" name="md-more" style={styles.moreMenu} />
+              </MenuTrigger>
+              <MenuOptions>
+                <MenuOption onSelect={this._handleDeleteTrip} >
+                  <Text style={styles.deleteLabel}>Delete Trip</Text>
+                </MenuOption>
+              </MenuOptions>
+            </Menu>
           </View>
         </View>
         <StyledCarousel
@@ -120,7 +140,8 @@ interface Style {
   title: TextStyle;
   subtitle: TextStyle;
   titleDark: TextStyle;
-
+  moreMenu: TextStyle;
+  deleteLabel: TextStyle;
 }
 
 export const colors = {
@@ -170,4 +191,14 @@ const styles = StyleSheet.create<Style>({
     fontStyle: 'italic',
     textAlign: 'center'
   },
+  moreMenu: {
+    marginRight: 30,
+    marginTop: 2,
+    marginLeft: 10,
+    color: "#cccccc"
+  },
+  deleteLabel: {
+    color: NBTheme.brandDanger,
+    padding: 10
+  }
 })

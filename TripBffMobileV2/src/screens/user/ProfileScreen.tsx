@@ -17,6 +17,7 @@ interface IMapDispatchToProps {
     loginUsingFacebookAccessToken: (userId: string, accessToken: string) => Promise<any>;
     fetchTrips: () => Promise<any>;
     addTrips: (trips: Array<StoreData.TripVM>) => void;
+    deleteTrip: (tripId: string) => void;
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -51,12 +52,9 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         header: null
     };
 
-    componentWillMount() {
+    componentDidMount() {
         this.props.fetchTrips().then(trips => {
-            // console.log("fetched Trips", trips);
-
             this.props.addTrips(trips);
-
             this.setState({
                 isLoaded: false,
                 loadingMessage: "",
@@ -74,6 +72,10 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
 
     private _handleShareBtnClick = (tripId) => {
         this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, { tripId: tripId })
+    }
+
+    private _handleDeleteTrip = (tripId) => {
+        this.props.deleteTrip(tripId);
     }
 
     render() {
@@ -102,6 +104,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                             trips={trips}
                             handleClick={tripId => this.handleTripItemClick(tripId)}
                             handleShareClick={this._handleShareBtnClick}
+                            handleDeleteTrip={this._handleDeleteTrip}
                         />
                     </View>
                 </Content>

@@ -68,7 +68,8 @@ export module StoreData {
         toDate: moment.Moment   
         dates?: Array<DateVM>     
         infographicId?: string,
-        rawLocations?: Array<LocationVM>     
+        rawLocations?: Array<LocationVM>  ,
+        isDeleted?: boolean  
     }
 
 
@@ -82,7 +83,8 @@ export module StoreData {
             address: string,
             description: string,
             imageUrl: string,
-        }[]
+        }[],
+        isDeleted?: boolean
     }
 
     export interface UserVM {
