@@ -15,6 +15,7 @@ export function fetchTrips(): ThunkResultBase {
           fromDate: moment(rawTrip.fromDate),
           toDate: moment(rawTrip.toDate),
           locationImages: rawTrip.locationImages,
+          isDeleted: rawTrip.isDeleted
         }));
         return trips;
       })

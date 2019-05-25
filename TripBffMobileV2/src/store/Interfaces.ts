@@ -158,7 +158,8 @@ export namespace RawJsonData {
             address: string,
             description: string,
             imageUrl: string,
-        }[]
+        }[],
+        isDeleted: boolean
     }
 
     export interface LocationVM {
