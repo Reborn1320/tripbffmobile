@@ -9,6 +9,7 @@ import { StoreData } from "../../store/Interfaces";
 import { NavigationScreenProp } from "react-navigation";
 import { Divider } from "react-native-elements";
 import { UserDetails } from "../../_organisms/User/UserDetails";
+import { logOut } from "../../store/User/operations";
 
 export interface IStateProps { }
 
@@ -76,6 +77,13 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, { tripId: tripId })
     }
 
+    private handleEditBtnClick = () => {
+        logOut()
+        .then(() => {
+            this.props.navigation.navigate(NavigationConstants.Screens.Login)
+        })
+    }
+
     render() {
         const { userName, fullName, trips } = this.props;
         const { isLoaded } = this.state;
@@ -90,6 +98,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                             fullName={fullName}
 
                             nTrips={trips.length}
+                            onClickEdit={this.handleEditBtnClick}
                         />
                         <Divider style={
                             {

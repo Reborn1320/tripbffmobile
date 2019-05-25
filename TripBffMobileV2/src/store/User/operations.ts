@@ -7,6 +7,8 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export function loginUsingUserPass(email: string, password: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
+    if ((await loadLoggedUser(dispatch))) return;
+
     var loginUser = {
       email: email,
       password: password
@@ -26,7 +28,8 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
         };
 
         dispatch(addToken(user));
-        setAuthorizationHeader(res.data.token);
+        setAuthorizationHeader(user.token);
+        storeDataIntoStorage(STORAGE_KEYS.USER, JSON.stringify(user));
       })
       .catch(error => {
         console.log("error login", error);
@@ -36,6 +39,8 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
 
 export function loginUsingFacebookAccessToken(facebookUserId: string, accessToken: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
+    if ((await loadLoggedUser(dispatch))) return;
+
     var loginUser = {
       access_token: accessToken,
       user_id: facebookUserId
@@ -58,7 +63,9 @@ export function loginUsingFacebookAccessToken(facebookUserId: string, accessToke
         };
 
         dispatch(addToken(user));
-        setAuthorizationHeader(res.data.token);
+        setAuthorizationHeader(user.token);
+        storeDataIntoStorage(STORAGE_KEYS.USER, JSON.stringify(user));
+
       })
       .catch(error => {
         console.log("error login", error);
@@ -66,9 +73,11 @@ export function loginUsingFacebookAccessToken(facebookUserId: string, accessToke
   };
 }
 
-
 export function loginUsingDeviceId(): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
+    if ((await loadLoggedUser(dispatch)) == true) return;
+
+
     let key = "uniqueDeviceUUID";
     let uniqueDeviceUuid = await getDataFromStorage(key);
 
@@ -84,7 +93,7 @@ export function loginUsingDeviceId(): ThunkResultBase {
     };
 
     return extraArguments.loginApiService.post("device/login", { data: loginUser })
-      .then(res => {
+      .then(async (res) => {
         const { user: { id, userName }, token } = res.data;
         console.log(`user info id=${id}, userName=${userName}`);
         console.log("token ", token);
@@ -97,7 +106,8 @@ export function loginUsingDeviceId(): ThunkResultBase {
         };
 
         dispatch(addToken(user));
-        setAuthorizationHeader(res.data.token);
+        setAuthorizationHeader(user.token);
+        await storeDataIntoStorage(STORAGE_KEYS.USER, JSON.stringify(user));
       })
       .catch(error => {
         console.log("error login", error);
@@ -105,26 +115,41 @@ export function loginUsingDeviceId(): ThunkResultBase {
   };
 }
 
+export async function isLoggedIn() {
+  const user = await getDataFromStorage(STORAGE_KEYS.USER);
+  return user != null;
+}
+
+export async function logOut() {
+  return await AsyncStorage.removeItem(STORAGE_KEYS.USER);
+}
+
+async function loadLoggedUser(dispatch) {
+  const user: StoreData.UserVM = JSON.parse(await getDataFromStorage(STORAGE_KEYS.USER));
+  if (user == null) return false;
+
+  dispatch(addToken(user));
+  setAuthorizationHeader(user.token);
+}
+
 async function storeDataIntoStorage(key, value) {
   try {
     await AsyncStorage.setItem(key, value)
   } catch (e) {
     // saving error
+    console.error("store data failed", e)
   }
-
-  console.log('Done store data');
 }
 
 async function getDataFromStorage(key) {
-  let value = '';
-
   try {
-    value = await AsyncStorage.getItem(key)
+    return AsyncStorage.getItem(key)
   } catch (e) {
     // error reading value
+    console.log("error reading value", e);
   }
+}
 
-  console.log('Done get data');
-
-  return value;
+const STORAGE_KEYS = {
+  USER: "LoggedUser"
 }
