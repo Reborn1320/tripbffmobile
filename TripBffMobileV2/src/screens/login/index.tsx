@@ -1,32 +1,37 @@
 import React, { Component } from "react";
 import { Container, Content, View, Button, Text, Icon } from 'native-base';
-import { connect, DispatchProp } from "react-redux";
+import { connect } from "react-redux";
 import {
-  LoginButton,
   AccessToken,
   LoginManager
 } from "react-native-fbsdk";
-import { ThunkDispatch } from "redux-thunk";
-import { PropsBase } from "../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
-import { loginUsingUserPass, loginUsingFacebookAccessToken, loginUsingDeviceId } from "../../store/User/operations";
+import { loginUsingFacebookAccessToken, loginUsingDeviceId, isLoggedIn } from "../../store/User/operations";
 import { NavigationConstants } from "../_shared/ScreenConstants";
-import { checkAndRequestPhotoPermissionAsync } from "../../_function/commonFunc";
-import { CameraRoll } from "react-native";
 
-export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
-  dispatch: ThunkDispatch<any, null, any>;
+export interface Props {
   navigation: RNa.NavigationScreenProp<any, any>;
 }
 
 interface IMapDispatchToProps {
+  loginUsingFacebookAccessToken: (userId, accessToken) => Promise<void>
+  loginUsingDeviceId: () => Promise<void>
 }
 
-class Login extends Component<Props, any>{
+class Login extends Component<Props & IMapDispatchToProps, any>{
 
   constructor(props) {
     super(props);
-  } 
+  }
+
+  componentDidMount() {
+    isLoggedIn()
+    .then( isLoggedInValue => {
+      if (isLoggedInValue) {
+        this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
+      }
+    })
+  }
 
   private _loginFacebook = () => {
     var tmp =  this;
@@ -41,28 +46,6 @@ class Login extends Component<Props, any>{
             console.log("getCurrentAccessToken data", data);
     
             tmp._loginFacebookAccess(data.userID, data.accessToken);
-    
-            // //todo user axios instead of fetch
-            // const responseBasicUser = fetch(`https://graph.facebook.com/me?fields=id,name,first_name,last_name&access_token=${data.accessToken}`);
-            // responseBasicUser
-            //   .then((response) => response.json())
-            //   .then((json) => {
-            //     console.log("user data from graph", json);
-            //     var user = {
-            //       // Some user object has been set up somewhere, build that user here
-            //       email: json.email ? json.email : json.id,
-            //       password: '123456',
-            //       username: json.name,
-            //       lastName: "",
-            //       firstName: "",
-            //       fullName: json.name
-            //     };
-            //     console.log(user);
-            //     tmp.loginDetails(user.email, user.password);
-            //   })
-            //   .catch(() => {
-            //     console.log('ERROR GETTING DATA FROM FACEBOOK');
-            //   });
           });
         }
       },
@@ -73,8 +56,7 @@ class Login extends Component<Props, any>{
   }
 
   private _loginFacebookAccess = (facebookUserId, accessToken, isMoveToCreate = true) => {
-    return this.props
-      .dispatch<Promise<any>>(loginUsingFacebookAccessToken(facebookUserId, accessToken))
+    return this.props.loginUsingFacebookAccessToken(facebookUserId, accessToken)
       .then(() => {
         if (isMoveToCreate) {
           this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
@@ -83,8 +65,7 @@ class Login extends Component<Props, any>{
   }  
 
   private _loginUniqueDevice = async (isMoveToCreate = true) => {    
-    this.props
-      .dispatch<Promise<any>>(loginUsingDeviceId())
+    this.props.loginUsingDeviceId()
       .then(() => {
         if (isMoveToCreate) {
           this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
@@ -134,11 +115,12 @@ class Login extends Component<Props, any>{
   }
 }
 
-function mapDispatchToProps(dispatch) {
+const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
   return {
-    dispatch, //todo remove this dispatch, and do something similar to the one below
+    loginUsingFacebookAccessToken: (userId, accessToken) => dispatch(loginUsingFacebookAccessToken(userId, accessToken)),
+    loginUsingDeviceId: () => dispatch(loginUsingDeviceId()),
   };
-}
+};
 
 const LoginScreen = connect(null, mapDispatchToProps)(Login);
 

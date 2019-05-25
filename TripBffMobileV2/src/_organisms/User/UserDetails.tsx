@@ -15,6 +15,8 @@ export interface Props extends IMapDispatchToProps {
   fullName: string;
 
   nTrips: number;
+
+  onClickEdit: () => void;
 }
 
 interface State {
@@ -58,7 +60,8 @@ export class UserDetails extends Component<Props & IStateProps, State> {
                 <Text>Trips</Text>
               </View> */}
             </View>
-            <Button full light rounded bordered>
+            <Button full light rounded bordered
+              onPress={this.props.onClickEdit}>
               <Text>Edit Profile</Text>
             </Button>
           </View>
