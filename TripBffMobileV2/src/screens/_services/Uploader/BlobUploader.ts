@@ -1,5 +1,6 @@
-import Axios from "axios";
+import axios from "axios";
 import { TRIP_URL } from "../ServiceConstants";
+var RNFS = require('react-native-fs');
 
 export var uploadImageAsync: (
   uploadUrl: string,
@@ -8,21 +9,17 @@ export var uploadImageAsync: (
   data?: any
 ) => Promise<any> = uploadImageXmlHttpRequestAsync;
 
+//https://ademcan.net/blog/2017/11/24/uploaddownload-images-tofrom-aws-s3-in-react-native-a-step-by-step-guide/
 //https://github.com/facebook/react-native/blob/fe42a28de12926c7b3254420ccb85bef5f46327f/Examples/UIExplorer/XHRExample.ios.js#L215-L230
-async function uploadImageXmlHttpRequestAsync(
+export async function uploadImageXmlHttpRequestAsync(
   uploadUrl: string,
-  authorizationHeader: string,
   uri: string,
-  data: any = undefined
+  mimeType: string,
 ) {
-  console.log("authorizationHeader", authorizationHeader);
-  let uriParts = uri.split(".");
-  let fileType = uriParts[uriParts.length - 1];
-
   var xhr = new XMLHttpRequest();
 
   var promise = new Promise((resolve, reject) => {
-    xhr.open("POST", TRIP_URL + uploadUrl);
+    xhr.open("PUT", uploadUrl);
 
     const UNSENT = 0;
     const OPENED = 1;
@@ -33,8 +30,9 @@ async function uploadImageXmlHttpRequestAsync(
     xhr.onreadystatechange = function(oEvent) {
 
       if (xhr.readyState === DONE) {
+        console.log("I am done in here", xhr.status);
         if (xhr.status === 200) {
-          console.log(xhr.responseText);
+          resolve(true);
         } else {
           console.log("Error status", xhr.status);
           console.log("Error response", xhr.response);
@@ -79,19 +77,11 @@ async function uploadImageXmlHttpRequestAsync(
       return;
     };
 
-    let formData = new FormData();
-    formData.append("file", {
+    let formData = {
       uri,
       name: "image.jpg",
       type: "image/jpg"
-    } as any); //todo now bypass skip error
-    // formData.append("fileName", "image.jpg");
-    if (data) {
-      for (var propertyName in data) {
-        formData.append(propertyName, data[propertyName]);
-      }
-    }
-    // console.log(formData)
+    };
 
     if (xhr.upload) {
       xhr.upload.onprogress = (event: any) => {
@@ -102,40 +92,16 @@ async function uploadImageXmlHttpRequestAsync(
       };
     }
 
-    if (authorizationHeader) {
-      console.log("Added Authorization token", authorizationHeader);
-      xhr.setRequestHeader("Authorization", authorizationHeader);
-    }
+    xhr.setRequestHeader('Content-Type', mimeType);
+    // if (authorizationHeader) {
+    //   console.log("Added Authorization token", authorizationHeader);
+    //   xhr.setRequestHeader("Authorization", authorizationHeader);
+    // }
     xhr.send(formData);
   });
 
   return promise;
 }
-
-// async function uploadImageFetchAsync(uploadUrl: string, uri: string) {
-//   let uriParts = uri.split(".");
-//   let fileType = uriParts[uriParts.length - 1];
-
-//   // const blob = await getBlobFromUri(uri);
-//   let formData = new FormData();
-//   formData.append("photo", {
-//     uri,
-//     name: "image.jpg",
-//     type: "image/jpg"
-//   });
-//   console.log(formData);
-
-//   let options = {
-//     method: "POST",
-//     body: formData,
-//     headers: {
-//       Accept: "application/json",
-//       "Content-Type": "multipart/form-data"
-//     }
-//   };
-
-//   return fetch(TRIP_URL + uploadUrl, options);
-// }
 
 // async function uploadImageAxiosAsync(uploadUrl: string, uri: string) {
 //   let uriParts = uri.split(".");

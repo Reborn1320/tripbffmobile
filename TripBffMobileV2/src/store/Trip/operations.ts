@@ -23,6 +23,7 @@ import { StoreData, RawJsonData } from "../Interfaces";
 import moment from "moment";
 import { uploadFileApi } from "../../screens/_services/apis";
 import { Store } from "redux";
+import { uploadImageAxiosAsync, uploadImageRNFSAsync, uploadImageXmlHttpRequestAsync } from "../../screens/_services/Uploader/BlobUploader";
 
 export function fetchTrip(tripId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
@@ -352,8 +353,46 @@ export function addLocationImage(tripId: string, dateIdx: number, locationId: st
   };
 }
 
+
+export function uploadImage(imgUrl: string, mimeType: StoreData.IMimeTypeImage = "image/jpeg"): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+
+    const data = {
+      mimeType
+    };
+    const signResult: { signedRequest: string, externalId: string, fullPath: string } = 
+    await extraArguments.tripApiService
+    .get(`/images/preUploadImage?mimeType=${mimeType}`)
+    .then(res => res.data);
+
+    console.log(signResult);
+
+    return uploadImageXmlHttpRequestAsync(signResult.signedRequest, imgUrl, mimeType)
+    .then(() => {
+      const data = {
+        fullPath: signResult.fullPath,
+      };
+      
+      return extraArguments.tripApiService
+      .post("images", { data })
+      .then(res => res.data);
+    })
+    .catch((err) => {
+        console.log('error uploadImage ', err);
+        return false;
+    });
+  };
+}
+
 export function uploadLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string, imgUrl: string, mimeType: StoreData.IMimeTypeImage = "image/jpeg"): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
+
+    const data = {
+      url: imgUrl,
+    };
+    return extraArguments.tripApiService
+    .post(`/trips/${tripId}/preUploadImage`, { data })
+
 
     let fileExtension: string;
     switch (mimeType) {
@@ -366,7 +405,7 @@ export function uploadLocationImage(tripId: string, dateIdx: number, locationId:
         break;
       }
       default:
-        fileExtension = "jpg";
+        fileExtension = "jpeg";
     }
     const additionalData = {
       locationId,

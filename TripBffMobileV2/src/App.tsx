@@ -26,6 +26,7 @@ import { ThunkExtraArgumentsBase } from "./store";
 import { mockLoginApiService, mockTripApiService } from "./store/MockApiService";
 import LocationImageDetailScreen from "./screens/location/LocationImageDetail/LocationImageDetailScreen";
 import { TripCarouselDoc } from "./_molecules/TripCarousel/TripCarousel.doc";
+import ImageUploadDoc from "./screens/trip/import/ImageUpload.doc";
 
 var mockLoginApi = mockLoginApiService;
 var mockTripApi = mockTripApiService;
@@ -94,7 +95,7 @@ const ProfileNavigator = createStackNavigator(
 
 const TestComponentNavigator = createStackNavigator(
   {
-    Test: {screen: TripCarouselDoc },
+    Test: {screen: ImageUploadDoc },
   },
   {
     headerMode: "none",
