@@ -288,13 +288,13 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
         //handle trips
         switch(action.type) {
             case "TRIPS_ADD":
-                return action.trips.map(trip => {
+                return action.trips ? action.trips.map(trip => {
                     return {
                         ...trip,
                         fromDate: trip.fromDate,
                         toDate: trip.toDate,
                     }
-                });
+                }) : [];
             case "TRIPS_DELETE":
                 return state.map(item => {
                     return item.tripId != action.tripId ? item : {
