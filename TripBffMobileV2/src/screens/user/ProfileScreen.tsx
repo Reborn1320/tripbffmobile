@@ -43,7 +43,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         super(props);
 
         this.state = {
-            isLoaded: true,
+            isLoaded: this.props.trips.length == 0,
             loadingMessage: "loading trips belong to this user",
             UIState: "LOADING_TRIP"
         };
@@ -54,6 +54,11 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     };
 
     componentDidMount() {
+        this._refreshTrips();
+    }
+
+    private _refreshTrips = () => {
+        console.log('aaaaa');
         this.props.fetchTrips().then(trips => {
             this.props.addTrips(trips);
             this.setState({
@@ -67,7 +72,10 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     private handleTripItemClick(tripId: string) {
         this.props.navigation.navigate(
             NavigationConstants.Screens.TripEdit,
-            { tripId, id: tripId }
+            { 
+              tripId: tripId,
+              onGoBackProfile: this._refreshTrips
+            }
         );
     }
 
@@ -89,10 +97,9 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     render() {
         const { userName, fullName, trips } = this.props;
         const { isLoaded } = this.state;
-
+        
         return (
             <Container>
-                {/* <Header /> */}
                 <Content>
                     <View>
                         <UserDetails 

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 import { View } from "native-base";
 import _ from "lodash";
 import { StoreData } from "../../../store/Interfaces";
@@ -20,7 +20,6 @@ export interface Props extends IMapDispatchToProps {
 }
 
 interface State {
-  tripEntries: ITripEntry[]
 }
 
 type ITripEntry = {
@@ -30,18 +29,27 @@ type ITripEntry = {
   entries: IEntry[]
 }
 
-export class TripsComponent extends Component<Props & IStateProps, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      tripEntries: []
-    }
-  }
+export class TripsComponent extends PureComponent<Props & IStateProps, State> {
 
-  componentWillReceiveProps(nextProps: Props) {
+  private _renderItem = itemInfo => {
+    const tripEntry: ITripEntry = itemInfo.item;
+
+    return (
+      <View key={itemInfo.index} >
+        <TripCarousel
+          tripEntry={tripEntry}
+          handleClick={() => this.props.handleClick(tripEntry.tripId)}
+          handleShareClick={this.props.handleShareClick}
+          handleDeleteTrip={this.props.handleDeleteTrip}
+        />
+      </View>
+    );
+  };
+
+  render() {
 
     let tripEntries: ITripEntry[] = [];
-    const { trips } = nextProps;
+    const { trips } = this.props;
 
     trips.forEach(trip => {
 
@@ -60,28 +68,6 @@ export class TripsComponent extends Component<Props & IStateProps, State> {
 
     });
 
-    this.setState({
-      tripEntries
-    });
-  }
-
-  private _renderItem = itemInfo => {
-    const tripEntry: ITripEntry = itemInfo.item;
-
-    return (
-      <View key={itemInfo.index} >
-        <TripCarousel
-          tripEntry={tripEntry}
-          handleClick={() => this.props.handleClick(tripEntry.tripId)}
-          handleShareClick={this.props.handleShareClick}
-          handleDeleteTrip={this.props.handleDeleteTrip}
-        />
-      </View>
-    );
-  };
-
-  render() {
-    const { tripEntries } = this.state;
     return (
       <View>
         {tripEntries.map((trip, index) => this._renderItem({ item: trip, index }))}

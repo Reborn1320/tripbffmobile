@@ -25,6 +25,10 @@ interface State {
 
 export class TripDetailScreen extends Component<Props & IMapDispatchToProps, State> {
 
+    _didFocusSubscription;
+    _didBlurSubscription;
+    _backHardwareHandler;
+
     constructor(props) {
         super(props)
 
@@ -34,11 +38,29 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
     }
 
     componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this._handleBackPress);
+        this._didFocusSubscription.remove();
+        this._didBlurSubscription.remove();
+        this._backHardwareHandler.remove();
     }
 
     componentDidMount() {
-        BackHandler.addEventListener('hardwareBackPress', this._handleBackPress);
+         var tmp = this;
+
+        this._didFocusSubscription = this.props.navigation.addListener(
+            'didFocus',
+            payload => {
+              console.debug('didFocus');
+              tmp._backHardwareHandler = BackHandler.addEventListener('hardwareBackPress', this._handleBackPress);
+            }
+          );
+          
+        this._didBlurSubscription = this.props.navigation.addListener(
+            'didBlur',
+            payload => {
+                console.debug('didBlur');                
+                tmp._backHardwareHandler.remove();
+            }
+        );
     }
 
     private _handleBackPress = () => {
