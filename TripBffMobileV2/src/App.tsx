@@ -117,7 +117,7 @@ const AppNavigator = createSwitchNavigator(
     TripDetails: TripDetailsNavigator,    
     Profile: ProfileNavigator,
     Test: {screen: TestComponentNavigator },
-    // Home: { screen: HomeScreen },   
+    Home: { screen: HomeScreen },   
   },
   {
     initialRouteName: "Login"

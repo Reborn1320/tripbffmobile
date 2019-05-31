@@ -352,7 +352,6 @@ class TripImportation extends Component<Props, State> {
 }
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
-    const { tripId } = ownProps.navigation.state.params;
     return {
         trip: storeState.currentTrip
     };

@@ -23,6 +23,7 @@ import {
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
 
 const userInitState: StoreData.UserVM = {
+    id: "",
     username: "asdf",
     fullName: "adffff",
     email: "asdf@gmail.com",
