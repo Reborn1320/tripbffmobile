@@ -117,7 +117,7 @@ class Login extends Component<Props & IMapDispatchToProps, any>{
 
 const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
   return {
-    loginUsingFacebookAccessToken: (userId, accessToken) => dispatch(loginUsingFacebookAccessToken(userId, accessToken)),
+    loginUsingFacebookAccessToken: (userId, accessToken) => dispatch(loginUsingFacebookAccessToken(userId, accessToken, "")),
     loginUsingDeviceId: () => dispatch(loginUsingDeviceId()),
   };
 };
