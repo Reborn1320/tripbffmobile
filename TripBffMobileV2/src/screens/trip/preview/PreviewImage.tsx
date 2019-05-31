@@ -35,14 +35,7 @@ export default class PreviewImages extends PureComponent<ImageProps, any> {
     private _handleInitImages = (loadedImages) => {
         if (this.props.images) {
             this.setState({ images: this.props.images, loadedImages: loadedImages });
-            let selectedImageUrls = this.props.images.map(item => {
-                return {
-                    imageId: item.imageId,
-                    externalUrl: item.externalUrl
-                }
-                }); 
-            this.props.updateSelectedImagesUrl(selectedImageUrls); 
-            }
+        }
     }
 
     private _handleSelect(img) {

@@ -58,7 +58,6 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     }
 
     private _refreshTrips = () => {
-        console.log('aaaaa');
         this.props.fetchTrips().then(trips => {
             this.props.addTrips(trips);
             this.setState({

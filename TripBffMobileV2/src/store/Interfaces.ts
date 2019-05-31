@@ -88,6 +88,7 @@ export module StoreData {
     }
 
     export interface UserVM {
+        id: string,
         username: string
         email: string
         fullName: string
