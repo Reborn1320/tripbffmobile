@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, StyleSheet } from "react-native";
+import { Dimensions, StyleSheet, BackHandler } from "react-native";
 import {
   Container,
   Content,
@@ -32,6 +32,7 @@ import PreviewInfographicComponent from "./PreviewInfographic";
 import PreviewImages from "./PreviewImage";
 import NBTheme from "../../../theme/variables/commonColor.js";
 import { fetchTrip } from "../../../store/Trip/operations";
+import { string } from "prop-types";
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
@@ -87,7 +88,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
     };
   };
 
-  componentDidMount() {      
+  componentDidMount() {          
     this.props.navigation.setParams({ _cancel: this._cancel });
     let tripId = this.props.tripId;
 
@@ -251,7 +252,10 @@ class InfographicPreview extends React.PureComponent<Props, State> {
   }
 
   private _navigateToProfile = () => {
-    this.props.navigation.navigate(NavigationConstants.Screens.Profile)
+    let onGoBackCallBack = this.props.navigation.getParam("onGoBackProfile");
+    if (onGoBackCallBack) onGoBackCallBack();
+
+    this.props.navigation.navigate(NavigationConstants.Screens.Profile);
   }
 
   render() {
