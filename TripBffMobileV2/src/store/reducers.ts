@@ -128,7 +128,7 @@ function locationReducer(state: StoreData.LocationVM, action: LocationActions) {
         case LOCATION_UPDATE_HIGHLIGHT:
             return {
                 ...state,
-                likeItems: [...action.highlights]
+                highlights: [...action.highlights]
             };
         case LOCATION_UPDATE_DESCRIPTION:
             return {

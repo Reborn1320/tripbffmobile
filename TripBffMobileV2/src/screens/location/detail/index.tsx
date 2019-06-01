@@ -147,8 +147,6 @@ class LocationDetail extends React.Component<Props, State> {
     }
 
     private _confirmUpdateLocationDescription = (description) => {
-        console.log('tripId :' + this.props.tripId);
-        console.log('locationId :' + this.props.locationId);
         this.props.updateLocationDescription(this.props.tripId, this.props.dateIdx, this.props.locationId, description)
             .then(() => {
                 this.setState({
@@ -294,7 +292,7 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
         address: location.location.address,
         long: location.location.long,
         lat: location.location.lat,
-        likeItems: location.likeItems,
+        likeItems: location.highlights,
         description: location.description,
         images: location.images
     };
