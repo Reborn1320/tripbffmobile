@@ -354,6 +354,14 @@ export function addLocationImage(tripId: string, dateIdx: number, locationId: st
 }
 
 
+/**
+ * this method is only used in testing upload image generically
+ *
+ * @export
+ * @param {string} imgUrl
+ * @param {StoreData.IMimeTypeImage} [mimeType="image/jpeg"]
+ * @returns {ThunkResultBase}
+ */
 export function uploadImage(imgUrl: string, mimeType: StoreData.IMimeTypeImage = "image/jpeg"): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
 
