@@ -173,7 +173,12 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
   }
 }
 
-class AddHighlightModalContentComponent extends React.PureComponent<any, any> {
+interface ModalState {
+  index: number,
+  routes: any
+}
+
+class AddHighlightModalContentComponent extends React.PureComponent<any, ModalState> {
 
   constructor(props: Props & IMapDispatchToProps) {
     super(props);  

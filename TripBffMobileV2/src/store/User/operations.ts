@@ -21,6 +21,7 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
         console.log("token ", token);
 
         const user: StoreData.UserVM = {
+          id: id,
           username: userName,
           fullName: "adffff",
           email: email,
@@ -37,13 +38,14 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
   };
 }
 
-export function loginUsingFacebookAccessToken(facebookUserId: string, accessToken: string): ThunkResultBase {
+export function loginUsingFacebookAccessToken(facebookUserId: string, accessToken: string, userId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     if ((await loadLoggedUser(dispatch))) return;
 
     var loginUser = {
       access_token: accessToken,
-      user_id: facebookUserId
+      user_id: facebookUserId,
+      logged_user_id: userId
     };
 
     return extraArguments.loginApiService.post("facebook/verify", { data: loginUser })
@@ -53,6 +55,7 @@ export function loginUsingFacebookAccessToken(facebookUserId: string, accessToke
         console.log("token ", token);
 
         const user: StoreData.UserVM = {
+          id: id,
           username: userName,
           fullName: fullName,
           email: userName,
@@ -99,6 +102,7 @@ export function loginUsingDeviceId(): ThunkResultBase {
         console.log("token ", token);
 
         const user: StoreData.UserVM = {
+          id: id,
           username: userName,
           fullName: "Quest",
           email: userName,
@@ -115,9 +119,10 @@ export function loginUsingDeviceId(): ThunkResultBase {
   };
 }
 
-export async function isLoggedIn() {
-  const user = await getDataFromStorage(STORAGE_KEYS.USER);
-  return user != null;
+export function isLoggedIn(): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    return await loadLoggedUser(dispatch); 
+  };
 }
 
 export async function logOut() {
@@ -130,6 +135,7 @@ async function loadLoggedUser(dispatch) {
 
   dispatch(addToken(user));
   setAuthorizationHeader(user.token);
+  return true;
 }
 
 async function storeDataIntoStorage(key, value) {

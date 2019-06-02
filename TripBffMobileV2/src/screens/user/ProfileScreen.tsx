@@ -18,6 +18,7 @@ interface IMapDispatchToProps {
     loginUsingFacebookAccessToken: (userId: string, accessToken: string) => Promise<any>;
     fetchTrips: () => Promise<any>;
     addTrips: (trips: Array<StoreData.TripVM>) => void;
+    deleteTrip: (tripId: string) => void;
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -42,7 +43,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         super(props);
 
         this.state = {
-            isLoaded: true,
+            isLoaded: this.props.trips.length == 0,
             loadingMessage: "loading trips belong to this user",
             UIState: "LOADING_TRIP"
         };
@@ -52,12 +53,13 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         header: null
     };
 
-    componentWillMount() {
+    componentDidMount() {
+        this._refreshTrips();
+    }
+
+    private _refreshTrips = () => {
         this.props.fetchTrips().then(trips => {
-            // console.log("fetched Trips", trips);
-
             this.props.addTrips(trips);
-
             this.setState({
                 isLoaded: false,
                 loadingMessage: "",
@@ -69,12 +71,19 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     private handleTripItemClick(tripId: string) {
         this.props.navigation.navigate(
             NavigationConstants.Screens.TripEdit,
-            { tripId, id: tripId }
+            { 
+              tripId: tripId,
+              onGoBackProfile: this._refreshTrips
+            }
         );
     }
 
     private _handleShareBtnClick = (tripId) => {
         this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, { tripId: tripId })
+    }
+
+    private _handleDeleteTrip = (tripId) => {
+        this.props.deleteTrip(tripId);
     }
 
     private handleEditBtnClick = () => {
@@ -87,10 +96,9 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     render() {
         const { userName, fullName, trips } = this.props;
         const { isLoaded } = this.state;
-
+        
         return (
             <Container>
-                {/* <Header /> */}
                 <Content>
                     <View>
                         <UserDetails 
@@ -111,6 +119,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                             trips={trips}
                             handleClick={tripId => this.handleTripItemClick(tripId)}
                             handleShareClick={this._handleShareBtnClick}
+                            handleDeleteTrip={this._handleDeleteTrip}
                         />
                     </View>
                 </Content>

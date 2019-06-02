@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, StyleSheet } from "react-native";
+import { Dimensions, StyleSheet, BackHandler } from "react-native";
 import {
   Container,
   Content,
@@ -32,6 +32,8 @@ import PreviewInfographicComponent from "./PreviewInfographic";
 import PreviewImages from "./PreviewImage";
 import NBTheme from "../../../theme/variables/commonColor.js";
 import { fetchTrip } from "../../../store/Trip/operations";
+import { loginUsingFacebookAccessToken } from "../../../store/User/operations";
+import { string } from "prop-types";
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
@@ -39,12 +41,14 @@ export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   tripId: string,
   infographicId: string,
   images: Array<StoreData.ImportImageVM>,
-  isExistedCurrentTrip: boolean
+  isExistedCurrentTrip: boolean,
+  userId: string
 }
 
 interface IMapDispatchToProps {    
   addInfographicId: (tripId: string, infographicId: string) => void;
   fetchTrip: (tripId: string) => Promise<void>;
+  loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId) => Promise<void>
 }
 
 interface State {
@@ -87,7 +91,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
     };
   };
 
-  componentDidMount() {      
+  componentDidMount() {          
     this.props.navigation.setParams({ _cancel: this._cancel });
     let tripId = this.props.tripId;
 
@@ -159,7 +163,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
 
   private _sharePhotoWithShareDialog = async () => {
       var tmp = this;      
-
+      
       if (this.state.selectedImages.length > 5) {
         Toast.show({
           text: "Please select maximum 5 most favoriate images to share!",
@@ -228,11 +232,14 @@ class InfographicPreview extends React.PureComponent<Props, State> {
                   function(result) {
                     if (result.isCancelled) {
                       console.log("Login cancelled");
-                    } else {
+                    } else {                      
                       console.log(
-                        "Login success with permissions: " +
-                          result.grantedPermissions.toString()
+                        "Login success with permissions: " + JSON.stringify(result)
                       );
+                      // call api to login with FB
+                      AccessToken.getCurrentAccessToken().then(data => {     
+                        tmp.props.loginUsingFacebookAccessToken(data.userID, data.accessToken, tmp.props.userId);
+                      });
                       tmp._sharePhotoWithShareDialog();
                     }
                   },
@@ -251,7 +258,10 @@ class InfographicPreview extends React.PureComponent<Props, State> {
   }
 
   private _navigateToProfile = () => {
-    this.props.navigation.navigate(NavigationConstants.Screens.Profile)
+    let onGoBackCallBack = this.props.navigation.getParam("onGoBackProfile");
+    if (onGoBackCallBack) onGoBackCallBack();
+
+    this.props.navigation.navigate(NavigationConstants.Screens.Profile);
   }
 
   render() {
@@ -343,6 +353,7 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
   }  
   
   return {
+    userId: storeState.user.id,
     tripId: tripId,
     infographicId: trip ? trip.infographicId : "",
     images: images,
@@ -354,6 +365,7 @@ const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
   return {
     addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
     fetchTrip: (tripId) => dispatch(fetchTrip(tripId)),
+    loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId) => dispatch(loginUsingFacebookAccessToken(userId, accessToken, loggedUserId)),
   };
 };
 

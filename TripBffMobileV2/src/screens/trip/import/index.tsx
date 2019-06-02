@@ -84,12 +84,7 @@ class TripImportation extends Component<Props, State> {
                 });
     }    
 
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this._handleBackPress);
-    }
-
-    async componentDidMount() {
-        BackHandler.addEventListener('hardwareBackPress', this._handleBackPress);
+    async componentDidMount() {       
         await checkAndRequestPhotoPermissionAsync();
 
         console.log("from date: " + this.state.fromDate.format());
@@ -145,11 +140,6 @@ class TripImportation extends Component<Props, State> {
         });
 
         this.setState({ locations: adapterResult, isLoading: false, isHideFooter: false });
-    }
-
-    private _handleBackPress = () => {
-        this.props.navigation.goBack();
-        return true;
     }
 
     private _importImageSelectUnselectImage = (locationIdx: number, imageIdx: number) => {
@@ -279,7 +269,7 @@ class TripImportation extends Component<Props, State> {
                 });
             })            
     
-            if (uploadedImages == totalImages && uploadedImages > 0) {
+            if (uploadedImages == totalImages) {
                 isStartUploadImage = false;
                 //navigate to next page
                 this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId })
@@ -362,7 +352,6 @@ class TripImportation extends Component<Props, State> {
 }
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
-    const { tripId } = ownProps.navigation.state.params;
     return {
         trip: storeState.currentTrip
     };

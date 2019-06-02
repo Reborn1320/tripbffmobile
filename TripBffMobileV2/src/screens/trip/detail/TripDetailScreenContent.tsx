@@ -175,6 +175,9 @@ class TripDetailScreenContentInternal extends Component<Props & IMapDispatchToPr
             isUpdateDateRangeModalVisible: false
         });
 
+        fromDate = moment(fromDate).startOf('day');
+        toDate = moment(toDate).endOf('day');
+
         this.props.updateTripDateRange(this.props.tripId, fromDate, toDate);            
     }
 

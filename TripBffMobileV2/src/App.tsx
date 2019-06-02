@@ -27,6 +27,7 @@ import { mockLoginApiService, mockTripApiService } from "./store/MockApiService"
 import LocationImageDetailScreen from "./screens/location/LocationImageDetail/LocationImageDetailScreen";
 import { TripCarouselDoc } from "./_molecules/TripCarousel/TripCarousel.doc";
 import ImageUploadDoc from "./screens/trip/import/ImageUpload.doc";
+import LandingPageScreen from "./screens/LandingPage";
 
 var mockLoginApi = mockLoginApiService;
 var mockTripApi = mockTripApiService;
@@ -113,15 +114,16 @@ const TestComponentNavigator = createStackNavigator(
 
 const AppNavigator = createSwitchNavigator(
   {
+    LandingPage: { screen: LandingPageScreen },
     Login: { screen: LoginScreen },
     TripCreation: TripCreationNavigator,
     TripDetails: TripDetailsNavigator,    
     Profile: ProfileNavigator,
     Test: {screen: TestComponentNavigator },
-    // Home: { screen: HomeScreen },   
+    Home: { screen: HomeScreen },   
   },
   {
-    initialRouteName: "Login"
+    initialRouteName: "LandingPage"
   });
 
 let Navigation = createAppContainer(AppNavigator);

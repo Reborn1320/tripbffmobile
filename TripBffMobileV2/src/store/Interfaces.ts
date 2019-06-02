@@ -50,7 +50,7 @@ export module StoreData {
         images: Array<ImportImageVM>, //TODO change class name...
         feeling?: FeelingVM,
         activity?: ActivityVM,
-        likeItems?: Array<LocationLikeItemVM>,
+        highlights?: Array<LocationLikeItemVM>,
         description?: string
     }
 
@@ -68,7 +68,8 @@ export module StoreData {
         toDate: moment.Moment   
         dates?: Array<DateVM>     
         infographicId?: string,
-        rawLocations?: Array<LocationVM>     
+        rawLocations?: Array<LocationVM>  ,
+        isDeleted?: boolean  
     }
 
 
@@ -82,10 +83,12 @@ export module StoreData {
             address: string,
             description: string,
             imageUrl: string,
-        }[]
+        }[],
+        isDeleted?: boolean
     }
 
     export interface UserVM {
+        id: string,
         username: string
         email: string
         fullName: string
@@ -156,7 +159,8 @@ export namespace RawJsonData {
             address: string,
             description: string,
             imageUrl: string,
-        }[]
+        }[],
+        isDeleted: boolean
     }
 
     export interface LocationVM {

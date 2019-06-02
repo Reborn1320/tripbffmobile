@@ -23,6 +23,7 @@ import {
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
 
 const userInitState: StoreData.UserVM = {
+    id: "",
     username: "asdf",
     fullName: "adffff",
     email: "asdf@gmail.com",
@@ -127,7 +128,7 @@ function locationReducer(state: StoreData.LocationVM, action: LocationActions) {
         case LOCATION_UPDATE_HIGHLIGHT:
             return {
                 ...state,
-                likeItems: [...action.highlights]
+                highlights: [...action.highlights]
             };
         case LOCATION_UPDATE_DESCRIPTION:
             return {
@@ -286,13 +287,23 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
 
     if (_.startsWith(actionType, "TRIPS")) {
         //handle trips
-        return action.trips.map(trip => {
-            return {
-                ...trip,
-                fromDate: trip.fromDate,
-                toDate: trip.toDate,
-            }
-        });
+        switch(action.type) {
+            case "TRIPS_ADD":
+                return action.trips ? action.trips.map(trip => {
+                    return {
+                        ...trip,
+                        fromDate: trip.fromDate,
+                        toDate: trip.toDate,
+                    }
+                }) : [];
+            case "TRIPS_DELETE":
+                return state.map(item => {
+                    return item.tripId != action.tripId ? item : {
+                        ...item,
+                        isDeleted: true
+                    }
+                });
+        }        
     }   
 
     return state;

@@ -23,7 +23,6 @@ import {
   AccessToken,
   LoginManager
 } from "react-native-fbsdk";
-import checkAndRequestPhotoPermissionAsync from "../shared/photo/PhotoPermission";
 import {
   tripApi
 } from "../_services/apis";
@@ -42,6 +41,9 @@ const geoCodingService = mbxGeocoding(baseClient);
 
 import Mapbox from '@mapbox/react-native-mapbox-gl';
 Mapbox.setAccessToken('pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g');
+
+import CalendarPicker from 'react-native-calendar-picker';
+import moment from "moment";
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
@@ -84,7 +86,10 @@ class Home extends React.Component<Props, any> {
       sharePhotoContent: sharePhotoContent,
       imageUri: "",
       places: [],
-      query: ''
+      query: '',
+      fromDate: moment().add(1, 'M'),
+      toDate: moment().add(1, 'M'),
+      initialDate: moment().add(1, 'M')
     };
   }
 
@@ -296,7 +301,22 @@ class Home extends React.Component<Props, any> {
     });
   }
 
+  private onDateChange = (date, type) => {
+    if (type === 'END_DATE') {   
+      this.setState({
+        toDate: date
+      });
+    } else {
+      this.setState({
+        fromDate: date,
+        toDate: null
+      });
+    }
+  }
+
   render() {
+
+
     return (
       <Container>
         {/* <Header /> */}
@@ -318,6 +338,19 @@ class Home extends React.Component<Props, any> {
             <Button style={{ margin: 5 }} onPress={() => this.sharePhotoWithShareDialog()}>
               <Text>Share Photos on Facebook11</Text>
             </Button>
+            <View style={{flex: 1}}>
+                    <CalendarPicker
+                        startFromMonday={true}
+                        allowRangeSelection={true} 
+                        selectedStartDate={this.state.fromDate}
+                        selectedEndDate={this.state.toDate} 
+                        initialDate={this.state.initialDate}
+                        todayBackgroundColor="#f2e6ff"
+                        selectedDayColor="#7300e6"
+                        selectedDayTextColor="#FFFFFF"                        
+                        onDateChange={this.onDateChange}
+                    />
+                </View> 
             {/* <Button style={{ margin: 5 }} onPress={() => this.loginLocal()}>
               <Text>Login Local</Text>
             </Button> */}
