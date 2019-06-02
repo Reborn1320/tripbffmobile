@@ -50,7 +50,7 @@ export module StoreData {
         images: Array<ImportImageVM>, //TODO change class name...
         feeling?: FeelingVM,
         activity?: ActivityVM,
-        likeItems?: Array<LocationLikeItemVM>,
+        highlights?: Array<LocationLikeItemVM>,
         description?: string
     }
 

@@ -2,11 +2,12 @@
 //input: isVisible, title, content, button confirm handler.
 
 import * as React from "react";
-import { View, Text } from "native-base";
-import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle } from "react-native";
+import { View, Text, Icon } from "native-base";
+import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle, Platform } from "react-native";
 import { connectStyle } from 'native-base';
 import  Autocomplete  from "react-native-autocomplete-input";
 import { getAddressFromLocation } from "../../_function/commonFunc";
+import { TextInput } from "react-native-gesture-handler";
 
 export interface Props {
   confirmHandler: (name, address, long, lat) => void;
@@ -37,6 +38,8 @@ class SearchLocationComponent extends React.Component<Props, State> {
     var url = 'https://nominatim.openstreetmap.org/search?q=' + query +
                  '&format=jsonv2&addressdetails=1&namedetails=1';
 
+    this.setState({query: query});
+
     return fetch(url)
             .then((response) => response.json())
             .then((jsonPlaces) => {
@@ -49,7 +52,7 @@ class SearchLocationComponent extends React.Component<Props, State> {
                     lat: parseFloat(place.lat)
                   }
                 });
-   
+                
                 this.setState({places: places});
             })
             .catch((error) => {
@@ -78,6 +81,29 @@ class SearchLocationComponent extends React.Component<Props, State> {
     });
   }
 
+  _renderTextInput = (props) => {
+    if (Platform.OS === 'ios') {
+      return (
+        <TextInput {...props} clearButtonMode='always'/>
+      )
+    }
+    else {
+      return (
+        <View style={styles.searchSection}>            
+            <TextInput 
+                {...props}    
+                style={styles.searchInput}                  
+                underlineColorAndroid="transparent"
+            />
+            <Icon type={"Ionicons"} name="md-close"
+                  style={[styles.searchIcon, {fontSize: 21}]}
+                  onPress={this._clearInputData}
+                />
+        </View>
+      )      
+    }
+  }
+
   _renderItem = (item) => {
     var placeAddress =  item.address.replace(item.placeName + ',', '');
 
@@ -93,15 +119,16 @@ class SearchLocationComponent extends React.Component<Props, State> {
 
   render() {
     return (
-      <View>
-        <Autocomplete                    
+      <View>        
+        <Autocomplete
             autoCapitalize="none"
             placeholder="Search"
             autoCorrect={false}
-            defaultValue={this.state.query}
+            value={this.state.query}      
+            onChangeText={text => this.searchPlaces(text)}               
             data={this.state.places}
-            onChangeText={text => this.searchPlaces(text)}
             renderItem={this._renderItem}
+            renderTextInput={this._renderTextInput}
             containerStyle={styles.autocompleteContainer}
             inputContainerStyle={styles.inputContainerStyle}
             listStyle={styles.listStyle}
@@ -118,6 +145,9 @@ interface Style {
   listStyle: ViewStyle;
   placeNameText: TextStyle;
   addressText: TextStyle;
+  searchSection: ViewStyle;
+  searchIcon: TextStyle;
+  searchInput: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -155,7 +185,23 @@ const styles = StyleSheet.create<Style>({
   addressText: {
     fontSize: 14, 
     fontWeight: 'normal'
-  }
+  },
+  searchSection: {
+    flexDirection: 'row',    
+    justifyContent:'flex-start',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    height: 40
+  },
+  searchIcon: {
+      padding: 10,      
+      color: "#000"
+  },
+  searchInput: {
+    flex: 1,
+    backgroundColor: '#fff',
+    color: '#424242',
+  },
 })
   
 const SearchLocation = connectStyle<typeof SearchLocationComponent>('NativeBase.Modal', styles)(SearchLocationComponent);
