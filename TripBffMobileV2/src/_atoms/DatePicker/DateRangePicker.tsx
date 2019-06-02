@@ -85,7 +85,8 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
                 <View style={styles.modalContentContainer}>
                     <CalendarPicker
                         startFromMonday={true}
-                        allowRangeSelection={true} 
+                        allowRangeSelection={true}
+                        initialDate={fromDate} 
                         selectedStartDate={fromDate}
                         selectedEndDate={toDate} 
                         todayBackgroundColor="#f2e6ff"
