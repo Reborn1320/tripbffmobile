@@ -40,13 +40,13 @@ export class ImageUploadInternal extends Component<Props & IStateProps, State> {
         if (result && result.length > 0) {
             const photo = result[0];
             console.log("photo 0", photo);
-            const uri = "content://media/external/images/media/6806"; // photo.image.uri;
-            const imageType = "image/jpeg"; // photo.image.type as StoreData.IMimeTypeImage
+            const uri = photo.image.uri;
+            const imageType = photo.image.type as StoreData.IMimeTypeImage
             this.props.uploadImage(uri, imageType)
-                .then(({ externalUrl }) => {
-                    console.log("externalUrl", externalUrl);
+                .then(({ thumbnailExternalUrl }) => {
+                    console.log("thumbnailExternalUrl", thumbnailExternalUrl);
                     this.setState({
-                        src: externalUrl
+                        src: thumbnailExternalUrl
                     })
                 })
         }
