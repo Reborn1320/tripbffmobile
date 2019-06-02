@@ -12,7 +12,8 @@ export const NavigationConstants = {
     Profile: "Profile",
     LocationDetails: "LocationDetail",
     LocationImageDetails: "LocationImageDetail",
-    TripImport: "TripImportation"
+    TripImport: "TripImportation",
+    LandingPage: "LandingPage"
   }
 };
 

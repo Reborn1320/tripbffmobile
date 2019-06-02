@@ -6,7 +6,7 @@ import {
   LoginManager
 } from "react-native-fbsdk";
 import * as RNa from "react-navigation";
-import { loginUsingFacebookAccessToken, loginUsingDeviceId, isLoggedIn } from "../../store/User/operations";
+import { loginUsingFacebookAccessToken, loginUsingDeviceId } from "../../store/User/operations";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 
 export interface Props {
@@ -19,20 +19,6 @@ interface IMapDispatchToProps {
 }
 
 class Login extends Component<Props & IMapDispatchToProps, any>{
-
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidMount() {
-    isLoggedIn()
-    .then( isLoggedInValue => {
-      if (isLoggedInValue) {
-        this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
-      }
-    })
-  }
-
   private _loginFacebook = () => {
     var tmp =  this;
 

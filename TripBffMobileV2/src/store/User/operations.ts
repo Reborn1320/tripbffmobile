@@ -119,9 +119,10 @@ export function loginUsingDeviceId(): ThunkResultBase {
   };
 }
 
-export async function isLoggedIn() {
-  const user = await getDataFromStorage(STORAGE_KEYS.USER);
-  return user != null;
+export function isLoggedIn(): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    return await loadLoggedUser(dispatch); 
+  };
 }
 
 export async function logOut() {
@@ -134,6 +135,7 @@ async function loadLoggedUser(dispatch) {
 
   dispatch(addToken(user));
   setAuthorizationHeader(user.token);
+  return true;
 }
 
 async function storeDataIntoStorage(key, value) {

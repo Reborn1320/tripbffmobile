@@ -195,7 +195,7 @@ const styles = StyleSheet.create<Style>({
   },
   searchIcon: {
       padding: 10,      
-      color: "#000"
+      color: "#cccccc"
   },
   searchInput: {
     flex: 1,
