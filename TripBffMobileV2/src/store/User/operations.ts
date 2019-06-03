@@ -40,8 +40,6 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
 
 export function loginUsingFacebookAccessToken(facebookUserId: string, accessToken: string, userId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
-    if ((await loadLoggedUser(dispatch))) return;
-
     var loginUser = {
       access_token: accessToken,
       user_id: facebookUserId,
@@ -78,9 +76,6 @@ export function loginUsingFacebookAccessToken(facebookUserId: string, accessToke
 
 export function loginUsingDeviceId(): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
-    if ((await loadLoggedUser(dispatch)) == true) return;
-
-
     let key = "uniqueDeviceUUID";
     let uniqueDeviceUuid = await getDataFromStorage(key);
 

@@ -57,10 +57,16 @@ interface State {
   infographicUrl: string
   selectedImages: Array<any>,
   displayLoading: boolean,
-  firstRendered: boolean
+  firstRendered: boolean,
+  isLoggedSocial: boolean
 } 
 
 class InfographicPreview extends React.PureComponent<Props, State> {
+
+  _backHardwareHandler;
+  _didFocusSubscription;
+  _willBlurSubscription;
+
   constructor(props) {
     super(props);
 
@@ -73,13 +79,18 @@ class InfographicPreview extends React.PureComponent<Props, State> {
       infographicUrl: "",
       selectedImages: [],
       displayLoading: true,
-      firstRendered: true
+      firstRendered: true,
+      isLoggedSocial: false
     }
   } 
 
   static navigationOptions = ({ navigation, navigationOptions }) => {
     return {
       title: '',
+      headerLeft:  (
+        <RNa.HeaderBackButton tintColor={'#fff'}          
+           onPress={navigation.getParam('_handleBackPress')}
+         />),
       headerRight: (
         <Button transparent style={{
           alignSelf: "stretch"
@@ -91,8 +102,28 @@ class InfographicPreview extends React.PureComponent<Props, State> {
     };
   };
 
-  componentDidMount() {          
+  componentDidMount() { 
+    var tmp = this;
+
+    this._didFocusSubscription = this.props.navigation.addListener(
+      'didFocus',
+      payload => {
+        console.debug('didFocus trip preview');
+        tmp._backHardwareHandler = BackHandler.addEventListener('hardwareBackPress', this._handleBackPress);
+      }
+    );
+    
+    this._willBlurSubscription = this.props.navigation.addListener(
+        'willBlur',
+        payload => {
+            console.debug('willBlur trip preview');                
+            tmp._backHardwareHandler.remove();
+        }
+    );
+
     this.props.navigation.setParams({ _cancel: this._cancel });
+    this.props.navigation.setParams({ _handleBackPress: this._handleBackPress });
+
     let tripId = this.props.tripId;
 
     if(!this.props.isExistedCurrentTrip) {
@@ -100,6 +131,23 @@ class InfographicPreview extends React.PureComponent<Props, State> {
     }
 
     this._createInfographic(tripId);  
+  }
+
+  componentWillUnmount() {
+    this._backHardwareHandler.remove();
+    this._didFocusSubscription.remove();
+    this._willBlurSubscription.remove();
+  }
+
+  private _handleBackPress = () => {
+    let isFromProfile = this.props.navigation.getParam("isFromProfile");
+
+    if (isFromProfile)
+      this._navigateToProfile();      
+    else 
+      this.props.navigation.goBack();
+      
+    return true;
   }
 
   private _createInfographic = (tripId) => {
@@ -241,6 +289,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
                         tmp.props.loginUsingFacebookAccessToken(data.userID, data.accessToken, tmp.props.userId);
                       });
                       tmp._sharePhotoWithShareDialog();
+                      tmp.setState({ isLoggedSocial: true });
                     }
                   },
                   function(error) {
@@ -259,7 +308,11 @@ class InfographicPreview extends React.PureComponent<Props, State> {
 
   private _navigateToProfile = () => {
     let onGoBackCallBack = this.props.navigation.getParam("onGoBackProfile");
-    if (onGoBackCallBack) onGoBackCallBack();
+    let isFromProfile = this.props.navigation.getParam("isFromProfile");
+    let { isLoggedSocial } = this.state;
+
+    if (onGoBackCallBack && (isFromProfile && isLoggedSocial || !isFromProfile))
+      onGoBackCallBack();
 
     this.props.navigation.navigate(NavigationConstants.Screens.Profile);
   }
