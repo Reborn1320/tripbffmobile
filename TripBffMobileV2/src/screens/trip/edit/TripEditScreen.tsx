@@ -33,7 +33,7 @@ interface State {
 export class TripEditScreen extends Component<Props, State> {
 
     _didFocusSubscription;
-    _didBlurSubscription;
+    _willBlurSubscription;
     _backHardwareHandler;
 
     constructor(props: Props) {
@@ -55,15 +55,15 @@ export class TripEditScreen extends Component<Props, State> {
         this._didFocusSubscription = this.props.navigation.addListener(
             'didFocus',
             payload => {
-              console.debug('didFocus');
+              console.debug('didFocus trip edit');
               tmp._backHardwareHandler = BackHandler.addEventListener('hardwareBackPress', this._goBackAndRefreshTripLists);
             }
           );
           
-        this._didBlurSubscription = this.props.navigation.addListener(
-            'didBlur',
+        this._willBlurSubscription = this.props.navigation.addListener(
+            'willBlur',
             payload => {
-                console.debug('didBlur');                
+                console.debug('willBlur trip edit');                
                 tmp._backHardwareHandler.remove();
             }
         );
@@ -80,7 +80,7 @@ export class TripEditScreen extends Component<Props, State> {
 
     componentWillUnmount() {
         this._didFocusSubscription.remove();
-        this._didBlurSubscription.remove();
+        this._willBlurSubscription.remove();
         this._backHardwareHandler.remove();
     }
 

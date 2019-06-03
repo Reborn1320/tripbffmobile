@@ -14,8 +14,6 @@ import { logOut } from "../../store/User/operations";
 export interface IStateProps { }
 
 interface IMapDispatchToProps {
-    loginUsingUserPass: (email: string, password: string) => Promise<any>;
-    loginUsingFacebookAccessToken: (userId: string, accessToken: string) => Promise<any>;
     fetchTrips: () => Promise<any>;
     addTrips: (trips: Array<StoreData.TripVM>) => void;
     deleteTrip: (tripId: string) => void;
@@ -55,7 +53,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
 
     componentDidMount() {
         this._refreshTrips();
-    }
+    } 
 
     private _refreshTrips = () => {
         this.props.fetchTrips().then(trips => {
@@ -79,7 +77,11 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     }
 
     private _handleShareBtnClick = (tripId) => {
-        this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, { tripId: tripId })
+        this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, { 
+            tripId: tripId,
+            onGoBackProfile: this._refreshTrips,
+            isFromProfile: true
+        })
     }
 
     private _handleDeleteTrip = (tripId) => {
