@@ -10,11 +10,14 @@ import { NavigationScreenProp } from "react-navigation";
 import { Divider } from "react-native-elements";
 import { UserDetails } from "../../_organisms/User/UserDetails";
 import { logOut } from "../../store/User/operations";
+import axios from "axios";
+const CancelToken = axios.CancelToken;
+let cancelRequest;
 
 export interface IStateProps { }
 
 interface IMapDispatchToProps {
-    fetchTrips: () => Promise<any>;
+    fetchTrips: (cancelToken: any) => Promise<any>;
     addTrips: (trips: Array<StoreData.TripVM>) => void;
     deleteTrip: (tripId: string) => void;
 }
@@ -55,8 +58,15 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         this._refreshTrips();
     } 
 
+    componentWillUnmount() {        
+        cancelRequest('Operation canceled by the user.');
+    }
+
     private _refreshTrips = () => {
-        this.props.fetchTrips().then(trips => {
+        let cancelToken = new CancelToken(function executor(c) {
+            cancelRequest = c;
+        });
+        this.props.fetchTrips(cancelToken).then(trips => {
             this.props.addTrips(trips);
             this.setState({
                 isLoaded: false,
@@ -98,7 +108,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     render() {
         const { userName, fullName, trips } = this.props;
         const { isLoaded } = this.state;
-        
+
         return (
             <Container>
                 <Content>

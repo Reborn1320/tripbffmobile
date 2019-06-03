@@ -53,8 +53,8 @@ class TripCreation extends Component<Props, State> {
   }
 
   componentWillUnmount() {
-    this.keyboardDidShowListener.remove();
-    this.keyboardDidHideListener.remove();
+    if (this.keyboardDidShowListener) this.keyboardDidShowListener.remove();
+    if (this.keyboardDidHideListener) this.keyboardDidHideListener.remove();
   }
 
   private _keyboardDidShow = () => {

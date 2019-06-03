@@ -33,7 +33,6 @@ import PreviewImages from "./PreviewImage";
 import NBTheme from "../../../theme/variables/commonColor.js";
 import { fetchTrip } from "../../../store/Trip/operations";
 import { loginUsingFacebookAccessToken } from "../../../store/User/operations";
-import { string } from "prop-types";
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
@@ -134,9 +133,9 @@ class InfographicPreview extends React.PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
-    this._backHardwareHandler.remove();
-    this._didFocusSubscription.remove();
-    this._willBlurSubscription.remove();
+    if (this._backHardwareHandler) this._backHardwareHandler.remove();    
+    if (this._didFocusSubscription) this._didFocusSubscription.remove();
+    if (this._willBlurSubscription) this._willBlurSubscription.remove();
   }
 
   private _handleBackPress = () => {
@@ -152,7 +151,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
 
   private _createInfographic = (tripId) => {
       tripApi
-      .post('/trips/' + tripId + '/infographics')
+      .post('/trips/' + tripId + '/infographics', null)
       .then(res => {
           var infographicId = res.data;
           console.log('infographic id: ' + infographicId);    

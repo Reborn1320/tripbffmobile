@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 
 import { Button, Icon, Text } from "native-base";
 import { FooterTab } from "native-base";
@@ -9,7 +9,7 @@ export interface Props extends PropsBase {
   activeScreen: string;
 }
 
-export default class AppFooter extends Component<Props, any> {
+export default class AppFooter extends PureComponent<Props, any> {
   render() {
     return (
       <FooterTab>

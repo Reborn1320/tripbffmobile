@@ -2,11 +2,17 @@ import { StoreData, RawJsonData } from "../Interfaces";
 import moment from "moment";
 import { ThunkResultBase } from "..";
 import { deleteTrip as deleteTripAction } from "./actions";
+import {  CancelToken } from "axios";
 
-export function fetchTrips(): ThunkResultBase {
+export function fetchTrips(cancelToken: CancelToken): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
+    var args = {
+      data: {
+        cancelToken: cancelToken
+      }
+    }
 
-    return extraArguments.tripApiService.get("trips")
+    return extraArguments.tripApiService.get("trips", args)
       .then(res => {
         var rawTripsVM: Array<RawJsonData.MinimizedTripVM> = res.data;
         var trips: Array<StoreData.MinimizedTripVM> = rawTripsVM.map(rawTrip => ({
