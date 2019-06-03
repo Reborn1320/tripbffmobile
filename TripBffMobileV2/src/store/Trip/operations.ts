@@ -400,8 +400,8 @@ export function uploadLocationImage(tripId: string, dateIdx: number, locationId:
     .get(`/trips/${tripId}/preUploadImage?mimeType=${mimeType}`)
     .then(res => res.data);
 
-    // console.log("signResult", signResult);
-    // console.log("mimeType", mimeType);
+    console.log("signResult", signResult);
+    console.log("mimeType", mimeType);
     return uploadImageXmlHttpRequestAsync(signResult.signedRequest, imgUrl, mimeType)
     .then(() => {
       console.log("complete upload to s3");
