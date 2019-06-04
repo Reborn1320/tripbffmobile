@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { ParallaxImage } from 'react-native-snap-carousel';
 import styles from './SliderEntry.styles';
 import { StoreData } from "../../../store/Interfaces";
+import NoItemDefault from "../../../_atoms/Carousel/NoItemDefault";
 
 interface IMapDispatchToProps {
     toLocationDetailsHanlder: () => void
@@ -23,21 +24,31 @@ export default class SliderEntry extends Component<Props, any> {
     get image() {
         const { data: { thumbnailExternalUrl }, parallax, parallaxProps, even } = this.props;
 
+        if (thumbnailExternalUrl == "") {
+            return (
+                <NoItemDefault viewContainerStyle={styles.imageEmptyContainer} titleStyle={styles.subtitle} title={"Click to add image(s)"}/>
+            )
+        }
+
         return parallax ? (
-            <ParallaxImage
-              source={{ uri: thumbnailExternalUrl }}
-              containerStyle={[styles.imageContainer, even ? styles.imageContainerEven : {}]}
-              style={styles.image}
-              parallaxFactor={0.35}
-              showSpinner={true}
-              spinnerColor={even ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.25)'}
-              {...parallaxProps}
-            />
+            <View style={[styles.imageContainer, even ? styles.imageContainerEven : {}]}>
+                <ParallaxImage
+                source={{ uri: thumbnailExternalUrl }}
+                containerStyle={[styles.imageContainer, even ? styles.imageContainerEven : {}]}
+                style={styles.image}
+                parallaxFactor={0.35}
+                showSpinner={true}
+                spinnerColor={even ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.25)'}
+                {...parallaxProps}
+                />
+            </View> 
         ) : (
-            <Image
-              source={{ uri: thumbnailExternalUrl }}
-              style={styles.image}
-            />
+            <View style={[styles.imageContainer, even ? styles.imageContainerEven : {}]}>
+                <Image
+                source={{ uri: thumbnailExternalUrl }}
+                style={styles.image}
+                />
+            </View> 
         );
     }
 
@@ -51,10 +62,7 @@ export default class SliderEntry extends Component<Props, any> {
               onPress={this.props.toLocationDetailsHanlder}
               >
                 <View style={styles.shadow} />
-                <View style={[styles.imageContainer, even ? styles.imageContainerEven : {}]}>
-                    { this.image }
-                    <View style={[styles.radiusMask, even ? styles.radiusMaskEven : {}]} />
-                </View> 
+                { this.image }
             </TouchableOpacity>
         );
     }

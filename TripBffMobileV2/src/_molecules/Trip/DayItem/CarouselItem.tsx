@@ -76,23 +76,22 @@ export default class CarouselItem extends PureComponent<Props, State> {
                     </CardItem>  
                 </TouchableOpacity>                 
         
-
                 <TouchableOpacity onPress={this.props.toLocationDetailsHanlder}>
-                    <CardItem cardBody style={{ justifyContent:"center" }}>
-                        <Pagination 
-                                dotsLength={this.props.images.length}
-                                activeDotIndex={this.state.slider1ActiveSlide}
-                                containerStyle={styles.paginationContainer}
-                                dotColor={'rgba(64, 130, 237, 0.92)'}
-                                dotStyle={styles.paginationDot}
-                                inactiveDotColor={colors.black}
-                                inactiveDotOpacity={0.4}
-                                inactiveDotScale={0.6}
-                                carouselRef={this._slider1Ref}
-                                tappableDots={!!this._slider1Ref}
-                            />                    
-                    </CardItem>   
-                </TouchableOpacity> 
+                        <CardItem cardBody style={{ justifyContent:"center" }}>
+                            <Pagination 
+                                    dotsLength={this.props.images.length}
+                                    activeDotIndex={this.state.slider1ActiveSlide}
+                                    containerStyle={styles.paginationContainer}
+                                    dotColor={'rgba(64, 130, 237, 0.92)'}
+                                    dotStyle={styles.paginationDot}
+                                    inactiveDotColor={colors.black}
+                                    inactiveDotOpacity={0.4}
+                                    inactiveDotScale={0.6}
+                                    carouselRef={this._slider1Ref}
+                                    tappableDots={!!this._slider1Ref}
+                                />                    
+                        </CardItem>   
+                    </TouchableOpacity>             
             </View>
              
         )

@@ -56,6 +56,7 @@ export default StyleSheet.create({
     },
     imageEmptyContainer: {
         display: "flex",
+        marginBottom: IS_IOS ? 0 : -1,
         justifyContent: "center",
         alignItems: "center",
         width: "100%",
@@ -91,8 +92,8 @@ export default StyleSheet.create({
         justifyContent: 'center',
         paddingTop: 20 - entryBorderRadius,
         paddingBottom: 20,
-        paddingHorizontal: 16,
-        backgroundColor: 'white',
+        paddingHorizontal: 16,    
+        backgroundColor: 'white',    
         borderBottomLeftRadius: entryBorderRadius,
         borderBottomRightRadius: entryBorderRadius
     },
@@ -101,9 +102,7 @@ export default StyleSheet.create({
     },
     textContainerBorder: {
         borderColor: "lightgrey",
-        borderWidth: 1,
-        borderTopWidth: 0,
-        // borderStyle: "dashed",
+        borderWidth: 1,        
     },
     title: {
         color: colors.black,
