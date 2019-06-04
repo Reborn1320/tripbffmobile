@@ -138,12 +138,6 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                         />
                     </View>
                 </Content>
-                <Footer>
-                    <AppFooter
-                        navigation={this.props.navigation}
-                        activeScreen={NavigationConstants.Screens.Profile}
-                    />
-                </Footer>
             </Container>
         );
     }

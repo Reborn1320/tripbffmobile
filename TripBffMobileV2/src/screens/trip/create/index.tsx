@@ -20,54 +20,15 @@ interface IMapDispatchToProps {
 }
 
 interface State {
-  isHideAppFooter: boolean
 }
 
 class TripCreation extends Component<Props, State> {
-  keyboardDidShowListener: any;
-  keyboardDidHideListener: any;
 
   static navigationOptions = ({ navigation, navigationOptions }) => {
     return {
       title: 'Create new trip'
     };
-  };
-  
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isHideAppFooter: false
-    };
-  }
-
-  componentDidMount() {
-    this.keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      this._keyboardDidShow,
-    );
-    this.keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      this._keyboardDidHide,
-    );
-  }
-
-  componentWillUnmount() {
-    if (this.keyboardDidShowListener) this.keyboardDidShowListener.remove();
-    if (this.keyboardDidHideListener) this.keyboardDidHideListener.remove();
-  }
-
-  private _keyboardDidShow = () => {
-    this.setState({
-      isHideAppFooter: true
-    });
-  }
-
-  private _keyboardDidHide = () => {
-    this.setState({
-      isHideAppFooter: false
-    });
-  }
+  };    
 
   private _onCreatedOrUpdatedHandler = (tripId, tripName) => {
     this.props.navigation.navigate(NavigationConstants.Screens.TripImport, {
@@ -82,13 +43,7 @@ class TripCreation extends Component<Props, State> {
           <TripCreationForm createTrip={this.props.createTripAsync} 
                             updateTrip={this.props.updateTrip}
                             onTripCreatedUpdatedHandler={this._onCreatedOrUpdatedHandler} />
-        </Content>
-        {
-          this.state.isHideAppFooter ||
-            <Footer>
-              <AppFooter navigation={this.props.navigation} activeScreen={NavigationConstants.Screens.TripCreation} />
-            </Footer>
-        }
+        </Content>        
       </Container>
     );
   }
