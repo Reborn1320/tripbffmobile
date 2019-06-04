@@ -55,13 +55,13 @@ export default StyleSheet.create({
         borderTopRightRadius: entryBorderRadius
     },
     imageEmptyContainer: {
-        display: "flex",
+        flex: 1,
         marginBottom: IS_IOS ? 0 : -1,
         justifyContent: "center",
         alignItems: "center",
-        width: "100%",
-        height: "100%",
-        // backgroundColor: "orange",
+        // width: "100%",
+        // height: "100%",
+        //backgroundColor: "orange",
         borderColor: "lightgrey",
         borderWidth: 1,
         // borderStyle: "dashed",
@@ -102,7 +102,7 @@ export default StyleSheet.create({
     },
     textContainerBorder: {
         borderColor: "lightgrey",
-        borderWidth: 1,        
+        borderWidth: 1 
     },
     title: {
         color: colors.black,
