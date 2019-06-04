@@ -23,6 +23,7 @@ import { StoreData, RawJsonData } from "../Interfaces";
 import moment from "moment";
 import { uploadFileApi } from "../../screens/_services/apis";
 import { Store } from "redux";
+import { uploadImageXmlHttpRequestAsync } from "../../screens/_services/Uploader/BlobUploader";
 
 export function fetchTrip(tripId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
@@ -352,39 +353,84 @@ export function addLocationImage(tripId: string, dateIdx: number, locationId: st
   };
 }
 
+
+/**
+ * this method is only used in testing upload image generically
+ *
+ * @export
+ * @param {string} imgUrl
+ * @param {StoreData.IMimeTypeImage} [mimeType="image/jpeg"]
+ * @returns {ThunkResultBase}
+ */
+export function uploadImage(imgUrl: string, mimeType: StoreData.IMimeTypeImage = "image/jpeg"): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+
+    const data = {
+      mimeType
+    };
+    const signResult: { signedRequest: string, externalId: string, fullPath: string } = 
+    await extraArguments.tripApiService
+    .get(`/images/preUploadImage?mimeType=${mimeType}`)
+    .then(res => res.data);
+
+    console.log(signResult);
+
+    return uploadImageXmlHttpRequestAsync(signResult.signedRequest, imgUrl, mimeType)
+    .then(() => {
+      const data = {
+        fullPath: signResult.fullPath,
+      };
+      
+      return extraArguments.tripApiService
+      .post("images", { data })
+      .then(res => res.data);
+    })
+    .catch((err) => {
+        console.log('error uploadImage ', err);
+        return false;
+    });
+  };
+}
+
 export function uploadLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string, imgUrl: string, mimeType: StoreData.IMimeTypeImage = "image/jpeg"): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
 
-    let fileExtension: string;
-    switch (mimeType) {
-      case "image/jpeg": {
-        fileExtension = "jpeg"
-        break;
-      }
-      case "image/png": {
-        fileExtension = "png"
-        break;
-      }
-      default:
-        fileExtension = "jpg";
-    }
-    const additionalData = {
-      locationId,
-      imageId,
-      fileName: `${imgUrl}.${fileExtension}`,
-    };
-    
-    var url = '/trips/' + tripId +'/uploadImage';
+    const signResult: { signedRequest: string, externalId: string, fullPath: string } = 
+    await extraArguments.tripApiService
+    .get(`/trips/${tripId}/preUploadImage?mimeType=${mimeType}`)
+    .then(res => res.data);
 
-    return uploadFileApi.upload(url, imgUrl, additionalData)
-    .then((res) => {
-        var { externalId, thumbnailExternalUrl, externalUrl } = JSON.parse(res.response);
-        dispatch(uploadLocationImageAction(tripId, dateIdx, locationId, imageId, externalId, thumbnailExternalUrl, externalUrl));
-        return true;
+    console.log("signResult", signResult);
+    console.log("mimeType", mimeType);
+    return uploadImageXmlHttpRequestAsync(signResult.signedRequest, imgUrl, mimeType)
+    .then(() => {
+      console.log("complete upload to s3");
+
+      const additionalData = {
+        locationId,
+        imageId,
+        fullPath: signResult.fullPath,
+      };
+      
+      var url = '/trips/' + tripId +'/uploadImage';
+  
+      return extraArguments.tripApiService
+      .post(url, { data: additionalData })
+      .then((res) => {
+          var { externalId, thumbnailExternalUrl, externalUrl } = res.data;
+          dispatch(uploadLocationImageAction(tripId, dateIdx, locationId, imageId, externalId, thumbnailExternalUrl, externalUrl));
+          return true;
+      })
+      .catch((err) => {
+          console.log('error uploadLocationImage ', err);
+          return false;
+      });
+
     })
     .catch((err) => {
-        console.log('error uploadLocationImage ', err);
+        console.log('error uploadImage ', err);
         return false;
     });
-  };  
+
+  };
 }
