@@ -50,10 +50,16 @@ export function fetchTrip(tripId: string): ThunkResultBase {
   };
 }
 
-export function removeLocation(tripId: string, dateIdx: number, locationId: string): ThunkResultBase {
+export function removeLocation(tripId: string, dateIdx: number, locationId: string, cancelToken: any): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
 
-    return extraArguments.tripApiService.delete(`trips/${tripId}/locations/${locationId}`)
+    var args = {
+      config: {
+        cancelToken: cancelToken
+      }
+    }
+    
+    return extraArguments.tripApiService.delete(`trips/${tripId}/locations/${locationId}`, args)
       .then(res => {
         dispatch(removeLocationAction(tripId, dateIdx, locationId));
       })
@@ -114,7 +120,7 @@ export function addLocations(tripId, selectedLocations: IImportLocation[]): Thun
   }
 }
 
-export function addLocation(tripId: string, dateIdx: number, location: StoreData.LocationVM): ThunkResultBase {
+export function addLocation(tripId: string, dateIdx: number, location: StoreData.LocationVM, cancelToken: any): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     
     var adddedLocation = {
@@ -125,7 +131,9 @@ export function addLocation(tripId: string, dateIdx: number, location: StoreData
         images: location.images
     };
 
-    return extraArguments.api.post(`trips/${tripId}/locations/addLocation`, adddedLocation)
+    return extraArguments.api.post(`trips/${tripId}/locations/addLocation`, adddedLocation, {
+      cancelToken: cancelToken
+    })
       .then(res => {
         if (res.data.isSucceed) {
           location.locationId = res.data.data;
@@ -220,12 +228,15 @@ export function updateTripName(tripId: string, name: string): ThunkResultBase {
   };
 }
 
-export function updateLocationFeeling(tripId: string, dateIdx: number, locationId: string, feeling: StoreData.FeelingVM): ThunkResultBase {
+export function updateLocationFeeling(tripId: string, dateIdx: number, locationId: string, feeling: StoreData.FeelingVM, cancelToken: any): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     const data = {
       feelingId: feeling.feelingId
     };
-    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/feeling`, { data })
+    var config = {
+      cancelToken: cancelToken
+    };
+    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/feeling`, { data, config })
     .then((res) => {
       dispatch(updateLocationFeelingAction(tripId, dateIdx, locationId, feeling));
     })
@@ -235,12 +246,15 @@ export function updateLocationFeeling(tripId: string, dateIdx: number, locationI
   };
 }
 
-export function updateLocationActivity(tripId: string, dateIdx: number, locationId: string, activity: StoreData.ActivityVM): ThunkResultBase {
+export function updateLocationActivity(tripId: string, dateIdx: number, locationId: string, activity: StoreData.ActivityVM, cancelToken: any): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     const data = {
       activityId: activity.activityId
     };
-    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/activity`, { data })
+    var config = {
+      cancelToken: cancelToken
+    };
+    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/activity`, { data, config })
     .then((res) => {
       dispatch(updateLocationActivityAction(tripId, dateIdx, locationId, activity));
     })
@@ -250,7 +264,7 @@ export function updateLocationActivity(tripId: string, dateIdx: number, location
   };
 }
 
-export function updateLocationAddress(tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM): ThunkResultBase {
+export function updateLocationAddress(tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM, cancelToken: any): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     const data = {
       name: location.name,
@@ -258,7 +272,10 @@ export function updateLocationAddress(tripId: string, dateIdx: number, locationI
       long: location.long,
       lat: location.lat
     };
-    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/address`, { data })
+    let config = {
+      cancelToken: cancelToken
+    };
+    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/address`, { data, config })
     .then((res) => {
       dispatch(updateLocationAddressAction(tripId, dateIdx, locationId, location));
     })
@@ -269,10 +286,11 @@ export function updateLocationAddress(tripId: string, dateIdx: number, locationI
 }
 
 
-export function updateLocationHighlight(tripId: string, dateIdx: number, locationId: string, highlights: Array<StoreData.LocationLikeItemVM>): ThunkResultBase {
+export function updateLocationHighlight(tripId: string, dateIdx: number, locationId: string, highlights: Array<StoreData.LocationLikeItemVM>, cancelToken: any): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     const data = [...highlights];
-    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/highlights`, { data })
+    let config = { cancelToken: cancelToken };
+    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/highlights`, { data, config })
     .then((res) => {
       dispatch(updateLocationHighlightAction(tripId, dateIdx, locationId, highlights));
     })
@@ -282,10 +300,11 @@ export function updateLocationHighlight(tripId: string, dateIdx: number, locatio
   };
 }
 
-export function updateLocationDescription(tripId: string, dateIdx: number, locationId: string, description: string): ThunkResultBase {
+export function updateLocationDescription(tripId: string, dateIdx: number, locationId: string, description: string, cancelToken: any): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     const data = { description };
-    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/description`, { data })
+    let config = { cancelToken: cancelToken };
+    return extraArguments.tripApiService.patch(`/trips/${tripId}/locations/${locationId}/description`, { data, config })
     .then((res) => {
       dispatch(updateLocationDescriptionAction(tripId, dateIdx, locationId, description));
     })
@@ -296,14 +315,17 @@ export function updateLocationDescription(tripId: string, dateIdx: number, locat
 }
 
 export function deleteMultiLocationImages(tripId: string, dateIdx: number, locationId: string,
-  imageIds: string[]): ThunkResultBase {
+  imageIds: string[], cancelToken: any): ThunkResultBase {
     console.log("DELETE location images", imageIds);
   return async function (dispatch, getState, extraArguments): Promise<any> {
     const data = {
       deletingIds: imageIds
     };
+    let config = {
+      cancelToken: cancelToken
+    };
     return extraArguments.tripApiService
-    .patch(`/trips/${tripId}/locations/${locationId}/images`, { data })
+    .patch(`/trips/${tripId}/locations/${locationId}/images`, { data, config })
     .then((res) => {
       const location: StoreData.LocationVM = res.data;
       dispatch(updateLocationImages(tripId, dateIdx, locationId, location.images));
@@ -331,14 +353,18 @@ export function favorLocationImage(tripId: string, dateIdx: number, locationId: 
   };
 }
 
-export function addLocationImage(tripId: string, dateIdx: number, locationId: string, imgUrl: string, time: Moment): ThunkResultBase {
+export function addLocationImage(tripId: string, dateIdx: number, locationId: string, imgUrl: string, time: Moment, cancelToken: any): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     const data = {
       url: imgUrl,
       time
     };
+    let config = {
+      cancelToken: cancelToken
+    };
+
     return extraArguments.tripApiService
-    .post(`/trips/${tripId}/locations/${locationId}/images`, { data })
+    .post(`/trips/${tripId}/locations/${locationId}/images`, { data, config })
     .then((res) => {
       // console.log("return data", res)
       const imageId = res.data;
@@ -392,7 +418,15 @@ export function uploadImage(imgUrl: string, mimeType: StoreData.IMimeTypeImage =
   };
 }
 
-export function uploadLocationImage(tripId: string, dateIdx: number, locationId: string, imageId: string, imgUrl: string, mimeType: StoreData.IMimeTypeImage = "image/jpeg"): ThunkResultBase {
+export function uploadLocationImage(
+    tripId: string,
+    dateIdx: number,
+    locationId: string,
+    imageId: string,
+    imgUrl: string,
+    cancelToken: any,
+    mimeType: StoreData.IMimeTypeImage = "image/jpeg"
+    ): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
 
     const signResult: { signedRequest: string, externalId: string, fullPath: string } = 
@@ -411,11 +445,13 @@ export function uploadLocationImage(tripId: string, dateIdx: number, locationId:
         imageId,
         fullPath: signResult.fullPath,
       };
-      
+      let config = {
+        cancelToken: cancelToken
+      }
       var url = '/trips/' + tripId +'/uploadImage';
   
       return extraArguments.tripApiService
-      .post(url, { data: additionalData })
+      .post(url, { data: additionalData, config })
       .then((res) => {
           var { externalId, thumbnailExternalUrl, externalUrl } = res.data;
           dispatch(uploadLocationImageAction(tripId, dateIdx, locationId, imageId, externalId, thumbnailExternalUrl, externalUrl));

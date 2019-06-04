@@ -1,12 +1,9 @@
 import React from "react";
-
 import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import axiosMiddleware from "redux-axios-middleware";
-
-import { Root } from "native-base";
-import { createStackNavigator, createAppContainer, createSwitchNavigator, createTabNavigator } from "react-navigation";
-
+import { Root, Icon } from "native-base";
+import { createStackNavigator, createAppContainer, createSwitchNavigator, createBottomTabNavigator } from "react-navigation";
 import HomeScreen from "./screens/home/index";
 import TripDetailScreenContainer from "./screens/trip/detail/TripDetailScreenContainer";
 import TripEditScreenContainer from "./screens/trip/edit/TripEditScreenContainer";
@@ -19,7 +16,6 @@ import { loginApiService, tripApiService } from "./store/ApisAsAService";
 import LoginScreen from "./screens/login/index";
 import ProfileScreenContainer from "./screens/user/ProfileScreenContainer";
 import TestComponentScreen from "./_organisms/TripEditForm/__doc__/TripEditForm.doc";
-
 import bffApp from "./store/reducers";
 import ReduxThunk from "redux-thunk";
 import { ThunkExtraArgumentsBase } from "./store";
@@ -28,6 +24,7 @@ import LocationImageDetailScreen from "./screens/location/LocationImageDetail/Lo
 import { TripCarouselDoc } from "./_molecules/TripCarousel/TripCarousel.doc";
 import ImageUploadDoc from "./screens/trip/import/ImageUpload.doc";
 import LandingPageScreen from "./screens/LandingPage";
+import NBColor from "./theme/variables/commonColor.js";
 
 var mockLoginApi = mockLoginApiService;
 var mockTripApi = mockTripApiService;
@@ -55,7 +52,7 @@ const navigationOptions =  {
   headerMode: "screen",
   defaultNavigationOptions: {
     headerStyle: {
-      backgroundColor: '#ff9900'
+      backgroundColor: NBColor.brandMainColor
     },
     headerTintColor: '#fff',
     headerTitleStyle: {
@@ -71,6 +68,17 @@ const TripCreationNavigator = createStackNavigator(
   },
   navigationOptions
 );
+
+TripCreationNavigator.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
 
 const TripDetailsNavigator = createStackNavigator(
   {
@@ -93,6 +101,16 @@ const ProfileNavigator = createStackNavigator(
   navigationOptions
 );
 
+ProfileNavigator.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
 
 const TestComponentNavigator = createStackNavigator(
   {
@@ -111,14 +129,43 @@ const TestComponentNavigator = createStackNavigator(
   }
 );
 
+const getTabBarIcon = (navigation, focused, tintColor) => {
+  const { routeName } = navigation.state;
+  let iconName;
+
+  if (routeName === 'Create') {
+    iconName = 'plus';
+  } else if (routeName === 'Me') {
+    iconName = 'user';
+  }
+
+  return <Icon name={iconName}  style={{ fontSize: 20, color: tintColor }} type="FontAwesome5" />;
+};
+
+const TabNavigator = createBottomTabNavigator({
+  "Create": TripCreationNavigator,
+  "Me": ProfileNavigator,
+},
+{
+  defaultNavigationOptions: ({ navigation }) => ({
+    tabBarIcon: ({ focused, tintColor }) =>
+      getTabBarIcon(navigation, focused, tintColor),
+  }),
+  tabBarOptions: {
+    activeTintColor: NBColor.brandMainColor,
+    inactiveTintColor: 'gray',
+    labelStyle: {
+      fontSize: 12,
+    }
+  },
+});
 
 const AppNavigator = createSwitchNavigator(
   {
     LandingPage: { screen: LandingPageScreen },
     Login: { screen: LoginScreen },
-    TripCreation: TripCreationNavigator,
     TripDetails: TripDetailsNavigator,    
-    Profile: ProfileNavigator,
+    TabMenu: TabNavigator,
     Test: {screen: TestComponentNavigator },
     Home: { screen: HomeScreen },   
   },

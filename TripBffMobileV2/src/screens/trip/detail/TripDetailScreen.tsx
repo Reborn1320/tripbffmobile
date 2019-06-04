@@ -38,9 +38,9 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
     }
 
     componentWillUnmount() {
-        this._didFocusSubscription.remove();
-        this._willBlurSubscription.remove();
-        this._backHardwareHandler.remove();
+        if (this._didFocusSubscription) this._didFocusSubscription.remove();
+        if (this._willBlurSubscription) this._willBlurSubscription.remove();
+        if (this._backHardwareHandler) this._backHardwareHandler.remove();
     }
 
     componentDidMount() {

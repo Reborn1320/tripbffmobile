@@ -12,16 +12,17 @@ import { favorLocationImage } from '../../../store/Trip/operations';
 import { NavigationConstants } from '../../_shared/ScreenConstants';
 import AddLocationImageButton from '../../../_organisms/Location/AddLocationImageButton';
 import moment, { Moment } from 'moment';
-import { checkAndRequestPhotoPermissionAsync, runPromiseSeries } from "../../../_function/commonFunc";
+import { checkAndRequestPhotoPermissionAsync, runPromiseSeries, getCancelToken } from "../../../_function/commonFunc";
+import { AnyAction } from 'redux';
 
 interface IMapDispatchToProps {
-    updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM) => Promise<void>
-    addLocationImage: (tripId: string, dateIdx: number, locationId: string, url: string, time: Moment) => Promise<string>
-    uploadLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, url: string) => Promise<any>
-    deleteLocationImages: (tripId: string, dateIdx: number, locationId: string, locationImageIds: string[]) => Promise<void>
+    updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM, cancelToken: any) => Promise<void>
+    addLocationImage: (tripId: string, dateIdx: number, locationId: string, url: string, time: Moment, cancelToken: any) => Promise<string>
+    uploadLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, url: string, cancelToken: any) => Promise<any>
+    deleteLocationImages: (tripId: string, dateIdx: number, locationId: string, locationImageIds: string[], cancelToken: any) => Promise<void>
     favoriteLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, isFavorite: boolean) => Promise<void>
-    updateLocationHighlight: (tripId: string, dateIdx: number, locationId: string, highlights: Array<StoreData.LocationLikeItemVM>) => Promise<void>
-    updateLocationDescription: (tripId: string, dateIdx: number, locationId: string, description: string) => Promise<void>
+    updateLocationHighlight: (tripId: string, dateIdx: number, locationId: string, highlights: Array<StoreData.LocationLikeItemVM>, cancelToken: AnyAction) => Promise<void>
+    updateLocationDescription: (tripId: string, dateIdx: number, locationId: string, description: string, cancelToken: any) => Promise<void>
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -49,6 +50,9 @@ interface State {
 
 class LocationDetail extends React.Component<Props, State> {
 
+    _cancelRequest;
+    _cancelToken;
+
     constructor(props) {
         super(props);
 
@@ -62,6 +66,16 @@ class LocationDetail extends React.Component<Props, State> {
         }
     }
 
+    componentDidMount() {
+        let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
+        this._cancelToken = cancelToken;
+        this._cancelRequest = cancelRequest;
+    }
+
+    componentWillUnmount() {
+        this._cancelRequest('Operation canceled by the user.');
+    }
+
     private _openUpdateLocationAddressModal = () => {
         this.setState({isUpdateLocationAddressModalVisible: true});
     }
@@ -70,7 +84,7 @@ class LocationDetail extends React.Component<Props, State> {
         var location: RawJsonData.LocationAddressVM = {
             name, address, long, lat
         };
-        this.props.updateLocationAddress(this.props.tripId, this.props.dateIdx, this.props.locationId, location)
+        this.props.updateLocationAddress(this.props.tripId, this.props.dateIdx, this.props.locationId, location, this._cancelToken)
         .then(() => {
             this.setState({isUpdateLocationAddressModalVisible: false})
         });;
@@ -85,7 +99,7 @@ class LocationDetail extends React.Component<Props, State> {
     }
 
     private _confirmUpdateLocationHighlight = (highlights) => {
-        this.props.updateLocationHighlight(this.props.tripId, this.props.dateIdx, this.props.locationId, highlights)
+        this.props.updateLocationHighlight(this.props.tripId, this.props.dateIdx, this.props.locationId, highlights, this._cancelToken)
                     .then(() => {
                         this.setState({isUpdateLocationHighlightModalVisible: false})
                     });
@@ -137,7 +151,7 @@ class LocationDetail extends React.Component<Props, State> {
     private onDeleteLocationImages = () => {
         const { tripId, dateIdx, locationId } = this.props;
         const selectedImageIds = this.state.selectedImageIds;
-        this.props.deleteLocationImages(tripId, dateIdx, locationId, selectedImageIds)
+        this.props.deleteLocationImages(tripId, dateIdx, locationId, selectedImageIds, this._cancelToken)
         .then(() => {
             this.setState({ isMassSelection: false, selectedImageIds: [] })
         })
@@ -147,7 +161,7 @@ class LocationDetail extends React.Component<Props, State> {
     }
 
     private _confirmUpdateLocationDescription = (description) => {
-        this.props.updateLocationDescription(this.props.tripId, this.props.dateIdx, this.props.locationId, description)
+        this.props.updateLocationDescription(this.props.tripId, this.props.dateIdx, this.props.locationId, description, this._cancelToken)
             .then(() => {
                 this.setState({
                     isUpdateLocationDescriptionModalVisible: false
@@ -197,9 +211,9 @@ class LocationDetail extends React.Component<Props, State> {
         //console.log("uri", uri);
         //console.log("time", time);
         const { tripId, dateIdx, locationId } = this.props;
-        return this.props.addLocationImage(tripId, dateIdx, locationId, uri, time)
+        return this.props.addLocationImage(tripId, dateIdx, locationId, uri, time, this._cancelToken)
         .then(imageId => {
-            return this.props.uploadLocationImage(tripId, dateIdx, locationId, imageId, uri);
+            return this.props.uploadLocationImage(tripId, dateIdx, locationId, imageId, uri, this._cancelToken);
         })
     }
 
@@ -300,13 +314,13 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 
 const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     return {
-        updateLocationAddress: (tripId, dateIdx, locationId, location) => dispatch(updateLocationAddress(tripId, dateIdx, locationId, location)),
-        addLocationImage: (tripId, dateIdx, locationId, url, time) => dispatch(addLocationImage(tripId, dateIdx, locationId, url, time)),
-        uploadLocationImage: (tripId, dateIdx, locationId, imageId, url) => dispatch(uploadLocationImage(tripId, dateIdx, locationId, imageId, url)),
-        deleteLocationImages: (tripId, dateIdx, locationId, locationImageIds) => dispatch(deleteMultiLocationImages(tripId, dateIdx, locationId, locationImageIds)),
+        updateLocationAddress: (tripId, dateIdx, locationId, location, cancelToken) => dispatch(updateLocationAddress(tripId, dateIdx, locationId, location, cancelToken)),
+        addLocationImage: (tripId, dateIdx, locationId, url, time, cancelToken) => dispatch(addLocationImage(tripId, dateIdx, locationId, url, time, cancelToken)),
+        uploadLocationImage: (tripId, dateIdx, locationId, imageId, url, cancelToken) => dispatch(uploadLocationImage(tripId, dateIdx, locationId, imageId, url, cancelToken)),
+        deleteLocationImages: (tripId, dateIdx, locationId, locationImageIds, cancelToken) => dispatch(deleteMultiLocationImages(tripId, dateIdx, locationId, locationImageIds, cancelToken)),
         favoriteLocationImage: (tripId, dateIdx, locationId, imageId, isFavorite) => dispatch(favorLocationImage(tripId, dateIdx, locationId, imageId, isFavorite)),
-        updateLocationHighlight: (tripId, dateIdx, locationId, highlights) => dispatch(updateLocationHighlight(tripId, dateIdx, locationId, highlights)),
-        updateLocationDescription: (tripId, dateIdx, locationId, description) => dispatch(updateLocationDescription(tripId, dateIdx, locationId, description))
+        updateLocationHighlight: (tripId, dateIdx, locationId, highlights, cancelToken) => dispatch(updateLocationHighlight(tripId, dateIdx, locationId, highlights, cancelToken)),
+        updateLocationDescription: (tripId, dateIdx, locationId, description, cancelToken) => dispatch(updateLocationDescription(tripId, dateIdx, locationId, description, cancelToken))
     };
  };
 

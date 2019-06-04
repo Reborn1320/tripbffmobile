@@ -10,11 +10,12 @@ import { NavigationScreenProp } from "react-navigation";
 import { Divider } from "react-native-elements";
 import { UserDetails } from "../../_organisms/User/UserDetails";
 import { logOut } from "../../store/User/operations";
+import { getCancelToken } from "../../_function/commonFunc";
 
 export interface IStateProps { }
 
 interface IMapDispatchToProps {
-    fetchTrips: () => Promise<any>;
+    fetchTrips: (cancelToken: any) => Promise<any>;
     addTrips: (trips: Array<StoreData.TripVM>) => void;
     deleteTrip: (tripId: string) => void;
 }
@@ -37,6 +38,10 @@ interface State {
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
 
 export class ProfileScreen extends Component<Props & IStateProps, State> {
+
+    _cancelRequest;
+    _cancelToken;
+
     constructor(props: Props) {
         super(props);
 
@@ -52,11 +57,19 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     };
 
     componentDidMount() {
+        let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
+        this._cancelToken = cancelToken;
+        this._cancelRequest = cancelRequest;
+
         this._refreshTrips();
     } 
 
+    componentWillUnmount() {        
+        this._cancelRequest('Operation canceled by the user.');
+    }
+
     private _refreshTrips = () => {
-        this.props.fetchTrips().then(trips => {
+        this.props.fetchTrips(this._cancelToken).then(trips => {
             this.props.addTrips(trips);
             this.setState({
                 isLoaded: false,
@@ -98,7 +111,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     render() {
         const { userName, fullName, trips } = this.props;
         const { isLoaded } = this.state;
-        
+
         return (
             <Container>
                 <Content>
@@ -125,12 +138,6 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                         />
                     </View>
                 </Content>
-                <Footer>
-                    <AppFooter
-                        navigation={this.props.navigation}
-                        activeScreen={NavigationConstants.Screens.Profile}
-                    />
-                </Footer>
             </Container>
         );
     }

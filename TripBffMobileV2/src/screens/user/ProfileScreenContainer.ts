@@ -5,7 +5,6 @@ import { addTrips } from "../../store/Trips/actions";
 import { ProfileScreen } from "./ProfileScreen";
 import { StoreData } from "../../store/Interfaces";
 
-
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
 
   return {
@@ -17,7 +16,7 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchTrips: () => dispatch(fetchTrips()),
+    fetchTrips: (cancelToken: any) => dispatch(fetchTrips(cancelToken)),
     addTrips: (trips) => dispatch(addTrips(trips)),
     deleteTrip: (tripId) => dispatch(deleteTrip(tripId))
   };
