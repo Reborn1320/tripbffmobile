@@ -33,14 +33,14 @@ export interface State {
 const EMPTY_TRIP_ENTRIES: IEntry[] = [
   {
     title: "NO LOCATION",
-    subtitle: "Click to add location",
+    subtitle: "Click to add location(s)",
     illustration: ""
   }
 ];
 
 const EMPTY_LOCATION_ENTRY: IEntry = {
   title: "NO IMAGE",
-  subtitle: "Click to add image",
+  subtitle: "Click to add image(s)",
   illustration: ""
 }
 
@@ -66,7 +66,7 @@ export class TripCarousel extends React.Component<Props, State> {
     if (newTripEntry.entries) {
       _.each(newTripEntry.entries, (entry, idx) => {
         if (entry.illustration == "") {
-          newTripEntry.entries[idx] = EMPTY_LOCATION_ENTRY;
+          newTripEntry.entries[idx].subtitle = EMPTY_LOCATION_ENTRY.subtitle;
         }
       })
     }

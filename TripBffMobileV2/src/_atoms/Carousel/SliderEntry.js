@@ -4,6 +4,7 @@ import { Icon } from 'native-base';
 import PropTypes from 'prop-types';
 import { ParallaxImage } from 'react-native-snap-carousel';
 import styles from './SliderEntry.style';
+import NoItemDefault from "./NoItemDefault";
 
 export default class SliderEntry extends Component {
 
@@ -16,13 +17,12 @@ export default class SliderEntry extends Component {
     };
 
     get image () {
-        const { data: { illustration }, parallax, parallaxProps, even } = this.props;
+        const { data: { subtitle, illustration }, parallax, parallaxProps, even } = this.props;
 
         if (illustration == "") {
             return (
-            <View style={styles.imageEmptyContainer}>
-                <Icon type="FontAwesome5" name="plus" style={{ fontSize: 40, color: "lightgrey" }}/>
-            </View>)
+                <NoItemDefault viewContainerStyle={styles.imageEmptyContainer} titleStyle={styles.subtitle} title={subtitle}/>
+            )
         }
 
         return parallax ? (
@@ -63,19 +63,13 @@ export default class SliderEntry extends Component {
               onPress={clickHandler}
               >
                 <View style={styles.shadow} />
-                <View style={[styles.imageContainer, { backgroundColor: "white" }]}>
-                    { this.image }
-                    {/* <View style={[styles.radiusMask, even ? styles.radiusMaskEven : {}, isEmpty && !even ? styles.radiusMaskBorder : {}]} /> */}
+
+                <View style={[styles.imageContainer]}>
+                    { this.image }                   
                 </View>
-                <View style={[styles.textContainer, even ? styles.textContainerEven : {}, isEmpty && !even ? styles.textContainerBorder : {}]}>
+                <View style={[styles.textContainer, even ? styles.textContainerEven : {}, !even ? styles.textContainerBorder : {}]}>
                     { uppercaseTitle }
-                    <Text
-                      style={[styles.subtitle, even ? styles.subtitleEven : {}]}
-                      numberOfLines={2}
-                    >
-                        { subtitle }
-                    </Text>
-                </View>
+                 </View>
             </TouchableOpacity>
         );
     }

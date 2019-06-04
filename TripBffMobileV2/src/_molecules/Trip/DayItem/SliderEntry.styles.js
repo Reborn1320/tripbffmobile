@@ -20,9 +20,9 @@ const entryBorderRadius = 8;
 
 export default StyleSheet.create({
     slideInnerContainer: {
-        width: viewportWidth,
+        width: viewportWidth - itemHorizontalMargin * 3,
         height: slideHeight,
-        //paddingHorizontal: itemHorizontalMargin,
+        paddingHorizontal: itemHorizontalMargin,
         //paddingBottom: 18 // needed for shadow
     },
     shadow: {
@@ -45,14 +45,23 @@ export default StyleSheet.create({
         borderTopRightRadius: entryBorderRadius
     },
     imageContainerEven: {
-        backgroundColor: colors.black
+        backgroundColor: 'white'
     },
     image: {
         ...StyleSheet.absoluteFillObject,
         resizeMode: 'cover',
         borderRadius: IS_IOS ? entryBorderRadius : 0,
-        borderTopLeftRadius: entryBorderRadius,
-        borderTopRightRadius: entryBorderRadius
+        borderRadius: entryBorderRadius
+    },
+    imageEmptyContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        height: "100%",
+        borderColor: "lightgrey",
+        borderWidth: 1,
+        borderRadius: entryBorderRadius
     },
     // image's border radius is buggy on iOS; let's hack it!
     radiusMask: {
@@ -64,7 +73,7 @@ export default StyleSheet.create({
         backgroundColor: 'white'
     },
     radiusMaskEven: {
-        backgroundColor: colors.black
+        backgroundColor: 'white'
     },
     textContainer: {
         justifyContent: 'center',
