@@ -10,9 +10,7 @@ import { NavigationScreenProp } from "react-navigation";
 import { Divider } from "react-native-elements";
 import { UserDetails } from "../../_organisms/User/UserDetails";
 import { logOut } from "../../store/User/operations";
-import axios from "axios";
-const CancelToken = axios.CancelToken;
-let cancelRequest;
+import { getCancelToken } from "../../_function/commonFunc";
 
 export interface IStateProps { }
 
@@ -40,6 +38,10 @@ interface State {
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
 
 export class ProfileScreen extends Component<Props & IStateProps, State> {
+
+    _cancelRequest;
+    _cancelToken;
+
     constructor(props: Props) {
         super(props);
 
@@ -55,18 +57,19 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     };
 
     componentDidMount() {
+        let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
+        this._cancelToken = cancelToken;
+        this._cancelRequest = cancelRequest;
+
         this._refreshTrips();
     } 
 
     componentWillUnmount() {        
-        cancelRequest('Operation canceled by the user.');
+        this._cancelRequest('Operation canceled by the user.');
     }
 
     private _refreshTrips = () => {
-        let cancelToken = new CancelToken(function executor(c) {
-            cancelRequest = c;
-        });
-        this.props.fetchTrips(cancelToken).then(trips => {
+        this.props.fetchTrips(this._cancelToken).then(trips => {
             this.props.addTrips(trips);
             this.setState({
                 isLoaded: false,

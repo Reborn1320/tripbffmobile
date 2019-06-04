@@ -37,6 +37,7 @@ export function setAuthorizationHeader(token) {
 
 export interface ApiServiceArguments {
   data?: any;
+  config?: any;
 }
 
 export interface IApiService {
@@ -47,15 +48,15 @@ export interface IApiService {
 }
 
 export var loginApiService: IApiService = {
-  get: (url: string, args?: ApiServiceArguments) => loginApiInternal.get(url, args ? args.data : undefined),
-  post: (url: string, args?: ApiServiceArguments) => loginApiInternal.post(url, args ? args.data : undefined),
-  delete: (url: string, args?: ApiServiceArguments) => loginApiInternal.delete(url, args ? args.data : undefined),
-  patch: (url: string, args?: ApiServiceArguments) => loginApiInternal.patch(url, args ? args.data : undefined),
+  get: (url: string, args?: ApiServiceArguments) => loginApiInternal.get(url, args ? args.config : undefined),
+  post: (url: string, args?: ApiServiceArguments) => loginApiInternal.post(url, args ? args.data : undefined, args ? args.config : undefined),
+  delete: (url: string, args?: ApiServiceArguments) => loginApiInternal.delete(url, args ? args.config : undefined),
+  patch: (url: string, args?: ApiServiceArguments) => loginApiInternal.patch(url, args ? args.data : undefined, args ? args.config : undefined),
 }
 
 export var tripApiService: IApiService = {
-  get: (url: string, args?: ApiServiceArguments) => tripApiInternal.get(url, args ? args.data : undefined),
-  post: (url: string, args?: ApiServiceArguments) => tripApiInternal.post(url, args ? args.data : undefined),
-  delete: (url: string, args?: ApiServiceArguments) => tripApiInternal.delete(url, args ? args.data : undefined),
-  patch: (url: string, args?: ApiServiceArguments) => tripApiInternal.patch(url, args ? args.data : undefined),
+  get: (url: string, args?: ApiServiceArguments) => tripApiInternal.get(url, args ? args.config : undefined),
+  post: (url: string, args?: ApiServiceArguments) => tripApiInternal.post(url, args ? args.data : undefined, args ? args.config : undefined),
+  delete: (url: string, args?: ApiServiceArguments) => tripApiInternal.delete(url, args ? args.config : undefined),
+  patch: (url: string, args?: ApiServiceArguments) => tripApiInternal.patch(url, args ? args.data : undefined, args ? args.config : undefined),
 }

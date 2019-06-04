@@ -6,11 +6,13 @@ var RNFS = require('react-native-fs');
 import _, { } from "lodash";
 import { calculateByPercentage } from "../../../_function/commonFunc";
 import ImageZoom from 'react-native-image-pan-zoom';
-import axios from "axios";
-const CancelToken = axios.CancelToken;
-let cancelRequest;
+import { getCancelToken } from "../../../_function/commonFunc";
 
 export default class PreviewInfographicComponent extends PureComponent<any, any> {
+
+    _cancelRequest;
+    _cancelToken;
+
     constructor(props) {
       super(props);
 
@@ -18,6 +20,13 @@ export default class PreviewInfographicComponent extends PureComponent<any, any>
         imageUri: ""
       };
     }    
+
+    componentDidMount() {
+      let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
+      this._cancelToken = cancelToken;
+      this._cancelRequest = cancelRequest;
+    }
+
     componentDidUpdate() {
       if (this.props.infographicId && !this.state.imageUri) {
         this._getInfographic();
@@ -25,15 +34,13 @@ export default class PreviewInfographicComponent extends PureComponent<any, any>
     }   
 
     componentWillUnmount() {
-      cancelRequest('Operation canceled by the user.');
+      this._cancelRequest('Operation canceled by the user.');
     }
 
     private _getInfographic = () => {
         tripApi
         .get(`/trips/${this.props.tripId}/infographics/${this.props.infographicId}`, {
-          cancelToken: new CancelToken(function executor(c) {
-            cancelRequest = c;
-          })
+          cancelToken: this._cancelToken
         })
         .then(res => {
             if (res.data) {

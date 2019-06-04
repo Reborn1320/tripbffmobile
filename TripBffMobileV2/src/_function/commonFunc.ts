@@ -1,4 +1,6 @@
 import { PermissionsAndroid } from "react-native";
+import axios from "axios";
+const CancelToken = axios.CancelToken;
 
 export function getAddressFromLocation (locationJson) {
     let address = "";
@@ -49,4 +51,12 @@ export async function runPromiseSeries(promises) {
 export function calculateByPercentage(value, percentage) {
   const result = (percentage * value) / 100;
   return Math.round(result);
+}
+
+export function getCancelToken(cancelRequest) {
+  var cancelToken = new CancelToken(function executor(c) {
+    cancelRequest = c;
+  })
+
+  return { cancelToken, cancelRequest };
 }

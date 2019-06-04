@@ -13,14 +13,13 @@ import { updateLocationFeeling,
     addLocation } from "../../../store/Trip/operations";
   import { updateTripDateRange, updateTripName } from "../../../store/Trip/operations";
 import { connect } from "react-redux";
-import { addInfographicId } from "../../../store/Trip/actions";
+import { getCancelToken } from "../../../_function/commonFunc";
 
 export interface IMapDispatchToProps {
-    addInfographicId: (tripId: string, infographicId: string) => void
-    updateLocationFeeling?: (tripId: string, dateIdx: number, locationId: string, feeling: StoreData.FeelingVM) => Promise<void>
-    updateLocationActivity: (tripId: string, dateIdx: number, locationId: string, activity: StoreData.ActivityVM) => Promise<void>
-    removeLocation: (tripId: string, dateIdx: number, locationId: string) => Promise<void>
-    addLocation: (tripId: string, dateIdx: number, location: StoreData.LocationVM) => Promise<void>;
+    updateLocationFeeling?: (tripId: string, dateIdx: number, locationId: string, feeling: StoreData.FeelingVM, cancelToken: any) => Promise<void>
+    updateLocationActivity: (tripId: string, dateIdx: number, locationId: string, activity: StoreData.ActivityVM, cancelToken: any) => Promise<void>
+    removeLocation: (tripId: string, dateIdx: number, locationId: string, cancelToken: any) => Promise<void>
+    addLocation: (tripId: string, dateIdx: number, location: StoreData.LocationVM, cancelToken: any) => Promise<void>;
     updateTripDateRange: (tripId: string, fromDate: moment.Moment, toDate: moment.Moment) => Promise<StoreData.TripVM>;
     updateTripName: (tripId: string, tripName: string) => Promise<StoreData.TripVM>;
 }
@@ -43,6 +42,10 @@ interface State {
 }
 
 class TripDetailScreenContentInternal extends Component<Props & IMapDispatchToProps, State> {
+
+    _cancelRequest;
+    _cancelToken;
+
     constructor(props: Props & IMapDispatchToProps) {
         super(props)
 
@@ -59,6 +62,16 @@ class TripDetailScreenContentInternal extends Component<Props & IMapDispatchToPr
         }
     }    
 
+    componentDidMount() {
+        let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
+        this._cancelToken = cancelToken;
+        this._cancelRequest = cancelRequest;
+    }
+
+    componentWillUnmount() {
+        this._cancelRequest('Operation canceled by the user.');
+    }
+
     private _openRemoveLocationModal = (dateIdx, locationId) => {
         this.setState({
             isConfirmationModalVisible: true,
@@ -68,7 +81,7 @@ class TripDetailScreenContentInternal extends Component<Props & IMapDispatchToPr
     }
 
     private _removeLocationConfirmed = (dateIdx, locationId) => {
-        this.props.removeLocation(this.props.tripId, dateIdx, locationId).then(() => {
+        this.props.removeLocation(this.props.tripId, dateIdx, locationId, this._cancelToken).then(() => {
             this.setState({
                 isConfirmationModalVisible: false,
                 dateIdx: null,
@@ -95,7 +108,7 @@ class TripDetailScreenContentInternal extends Component<Props & IMapDispatchToPr
 
     private _updateFeelingConfirmed = (dateIdx, locationId, feeling) => {
 
-        this.props.updateLocationFeeling(this.props.tripId, dateIdx, locationId, feeling).then(() => {
+        this.props.updateLocationFeeling(this.props.tripId, dateIdx, locationId, feeling, this._cancelToken).then(() => {
             this.setState({
                 isAddFeelingModalVisible: false,
                 dateIdx: null,
@@ -121,7 +134,7 @@ class TripDetailScreenContentInternal extends Component<Props & IMapDispatchToPr
     }
 
     private _updateActivityConfirmed = (dateIdx, locationId, activity) => {
-        this.props.updateLocationActivity(this.props.tripId, dateIdx, locationId, activity).then(() => {
+        this.props.updateLocationActivity(this.props.tripId, dateIdx, locationId, activity, this._cancelToken).then(() => {
             this.setState({
                 isAddActivityModalVisible: false,
                 dateIdx: null,
@@ -147,7 +160,7 @@ class TripDetailScreenContentInternal extends Component<Props & IMapDispatchToPr
     }   
 
     private _addLocationConfirmed = (dateIdx, location) => {
-        this.props.addLocation(this.props.tripId, dateIdx, location).then(() => {
+        this.props.addLocation(this.props.tripId, dateIdx, location, this._cancelToken).then(() => {
             this.setState({
                 isAddLocationModalVisible: false,
                 dateIdx: null,
@@ -252,11 +265,10 @@ class TripDetailScreenContentInternal extends Component<Props & IMapDispatchToPr
 
 const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     return {
-      addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
-      updateLocationFeeling: (tripId, dateIdx, locationId, feeling) => dispatch(updateLocationFeeling(tripId, dateIdx, locationId, feeling)),
-      updateLocationActivity: (tripId, dateIdx, locationId, activity) => dispatch(updateLocationActivity(tripId, dateIdx, locationId, activity)),
-      removeLocation: (tripId, dateIdx, locationId) => dispatch(removeLocation(tripId, dateIdx, locationId)),
-      addLocation: (tripId, dateIdx, location) => dispatch(addLocation(tripId, dateIdx, location)),
+      updateLocationFeeling: (tripId, dateIdx, locationId, feeling, cancelToken) => dispatch(updateLocationFeeling(tripId, dateIdx, locationId, feeling, cancelToken)),
+      updateLocationActivity: (tripId, dateIdx, locationId, activity, cancelToken) => dispatch(updateLocationActivity(tripId, dateIdx, locationId, activity, cancelToken)),
+      removeLocation: (tripId, dateIdx, locationId, cancelToken) => dispatch(removeLocation(tripId, dateIdx, locationId, cancelToken)),
+      addLocation: (tripId, dateIdx, location, cancelToken) => dispatch(addLocation(tripId, dateIdx, location, cancelToken)),
       updateTripDateRange: (tripId, fromDate, toDate) => dispatch(updateTripDateRange(tripId, fromDate, toDate)),
       updateTripName: (tripId, tripName) => dispatch(updateTripName(tripId, tripName))
     };
