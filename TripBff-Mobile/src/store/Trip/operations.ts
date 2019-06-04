@@ -365,7 +365,6 @@ export function uploadLocationImage(tripId: string, dateIdx: number, locationId:
     .then((res) => {
         var { externalId, thumbnailExternalUrl, externalUrl } = JSON.parse(res.response);      
 
-        //todo perhap missing externalUrl too 
         return dispatch(uploadLocationImageAction(tripId, dateIdx, locationId, imageId, externalId, thumbnailExternalUrl, externalUrl))
     })
     .catch((err) => {
