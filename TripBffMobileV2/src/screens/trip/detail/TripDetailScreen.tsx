@@ -26,7 +26,7 @@ interface State {
 export class TripDetailScreen extends Component<Props & IMapDispatchToProps, State> {
 
     _didFocusSubscription;
-    _didBlurSubscription;
+    _willBlurSubscription;
     _backHardwareHandler;
 
     constructor(props) {
@@ -39,7 +39,7 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
 
     componentWillUnmount() {
         this._didFocusSubscription.remove();
-        this._didBlurSubscription.remove();
+        this._willBlurSubscription.remove();
         this._backHardwareHandler.remove();
     }
 
@@ -54,10 +54,10 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
             }
           );
           
-        this._didBlurSubscription = this.props.navigation.addListener(
-            'didBlur',
+        this._willBlurSubscription = this.props.navigation.addListener(
+            'willBlur',
             payload => {
-                console.debug('didBlur');                
+                console.debug('willBlur');                
                 tmp._backHardwareHandler.remove();
             }
         );
