@@ -11,6 +11,7 @@ import { Divider } from "react-native-elements";
 import { UserDetails } from "../../_organisms/User/UserDetails";
 import { logOut } from "../../store/User/operations";
 import { getCancelToken } from "../../_function/commonFunc";
+import ConfirmationModal from "../../_molecules/ConfirmationModal";
 
 export interface IStateProps { }
 
@@ -33,6 +34,8 @@ interface State {
     isLoaded: boolean;
     loadingMessage: string;
     UIState: UIState;
+    isOpenDeleteConfirmModal: boolean,
+    deletedTripId: string
 }
 
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
@@ -48,7 +51,9 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         this.state = {
             isLoaded: this.props.trips.length == 0,
             loadingMessage: "loading trips belong to this user",
-            UIState: "LOADING_TRIP"
+            UIState: "LOADING_TRIP",
+            isOpenDeleteConfirmModal: false,
+            deletedTripId: ""
         };
     }
 
@@ -98,7 +103,25 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     }
 
     private _handleDeleteTrip = (tripId) => {
-        this.props.deleteTrip(tripId);
+        this.setState({
+            isOpenDeleteConfirmModal: true,
+            deletedTripId: tripId
+        });
+    }
+
+    private _confirmDeleteTrip = () => {
+        this.props.deleteTrip(this.state.deletedTripId);
+        this.setState({
+            isOpenDeleteConfirmModal: false,
+            deletedTripId: ""
+        });
+    }
+
+    private _cancelDeleteModal = () => {
+        this.setState({
+            isOpenDeleteConfirmModal: false,
+            deletedTripId: ""
+        });
     }
 
     private handleEditBtnClick = () => {
@@ -109,7 +132,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     }
 
     render() {
-        const { userName, fullName, trips } = this.props;
+        let { userName, fullName, trips } = this.props;
         const { isLoaded } = this.state;
 
         return (
@@ -136,6 +159,11 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                             handleShareClick={this._handleShareBtnClick}
                             handleDeleteTrip={this._handleDeleteTrip}
                         />
+                        <ConfirmationModal title="DELETE TRIP" 
+                            content="Do you want to delete this Trip ? Deleting a Trip will delete all the items you have added to it. The Trip cannot be retrived once it is deleted."
+                            confirmHandler={this._confirmDeleteTrip}
+                            cancelHandler={this._cancelDeleteModal}
+                            isVisible={this.state.isOpenDeleteConfirmModal} />
                     </View>
                 </Content>
             </Container>

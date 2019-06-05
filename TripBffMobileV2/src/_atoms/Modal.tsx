@@ -31,7 +31,7 @@ class ModalComponent extends React.Component<Props> {
 
     return (
       <RNModal
-        isVisible={isVisible} hideModalContentWhileAnimating >
+        isVisible={isVisible} hideModalContentWhileAnimating style={{height: null}}>
         <View style={{
           ...modalStyle,
           ...styles.content,
@@ -56,6 +56,7 @@ interface Style {
 const styles = StyleSheet.create<Style>({
   // this withh warp around real content, then `style` will apply modal style on it
   content: {
+    flex: 0,
     justifyContent: "center",
     alignItems: "center",
     // ...mixins.themes.debug2,

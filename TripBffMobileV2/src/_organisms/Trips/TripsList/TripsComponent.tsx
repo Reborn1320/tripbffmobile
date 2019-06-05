@@ -31,7 +31,11 @@ type ITripEntry = {
 
 export class TripsComponent extends PureComponent<Props & IStateProps, State> {
 
-  private _renderItem = itemInfo => {
+  shouldComponentUpdate(nextProps: Props, nextState) {
+    return this.props.trips != nextProps.trips;
+  }
+
+   private _renderItem = itemInfo => {
     const tripEntry: ITripEntry = itemInfo.item;
 
     return (

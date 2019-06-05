@@ -297,12 +297,7 @@ function tripsReducer(state: Array<StoreData.TripVM>, action) {
                     }
                 }) : [];
             case "TRIPS_DELETE":
-                return state.map(item => {
-                    return item.tripId != action.tripId ? item : {
-                        ...item,
-                        isDeleted: true
-                    }
-                });
+                return state.filter(item => item.tripId != action.tripId);
         }        
     }   
 

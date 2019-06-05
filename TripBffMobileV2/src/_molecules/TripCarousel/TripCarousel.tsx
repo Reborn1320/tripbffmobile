@@ -1,8 +1,7 @@
 import React from "react";
 import { View, Icon, Text, Button } from "native-base";
 import { Image, StyleSheet, ViewStyle, TextStyle, TouchableHighlight, TouchableOpacity } from "react-native";
-import NBTheme from "../../theme/variables/commonColor.js";
-import { mixins } from "../../_utils";
+import NBColor from "../../theme/variables/commonColor.js";
 import { IEntry, StyledCarousel } from "../../_atoms/Carousel/StyledCarousel";
 import _ from "lodash";
 import {
@@ -11,6 +10,7 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
+import menuOptionStyles from "../../theme/variables/menuOptions.style.js";
 
 export type ITripEntry = {
   tripId: string,
@@ -111,7 +111,13 @@ export class TripCarousel extends React.Component<Props, State> {
               <MenuTrigger>
                 <Icon type="Ionicons" name="md-more" style={styles.moreMenu} />
               </MenuTrigger>
-              <MenuOptions>
+              <MenuOptions customStyles={
+                  {
+                    optionsContainer: menuOptionStyles.optionsContainer,
+                    optionWrapper: menuOptionStyles.optionWrapper,
+                    optionText: menuOptionStyles.optionText,
+                  }
+                }>
                 <MenuOption onSelect={this._handleDeleteTrip} >
                   <Text style={styles.deleteLabel}>Delete Trip</Text>
                 </MenuOption>
@@ -133,7 +139,6 @@ export class TripCarousel extends React.Component<Props, State> {
 
 interface Style {
   container: ViewStyle;
-
   headerContainer: ViewStyle;
   headerLeftContainer: ViewStyle;
   headerRightContainer: ViewStyle;
@@ -141,7 +146,7 @@ interface Style {
   subtitle: TextStyle;
   titleDark: TextStyle;
   moreMenu: TextStyle;
-  deleteLabel: TextStyle;
+  deleteLabel: TextStyle;  
 }
 
 export const colors = {
@@ -198,7 +203,7 @@ const styles = StyleSheet.create<Style>({
     color: "#cccccc"
   },
   deleteLabel: {
-    color: NBTheme.brandDanger,
+    color: NBColor.brandDanger,
     padding: 10
   }
 })
