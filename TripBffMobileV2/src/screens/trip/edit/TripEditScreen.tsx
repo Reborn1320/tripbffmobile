@@ -86,7 +86,7 @@ export class TripEditScreen extends Component<Props, State> {
 
     private _goBackAndRefreshTripLists = () => {
         let onGoBackCallBack = this.props.navigation.getParam("onGoBackProfile");
-        if (onGoBackCallBack) onGoBackCallBack();
+        if (onGoBackCallBack) onGoBackCallBack(this.props.tripId);
     
         this.props.navigation.goBack();
         return true;
