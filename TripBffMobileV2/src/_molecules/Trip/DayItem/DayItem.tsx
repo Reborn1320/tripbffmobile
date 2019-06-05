@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from '../../../screens/_shared/LayoutContainer';
+import { StyleSheet } from 'react-native';
 
 interface IMapDispatchToProps {
     openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
@@ -35,8 +36,8 @@ export class DayItemComponent extends Component<Props, State> {
         let currentDate = moment(this.props.date).startOf("day").format('MMMM DD, YYYY');
 
         return (
-            <View>
-                <View style={{display: "flex", alignItems: "stretch", flexDirection: "row", paddingLeft: 10, paddingRight: 10}}>
+            <View style={styles.dayItemContainer}>
+                <View style={styles.dayItemHeader}>
                     <Text style={{color: "darkred", fontSize: 20}}>Day {dateIdx} - {currentDate}</Text>
                     <Button small transparent
                             onPress= {this._openAddLocationModal}>
@@ -76,3 +77,17 @@ const DayItem = connect(
 )(DayItemComponent);
 
 export default DayItem;
+
+const styles = StyleSheet.create({
+    dayItemContainer: {        
+        marginBottom: 10
+    },
+    dayItemHeader: {
+        display: "flex",
+        alignItems: "stretch",
+        flexDirection: "row",
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingBottom: 10
+    }
+});
