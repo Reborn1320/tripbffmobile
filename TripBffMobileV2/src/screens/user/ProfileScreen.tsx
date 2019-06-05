@@ -3,7 +3,6 @@ import { Container, Content, Footer, View } from "native-base";
 import _ from "lodash";
 import Loading from "../../_atoms/Loading/Loading";
 import { TripsComponent } from "../../_organisms/Trips/TripsList/TripsComponent";
-import AppFooter from "../shared/AppFooter";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import { StoreData } from "../../store/Interfaces";
 import { NavigationScreenProp } from "react-navigation";
@@ -35,7 +34,8 @@ interface State {
     loadingMessage: string;
     UIState: UIState;
     isOpenDeleteConfirmModal: boolean,
-    deletedTripId: string
+    deletedTripId: string,
+    updatedTripId: string
 }
 
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
@@ -53,7 +53,8 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
             loadingMessage: "loading trips belong to this user",
             UIState: "LOADING_TRIP",
             isOpenDeleteConfirmModal: false,
-            deletedTripId: ""
+            deletedTripId: "",
+            updatedTripId: ""
         };
     }
 
@@ -84,12 +85,24 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         });
     }
 
+    private _resetTripUpdatedId = () => {
+        this.setState({
+            updatedTripId: ""
+        });
+    }
+
+    private _handleUpdatedTripGoBack = (tripId) => {
+        this.setState({
+            updatedTripId: tripId
+        });
+    }
+    
     private handleTripItemClick(tripId: string) {
         this.props.navigation.navigate(
             NavigationConstants.Screens.TripEdit,
             { 
               tripId: tripId,
-              onGoBackProfile: this._refreshTrips
+              onGoBackProfile: this._handleUpdatedTripGoBack
             }
         );
     }
@@ -133,7 +146,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
 
     render() {
         let { userName, fullName, trips } = this.props;
-        const { isLoaded } = this.state;
+        const { isLoaded, updatedTripId } = this.state;
 
         return (
             <Container>
@@ -155,9 +168,11 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                         {isLoaded && <Loading message={this.state.loadingMessage} />}
                         <TripsComponent
                             trips={trips}
+                            updatedTripId={updatedTripId}
                             handleClick={tripId => this.handleTripItemClick(tripId)}
                             handleShareClick={this._handleShareBtnClick}
                             handleDeleteTrip={this._handleDeleteTrip}
+                            handleResetTripUpdatedId={this._resetTripUpdatedId}
                         />
                         <ConfirmationModal title="DELETE TRIP" 
                             content="Do you want to delete this Trip ? Deleting a Trip will delete all the items you have added to it. The Trip cannot be retrived once it is deleted."
