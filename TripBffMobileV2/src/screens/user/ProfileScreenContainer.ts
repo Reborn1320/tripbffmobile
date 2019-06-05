@@ -10,7 +10,7 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   return {
     userName: storeState.user.username,
     fullName: storeState.user.fullName,
-    trips: storeState.trips.filter(item => item.isDeleted != true)
+    trips: storeState.trips
   };
 };
 

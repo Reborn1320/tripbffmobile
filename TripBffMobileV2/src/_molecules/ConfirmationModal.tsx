@@ -51,7 +51,6 @@ class ConfirmationModal extends React.PureComponent<Props, State> {
 
 interface Style {
   buttons: ViewStyle;
-  // modalContainer: ViewStyle;
   modalInnerContainer: ViewStyle;
   titleContainer: ViewStyle;
   titleText: TextStyle;
@@ -59,18 +58,13 @@ interface Style {
 }
 
 const styles = StyleSheet.create<Style>({
-  buttons: {
-    flex: 1,
+  buttons: {    
     flexDirection: "row",
     justifyContent: "center"
   },
-  // modalContainer: {
-  //   ...mixins.themes.debug,
-  // },
   modalInnerContainer: {
     width: "100%",
-    height: 200,
-    paddingBottom: 15,
+    paddingBottom: 15
     // ...mixins.themes.debug1,
   },
   titleContainer: {
