@@ -15,6 +15,8 @@ export interface Props {
 
 interface State {
     num: number,
+    numUploaded: number,
+    numCount: number,
     selectedImages: Array<any>,
     isUploadingImages: boolean
 }
@@ -24,39 +26,49 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
     super(props);  
     this.state = {
       num: 0,
+      numUploaded: 0,
+      numCount: 0,
       selectedImages: [],
       isUploadingImages: false
     }
   } 
+
+  componentDidUpdate() {
+    let { selectedImages, num, numUploaded, numCount, isUploadingImages } = this.state;
+
+    if (isUploadingImages) {
+      if (num > numCount) {
+        let selectedImage = selectedImages[numCount];
+  
+        this.props.confirmHandler([selectedImage])
+        .then(numberImagesUploaded => {
+            this.setState({
+                numCount: numCount + 1,
+                numUploaded: numUploaded + numberImagesUploaded
+            });        
+         });
+      }
+      else {
+        this.setState({
+          num: 0,
+          numUploaded: 0,
+          numCount: 0,
+          selectedImages: [],
+          isUploadingImages: false
+        });
+        this.props.cancelHandler();
+      }
+    }    
+  }
 
   private _onCancel = () => {
     this.props.cancelHandler();
   };
 
   private _onSave = () => {
-    let { selectedImages } = this.state;   
-    let totalImages = selectedImages.length;
-
     this.setState({
-        isUploadingImages: true
-    });
-    
-    this.props.confirmHandler(selectedImages)
-    .then(numberImagesUploaded => {
-        if (numberImagesUploaded == totalImages) {
-           this.setState({
-                isUploadingImages: false,
-                num: 0,
-                selectedImages: []
-            });
-            this.props.cancelHandler();
-        }
-        else {
-            this.setState({
-                isUploadingImages: false
-            });
-        }
-     });
+      isUploadingImages: true
+     });  
   }    
 
   private _pickImage = (images) => {
@@ -69,14 +81,16 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isVisible } = this.props;       
+    const { isVisible } = this.props;
+    const { num, numUploaded } = this.state;       
 
     return (
         <RNModal style={styles.modal}            
             isVisible={isVisible} hideModalContentWhileAnimating>
             {this.state.isUploadingImages ? (
                 <View style={[styles.modalInnerContainer, styles.loading]}>
-                     <Loading message={'uploading images'} />
+                     <Loading message={'Uploading images. Please wait!'} />
+                     <Text>{numUploaded + "/" + num}</Text>
                 </View>
             ) : (
                 <View style={styles.modalInnerContainer}>
