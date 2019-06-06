@@ -175,7 +175,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                             handleResetTripUpdatedId={this._resetTripUpdatedId}
                         />
                         <ConfirmationModal title="DELETE TRIP" 
-                            content="Do you want to delete this Trip ? Deleting a Trip will delete all the items you have added to it. The Trip cannot be retrived once it is deleted."
+                            content="Are you sure you want to delete this Trip ? Deleting a Trip will delete all the items you have added to it. The Trip cannot be retrived once it is deleted."
                             confirmHandler={this._confirmDeleteTrip}
                             cancelHandler={this._cancelDeleteModal}
                             isVisible={this.state.isOpenDeleteConfirmModal} />
