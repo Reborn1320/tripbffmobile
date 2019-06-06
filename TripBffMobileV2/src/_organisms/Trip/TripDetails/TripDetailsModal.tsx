@@ -116,7 +116,7 @@ class TripDetailsModalComponent extends PureComponent<Props, State> {
     render() {
         return (
             <View>
-                <ConfirmationModal title="DELETE LOCATION" content="Do you want to delete this location ?"
+                <ConfirmationModal title="DELETE LOCATION" content="Are you sure you want to delete this location ?"
                     confirmHandler={this._removeLocationConfirmed}
                     cancelHandler={this._cancelModal}
                     isVisible={this.props.isConfirmationModalVisible} />
