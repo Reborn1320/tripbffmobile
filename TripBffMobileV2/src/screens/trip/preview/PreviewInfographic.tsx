@@ -56,6 +56,7 @@ export default class PreviewInfographicComponent extends PureComponent<any, any>
             console.log("download infographic image done!", path);
             console.log("response download file", response);
             const photoUri = "file://" + path;
+            console.log("photoUri", photoUri);
             this.setState({ imageUri: photoUri });     
 
             this.props.updateShareInfographicUrl(photoUri);
@@ -84,7 +85,7 @@ export default class PreviewInfographicComponent extends PureComponent<any, any>
                        imageHeight={infoHeight}>
                 <Image
                   source={{
-                    uri: 'data:image/png;base64,' + this.state.imageUri             
+                    uri: this.state.imageUri             
                   }}
                   resizeMode='contain'
                   style= {{
