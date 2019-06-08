@@ -344,7 +344,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
 
                       if (index == 1 && this.state.firstRendered) {
                         Toast.show({
-                          text: "Please select maximum 5 most favoriate images to share!",
+                          text: "Please select maximum 5 most favorite images to share!",
                           buttonText: "Okay",
                           type: "success",
                           position: "top",

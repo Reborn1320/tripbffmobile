@@ -32,7 +32,23 @@ export function setAuthorizationHeader(token) {
   if (!token) throw "token should have value";
 
   _bearer = `Bearer ${token}`;
-  axios.defaults.headers.common["Authorization"] = _bearer;
+  console.log("update rearer into axios", _bearer);
+
+  //do not override global axios
+  // axios.defaults.headers.common["Authorization"] = _bearer;
+
+  tripApiInternal = axios.create({
+    baseURL: TRIP_URL,
+    headers: {
+      common: {
+        "Authorization": _bearer,
+      },
+        post: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    }
+  });
+
 }
 
 export interface ApiServiceArguments {

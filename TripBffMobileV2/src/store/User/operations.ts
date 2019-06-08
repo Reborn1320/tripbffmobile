@@ -1,6 +1,7 @@
 import { addToken } from "./actions";
 import { StoreData } from "../Interfaces";
 import { setAuthorizationHeader } from "../../screens/_services/apis";
+import { setAuthorizationHeader as setAuthorizationHeader2 } from "../../store/ApisAsAService";
 import { ThunkResultBase } from "..";
 import uuidv4 from "uuid/v4";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -30,6 +31,7 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
 
         dispatch(addToken(user));
         setAuthorizationHeader(user.token);
+        setAuthorizationHeader2(user.token);
         storeDataIntoStorage(STORAGE_KEYS.USER, JSON.stringify(user));
       })
       .catch(error => {
@@ -65,6 +67,7 @@ export function loginUsingFacebookAccessToken(facebookUserId: string, accessToke
 
         dispatch(addToken(user));
         setAuthorizationHeader(user.token);
+        setAuthorizationHeader2(user.token);
         storeDataIntoStorage(STORAGE_KEYS.USER, JSON.stringify(user));
 
       })
@@ -106,6 +109,7 @@ export function loginUsingDeviceId(): ThunkResultBase {
 
         dispatch(addToken(user));
         setAuthorizationHeader(user.token);
+        setAuthorizationHeader2(user.token);
         await storeDataIntoStorage(STORAGE_KEYS.USER, JSON.stringify(user));
       })
       .catch(error => {
@@ -130,6 +134,7 @@ async function loadLoggedUser(dispatch) {
 
   dispatch(addToken(user));
   setAuthorizationHeader(user.token);
+  setAuthorizationHeader2(user.token);
   return true;
 }
 
