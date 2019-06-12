@@ -89,8 +89,8 @@ export function addLocations(tripId, selectedLocations: IImportLocation[]): Thun
     // call API to import locations and images
     var url = '/trips/' + tripId + '/locations';
     console.log(`fetch: ${url}`)
-    return extraArgument.api
-      .post(url, selectedLocations)
+    return extraArgument.tripApiService
+      .post(url, { data: selectedLocations })
       .then((res) => {
         console.log("import trip succeeded")
         console.log('result after import trip: ', res.data);
@@ -123,7 +123,7 @@ export function addLocations(tripId, selectedLocations: IImportLocation[]): Thun
 export function addLocation(tripId: string, dateIdx: number, location: StoreData.LocationVM, cancelToken: any): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     
-    var adddedLocation = {
+    var data = {
         name: location.name,
         fromTime: location.fromTime,
         toTime: location.toTime,
@@ -131,9 +131,11 @@ export function addLocation(tripId: string, dateIdx: number, location: StoreData
         images: location.images
     };
 
-    return extraArguments.api.post(`trips/${tripId}/locations/addLocation`, adddedLocation, {
+    var config = {
       cancelToken: cancelToken
-    })
+    };
+
+    return extraArguments.tripApiService.post(`trips/${tripId}/locations/addLocation`, { data, config})
       .then(res => {
         if (res.data.isSucceed) {
           location.locationId = res.data.data;
