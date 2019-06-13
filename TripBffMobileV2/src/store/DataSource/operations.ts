@@ -6,7 +6,7 @@ import { ThunkResultBase } from "..";
 export function getAllFeelings(): ThunkResultBase {
     return async function (dispatch, getState, extraArguments): Promise<any> {
   
-      return extraArguments.api.get(`/trips/feelings`)
+      return extraArguments.tripApiService.get(`/trips/feelings`)
         .then(res => {
            dispatch(getAllFeelingsAction(res.data));
         })
@@ -19,7 +19,7 @@ export function getAllFeelings(): ThunkResultBase {
   export function getAllActivities(): ThunkResultBase {
     return async function (dispatch, getState, extraArguments): Promise<any> {
   
-      return extraArguments.api.get(`/trips/activities`)
+      return extraArguments.tripApiService.get(`/trips/activities`)
         .then(res => {
            dispatch(getAllActivitiesAction(res.data));
         })
@@ -32,7 +32,7 @@ export function getAllFeelings(): ThunkResultBase {
   export function getAllHighlights(): ThunkResultBase {
     return async function (dispatch, getState, extraArguments): Promise<any> {
   
-      return extraArguments.api.get(`/trips/highlights`)
+      return extraArguments.tripApiService.get(`/trips/highlights`)
         .then(res => {
            dispatch(getAllHighlightsAction(res.data));
         })
