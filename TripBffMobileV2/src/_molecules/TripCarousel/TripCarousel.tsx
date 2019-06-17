@@ -12,9 +12,8 @@ import {
 } from 'react-native-popup-menu';
 import menuOptionStyles from "../../theme/variables/menuOptions.style.js";
 import { StoreData } from "../../store/Interfaces";
-import { tripApi  } from "../../screens/_services/apis";
-import { getCancelToken } from "../../_function/commonFunc";
 import moment from "moment";
+import { connect } from "react-redux";
 
 export type ITripEntry = {
   tripId: string,
@@ -28,12 +27,13 @@ export interface Props {
   handleClick: (tripId: string) => void;
   handleShareClick: (tripId: string) => void;
   handleDeleteTrip: (tripId: string) => void;
-  handleResetTripUpdatedId: () => void;
-  updatedTripId: string
+  currentMinimizedTrip?: StoreData.MinimizedTripVM
 }
 
 export interface State {
-  tripEntry: ITripEntry
+  tripEntry: ITripEntry,
+  firstRender: boolean,
+  updatedTripId: string
 }
 
 const EMPTY_TRIP_ENTRIES: IEntry[] = [
@@ -50,66 +50,33 @@ const EMPTY_LOCATION_ENTRY: IEntry = {
   illustration: ""
 }
 
-export default class TripCarousel extends React.Component<Props, State> {
-
-  _cancelRequest;
-  _cancelToken;
+export class TripCarouselComponent extends React.Component<Props, State> {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      tripEntry: this.normalizeTripEntry(this.props.trip)
+      firstRender: true,
+      tripEntry: null,
+      updatedTripId: null
     }
   }
 
   shouldComponentUpdate(nextProps: Props, nextState) {
-    return !nextProps.updatedTripId || this.props.trip.tripId === nextProps.updatedTripId;
-  }
+    return nextState.firstRender ||  
+      (this.props.currentMinimizedTrip && this.props.trip.tripId === this.props.currentMinimizedTrip.tripId);
+  }  
 
-  componentDidUpdate() {
-    if (this.props.updatedTripId) {
-      var tmp = this;
-      tripApi
-          .get(`/trips/minimized/${this.props.trip.tripId}`, {
-            cancelToken: this._cancelToken
-          })
-          .then(res => {
-            if (res.data) {
-                let tripEntry = tmp.normalizeTripEntry(res.data);
-                this.setState({
-                  tripEntry: tripEntry
-                });
-                this.props.handleResetTripUpdatedId();
-              }            
-          })
-          .catch(error => {
-              console.log("error: " + JSON.stringify(error));
-          });
-    }    
-  }
-
-  componentDidMount() {
-    let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
-    this._cancelToken = cancelToken;
-    this._cancelRequest = cancelRequest;
-  }
-  
-  componentWillUnmount() {
-    this._cancelRequest('Operation canceled by the user.');
-}
-
-  normalizeTripEntry(trip: StoreData.MinimizedTripVM) {
+  private _normalizeTripEntry = (trip: StoreData.MinimizedTripVM) => {
     let entries: IEntry[] = trip.locationImages.map((locImg, locImgIdx) => ({
       title: locImg.name,
       subtitle: locImg.description,
       illustration: locImg.imageUrl,
     }));
-    
     let tripEntry: ITripEntry = {
         tripId: trip.tripId,
         title: trip.name,
-        subtitle: `${moment(trip.fromDate).format("DD/MMM/YYYY")} - ${moment(trip.toDate).format("DD/MMM/YYYY")}`,
+        subtitle: `${moment(trip.fromDate).utc().format("DD/MMM/YYYY")} - ${moment(trip.toDate).utc().format("DD/MMM/YYYY")}`,
         entries
     }
 
@@ -141,11 +108,16 @@ export default class TripCarousel extends React.Component<Props, State> {
     this.props.handleDeleteTrip(this.props.trip.tripId);
   }
 
+  private _handleClickTrip = () => {
+    this.props.handleClick(this.props.trip.tripId);
+  }
+
   render() {
-    let { tripEntry } = this.state;
+    const { currentMinimizedTrip, trip } = this.props;
+    let tripEntry = currentMinimizedTrip ? this._normalizeTripEntry(currentMinimizedTrip) :this._normalizeTripEntry(trip);
     const { title, subtitle } = tripEntry;
     const isTinder = false;
-
+    
     return (
       <View style={styles.container}>
         <View style={styles.headerContainer}>
@@ -181,12 +153,26 @@ export default class TripCarousel extends React.Component<Props, State> {
           title={tripEntry.title}
           subtitle={tripEntry.subtitle}
           entries={tripEntry.entries}
-          clickHandler={() => this.props.handleClick(tripEntry.tripId)}
+          clickHandler={this._handleClickTrip}
         />
       </View>
     );
   }
 }
+
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
+  return {
+    currentMinimizedTrip: storeState.currentMinimizedTrip && storeState.currentMinimizedTrip.tripId == ownProps.trip.tripId
+                           ? storeState.currentMinimizedTrip : ""
+  };
+};
+
+const TripCarousel = connect(
+  mapStateToProps,
+  null
+)(TripCarouselComponent);
+
+export default TripCarousel;
 
 interface Style {
   container: ViewStyle;

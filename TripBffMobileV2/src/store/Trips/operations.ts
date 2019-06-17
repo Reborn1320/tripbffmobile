@@ -3,6 +3,7 @@ import moment from "moment";
 import { ThunkResultBase } from "..";
 import { deleteTrip as deleteTripAction } from "./actions";
 import {  CancelToken } from "axios";
+import { getCurrentMinimizedTrip as getCurrentMinimizedTripAction } from "./actions";
 
 export function fetchTrips(cancelToken: CancelToken): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
@@ -40,5 +41,17 @@ export function deleteTrip(tripId: string): ThunkResultBase {
     .catch((err) => {
       console.log('error delete trip api: ', err);
     });
+  };
+}
+
+export function getCurrentMinimizedTrip(tripId: string): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    return extraArguments.tripApiService.get(`/trips/minimized/${tripId}`)
+      .then(res => {
+        dispatch(getCurrentMinimizedTripAction(res.data));
+      })
+      .catch(error => {
+        console.log("fetch trips error", error);
+      });
   };
 }

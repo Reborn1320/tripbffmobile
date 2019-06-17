@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { Container, Content, Footer, View } from "native-base";
 import _ from "lodash";
 import Loading from "../../_atoms/Loading/Loading";
-import { TripsComponent } from "../../_organisms/Trips/TripsList/TripsComponent";
+import TripsComponent from "../../_organisms/Trips/TripsList/TripsComponent";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import { StoreData } from "../../store/Interfaces";
 import { NavigationScreenProp } from "react-navigation";
 import { Divider } from "react-native-elements";
-import { UserDetails } from "../../_organisms/User/UserDetails";
+import UserDetails from "../../_organisms/User/UserDetails";
 import { logOut } from "../../store/User/operations";
 import { getCancelToken } from "../../_function/commonFunc";
 import ConfirmationModal from "../../_molecules/ConfirmationModal";
@@ -18,6 +18,7 @@ interface IMapDispatchToProps {
     fetchTrips: (cancelToken: any) => Promise<any>;
     addTrips: (trips: Array<StoreData.TripVM>) => void;
     deleteTrip: (tripId: string) => void;
+    getCurrentMinimizedTrip: (tripId: string) => void;
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -34,8 +35,7 @@ interface State {
     loadingMessage: string;
     UIState: UIState;
     isOpenDeleteConfirmModal: boolean,
-    deletedTripId: string,
-    updatedTripId: string
+    deletedTripId: string
 }
 
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
@@ -49,12 +49,11 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         super(props);
 
         this.state = {
-            isLoaded: this.props.trips.length == 0,
+            isLoaded: false,
             loadingMessage: "loading trips belong to this user",
             UIState: "LOADING_TRIP",
             isOpenDeleteConfirmModal: false,
-            deletedTripId: "",
-            updatedTripId: ""
+            deletedTripId: ""
         };
     }
 
@@ -85,19 +84,11 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         });
     }
 
-    private _resetTripUpdatedId = () => {
-        this.setState({
-            updatedTripId: ""
-        });
-    }
-
     private _handleUpdatedTripGoBack = (tripId) => {
-        this.setState({
-            updatedTripId: tripId
-        });
+        this.props.getCurrentMinimizedTrip(tripId);
     }
     
-    private handleTripItemClick(tripId: string) {
+    private _handleTripItemClick = (tripId: string) => {
         this.props.navigation.navigate(
             NavigationConstants.Screens.TripEdit,
             { 
@@ -145,18 +136,13 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     }
 
     render() {
-        let { userName, fullName, trips } = this.props;
-        const { isLoaded, updatedTripId } = this.state;
+        const { isLoaded } = this.state;
 
         return (
             <Container>
                 <Content>
                     <View>
                         <UserDetails 
-                            userName={userName}
-                            fullName={fullName}
-
-                            nTrips={trips.length}
                             onClickEdit={this.handleEditBtnClick}
                         />
                         <Divider style={
@@ -167,12 +153,9 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                         }></Divider>
                         {isLoaded && <Loading message={this.state.loadingMessage} />}
                         <TripsComponent
-                            trips={trips}
-                            updatedTripId={updatedTripId}
-                            handleClick={tripId => this.handleTripItemClick(tripId)}
+                            handleClick={this._handleTripItemClick}
                             handleShareClick={this._handleShareBtnClick}
                             handleDeleteTrip={this._handleDeleteTrip}
-                            handleResetTripUpdatedId={this._resetTripUpdatedId}
                         />
                         <ConfirmationModal title="DELETE TRIP" 
                             content="Are you sure you want to delete this Trip ? Deleting a Trip will delete all the items you have added to it. The Trip cannot be retrived once it is deleted."

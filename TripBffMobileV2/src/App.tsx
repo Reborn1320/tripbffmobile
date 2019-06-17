@@ -51,10 +51,10 @@ const store = createStore(
 const navigationOptions =  {
   headerMode: "screen",
   defaultNavigationOptions: {
-    headerStyle: {
-      backgroundColor: NBColor.brandMainColor
-    },
-    headerTintColor: '#fff',
+    // headerStyle: {
+    //   backgroundColor: NBColor.brandMainColor
+    // },
+    headerTintColor: '#000',
     headerTitleStyle: {
       fontWeight: 'bold'
     }

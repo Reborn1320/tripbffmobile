@@ -48,7 +48,7 @@ export default class PreviewInfographicComponent extends PureComponent<any, any>
           var signedUrl = res.request.responseURL;
           console.log("signedUrl", signedUrl)
 
-          var path = RNFS.DocumentDirectoryPath + '/test1.png';
+          var path = RNFS.DocumentDirectoryPath + `/${this.props.infographicId}.png`;
           return RNFS.downloadFile({
             fromUrl: signedUrl,
             toFile: path

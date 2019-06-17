@@ -162,8 +162,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
   
     return {
         tripName: trip.name,
-        fromDate: trip.fromDate,
-        toDate: trip.toDate
+        fromDate: moment(trip.fromDate).utc(),
+        toDate: moment(trip.toDate).utc()
     };
   };
   
