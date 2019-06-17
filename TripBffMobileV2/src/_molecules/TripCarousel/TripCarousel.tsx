@@ -55,14 +55,6 @@ export default class TripCarousel extends React.Component<Props, State> {
   _cancelRequest;
   _cancelToken;
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      tripEntry: this.normalizeTripEntry(this.props.trip)
-    }
-  }
-
   shouldComponentUpdate(nextProps: Props, nextState) {
     return !nextProps.updatedTripId || this.props.trip.tripId === nextProps.updatedTripId;
   }
@@ -76,7 +68,7 @@ export default class TripCarousel extends React.Component<Props, State> {
           })
           .then(res => {
             if (res.data) {
-                let tripEntry = tmp.normalizeTripEntry(res.data);
+                let tripEntry = tmp._normalizeTripEntry(res.data);
                 this.setState({
                   tripEntry: tripEntry
                 });
@@ -86,7 +78,7 @@ export default class TripCarousel extends React.Component<Props, State> {
           .catch(error => {
               console.log("error: " + JSON.stringify(error));
           });
-    }    
+    }        
   }
 
   componentDidMount() {
@@ -97,9 +89,9 @@ export default class TripCarousel extends React.Component<Props, State> {
   
   componentWillUnmount() {
     this._cancelRequest('Operation canceled by the user.');
-}
+  }
 
-  normalizeTripEntry(trip: StoreData.MinimizedTripVM) {
+  private _normalizeTripEntry = (trip: StoreData.MinimizedTripVM) => {
     let entries: IEntry[] = trip.locationImages.map((locImg, locImgIdx) => ({
       title: locImg.name,
       subtitle: locImg.description,
@@ -142,7 +134,7 @@ export default class TripCarousel extends React.Component<Props, State> {
   }
 
   render() {
-    let { tripEntry } = this.state;
+    let tripEntry = this._normalizeTripEntry(this.props.trip);
     const { title, subtitle } = tripEntry;
     const isTinder = false;
 
