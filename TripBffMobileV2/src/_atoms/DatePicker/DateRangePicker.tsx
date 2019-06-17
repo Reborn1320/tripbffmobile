@@ -89,8 +89,8 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
                         initialDate={fromDate} 
                         selectedStartDate={fromDate}
                         selectedEndDate={toDate} 
-                        todayBackgroundColor="#f2e6ff"
-                        selectedDayColor="#7300e6"
+                        todayBackgroundColor="#569EAC"
+                        selectedDayColor="#2E97A1"
                         selectedDayTextColor="#FFFFFF"
                         onDateChange={this.onDateChange}
                     />

@@ -2,6 +2,7 @@ import React, { PureComponent, Component } from "react";
 import { Button, Text, View, Form, Item, Label, Input } from 'native-base';
 import moment, { Moment } from "moment";
 import DateRangePicker from "../../../_atoms/DatePicker/DateRangePicker";
+import NBColor from "../../../theme/variables/commonColor.js";
 
 export interface Props {
     createTrip: (name: string, fromDate: Moment, toDate: Moment) => Promise<string>;
@@ -65,7 +66,7 @@ export class TripCreationForm extends PureComponent<Props, any> {
   renderImportBtn() {
     return (
       <Button
-        style={{ alignSelf: 'center' }}
+        style={{ alignSelf: 'center', backgroundColor: NBColor.brandMainColor }}
         onPress={this._onClickCreateTrip}>
         <Text>Create</Text>
       </Button>

@@ -17,6 +17,7 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import { uploadLocationImage, addLocations, IImportLocation } from "../../../store/Trip/operations";
 import { getAddressFromLocation, checkAndRequestPhotoPermissionAsync } from "../../../_function/commonFunc";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
+import NBColor from "../../../theme/variables/commonColor.js";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -341,7 +342,7 @@ class TripImportation extends Component<Props, State> {
                             onPress={this._import}
                             style={{ alignSelf: "stretch", margin: 5, }}
                         >
-                            <Text style={{ color: "orange" }}>Import</Text>
+                            <Text style={{ color: NBColor.brandMainColor }}>Import</Text>
                         </Button>
                     </Footer>
                 }             
