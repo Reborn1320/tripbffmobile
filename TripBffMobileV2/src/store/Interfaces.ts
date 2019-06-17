@@ -134,6 +134,7 @@ export module StoreData {
         user?: UserVM
         trips?: Array<MinimizedTripVM>,
         currentTrip?: TripVM,
+        currentMinimizedTrip?: MinimizedTripVM,
         dataSource: DataSourceVM
     }
 }

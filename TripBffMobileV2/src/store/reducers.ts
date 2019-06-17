@@ -21,6 +21,8 @@ import {
     TRIP_UPDATE
 } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
+import { TRIPS_GET_CURRENT_MINIMIZED } from "./Trips/actions";
+import { State } from 'react-native-image-pan-zoom/built/image-zoom/image-zoom.type';
 
 const userInitState: StoreData.UserVM = {
     id: "",
@@ -326,6 +328,17 @@ function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
     }
 }
 
+function currentMinimizedTrip(state: StoreData.MinimizedTripVM, action) {
+    switch(action.type) {
+        case TRIPS_GET_CURRENT_MINIMIZED:
+            return {
+                ...action.trip
+            }
+        default:
+            return state;
+    }
+}
+
 //todo small refactor to move each reducer to files
 export default function bffApp(state: StoreData.BffStoreData = initState, action): StoreData.BffStoreData {
     console.log('action :' + action.type);
@@ -335,6 +348,7 @@ export default function bffApp(state: StoreData.BffStoreData = initState, action
         user: userReducer(state.user, action),
         trips: tripsReducer(state.trips, action),
         currentTrip: tripReducer(state.currentTrip, action),
+        currentMinimizedTrip: currentMinimizedTrip(state.currentMinimizedTrip, action),
         //todo trips shouldn't handle too much things in here!!!!!
         //todo: should it be trip, location, in respect to each page ?
         dataSource: dataSourceReducer(state.dataSource, action)

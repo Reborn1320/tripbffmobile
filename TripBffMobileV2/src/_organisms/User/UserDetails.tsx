@@ -1,8 +1,10 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 import { View, H1, H2, H3, Button } from "native-base";
 import _ from "lodash";
 import { StyleSheet, ViewStyle } from "react-native";
 import { Avatar, Text } from "react-native-elements";
+import { StoreData } from "../../store/Interfaces";
+import { connect } from "react-redux";
 
 export interface IStateProps {
 }
@@ -22,13 +24,14 @@ export interface Props extends IMapDispatchToProps {
 interface State {
 }
 
-export class UserDetails extends Component<Props & IStateProps, State> {
+export class UserDetailsComponent extends PureComponent<Props & IStateProps, State> {
   constructor(props: Props) {
     super(props);
   }
 
   render() {
     const { userName, fullName, nTrips } = this.props;
+
     return (
       <View style={styles.container}>
         <View style={styles.headerContainer}>
@@ -75,6 +78,21 @@ export class UserDetails extends Component<Props & IStateProps, State> {
     );
   }
 }
+
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
+  return {
+    userName: storeState.user.username,
+    fullName: storeState.user.fullName,
+    nTrips: storeState.trips.length
+  };
+};
+
+const UserDetails = connect(
+  mapStateToProps,
+  null
+)(UserDetailsComponent);
+
+export default UserDetails;
 
 interface Style {
   container: ViewStyle;
