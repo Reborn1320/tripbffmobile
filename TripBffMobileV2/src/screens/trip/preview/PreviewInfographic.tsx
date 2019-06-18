@@ -7,7 +7,7 @@ import _, { } from "lodash";
 import { calculateByPercentage } from "../../../_function/commonFunc";
 import ImageZoom from 'react-native-image-pan-zoom';
 import { getCancelToken } from "../../../_function/commonFunc";
-import axios from "axios";
+import { runPromiseSeries, deleteFilesInFolder } from "../../../_function/commonFunc";
 
 export default class PreviewInfographicComponent extends PureComponent<any, any> {
 
@@ -48,21 +48,30 @@ export default class PreviewInfographicComponent extends PureComponent<any, any>
           var signedUrl = res.request.responseURL;
           console.log("signedUrl", signedUrl)
 
-          var path = RNFS.DocumentDirectoryPath + `/${this.props.infographicId}.png`;
-          return RNFS.downloadFile({
-            fromUrl: signedUrl,
-            toFile: path
-          }).promise.then(response => {
-            console.log("download infographic image done!", path);
-            console.log("response download file", response);
-            const photoUri = "file://" + path;
-            console.log("photoUri", photoUri);
-            this.setState({ imageUri: photoUri });     
+          const tripFolderPath = RNFS.DocumentDirectoryPath + `/${this.props.tripId}`;
 
-            this.props.updateShareInfographicUrl(photoUri);
-          }).catch((error) => {
-              console.log('download infographic image failed.: ' + JSON.stringify(error));
-          });
+          RNFS.mkdir(tripFolderPath)
+          .then(async () => {
+            var path = RNFS.DocumentDirectoryPath + `/${this.props.tripId}/${this.props.infographicId}.png`;
+
+            return RNFS.downloadFile({
+              fromUrl: signedUrl,
+              toFile: path
+            }).promise.then(response => {
+              console.log("download infographic image done!", path);
+              console.log("response download file", response);
+              const photoUri = "file://" + path;
+              console.log("photoUri", photoUri);
+              this.setState({ imageUri: photoUri });     
+
+              this.props.updateShareInfographicUrl(photoUri);
+            }).catch((error) => {
+                console.log('download infographic image failed.: ' + JSON.stringify(error));
+            });
+          })
+          .catch((err) => {
+            console.log(err.message, err.code);
+          });;          
 
         })
         .catch(error => {

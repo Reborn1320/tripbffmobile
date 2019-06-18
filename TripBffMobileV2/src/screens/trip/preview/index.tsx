@@ -25,7 +25,7 @@ import { NavigationConstants } from "../../_shared/ScreenConstants";
 import { TabView } from 'react-native-tab-view';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { runPromiseSeries } from "../../../_function/commonFunc";
+import { runPromiseSeries, deleteFilesInFolder } from "../../../_function/commonFunc";
 import Loading from "../../../_atoms/Loading/Loading";
 import { addInfographicId } from "../../../store/Trip/actions";
 import PreviewInfographicComponent from "./PreviewInfographic";
@@ -136,6 +136,8 @@ class InfographicPreview extends React.PureComponent<Props, State> {
     if (this._backHardwareHandler) this._backHardwareHandler.remove();    
     if (this._didFocusSubscription) this._didFocusSubscription.remove();
     if (this._willBlurSubscription) this._willBlurSubscription.remove();
+
+    deleteFilesInFolder(`${this.props.tripId}`);
   }
 
   private _handleBackPress = () => {
@@ -171,7 +173,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
   }
 
   private _downloadExternalImage = async (fileName: any, url: any) => {
-    var path = RNFS.DocumentDirectoryPath + '/' + fileName + '.png';
+    var path = RNFS.DocumentDirectoryPath + `/${this.props.tripId}/${fileName}.png`;
     return RNFS.downloadFile({
       fromUrl: url,
       toFile: path
@@ -221,83 +223,84 @@ class InfographicPreview extends React.PureComponent<Props, State> {
         });
       }
       else {
-      this.setState({displayLoading: true});
-      let localImageUris = await this._storeExternalImageIntoLocalStorage(this.state.selectedImages);
-      let imageUrls = [this.state.infographicUrl].concat(localImageUris);        
+        this.setState({displayLoading: true});        
 
-      console.log('final selected image url: ' + JSON.stringify(imageUrls));
-      let photos = imageUrls.map(item => {
-        return {  imageUrl: item }
-      });
+        let localImageUris = await this._storeExternalImageIntoLocalStorage(this.state.selectedImages); 
+        let imageUrls = [this.state.infographicUrl].concat(localImageUris);        
 
-      const sharePhotoContent = {
-        contentType: "photo",
-        photos: photos
-      } as any;
+        console.log('final selected image url: ' + JSON.stringify(imageUrls));
+        let photos = imageUrls.map(item => {
+          return {  imageUrl: item }
+        });
 
-      AccessToken.getCurrentAccessToken().then(
-          (data) => {
-            if (data) {
-              try{
-                ShareDialog.canShow(sharePhotoContent)
-                .then(function(canShow) {
-                  tmp.setState({displayLoading: false});
+        const sharePhotoContent = {
+          contentType: "photo",
+          photos: photos
+        } as any;
 
-                  if (canShow) {
-                    return ShareDialog.show(sharePhotoContent)                    
-                  }                    
-                })
-                .then(
-                  function(result) {
-                    console.log("Share result: " + JSON.stringify(result));
-                    if (result.isCancelled) {
-                      console.log("Share cancelled");
-                    } else {
-                      console.log("Share success");
-                      tmp._navigateToProfile();
-                    }
-                  },
-                  function(error) {
-                    Toast.show({
-                      text: "Got error when share to Facebook. Please try again!",
-                      buttonText: "Okay",
-                      type: "danger",
-                      duration: 3000
-                    });
-                    console.log("Share fail with error: " + error);
-                  }
-                );
-              }
-              catch(error) {
-                  console.log('come here error try catch');
-              }
-              
-            }
-            else {
-                console.log('need to log-in');
-                LoginManager.logInWithReadPermissions(["public_profile", "user_photos", "user_posts"]).then(
-                  function(result) {
-                    if (result.isCancelled) {
-                      console.log("Login cancelled");
-                    } else {                      
-                      console.log(
-                        "Login success with permissions: " + JSON.stringify(result)
-                      );
-                      // call api to login with FB
-                      AccessToken.getCurrentAccessToken().then(data => {     
-                        tmp.props.loginUsingFacebookAccessToken(data.userID, data.accessToken, tmp.props.userId);
+        AccessToken.getCurrentAccessToken().then(
+            (data) => {
+              if (data) {
+                try{
+                  ShareDialog.canShow(sharePhotoContent)
+                  .then(function(canShow) {
+                    tmp.setState({displayLoading: false});
+
+                    if (canShow) {
+                      return ShareDialog.show(sharePhotoContent)                    
+                    }                    
+                  })
+                  .then(
+                    function(result) {
+                      console.log("Share result: " + JSON.stringify(result));
+                      if (result.isCancelled) {
+                        console.log("Share cancelled");
+                      } else {
+                        console.log("Share success");
+                        tmp._navigateToProfile();
+                      }
+                    },
+                    function(error) {
+                      Toast.show({
+                        text: "Got error when share to Facebook. Please try again!",
+                        buttonText: "Okay",
+                        type: "danger",
+                        duration: 3000
                       });
-                      tmp._sharePhotoWithShareDialog();
-                      tmp.setState({ isLoggedSocial: true });
+                      console.log("Share fail with error: " + error);
                     }
-                  },
-                  function(error) {
-                    console.log("Login fail with error: " + error);
-                  }
-                );
-            }
-          } 
-        );    
+                  );
+                }
+                catch(error) {
+                    console.log('come here error try catch');
+                }
+                
+              }
+              else {
+                  console.log('need to log-in');
+                  LoginManager.logInWithReadPermissions(["public_profile", "user_photos", "user_posts"]).then(
+                    function(result) {
+                      if (result.isCancelled) {
+                        console.log("Login cancelled");
+                      } else {                      
+                        console.log(
+                          "Login success with permissions: " + JSON.stringify(result)
+                        );
+                        // call api to login with FB
+                        AccessToken.getCurrentAccessToken().then(data => {     
+                          tmp.props.loginUsingFacebookAccessToken(data.userID, data.accessToken, tmp.props.userId);
+                        });
+                        tmp._sharePhotoWithShareDialog();
+                        tmp.setState({ isLoggedSocial: true });
+                      }
+                    },
+                    function(error) {
+                      console.log("Login fail with error: " + error);
+                    }
+                  );
+              }
+            } 
+          );    
       }       
   }
 
