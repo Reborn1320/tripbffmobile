@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Icon } from 'native-base';
 import { Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
 import menuOptionStyles from "../../../theme/variables/menuOptions.style.js";
+import { getLabel } from "../../../../i18n";
 
 export interface Props {
   onSelect: (value) => void;
@@ -27,8 +28,8 @@ export default class EditPopupMenu extends React.Component<Props, State> {
               optionText: menuOptionStyles.optionText,
             }
           }>
-            <MenuOption value={2} text='Edit trip name' />
-            <MenuOption value={1} text='Edit date range' />
+            <MenuOption value={2} text={getLabel("trip_detail.edit_trip_name_menu_label")} />
+            <MenuOption value={1} text={getLabel("trip_detail.edit_trip_date_range_menu_label")} />
           </MenuOptions>
         </Menu>
       </View>

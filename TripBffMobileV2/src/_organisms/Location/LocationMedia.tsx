@@ -6,6 +6,7 @@ import ImageList, { calculateImageListWidth, N_ITEMS_PER_ROW } from "../../_mole
 import NBTheme from "../../theme/variables/material.js";
 import { ImageSelection } from "../../_molecules/ImageList/ImageSelection";
 import { ImageFavorable } from "../../_molecules/ImageList/ImageFavorable";
+import { getLabel } from "../../../i18n";
 
 export interface Props {
   images: Array<ILocationMediaImage>
@@ -73,7 +74,7 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
     // console.log("n images ", this.props.images.length);
     return (
       <View style={styles.locationMediaContainer}>
-        <H3 style={styles.headerText}>Photos & Videos</H3>
+        <H3 style={styles.headerText}>{getLabel("location_detail.media_section_label")}</H3>
         <ImageList
           items={this.props.images}
           renderItem={this.renderItem2}

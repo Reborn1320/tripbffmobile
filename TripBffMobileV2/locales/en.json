@@ -1,0 +1,70 @@
+{
+    "menu": {
+        "create": "Create",
+        "profile": "Profile"
+    },
+    "action": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "yes": "Yes",
+        "edit": "Edit",
+        "add": "Add",
+        "search": "Search",
+        "done": "Done",
+        "delete": "Delete",
+        "okay": "Okay"
+    },
+    "create": {
+        "screen_header_title": "Create new trip",
+        "trip_name": "Trip Name",
+        "from_date": "From Date",
+        "end_date": "End Date",
+        "create_button": "Create"
+    },
+    "import": {
+        "skip_button": "Skip",
+        "import_button": "Import",
+        "location_information_text": "Location might not accurate, you can change it later!",
+        "image_uploading_message": "uploading images",
+        "loading_image_from_gallery_message": "Loading images from your gallery"
+    },
+    "trip_detail": {
+        "edit_trip_name_menu_label": "Edit trip name",
+        "edit_trip_date_range_menu_label": "Edit date range",        
+        "edit_trip_name_modal_header": "Edit Trip Name",
+        "edit_trip_name_label": "Trip Name",
+        "add_location_from_time_label": "From Time",
+        "add_location_search_place_label": "Places",
+        "feeling_label": "Feeling",
+        "feeling_adjective": "Feeling",
+        "activity_label": "Activity",
+        "delete_location_modal_header": "Delete Location",
+        "delete_location_modal_content": "Are you sure you want to delete this location ?",
+        "day_label": "Day"
+    },
+    "location_detail": {
+        "like_dislike_section_label": "Things you like/dislike",
+        "like_label": "Like",
+        "dislike_label": "Dislike",
+        "user_defined_like_dislike_warning": "Please input maximum 20 characters!",
+        "description_section_label": "description",
+        "description_placeholder": "What are you feeling?",
+        "description_view_more": "View more",
+        "description_view_less": "View less",
+        "media_section_label": "Photos & Videos",
+        "image_uploading_message": "Uploading images. Please wait!"
+    },
+    "export": {
+        "infographic_tab_label": "Infographic",
+        "images_tab_label": "Images",
+        "images_selection_warning": "Please select maximum 5 most favorite images to share!"
+    },
+    "profile": {
+        "trip_label": "Trip",
+        "trips_label": "Trips",
+        "delete_trip_menu": "Delete Trip",
+        "delete_trip_modal_header": "Delete Trip",
+        "delete_trip_modal_content": "Are you sure you want to delete this Trip ? Deleting a Trip will delete all the items you have added to it. The Trip cannot be retrived once it is deleted."
+
+    }       
+}

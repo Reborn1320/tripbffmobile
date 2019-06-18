@@ -11,6 +11,7 @@ import { Modal } from "../../../_atoms";
 import TripEditForm, { TripEditFormEnum } from "../../TripEditForm/TripEditForm";
 import DateRangePicker from "../../../_atoms/DatePicker/DateRangePicker";
 import { connect } from "react-redux";
+import { getLabel } from "../../../../i18n";
 
 interface IMapDispatchToProps {
     confirmUpdateLocationFeelingHandler: (dateIdx: number, locationId: string, feeling: StoreData.FeelingVM) => void
@@ -116,7 +117,8 @@ class TripDetailsModalComponent extends PureComponent<Props, State> {
     render() {
         return (
             <View>
-                <ConfirmationModal title="DELETE LOCATION" content="Are you sure you want to delete this location ?"
+                <ConfirmationModal title={getLabel("trip_detail.delete_location_modal_header")} 
+                    content={getLabel("trip_detail.delete_location_modal_content")}
                     confirmHandler={this._removeLocationConfirmed}
                     cancelHandler={this._cancelModal}
                     isVisible={this.props.isConfirmationModalVisible} />
@@ -143,7 +145,7 @@ class TripDetailsModalComponent extends PureComponent<Props, State> {
                     confirmHandler={this._onUpdateDateRange}>            
                 </DateRangePicker> 
                 <Modal isVisible={this.props.isUpdateNameModalVisible}
-                    title="Edit trip name"
+                    title={getLabel("trip_detail.edit_trip_name_modal_header")}
                 >
                     <TripEditForm
                         fields={[TripEditFormEnum.Name]}

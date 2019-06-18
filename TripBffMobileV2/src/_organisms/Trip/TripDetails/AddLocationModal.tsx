@@ -14,6 +14,7 @@ const geoCodingService = mbxGeocoding(baseClient);
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from "moment";
 import SearchLocation from '../../../_molecules/Trip/SearchLocationComponent';
+import { getLabel } from "../../../../i18n";
 
 export interface Props {
   isVisible: boolean;
@@ -111,12 +112,12 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
             onModalHide={() => this.onModalHide()}>
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
-                    <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
-                    <Button transparent onPress={this._onConfirm}><Text>Add</Text></Button>
+                    <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
+                    <Button transparent onPress={this._onConfirm}><Text>{getLabel("action.add")}</Text></Button>
                 </View>
                 <View style={styles.timeContainer}>
                   <TouchableOpacity onPress={this._showDateTimePicker}>
-                    <Text>From Time: {this.state.displayTime}</Text>
+                    <Text>{getLabel("trip_detail.add_location_from_time_label")}: {this.state.displayTime}</Text>
                   </TouchableOpacity>
                   <DateTimePicker
                     mode="time"
@@ -127,7 +128,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
                   />
                 </View>
                 <View style={styles.placesContainer}>
-                  <Text>Search Places: </Text>
+                  <Text>{getLabel("trip_detail.add_location_search_place_label")}: </Text>
                   <SearchLocation 
                     confirmHandler={this._selectedLocationHandler}>
                   </SearchLocation>

@@ -9,6 +9,7 @@ import { StoreData } from "../../store/Interfaces";
 import { TabView } from 'react-native-tab-view';
 import { SearchBar } from 'react-native-elements';
 import uuid4 from 'uuid/v4';
+import { getLabel } from "../../../i18n";
 
 class SelectedHighlightItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -73,7 +74,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
 
       if (numberOfCharacters > 20) {
         Toast.show({
-            text: "Please input maximum 20 characters!",
+            text: getLabel("location_detail.user_defined_like_dislike_warning"),
             buttonText: "Okay",
             position: "top",
             type: "warning",
@@ -109,7 +110,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
 
     if (numberOfCharacters > 20) {
       Toast.show({
-          text: "Please input maximum 20 characters!",
+          text: getLabel("location_detail.user_defined_like_dislike_warning"),
           buttonText: "Okay",
           position: "top",
           type: "warning",
@@ -181,7 +182,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
            </View>
            <View>
               <SearchBar
-                placeholder="Search"
+                placeholder={getLabel("action.search")}
                 onChangeText={this.updateSearch}
                 value={this.state.search}
               />
@@ -212,8 +213,8 @@ class AddHighlightModalContentComponent extends React.PureComponent<any, ModalSt
     this.state = {
       index: 0,
       routes: [
-        { key: 'first', title: 'Like' },
-        { key: 'second', title: 'Dislike' },
+        { key: 'first', title: getLabel("location_detail.like_label") },
+        { key: 'second', title: getLabel("location_detail.dislike_label")  },
       ]
     }
   }
@@ -353,8 +354,8 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
             isVisible={isVisible} hideModalContentWhileAnimating>
               <View style={styles.modalInnerContainer}>
                   <View style={styles.buttons}>
-                      <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
-                      <Button transparent onPress={this._onSave}><Text>Save</Text></Button>
+                      <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
+                      <Button transparent onPress={this._onSave}><Text>{getLabel("action.save")}</Text></Button>
                   </View>
                   <View style={styles.modalContentContainer}>
                     <Root>

@@ -1,0 +1,69 @@
+{
+    "menu": {
+        "create": "Tạo",
+        "profile": "Tôi"
+    },
+    "action": {
+        "cancel": "Hủy",
+        "save": "Lưu",
+        "yes": "Đồng ý",
+        "edit": "Chỉnh sửa",
+        "add": "Thêm",
+        "search": "Tìm kiếm",
+        "done": "Hoàn thành",
+        "delete": "Xóa",
+        "okay": "Đồng ý"
+    },
+    "create": {
+        "screen_header_title": "Tạo mới chuyến đi",
+        "trip_name": "Tên chuyến đi",
+        "from_date": "Ngày khởi hành",
+        "end_date": "Ngày kết thúc",
+        "create_button": "Tạo"
+    },
+    "import": {
+        "skip_button": "Bỏ qua",
+        "import_button": "Nhập",
+        "location_information_text": "Địa điểm có thể không chính xác. Bạn có thể chỉnh sửa ở trang sau!",        
+        "image_uploading_message": "Đang tải lên hình ảnh",
+        "loading_image_from_gallery_message": "Đang tải hình từ máy của bạn"
+    },
+    "trip_detail": {
+        "edit_trip_name_menu_label": "Chỉnh sửa tên chuyến đi",
+        "edit_trip_date_range_menu_label": "Chỉnh sửa ngày",        
+        "edit_trip_name_modal_header": "Chỉnh sửa tên chuyến đi",
+        "edit_trip_name_label": "Tên chuyến đi",
+        "add_location_from_time_label": "Thời gian bắt đầu",
+        "add_location_search_place_label": "Địa điểm",
+        "feeling_label": "Cảm nhận",
+        "feeling_adjective": "Cảm thấy",
+        "activity_label": "Họat động",
+        "delete_location_modal_header": "Xóa địa điểm",
+        "delete_location_modal_content": "Bạn có chắc là bạn muốn xóa địa điểm này không ?",
+        "day_label": "Ngày"
+    },
+    "location_detail": {
+        "like_dislike_section_label": "Những thứ bạn thích/không thích",
+        "like_label": "Thích",
+        "dislike_label": "Không thích",
+        "user_defined_like_dislike_warning": "Xin vui lòng chỉ nhập tối đa 20 kí tự!",
+        "description_section_label": "Mô tả",
+        "description_placeholder": "Cảm giác của bạn là gì?",
+        "description_view_more": "Xem thêm",
+        "description_view_less": "Thu gọn",
+        "media_section_label": "Hình ảnh",
+        "image_uploading_message": "Đang tải lên hình ảnh. Xin vui lòng chờ!"
+    },
+    "export": {
+        "infographic_tab_label": "infographic",
+        "images_tab_label": "Hình ảnh",
+        "images_selection_warning": "Xin vui lòng chọn tối đa 5 hình ảnh bạn yêu thích nhất để chia sẻ!"
+    },
+    "profile": {
+        "trip_label": "Chuyến đi",
+        "trips_label": "Chuyến đi",
+        "delete_trip_menu": "Xóa chuyến đi",
+        "delete_trip_modal_header": "Xóa chuyến đi",
+        "delete_trip_modal_content": "Bạn có chắc là bạn muốn xóa chuyến đi này ? Xóa chuyến đi sẽ xóa tất cả những dữ liệu mà bạn đã thêm vào. Chuyến đi sẽ không thể truy cập nếu nó bị xóa."
+    }       
+}

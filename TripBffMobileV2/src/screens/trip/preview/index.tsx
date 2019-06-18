@@ -33,6 +33,7 @@ import PreviewImages from "./PreviewImage";
 import NBTheme from "../../../theme/variables/commonColor.js";
 import { fetchTrip } from "../../../store/Trip/operations";
 import { loginUsingFacebookAccessToken } from "../../../store/User/operations";
+import { getLabel } from "../../../../i18n";
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
@@ -72,8 +73,8 @@ class InfographicPreview extends React.PureComponent<Props, State> {
     this.state = {
       index: 0,
       routes: [
-        { key: 'first', title: 'Infographic' },
-        { key: 'second', title: 'Images' },
+        { key: 'first', title: getLabel("export.infographic_tab_label") },
+        { key: 'second', title: getLabel("export.images_tab_label") },
       ],
       infographicUrl: "",
       selectedImages: [],
@@ -95,7 +96,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
           alignSelf: "stretch"
               }}
           onPress={navigation.getParam('_cancel')}>
-          <Text style={{ color: "white" }}>Cancel</Text>
+          <Text style={{ color: "white" }}>{getLabel("action.cancel")}</Text>
         </Button>
       ),
     };
@@ -215,7 +216,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
       
       if (this.state.selectedImages.length > 5) {
         Toast.show({
-          text: "Please select maximum 5 most favoriate images to share!",
+          text: getLabel("export.images_selection_warning"),
           buttonText: "Okay",
           type: "warning",
           position: "top",
@@ -347,7 +348,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
 
                       if (index == 1 && this.state.firstRendered) {
                         Toast.show({
-                          text: "Please select maximum 5 most favorite images to share!",
+                          text: getLabel("export.images_selection_warning"),
                           buttonText: "Okay",
                           type: "success",
                           position: "top",

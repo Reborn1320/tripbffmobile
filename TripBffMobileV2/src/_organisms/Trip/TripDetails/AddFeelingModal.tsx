@@ -9,6 +9,7 @@ import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
 import { getAllFeelings } from "../../../store/DataSource/operations";
 import { StoreData } from "../../../store/Interfaces";
+import { getLabel } from "../../../../i18n";
 
 interface IMapDispatchToProps {
   getAllFeelings: () => Promise<StoreData.FeelingVM>
@@ -100,7 +101,7 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
             isVisible={isVisible} hideModalContentWhileAnimating>
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
-                    <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
+                    <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
                 </View>
                 <View style={styles.feelingContainer}>
                   {contentElement}

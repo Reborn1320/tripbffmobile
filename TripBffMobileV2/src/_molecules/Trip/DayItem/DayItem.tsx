@@ -7,6 +7,7 @@ import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from '../../../screens/_shared/LayoutContainer';
 import { StyleSheet } from 'react-native';
+import { getLabel } from "../../../../i18n";
 
 interface IMapDispatchToProps {
     openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
@@ -38,7 +39,7 @@ export class DayItemComponent extends Component<Props, State> {
         return (
             <View style={styles.dayItemContainer}>
                 <View style={styles.dayItemHeader}>
-                    <Text style={{color: "darkred", fontSize: 20}}>Day {dateIdx} - {currentDate}</Text>
+                    <Text style={{color: "darkred", fontSize: 20}}>{getLabel("trip_detail.day_label")} {dateIdx} - {currentDate}</Text>
                     <Button small transparent
                             onPress= {this._openAddLocationModal}>
                         <Icon type={"FontAwesome"} name="plus" />

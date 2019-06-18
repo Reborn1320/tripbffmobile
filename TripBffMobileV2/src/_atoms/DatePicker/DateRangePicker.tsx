@@ -5,6 +5,7 @@ import { connectStyle } from 'native-base';
 import CalendarPicker from 'react-native-calendar-picker';
 import { Moment } from "moment";
 import { toDateUtc } from "../../_function/dateFuncs";
+import { getLabel } from "../../../i18n";
 
 export interface Props {
   isVisible: boolean;
@@ -76,10 +77,10 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
             onRequestClose={this.props.cancelHandler}>
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
-                    <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
+                    <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
                     {
                       this.state.isValid && 
-                      <Button transparent onPress={this._onSave}><Text>Save</Text></Button>
+                      <Button transparent onPress={this._onSave}><Text>{getLabel("action.save")}</Text></Button>
                     }
                 </View>
                 <View style={styles.modalContentContainer}>

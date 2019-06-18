@@ -6,6 +6,8 @@ import { Modal } from "../_atoms";
 import { View, Text, Button, H2 } from "native-base";
 import { StyleSheet, ViewStyle, TextStyle } from "react-native";
 import variables from "../theme/variables/material";
+import { getLabel } from "../../i18n";
+
 export interface Props {
   isVisible: boolean;
   title?: string;
@@ -40,8 +42,8 @@ class ConfirmationModal extends React.PureComponent<Props, State> {
           </View>
           <Text style={styles.contentText}>{content}</Text>
           <View style={styles.buttons}>
-            <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
-            <Button onPress={this._onConfirm}><Text>Yes</Text></Button>
+            <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
+            <Button onPress={this._onConfirm}><Text>{getLabel("action.yes")}</Text></Button>
           </View>
         </View>
       </Modal>
