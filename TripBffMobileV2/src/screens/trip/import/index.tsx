@@ -18,6 +18,7 @@ import { uploadLocationImage, addLocations, IImportLocation } from "../../../sto
 import { getAddressFromLocation, checkAndRequestPhotoPermissionAsync } from "../../../_function/commonFunc";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import NBColor from "../../../theme/variables/commonColor.js";
+import { getLabel } from "../../../../i18n";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -54,7 +55,7 @@ class TripImportation extends Component<Props, State> {
             toDate: props.trip.toDate,
             locations: [],
             isLoading: true,
-            loadingMessage: "Loading image from your gallery",
+            loadingMessage: getLabel("import.loading_image_from_gallery_message"),
             UIState: "select image",
             isHideFooter: true
         }
@@ -133,8 +134,8 @@ class TripImportation extends Component<Props, State> {
 
         // console.log(adapterResult)
         Toast.show({
-            text: "Location might not accurate, you can change it later!",
-            buttonText: "Okay",
+            text: getLabel("import.location_information_text"),
+            buttonText: getLabel("action.okay"),
             position: "top",
             type: "success",
             duration: 3000
@@ -283,7 +284,7 @@ class TripImportation extends Component<Props, State> {
     
             if (isStartUploadImage) {
                 console.log(`uploading image: trip id = ${this.state.tripId}, location id = ${locId}, imageId = ${imageIdToUpload}, url = ${imageUrlToUpload}`)
-                this.setState({ UIState: "uploading image", isLoading: true, loadingMessage: `uploading images ${uploadedImages}/${totalImages}`});
+                this.setState({ UIState: "uploading image", isLoading: true, loadingMessage: `${getLabel("import.image_uploading_message")} ${uploadedImages}/${totalImages}`});
                 console.log("component will update with uploading image");
 
 
@@ -335,14 +336,14 @@ class TripImportation extends Component<Props, State> {
                         >
                             <Text
                                 style={{ color: "grey" }}
-                            >Skip</Text>
+                            >{getLabel("import.skip_button")}</Text>
                         </Button>
 
                         <Button transparent success
                             onPress={this._import}
                             style={{ alignSelf: "stretch", margin: 5, }}
                         >
-                            <Text style={{ color: NBColor.brandMainColor }}>Import</Text>
+                            <Text style={{ color: NBColor.brandMainColor }}>{getLabel("import.import_button")}</Text>
                         </Button>
                     </Footer>
                 }             

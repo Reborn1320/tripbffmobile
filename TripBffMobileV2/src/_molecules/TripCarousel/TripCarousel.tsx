@@ -14,6 +14,7 @@ import menuOptionStyles from "../../theme/variables/menuOptions.style.js";
 import { StoreData } from "../../store/Interfaces";
 import moment from "moment";
 import { connect } from "react-redux";
+import { getLabel } from "../../../i18n";
 
 export type ITripEntry = {
   tripId: string,
@@ -143,7 +144,7 @@ export class TripCarouselComponent extends React.Component<Props, State> {
                   }
                 }>
                 <MenuOption onSelect={this._handleDeleteTrip} >
-                  <Text style={styles.deleteLabel}>Delete Trip</Text>
+                  <Text style={styles.deleteLabel}>{getLabel("profile.delete_trip_menu")}</Text>
                 </MenuOption>
               </MenuOptions>
             </Menu>

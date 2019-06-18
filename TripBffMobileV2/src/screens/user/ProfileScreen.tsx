@@ -11,6 +11,7 @@ import UserDetails from "../../_organisms/User/UserDetails";
 import { logOut } from "../../store/User/operations";
 import { getCancelToken } from "../../_function/commonFunc";
 import ConfirmationModal from "../../_molecules/ConfirmationModal";
+import { getLabel } from "../../../i18n";
 
 export interface IStateProps { }
 
@@ -157,8 +158,8 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                             handleShareClick={this._handleShareBtnClick}
                             handleDeleteTrip={this._handleDeleteTrip}
                         />
-                        <ConfirmationModal title="DELETE TRIP" 
-                            content="Are you sure you want to delete this Trip ? Deleting a Trip will delete all the items you have added to it. The Trip cannot be retrived once it is deleted."
+                        <ConfirmationModal title={getLabel("profile.delete_trip_modal_header")}
+                            content={getLabel("profile.delete_trip_modal_content")}
                             confirmHandler={this._confirmDeleteTrip}
                             cancelHandler={this._cancelDeleteModal}
                             isVisible={this.state.isOpenDeleteConfirmModal} />

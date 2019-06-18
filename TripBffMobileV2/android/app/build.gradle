@@ -153,6 +153,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-i18n')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-reanimated')
     implementation project(':react-native-gesture-handler')

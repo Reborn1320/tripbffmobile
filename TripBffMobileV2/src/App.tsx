@@ -25,6 +25,7 @@ import { TripCarouselDoc } from "./_molecules/TripCarousel/TripCarousel.doc";
 import ImageUploadDoc from "./screens/trip/import/ImageUpload.doc";
 import LandingPageScreen from "./screens/LandingPage";
 import NBColor from "./theme/variables/commonColor.js";
+import { getLabel } from "../i18n";
 
 var mockLoginApi = mockLoginApiService;
 var mockTripApi = mockTripApiService;
@@ -48,7 +49,7 @@ const store = createStore(
   )
 );
 
-const navigationOptions =  {
+const stackConfigs =  {
   headerMode: "screen",
   defaultNavigationOptions: {
     // headerStyle: {
@@ -66,7 +67,7 @@ const TripCreationNavigator = createStackNavigator(
     TripCreation: { screen: TripCreation },
     TripImportation: { screen: TripImportationScreen }, 
   },
-  navigationOptions
+  stackConfigs
 );
 
 TripCreationNavigator.navigationOptions = ({ navigation }) => {
@@ -87,7 +88,7 @@ const TripDetailsNavigator = createStackNavigator(
     LocationImageDetail: { screen: LocationImageDetailScreen },
     InfographicPreview: { screen: InfographicPreviewScreen },
   },
-  navigationOptions
+  stackConfigs
 );
 
 const ProfileNavigator = createStackNavigator(
@@ -98,7 +99,7 @@ const ProfileNavigator = createStackNavigator(
     LocationImageDetail: { screen: LocationImageDetailScreen },
     InfographicPreview: { screen: InfographicPreviewScreen },
   },
-  navigationOptions
+  stackConfigs
 );
 
 ProfileNavigator.navigationOptions = ({ navigation }) => {
@@ -143,8 +144,18 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
 };
 
 const TabNavigator = createBottomTabNavigator({
-  "Create": TripCreationNavigator,
-  "Me": ProfileNavigator,
+  "Create": {
+    screen: TripCreationNavigator,
+    navigationOptions: {
+      tabBarLabel: getLabel("menu.create")
+    }
+  },
+  "Me": {
+    screen: ProfileNavigator,
+    navigationOptions: {
+      tabBarLabel: getLabel("menu.profile")
+    }
+  }
 },
 {
   defaultNavigationOptions: ({ navigation }) => ({

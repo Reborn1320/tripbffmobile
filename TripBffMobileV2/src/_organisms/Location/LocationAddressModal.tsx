@@ -12,7 +12,7 @@ const baseClient = mbxClient({ accessToken: 'pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFt
 const geoCodingService = mbxGeocoding(baseClient);
 import Mapbox from '@mapbox/react-native-mapbox-gl';
 Mapbox.setAccessToken('pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g');
-import moment from "moment";
+import { getLabel } from "../../../i18n";
 import SearchLocation from '../../_molecules/Trip/SearchLocationComponent'
 
 export interface Props {
@@ -67,8 +67,8 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
             isVisible={isVisible} hideModalContentWhileAnimating>
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
-                    <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
-                    <Button transparent onPress={this._onConfirm}><Text>Save</Text></Button>
+                    <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
+                    <Button transparent onPress={this._onConfirm}><Text>{getLabel("action.save")}</Text></Button>
                 </View>
                 <SearchLocation 
                     confirmHandler={this._selectedLocationHandler}>

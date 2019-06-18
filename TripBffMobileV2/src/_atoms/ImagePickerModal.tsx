@@ -6,6 +6,7 @@ import { connectStyle } from 'native-base';
 import CameraRollPicker from 'react-native-camera-roll-picker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Loading from "./Loading/Loading";
+import { getLabel } from "../../i18n";
 
 export interface Props {
   isVisible: boolean;
@@ -89,14 +90,14 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
             isVisible={isVisible} hideModalContentWhileAnimating>
             {this.state.isUploadingImages ? (
                 <View style={[styles.modalInnerContainer, styles.loading]}>
-                     <Loading message={'Uploading images. Please wait!'} />
+                     <Loading message={getLabel("location_detail.image_uploading_message")} />
                      <Text>{numUploaded + "/" + num}</Text>
                 </View>
             ) : (
                 <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
-                        <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
-                        <Button transparent onPress={this._onSave}><Text>Done</Text></Button>
+                        <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
+                        <Button transparent onPress={this._onSave}><Text>{getLabel("action.add")}</Text></Button>
                     </View>
                     <View style={styles.modalContentContainer}>
                         <CameraRollPicker

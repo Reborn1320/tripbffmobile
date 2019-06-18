@@ -3,6 +3,7 @@ import { View, Text, Button, Icon } from "native-base";
 import { StyleSheet, ViewStyle, TextInput, Keyboard } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
+import { getLabel } from "../../../i18n";
 
 export interface Props {
   isVisible: boolean;
@@ -47,12 +48,12 @@ class UpdateLocationDescriptionComponent extends React.PureComponent<Props, Stat
             isVisible={isVisible} hideModalContentWhileAnimating>
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
-                    <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
-                    <Button transparent onPress={this._onSave}><Text>Save</Text></Button>
+                    <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
+                    <Button transparent onPress={this._onSave}><Text>{getLabel("action.save")}</Text></Button>
                 </View>
                 <View style={styles.modalContentContainer}>
                     <TextInput
-                            placeholder = "What are your feeling?"
+                            placeholder = {getLabel("location_detail.description_placeholder")}
                             multiline = {true}                        
                             numberOfLines = {15}
                             textAlignVertical = "top"

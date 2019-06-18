@@ -9,6 +9,7 @@ import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
 import { getAllActivities } from "../../../store/DataSource/operations";
 import { StoreData } from "../../../store/Interfaces";
+import { getLabel } from "../../../../i18n";
 
 interface IMapDispatchToProps {
   getAllActivities: () => Promise<StoreData.ActivityVM>
@@ -102,7 +103,7 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
             isVisible={isVisible} hideModalContentWhileAnimating>
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
-                    <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
+                    <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
                 </View>
                 <View style={styles.activityContainer}>
                   {contentElement}

@@ -3,6 +3,7 @@ import { Button, Text, View, Form, Item, Label, Input } from 'native-base';
 import moment, { Moment } from "moment";
 import DateRangePicker from "../../../_atoms/DatePicker/DateRangePicker";
 import NBColor from "../../../theme/variables/commonColor.js";
+import { getLabel } from "../../../../i18n";
 
 export interface Props {
     createTrip: (name: string, fromDate: Moment, toDate: Moment) => Promise<string>;
@@ -68,7 +69,7 @@ export class TripCreationForm extends PureComponent<Props, any> {
       <Button
         style={{ alignSelf: 'center', backgroundColor: NBColor.brandMainColor }}
         onPress={this._onClickCreateTrip}>
-        <Text>Create</Text>
+        <Text>{getLabel("create.create_button")}</Text>
       </Button>
     );
   }
@@ -79,16 +80,16 @@ export class TripCreationForm extends PureComponent<Props, any> {
       <View>
         <Form>
             <Item fixedLabel>
-              <Label>Trip Name</Label>
+              <Label>{getLabel("create.trip_name")}</Label>
               <Input
                 onChangeText={(tripName) => this.setState({ tripName })} />
             </Item>
             <Item style={{height: 50}}>
-              <Label>From Date</Label>
+              <Label>{getLabel("create.from_date")}</Label>
               <Text onPress={this._openDateRangePickerModal}>{this.state.fromDate.format('DD/MM/YYYY')}</Text>
             </Item>
             <Item style={{height: 50}}>
-              <Label>End Date</Label>
+              <Label>{getLabel("create.end_date")}</Label>
               <Text onPress={this._openDateRangePickerModal}>{this.state.toDate.format('DD/MM/YYYY')}</Text>
             </Item>
           

@@ -5,6 +5,7 @@ import { StyleSheet, ViewStyle } from "react-native";
 import { Avatar, Text } from "react-native-elements";
 import { StoreData } from "../../store/Interfaces";
 import { connect } from "react-redux";
+import { getLabel } from "../../../i18n";
 
 export interface IStateProps {
 }
@@ -52,7 +53,7 @@ export class UserDetailsComponent extends PureComponent<Props & IStateProps, Sta
               {/* Facts */}
               <View style={styles.factContainer}>
                 <H2>{nTrips}</H2>
-                <Text>Trips</Text>
+                <Text>{getLabel("profile.trips_label")}</Text>
               </View>
               {/* <View style={styles.factContainer}>
                 <H2>2</H2>

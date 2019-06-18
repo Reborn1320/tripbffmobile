@@ -7,6 +7,7 @@ import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import { NavigationConstants } from "../../../screens/_shared/ScreenConstants";
 import CarouselItem from "../DayItem/CarouselItem";
+import { getLabel } from "../../../../i18n";
 
 const SLIDER_1_FIRST_ITEM = 0;
 
@@ -63,7 +64,7 @@ class LocationItemComponent extends Component<Props, State> {
 
         var feelingLabel = location.feeling && location.feeling.label ? location.feeling.label : "";
         var feelingIcon = location.feeling && location.feeling.icon ? location.feeling.icon : "smile";
-        var activityLabel = location.activity && location.activity.label ? location.activity.label : "Activity";
+        var activityLabel = location.activity && location.activity.label ? location.activity.label : getLabel("trip_detail.activity_label");
         var activityIcon = location.activity && location.activity.icon ? location.activity.icon : "running";        
 
         let locationImages = [];
@@ -110,8 +111,12 @@ class LocationItemComponent extends Component<Props, State> {
                 <CardItem>
                     <Left>
                         <Button transparent onPress={this._openUpdateFeelingModal}>
-                            <Icon name={feelingIcon} type="FontAwesome5" /> 
-                            <Text>Feeling {feelingLabel} </Text>                       
+                            <Icon name={feelingIcon} type="FontAwesome5" />
+                            {
+                                feelingLabel && <Text>{getLabel("trip_detail.feeling_adjective")} {feelingLabel} </Text>    ||
+                                                <Text>{getLabel("trip_detail.feeling_label")} </Text>                            
+                            }      
+                                                  
                         </Button>                         
                     </Left>
                     <Right>

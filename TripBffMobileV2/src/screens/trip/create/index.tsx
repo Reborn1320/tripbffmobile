@@ -9,6 +9,7 @@ import { TripCreationForm } from "./TripCreationForm";
 import { createTrip as createTripAsync, updateTrip } from "../../../store/Trip/operations";
 import AppFooter from "../../shared/AppFooter"
 import { NavigationConstants } from "../../_shared/ScreenConstants";
+import { getLabel } from "../../../../i18n";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
   user: StoreData.UserVM
@@ -26,7 +27,7 @@ class TripCreation extends Component<Props, State> {
 
   static navigationOptions = ({ navigation, navigationOptions }) => {
     return {
-      title: 'Create new trip'
+      title:  getLabel('create.screen_header_title')
     };
   };    
 

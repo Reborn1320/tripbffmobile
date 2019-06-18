@@ -8,6 +8,7 @@ import { connectStyle } from 'native-base';
 import  Autocomplete  from "react-native-autocomplete-input";
 import { getAddressFromLocation } from "../../_function/commonFunc";
 import { TextInput } from "react-native-gesture-handler";
+import { getLabel } from "../../../i18n";
 
 export interface Props {
   confirmHandler: (name, address, long, lat) => void;
@@ -122,7 +123,7 @@ class SearchLocationComponent extends React.Component<Props, State> {
       <View>        
         <Autocomplete
             autoCapitalize="none"
-            placeholder="Search"
+            placeholder={getLabel("action.search")}
             autoCorrect={false}
             value={this.state.query}      
             onChangeText={text => this.searchPlaces(text)}               

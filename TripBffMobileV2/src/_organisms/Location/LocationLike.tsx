@@ -2,7 +2,8 @@ import React from "react";
 import { Text, View, Icon, Button } from "native-base";
 import _, { } from "lodash";
 import { StoreData } from "../../store/Interfaces";
-import { Badge } from "react-native-elements"
+import { Badge } from "react-native-elements";
+import { getLabel } from "../../../i18n";
 
 export interface Props {
     likeItems: Array<StoreData.LocationLikeItemVM>,
@@ -24,7 +25,7 @@ export default class LocationLike extends React.PureComponent<Props, State> {
                 <Button transparent
                     onPress={this._openUpdateHighlightModal}>
                     <Icon name="thumbs-up" type="FontAwesome5" />
-                    <Text>Things you like/dislike</Text>
+                    <Text>{getLabel("location_detail.like_dislike_section_label")}</Text>
                 </Button>
 
                 {

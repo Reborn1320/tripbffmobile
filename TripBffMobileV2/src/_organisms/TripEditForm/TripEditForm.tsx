@@ -6,8 +6,7 @@ import DatePicker from "../../_atoms/DatePicker/DatePicker";
 import { mixins } from "../../_utils";
 import { StyleSheet, ViewStyle, TextStyle } from "react-native";
 import _ from "lodash";
-import { connect } from "react-redux";
-import { StoreData } from "../../store/Interfaces";
+import { getLabel } from "../../../i18n";
 
 export interface Props {
   onClickEdit: (name: string) => void;
@@ -55,7 +54,7 @@ class TripEditForm extends PureComponent<Props, State> {
       <Button
         style={{ alignSelf: 'center' }}
         onPress={this._confirmEdit}>
-        <Text>Edit</Text>
+        <Text>{getLabel("action.edit")}</Text>
       </Button>
     );
   }
@@ -67,7 +66,7 @@ class TripEditForm extends PureComponent<Props, State> {
       <Form style={styles.formContainer}>
         {this.displayField(TripEditFormEnum.Name) &&
           <Item regular inlineLabel style={styles.item}>
-            <Label>Trip name</Label>
+            <Label>{getLabel("trip_detail.edit_trip_name_label")}</Label>
             <Input
               value={tripName}
               onChangeText={(newName) => this.setState({ tripName: newName })} />
@@ -77,7 +76,7 @@ class TripEditForm extends PureComponent<Props, State> {
           <Button transparent light
             style={{ alignSelf: 'center' }}
             onPress={() => { if (this.props.onCancel) this.props.onCancel() }}>
-            <Text>Cancel</Text>
+            <Text>{getLabel("action.cancel")}</Text>
           </Button>
           {this.formValid() && this.renderEditBtn()}
         </View>

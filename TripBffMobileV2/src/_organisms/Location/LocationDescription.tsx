@@ -4,6 +4,7 @@ import { Text, View, Icon } from "native-base";
 import _, { } from "lodash";
 import { connectStyle } from 'native-base';
 import ViewMoreText from 'react-native-view-more-text';
+import { getLabel } from "../../../i18n";
 
 export interface Props {
     description: string,
@@ -21,13 +22,13 @@ class LocationDescriptionComponent1 extends React.PureComponent<Props, State> {
 
     renderViewMore(onPress){
         return(
-          <Text style={styles.showMoreLessBtn} onPress={onPress}>View more</Text>
+          <Text style={styles.showMoreLessBtn} onPress={onPress}>{getLabel("location_detail.description_view_more")}</Text>
         )
       }
 
     renderViewLess(onPress){
         return(
-            <Text style={styles.showMoreLessBtn} onPress={onPress}>View less</Text>
+            <Text style={styles.showMoreLessBtn} onPress={onPress}>{getLabel("location_detail.description_view_less")}</Text>
         )
     }
 
@@ -36,7 +37,7 @@ class LocationDescriptionComponent1 extends React.PureComponent<Props, State> {
             <View>
                 <View>
                     <Text>
-                        Description
+                        {getLabel("location_detail.description_section_label")}
                     </Text>
                 </View>
                 <View style={styles.textInputContainer}>
@@ -57,7 +58,7 @@ class LocationDescriptionComponent1 extends React.PureComponent<Props, State> {
                         )
                     : (
                         <TextInput
-                            placeholder = "What are your feeling?"
+                            placeholder = {getLabel("location_detail.description_placeholder")}
                             multiline = {true}                        
                             numberOfLines = {3}
                             editable = {false}
