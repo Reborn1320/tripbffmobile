@@ -1,6 +1,9 @@
 import { PermissionsAndroid } from "react-native";
 import axios from "axios";
+import { func } from "prop-types";
 const CancelToken = axios.CancelToken;
+var RNFS = require('react-native-fs');
+import _, { } from "lodash";
 
 export function getAddressFromLocation (locationJson) {
     let address = "";
@@ -59,4 +62,30 @@ export function getCancelToken(cancelRequest) {
   })
 
   return { cancelToken, cancelRequest };
+}
+
+export async function deleteFileInLocalStorate(folderPath, fileName) {
+  var filePath = RNFS.DocumentDirectoryPath + `/${folderPath}/${fileName}`;
+
+  RNFS.unlink(filePath)
+      .then(() => {
+        console.log('FILE DELETED: ' + filePath);
+      })
+      // `unlink` will throw an error, if the item to unlink does not exist
+      .catch((err) => {
+        console.log(err.message);
+      });
+}
+
+export async function deleteFilesInFolder(folderPath) {
+  RNFS.readDir(RNFS.DocumentDirectoryPath + `/${folderPath}`)
+      .then((result) => {
+          console.log('all storaged images: ' + JSON.stringify(result));
+          _.each(result, file => {
+              deleteFileInLocalStorate(folderPath, file.name);            
+          });
+      })
+      .catch((err) => {
+        console.log(err.message, err.code);
+      });;
 }
