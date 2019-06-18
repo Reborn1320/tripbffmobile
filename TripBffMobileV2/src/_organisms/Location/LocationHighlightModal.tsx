@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, Text, Button, Icon } from "native-base";
+import { View, Text, Button, Icon, Toast, Root } from "native-base";
 import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
@@ -8,6 +8,7 @@ import { getAllHighlights } from "../../store/DataSource/operations";
 import { StoreData } from "../../store/Interfaces";
 import { TabView } from 'react-native-tab-view';
 import { SearchBar } from 'react-native-elements';
+import uuid4 from 'uuid/v4';
 
 class SelectedHighlightItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -68,38 +69,64 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
     var newItem = null;
 
     if (search) {
-      var searchLower = search.toLowerCase();
-      filterItems = filterItems.filter(item => item.label.toLowerCase().includes(searchLower));
+      let numberOfCharacters = search.length;
 
-      if (this.state.newDefinedItem)
-        filterItems = filterItems.filter(item => item.highlightId != this.state.newDefinedItem.highlightId);
+      if (numberOfCharacters > 20) {
+        Toast.show({
+            text: "Please input maximum 20 characters!",
+            buttonText: "Okay",
+            position: "top",
+            type: "warning",
+            duration: 3000
+        });
+      }
+      else {
+        var searchLower = search.toLowerCase();
+            filterItems = filterItems.filter(item => item.label.toLowerCase().includes(searchLower));
 
-      var exactItem = filterItems.find(item => item.label.toLowerCase() == searchLower);
+        if (this.state.newDefinedItem)
+          filterItems = filterItems.filter(item => item.highlightId != this.state.newDefinedItem.highlightId);
 
-      if (!exactItem) {
-        var lastPredefinedItem = this.props.items.slice(-1);
+        var exactItem = filterItems.find(item => item.label.toLowerCase() == searchLower);
 
-        newItem = {          
-          highlightId: lastPredefinedItem[0].highlightId + 1000000,
-          label: search,
-          highlightType: lastPredefinedItem[0].highlightType
-        };
-        filterItems.push(newItem);         
-      }     
+        if (!exactItem) {
+          var lastPredefinedItem = this.props.items.slice(-1);
+
+          newItem = { 
+            label: search,
+            highlightType: lastPredefinedItem[0].highlightType
+          };
+          filterItems.push(newItem);         
+        }     
+      }      
     }
     
     this.setState({ preDefinedItems: filterItems, search: search, newDefinedItem: newItem });
   };
 
   _onConfirm = (selectedItem) => {
-    var selectedItems = [...this.state.selectedItems, selectedItem];
-    this.setState({
-      preDefinedItems: this.props.items.filter(item => !selectedItems.includes(item)),
-      selectedItems: selectedItems,
-      newDefinedItem: {},
-      search: ''
-    });
-    this.props.addSelectedHighlights(selectedItem);
+    let numberOfCharacters = selectedItem.label.length;
+
+    if (numberOfCharacters > 20) {
+      Toast.show({
+          text: "Please input maximum 20 characters!",
+          buttonText: "Okay",
+          position: "top",
+          type: "warning",
+          duration: 3000
+      });
+    }
+    else {
+      selectedItem.highlightId = uuid4();
+      var selectedItems = [...this.state.selectedItems, selectedItem];
+      this.setState({
+        preDefinedItems: this.props.items.filter(item => !selectedItems.includes(item)),
+        selectedItems: selectedItems,
+        newDefinedItem: {},
+        search: ''
+      });
+      this.props.addSelectedHighlights(selectedItem);
+    }   
   }
 
   _onDeselectConfirm = (deSelectedItem) => {
@@ -200,22 +227,26 @@ class AddHighlightModalContentComponent extends React.PureComponent<any, ModalSt
   }
 
   render() {
-    const likePreDefinedItems = this.props.preDefinedHighlights.filter(item =>  item.highlightType == "Like" );
-    const dislikePreDefinedItems = this.props.preDefinedHighlights.filter(item => item.highlightType == "Dislike" );
-
+    let likePreDefinedItems = this.props.preDefinedHighlights.filter(item =>  item.highlightType == "Like" );
+    let dislikePreDefinedItems = this.props.preDefinedHighlights.filter(item => item.highlightType == "Dislike" );
     let likeHighlightItems = [];
     let disLikeHighlightItems = [];
 
     if (this.props.selectedHighlightItems && this.props.selectedHighlightItems.length > 0) {
-      var selectedHighlights = this.props.preDefinedHighlights.filter(item => {
-          let selectedHighlight = this.props.selectedHighlightItems.find(selectedItem => selectedItem.highlightId == item.highlightId);
+      var notSelectedPredefinedHighlights = this.props.preDefinedHighlights.filter(item => {
+          let selectedHighlight = 
+              this.props.selectedHighlightItems.find(selectedItem => selectedItem.highlightId == item.highlightId);
 
           if (selectedHighlight)
-              return true;
-          return false;
+              return false;
+          return true;
       });
-      likeHighlightItems = selectedHighlights.filter(item =>  item.highlightType == "Like" );
-      disLikeHighlightItems = selectedHighlights.filter(item =>  item.highlightType == "Dislike" );
+
+      likeHighlightItems = this.props.selectedHighlightItems.filter(item =>  item.highlightType == "Like" );
+      disLikeHighlightItems = this.props.selectedHighlightItems.filter(item =>  item.highlightType == "Dislike" );
+      
+      likePreDefinedItems = notSelectedPredefinedHighlights.filter(item =>  item.highlightType == "Like" );
+      dislikePreDefinedItems = notSelectedPredefinedHighlights.filter(item => item.highlightType == "Dislike" );
     }
 
     return (
@@ -306,6 +337,7 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
 
   render() {
     const { isVisible } = this.props;
+    
     var contentElement = this.props.preDefinedHighlights
           ? <AddHighlightModalContentComponent
               preDefinedHighlights={this.props.preDefinedHighlights}
@@ -319,16 +351,19 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
         <RNModal style={styles.modal} 
             onModalShow={this._onModalWillShow}
             isVisible={isVisible} hideModalContentWhileAnimating>
-            <View style={styles.modalInnerContainer}>
-                <View style={styles.buttons}>
-                    <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
-                    <Button transparent onPress={this._onSave}><Text>Save</Text></Button>
-                </View>
-                <View style={styles.modalContentContainer}>
-                  {contentElement}
-                </View>                
-            </View>
+              <View style={styles.modalInnerContainer}>
+                  <View style={styles.buttons}>
+                      <Button transparent onPress={this._onCancel}><Text>Cancel</Text></Button>
+                      <Button transparent onPress={this._onSave}><Text>Save</Text></Button>
+                  </View>
+                  <View style={styles.modalContentContainer}>
+                    <Root>
+                      {contentElement}
+                    </Root>                    
+                  </View>                
+              </View>           
         </RNModal>
+        
     );
   }
 }
