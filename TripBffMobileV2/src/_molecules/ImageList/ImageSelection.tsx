@@ -60,7 +60,7 @@ export class ImageSelection extends React.Component<Props, State> {
           }
           {isChecked == true &&
             <View style={Object.assign({ width, height: width, position: "absolute", ...mixins.centering })}>
-              <View style={{ position: "absolute", width: 15, height: 15, backgroundColor: "white", borderRadius: 99 }} />
+              <View style={{ position: "absolute", width: 19, height: 19, backgroundColor: "white", borderRadius: 99 }} />
               <Icon style={styles.checkIcon} active solid type="FontAwesome5" name="check-circle" />
             </View>
           }
