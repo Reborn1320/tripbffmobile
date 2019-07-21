@@ -83,7 +83,7 @@ class LocationMediaDoc extends Component<Props, State> {
   }
 
   render() {
-    const { isLoaded, images, isMassSelection } = this.state
+    const { images, isMassSelection } = this.state
     return (
       <Container>
         <Header>

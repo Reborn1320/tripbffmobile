@@ -18,7 +18,7 @@ export interface Props {
 export interface State {
 }
 
-class ImportImageLocationItem extends React.Component<Props, State> {
+export default class ImportImageLocationItem extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -95,5 +95,3 @@ class ImportImageLocationItem extends React.Component<Props, State> {
     }
 
 }
-
-export default ImportImageLocationItem;
