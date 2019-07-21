@@ -144,8 +144,8 @@ export default {
   tabActiveBgColor: "#3F51B5",
 
   // Header
-  toolbarBtnColor: "#fff",
-  toolbarDefaultBg: "#3F51B5",
+  toolbarBtnColor: "#2E97A1",
+  toolbarDefaultBg: "#fff",
   toolbarHeight: 56,
   toolbarSearchIconSize: 23,
   toolbarInputColor: "#fff",
@@ -155,7 +155,7 @@ export default {
   toolbarDefaultBorder: "#3F51B5",
   iosStatusbar: "light-content",
   get statusBarColor() {
-    return color(this.toolbarDefaultBg)
+    return color("#2E97A1")
       .darken(0.2)
       .hex();
   },

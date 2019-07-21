@@ -102,13 +102,13 @@ const styles = StyleSheet.create<Style>({
     flex: 1,
     position: 'absolute',
     backgroundColor: "black",
-    opacity: 0.4
+    opacity: 0.35
   },
   checkIcon: {
     color: NBTheme.brandPrimary,
-    width: 20,
-    height: 20,
-    fontSize: 18,
+    width: 25,
+    height: 25,
+    fontSize: 23,
   },
   favoriteContainer: {
     width: 30, height: 30,
