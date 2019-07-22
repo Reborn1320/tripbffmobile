@@ -34,7 +34,7 @@ export default class ImportImageLocationItem extends React.Component<Props, Stat
 
     private renderItem = (itemInfo: { item: any, index: number }) => {
         const img = itemInfo.item;
-        const { itemWidth } = calculateImageListWidth();
+        const { itemWidth } = calculateImageListWidth(10, 10);
 
         return (
             <ImageSelection
@@ -99,6 +99,7 @@ export default class ImportImageLocationItem extends React.Component<Props, Stat
                 <ImageList
                     items={location.images.map(img => ({ ...img, data: img }))}
                     renderItem={this.renderItem}
+                    paddingLeftRight={10}
                 />
             </View>
         );
@@ -134,8 +135,8 @@ const styles = StyleSheet.create<Style>({
     locationAddressContainer: {
         marginLeft: 10,
         marginRight: 10,
-        marginTop: 2,
-        marginBottom: 6,
+        marginTop: 3,
+        marginBottom: 7,
     },
     checkbox: {
         // ...mixins.themes.debug,
@@ -167,12 +168,14 @@ const styles = StyleSheet.create<Style>({
         paddingTop: 3,
         alignSelf: "flex-start",
         fontWeight: "normal",
+        fontFamily: "Roboto",
         // flexGrow: 1,
         // ...mixins.themes.debug,
-        color: "darkgrey",
+        // color: "darkgrey",
     },
     locationAddress: {
-        fontSize: 14,
-        color: "darkgrey",
+        fontSize: 13,
+        // color: "darkgrey",
+        fontFamily: "Roboto",
     }
 })
