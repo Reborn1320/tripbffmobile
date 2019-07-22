@@ -24,7 +24,7 @@ import LocationImageDetailScreen from "./screens/location/LocationImageDetail/Lo
 import { TripCarouselDoc } from "./_molecules/TripCarousel/TripCarousel.doc";
 import ImageUploadDoc from "./screens/trip/import/ImageUpload.doc";
 import LandingPageScreen from "./screens/LandingPage";
-import NBColor from "./theme/variables/commonColor.js";
+import NBTheme from "./theme/variables/material.js";
 import { getLabel } from "../i18n";
 
 var mockLoginApi = mockLoginApiService;
@@ -52,10 +52,11 @@ const store = createStore(
 const stackConfigs =  {
   headerMode: "screen",
   defaultNavigationOptions: {
-    // headerStyle: {
-    //   backgroundColor: NBColor.brandMainColor
-    // },
-    headerTintColor: '#000',
+    headerStyle: {
+      // backgroundColor: NBColor.brandMainColor,
+      // color: NBTheme.brandPrimary
+    },
+    headerTintColor: NBTheme.brandPrimary,
     headerTitleStyle: {
       fontWeight: 'bold'
     }
@@ -163,7 +164,7 @@ const TabNavigator = createBottomTabNavigator({
       getTabBarIcon(navigation, focused, tintColor),
   }),
   tabBarOptions: {
-    activeTintColor: NBColor.brandMainColor,
+    activeTintColor: NBTheme.brandPrimary,
     inactiveTintColor: 'gray',
     labelStyle: {
       fontSize: 12,

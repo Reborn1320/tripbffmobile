@@ -63,9 +63,10 @@ class ImageList extends React.Component<Props, States> {
   // }
 
   render() {
-    const { items } = this.props;
+    const { items, paddingLeftRight } = this.props;
+    var baseStyle = paddingLeftRight ? { marginLeft: paddingLeftRight, marginRight: paddingLeftRight } : {};
     return (
-      <View style={styles.listImageContainer}
+      <View style={Object.assign(baseStyle, styles.listImageContainer)}
       // data={items}
       // renderItem={this.props.renderItem}
       // keyExtractor={(item, index) => index.toString()}

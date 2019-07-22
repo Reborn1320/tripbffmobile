@@ -3,7 +3,6 @@ import { View, Icon } from "native-base";
 import { Image, StyleSheet, ViewStyle, TextStyle, TouchableHighlight } from "react-native";
 import NBTheme from "../../theme/variables/material.js";
 import { mixins } from "../../_utils";
-import { symbol } from "prop-types";
 
 export interface Props {
   imageUrl: string
@@ -51,13 +50,20 @@ export class ImageSelection extends React.Component<Props, State> {
             position: "relative",
           }}
         >
-          {isChecked == false && <Icon style={styles.unCheckIcon} type="FontAwesome5" name="circle" />}
-          {/* this is not an issue, use solid to pass option into react-native-icons */}
-          {isChecked == true && <Icon style={styles.checkIcon} active solid type="FontAwesome5" name="check-circle" />}
           <Image
             style={Object.assign({ width, height: width }, isChecked ? styles.checkImage : styles.image)}
             source={{ uri: this.props.imageUrl }}
           />
+          {isChecked == true &&
+            <View style={Object.assign({ width, height: width }, styles.overlay)}>
+            </View>
+          }
+          {isChecked == true &&
+            <View style={Object.assign({ width, height: width, position: "absolute", ...mixins.centering })}>
+              <View style={{ position: "absolute", width: 19, height: 19, backgroundColor: "white", borderRadius: 99 }} />
+              <Icon style={styles.checkIcon} solid type="FontAwesome5" name="check-circle" />
+            </View>
+          }
           {
             this.props.isDisplayFavorited && 
               <View style={styles.favoriteContainer}>
@@ -76,7 +82,7 @@ interface Style {
   container: ViewStyle;
   image: ViewStyle;
   checkImage: ViewStyle;
-  unCheckIcon: TextStyle;
+  overlay: ViewStyle;
   checkIcon: TextStyle;
   favoriteContainer: ViewStyle,
   favoriteIcon: TextStyle;
@@ -89,32 +95,20 @@ const styles = StyleSheet.create<Style>({
   },
   image: {},
   checkImage: {
-    borderColor: NBTheme.brandDark,
-    borderWidth: 4,
+    // borderColor: NBTheme.brandDark,
+    // borderWidth: 4,
   },
-  unCheckIcon: {
-    position: "absolute",
-    right: 5,
-    top: 5,
-    elevation: 5,
-    color: NBTheme.brandLight,
-    width: 20,
-    height: 20,
-    fontSize: 18,
-    textAlign: "center",
+  overlay: {
+    flex: 1,
+    position: 'absolute',
+    backgroundColor: "black",
+    opacity: 0.35
   },
   checkIcon: {
-    position: "absolute",
-    right: 5,
-    top: 5,
-    elevation: 5,
-    color: NBTheme.brandSuccess,
-    backgroundColor: NBTheme.brandLight,
-    borderRadius: 99,
-    width: 20,
-    height: 20,
-    fontSize: 18,
-    textAlign: "center",
+    color: NBTheme.brandPrimary,
+    width: 25,
+    height: 25,
+    fontSize: 23,
   },
   favoriteContainer: {
     width: 30, height: 30,

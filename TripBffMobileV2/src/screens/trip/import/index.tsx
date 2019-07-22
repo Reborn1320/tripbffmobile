@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FlatList, View, BackHandler, StyleSheet } from "react-native";
+import { FlatList, View, BackHandler, StyleSheet, ViewStyle } from "react-native";
 import { Container, Content, Button, Text, Footer, Toast } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import _ from "lodash";
@@ -17,7 +17,6 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import { uploadLocationImage, addLocations, IImportLocation } from "../../../store/Trip/operations";
 import { getAddressFromLocation, checkAndRequestPhotoPermissionAsync } from "../../../_function/commonFunc";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
-import NBColor from "../../../theme/variables/commonColor.js";
 import { getLabel } from "../../../../i18n";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
@@ -328,22 +327,18 @@ class TripImportation extends Component<Props, State> {
                             backgroundColor: "white"
                         }}
                         >
-                        <Button transparent success
+                        <Button transparent
                             onPress={() => this.props.navigation.navigate(NavigationConstants.Screens.TripDetail, { tripId: tripId })}
-                            style={{
-                                alignSelf: "stretch", margin: 5,
-                            }}
+                            style={styles.footerButton}
                         >
-                            <Text
-                                style={{ color: "grey" }}
-                            >{getLabel("import.skip_button")}</Text>
+                            <Text>{getLabel("import.skip_button")}</Text>
                         </Button>
 
-                        <Button transparent success
+                        <Button primary
                             onPress={this._import}
-                            style={{ alignSelf: "stretch", margin: 5, }}
+                            style={styles.footerButton}
                         >
-                            <Text style={{ color: NBColor.brandMainColor }}>{getLabel("import.import_button")}</Text>
+                            <Text>{getLabel("import.import_button")}</Text>
                         </Button>
                     </Footer>
                 }             
@@ -352,6 +347,24 @@ class TripImportation extends Component<Props, State> {
         );
     }
 }
+
+
+interface Style {
+    footerButton: ViewStyle;
+}
+
+const styles = StyleSheet.create<Style>({
+    footerButton: {
+        marginLeft: 20,
+        marginRight: 20,
+        marginTop: 10,
+        flexGrow: 1,
+        justifyContent: "center",
+        shadowColor: null,
+        elevation: null,
+    }
+})
+
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     return {
