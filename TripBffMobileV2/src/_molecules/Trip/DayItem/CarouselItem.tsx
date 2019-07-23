@@ -47,7 +47,9 @@ export default class CarouselItem extends PureComponent<Props, State> {
 
     render() {
 
-        const { width: viewportWidth } = Dimensions.get('window');
+        const { width: wpWidth } = Dimensions.get('window');
+
+        const viewportWidth = wpWidth - 30;
 
         const itemWidth = viewportWidth;
         const sliderWidth = viewportWidth;
@@ -55,7 +57,7 @@ export default class CarouselItem extends PureComponent<Props, State> {
         return (
             <View>
                 <TouchableOpacity onPress={this.props.toLocationDetailsHanlder}>
-                    <CardItem cardBody>
+                    {/* <CardItem cardBody> */}
                         <Carousel       
                                 ref={c => this._slider1Ref = c}             
                                 data={this.props.images}
@@ -73,7 +75,7 @@ export default class CarouselItem extends PureComponent<Props, State> {
                                 contentContainerCustomStyle={styles.sliderContentContainer}                               
                                 onSnapToItem={(index) => this.setState({ slider1ActiveSlide: index }) }
                             /> 
-                    </CardItem>  
+                    {/* </CardItem>   */}
                 </TouchableOpacity>                 
         
                 <TouchableOpacity onPress={this.props.toLocationDetailsHanlder}>

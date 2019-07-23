@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Text, Card, CardItem, Left, Button, Right, Icon } from "native-base";
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View, StyleSheet, ViewStyle, TextStyle } from "react-native";
 import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
@@ -59,9 +59,6 @@ class LocationItemComponent extends Component<Props, State> {
 
         var location: StoreData.LocationVM = this.props.location;
 
-        const MARGIN_LEFT = 10
-        const MARGIN_RIGHT = 10
-
         var feelingLabel = location.feeling && location.feeling.label ? location.feeling.label : "";
         var feelingIcon = location.feeling && location.feeling.icon ? location.feeling.icon : "smile";
         var activityLabel = location.activity && location.activity.label ? location.activity.label : getLabel("trip_detail.activity_label");
@@ -83,25 +80,18 @@ class LocationItemComponent extends Component<Props, State> {
         }
 
         return (
-            <View style={{ marginLeft: MARGIN_LEFT, marginRight: MARGIN_RIGHT }}>
-                <TouchableOpacity onPress={this._toLocationDetail}>
-                    <CardItem cardBody
-                            style={{ backgroundColor: "white", height: 46, paddingLeft: 10 }}>
-                        <Text style={{ 
-                            fontSize: 18,
-                            fontWeight: "bold",
-                            marginBottom: 10 }}
-                            >{location.name}</Text>
-                    </CardItem>
-                </TouchableOpacity>
-                
-
-                <Button rounded icon transparent danger small
-                        style={{ position: "absolute", right: 0, top: 6, backgroundColor: "white" }}
-                        onPress={this._openRemoveLocationModal}
-                        >
-                        <Icon name="times" type="FontAwesome5" />
-                </Button>                              
+            <View style={{ marginBottom: 20 }}>
+                <View style={styles.locationNameContainer}>
+                    <Icon
+                        style={styles.locationName_MapIcon}
+                        name="map-marker-alt" type="FontAwesome5" />
+                    <TouchableOpacity style={styles.locationName_Name} onPress={this._toLocationDetail}>
+                        <Text>{location.name}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this._openRemoveLocationModal}>
+                        <Icon style={styles.locationName_CloseIcon} name="times" type="FontAwesome5" />
+                    </TouchableOpacity>
+                </View>
 
                 <CarouselItem
                     images={locationImages}
@@ -110,7 +100,7 @@ class LocationItemComponent extends Component<Props, State> {
 
                 <CardItem>
                     <Left>
-                        <Button transparent onPress={this._openUpdateFeelingModal}>
+                        <Button primary transparent onPress={this._openUpdateFeelingModal}>
                             <Icon name={feelingIcon} type="FontAwesome5" />
                             {
                                 feelingLabel && <Text>{getLabel("trip_detail.feeling_adjective")} {feelingLabel} </Text>    ||
@@ -120,7 +110,7 @@ class LocationItemComponent extends Component<Props, State> {
                         </Button>                         
                     </Left>
                     <Right>
-                        <Button transparent onPress={this._openUpdateActivityModal}>
+                        <Button primary transparent onPress={this._openUpdateActivityModal}>
                             <Icon name={activityIcon} type="FontAwesome5"/>     
                             <Text>{activityLabel} </Text> 
                         </Button>
@@ -130,6 +120,40 @@ class LocationItemComponent extends Component<Props, State> {
         );
     }
 }
+
+
+interface Style {
+    locationNameContainer: ViewStyle;
+    locationName_MapIcon: TextStyle;
+    locationName_Name: TextStyle;
+    locationName_CloseIcon: TextStyle;
+}
+
+const styles = StyleSheet.create<Style>({
+    locationNameContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingTop: 5,
+        paddingBottom: 5,
+        marginLeft: 10,
+        marginRight: 10,
+    },
+    locationName_MapIcon: {
+        fontSize: 20,
+    },
+    locationName_Name: {
+        fontSize: 16,
+        fontFamily: "Roboto",
+        marginLeft: 10,
+        marginRight: 10,
+        flexGrow: 1,
+    },
+    locationName_CloseIcon: {
+        fontSize: 20,
+        marginRight: 5,
+    }
+});
+
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
     var { tripId, locationId, dateIdx } = ownProps;

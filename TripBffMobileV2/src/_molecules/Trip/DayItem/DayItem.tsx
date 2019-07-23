@@ -89,12 +89,14 @@ const styles = StyleSheet.create<Style>({
     dayItemContainer: {        
         margin: 10,
         // backgroundColor: "orange",
-        shadowColor: "darkgrey",
+        shadowColor: "grey",
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
+        shadowOpacity: 0.03,
         shadowRadius: 1,
-        elevation: 3,
-        paddingTop: 10,
+        elevation: 2,
+        paddingTop: 15,
+        paddingBottom: 15,
+        borderRadius: 5,
     },
     dayItemHeader: {
         display: "flex",

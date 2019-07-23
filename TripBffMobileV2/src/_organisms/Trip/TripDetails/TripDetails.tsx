@@ -99,7 +99,7 @@ export class TripDetailsComponent extends Component<Props, State> {
                     justifyContent: "space-between",
                     alignItems: "center",
                     padding: 10,
-                    marginBottom: 10,
+                    paddingBottom: 0,
                 }}>
                    <TripName tripId={this.props.tripId}/>
                    <EditPopupMenu onSelect={this.onPopupMenuSelect} />
