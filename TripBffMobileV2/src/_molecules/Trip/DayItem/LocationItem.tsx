@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Text, Card, CardItem, Left, Button, Right, Icon } from "native-base";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
@@ -83,7 +83,7 @@ class LocationItemComponent extends Component<Props, State> {
         }
 
         return (
-            <Card style={{ marginLeft: MARGIN_LEFT, marginRight: MARGIN_RIGHT }}>
+            <View style={{ marginLeft: MARGIN_LEFT, marginRight: MARGIN_RIGHT }}>
                 <TouchableOpacity onPress={this._toLocationDetail}>
                     <CardItem cardBody
                             style={{ backgroundColor: "white", height: 46, paddingLeft: 10 }}>
@@ -126,7 +126,7 @@ class LocationItemComponent extends Component<Props, State> {
                         </Button>
                     </Right>
                 </CardItem>                
-            </Card>            
+            </View>            
         );
     }
 }

@@ -6,8 +6,9 @@ import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from '../../../screens/_shared/LayoutContainer';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { getLabel } from "../../../../i18n";
+import NBTheme from "../../../theme/variables/material.js";
 
 interface IMapDispatchToProps {
     openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
@@ -39,10 +40,10 @@ export class DayItemComponent extends Component<Props, State> {
         return (
             <View style={styles.dayItemContainer}>
                 <View style={styles.dayItemHeader}>
-                    <Text style={{color: "darkred", fontSize: 20}}>{getLabel("trip_detail.day_label")} {dateIdx} - {currentDate}</Text>
+                    <Text style={{color: NBTheme.brandPrimary, fontSize: 20}}>{getLabel("trip_detail.day_label")} {dateIdx} - {currentDate}</Text>
                     <Button small transparent
                             onPress= {this._openAddLocationModal}>
-                        <Icon type={"FontAwesome"} name="plus" />
+                        <Icon type={"FontAwesome"} name="plus-circle" />
                     </Button>
                 </View>
 
@@ -79,16 +80,29 @@ const DayItem = connect(
 
 export default DayItem;
 
-const styles = StyleSheet.create({
+interface Style {
+    dayItemContainer: ViewStyle;
+    dayItemHeader: TextStyle;
+}
+
+const styles = StyleSheet.create<Style>({
     dayItemContainer: {        
-        marginBottom: 10
+        margin: 10,
+        // backgroundColor: "orange",
+        shadowColor: "darkgrey",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 1,
+        elevation: 3,
+        paddingTop: 10,
     },
     dayItemHeader: {
         display: "flex",
+        justifyContent: "space-between",
         alignItems: "stretch",
         flexDirection: "row",
         paddingLeft: 10,
-        paddingRight: 10,
+        // paddingRight: 10,
         paddingBottom: 10
     }
 });
