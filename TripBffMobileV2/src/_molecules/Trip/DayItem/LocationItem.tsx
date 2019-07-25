@@ -1,15 +1,12 @@
 import React, { Component } from "react";
-import { Text, Card, CardItem, Left, Button, Right, Icon } from "native-base";
+import { Text, CardItem, Left, Button, Right, Icon } from "native-base";
 import { TouchableOpacity, View, StyleSheet, ViewStyle, TextStyle } from "react-native";
-import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import { NavigationConstants } from "../../../screens/_shared/ScreenConstants";
 import CarouselItem from "../DayItem/CarouselItem";
 import { getLabel } from "../../../../i18n";
-
-const SLIDER_1_FIRST_ITEM = 0;
 
 interface IMapDispatchToProps {
     removeLocationHandler?: (dateIdx: number, locationId: string) => void
@@ -28,7 +25,7 @@ export interface State {
     isAddActivityModalVisible: boolean
 }
 
-class LocationItemComponent extends Component<Props, State> { 
+export default class LocationItem extends Component<Props, State> { 
     constructor(props) {
         super(props)
 
@@ -121,7 +118,6 @@ class LocationItemComponent extends Component<Props, State> {
     }
 }
 
-
 interface Style {
     locationNameContainer: ViewStyle;
     locationName_MapIcon: TextStyle;
@@ -153,23 +149,3 @@ const styles = StyleSheet.create<Style>({
         marginRight: 5,
     }
 });
-
-
-const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
-    var { tripId, locationId, dateIdx } = ownProps;
-    var dateVm = _.find(storeState.currentTrip.dates, (item) => item.dateIdx == dateIdx);
-    var location = _.find(dateVm.locations, (item) => item.locationId == locationId);
-
-    return {
-        tripId: tripId,
-        dateIdx: dateIdx,
-        location: location
-    };
-};
-
-const LocationItem = connect(
-    mapStateToProps,
-    null
-)(LocationItemComponent);
-
-export default LocationItem;
