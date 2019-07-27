@@ -7,6 +7,7 @@ import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import { NavigationConstants } from "../../../screens/_shared/ScreenConstants";
 import CarouselItem from "../DayItem/CarouselItem";
 import { getLabel } from "../../../../i18n";
+import { StyledCarousel, IEntry } from "../../../_atoms/Carousel/StyledCarousel";
 
 interface IMapDispatchToProps {
     removeLocationHandler?: (dateIdx: number, locationId: string) => void
@@ -61,11 +62,11 @@ export default class LocationItem extends Component<Props, State> {
         var activityLabel = location.activity && location.activity.label ? location.activity.label : getLabel("trip_detail.activity_label");
         var activityIcon = location.activity && location.activity.icon ? location.activity.icon : "running";        
 
-        let locationImages = [];
+        let locationImages: StoreData.ImportImageVM[] = [];
 
         if (location.images.length == 0) {
             locationImages.push({
-                thumbnailExternalUrl: ""
+                thumbnailExternalUrl: "",
             });
         }
         else {
@@ -75,6 +76,12 @@ export default class LocationItem extends Component<Props, State> {
                 locationImages = location.images.length > 3 ? location.images.slice(0, 3) : location.images;
             }
         }
+
+        let locationImageEntries: IEntry[] = locationImages.map(img => ({
+            title: "aaa aaa",
+            subtitle: "bbb bbb",
+            illustration: img.thumbnailExternalUrl,
+        }));
 
         return (
             <View style={{ marginBottom: 20 }}>
@@ -90,10 +97,16 @@ export default class LocationItem extends Component<Props, State> {
                     </TouchableOpacity>
                 </View>
 
-                <CarouselItem
+                <StyledCarousel
+                    title="aaaa"
+                    subtitle="bbbb"
+                    entries={locationImageEntries}
+                    clickHandler={this._toLocationDetail}
+                    />
+                {/* <CarouselItem
                     images={locationImages}
                     toLocationDetailsHanlder={this._toLocationDetail}>
-                </CarouselItem>
+                </CarouselItem> */}
 
                 <CardItem>
                     <Left>
