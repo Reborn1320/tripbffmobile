@@ -1,19 +1,17 @@
 import React, { Component } from "react";
-import { Container, Header, Content, View, Button, Text } from 'native-base';
-import { Dimensions } from "react-native";
+import { Container, Content, View } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
 import { mixins } from "../../../_utils";
 import TripDetailScreenContent from "../detail/TripDetailScreenContent";
-import { Alert, StyleSheet, BackHandler } from "react-native";
-import { tripApi } from "../../_services/apis";
+import { StyleSheet, BackHandler } from "react-native";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Loading from "../../../_atoms/Loading/Loading";
-import NBTheme from "../../../theme/variables/commonColor.js";
+import NBTheme from "../../../theme/variables/material.js";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
@@ -115,7 +113,7 @@ export class TripEditScreen extends Component<Props, State> {
                 {
                     trip && 
                     <ActionButton
-                        buttonColor={NBTheme.brandSuccess}
+                        buttonColor={NBTheme.colorRosy}
                         position="center"
                         onPress={this._exportInfographic}
                         renderIcon={() => 
