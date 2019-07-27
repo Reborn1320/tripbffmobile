@@ -23,7 +23,7 @@ export default StyleSheet.create({
         flex: 1
     },
     exampleContainer: {
-        paddingVertical: 0
+        paddingVertical: 0,
     },
     exampleContainerDark: {
         backgroundColor: colors.black
@@ -52,11 +52,11 @@ export default StyleSheet.create({
         textAlign: 'center'
     },
     slider: {
-        marginTop: 15,
+        // marginTop: 15,
         overflow: 'visible' // for custom animations
     },
     sliderContentContainer: {
-        paddingVertical: 10 // for custom animation
+        // paddingVertical: 10 // for custom animation
     },
     paginationContainer: {
         paddingVertical: 8

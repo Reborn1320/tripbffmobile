@@ -23,7 +23,7 @@ export default StyleSheet.create({
         width: itemWidth,
         height: slideHeight,
         paddingHorizontal: itemHorizontalMargin,
-        paddingBottom: 18 // needed for shadow
+        // paddingBottom: 18 // needed for shadow
     },
     shadow: {
         position: 'absolute',
@@ -45,14 +45,15 @@ export default StyleSheet.create({
         borderTopRightRadius: entryBorderRadius
     },
     imageContainerEven: {
-        backgroundColor: colors.black
+        backgroundColor: colors.black,
+        borderRadius: 8,
     },
     image: {
         ...StyleSheet.absoluteFillObject,
         resizeMode: 'cover',
-        borderRadius: IS_IOS ? entryBorderRadius : 0,
+        // borderRadius: IS_IOS ? entryBorderRadius : 0,
         borderTopLeftRadius: entryBorderRadius,
-        borderTopRightRadius: entryBorderRadius
+        borderTopRightRadius: entryBorderRadius,
     },
     imageEmptyContainer: {
         flex: 1,
