@@ -1,15 +1,13 @@
 import React, { Component } from "react";
-import { Text, Card, CardItem, Left, Button, Right, Icon } from "native-base";
+import { Text, CardItem, Left, Button, Right, Icon } from "native-base";
 import { TouchableOpacity, View, StyleSheet, ViewStyle, TextStyle } from "react-native";
-import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import { NavigationConstants } from "../../../screens/_shared/ScreenConstants";
 import CarouselItem from "../DayItem/CarouselItem";
 import { getLabel } from "../../../../i18n";
-
-const SLIDER_1_FIRST_ITEM = 0;
+import { StyledCarousel, IEntry } from "../../../_atoms/Carousel/StyledCarousel";
 
 interface IMapDispatchToProps {
     removeLocationHandler?: (dateIdx: number, locationId: string) => void
@@ -28,7 +26,7 @@ export interface State {
     isAddActivityModalVisible: boolean
 }
 
-class LocationItemComponent extends Component<Props, State> { 
+export default class LocationItem extends Component<Props, State> { 
     constructor(props) {
         super(props)
 
@@ -64,11 +62,11 @@ class LocationItemComponent extends Component<Props, State> {
         var activityLabel = location.activity && location.activity.label ? location.activity.label : getLabel("trip_detail.activity_label");
         var activityIcon = location.activity && location.activity.icon ? location.activity.icon : "running";        
 
-        let locationImages = [];
+        let locationImages: StoreData.ImportImageVM[] = [];
 
         if (location.images.length == 0) {
             locationImages.push({
-                thumbnailExternalUrl: ""
+                thumbnailExternalUrl: "",
             });
         }
         else {
@@ -78,6 +76,12 @@ class LocationItemComponent extends Component<Props, State> {
                 locationImages = location.images.length > 3 ? location.images.slice(0, 3) : location.images;
             }
         }
+
+        let locationImageEntries: IEntry[] = locationImages.map(img => ({
+            title: "aaa aaa",
+            subtitle: "bbb bbb",
+            illustration: img.thumbnailExternalUrl,
+        }));
 
         return (
             <View style={{ marginBottom: 20 }}>
@@ -93,10 +97,16 @@ class LocationItemComponent extends Component<Props, State> {
                     </TouchableOpacity>
                 </View>
 
-                <CarouselItem
+                <StyledCarousel
+                    title="aaaa"
+                    subtitle="bbbb"
+                    entries={locationImageEntries}
+                    clickHandler={this._toLocationDetail}
+                    />
+                {/* <CarouselItem
                     images={locationImages}
                     toLocationDetailsHanlder={this._toLocationDetail}>
-                </CarouselItem>
+                </CarouselItem> */}
 
                 <CardItem>
                     <Left>
@@ -120,7 +130,6 @@ class LocationItemComponent extends Component<Props, State> {
         );
     }
 }
-
 
 interface Style {
     locationNameContainer: ViewStyle;
@@ -153,23 +162,3 @@ const styles = StyleSheet.create<Style>({
         marginRight: 5,
     }
 });
-
-
-const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
-    var { tripId, locationId, dateIdx } = ownProps;
-    var dateVm = _.find(storeState.currentTrip.dates, (item) => item.dateIdx == dateIdx);
-    var location = _.find(dateVm.locations, (item) => item.locationId == locationId);
-
-    return {
-        tripId: tripId,
-        dateIdx: dateIdx,
-        location: location
-    };
-};
-
-const LocationItem = connect(
-    mapStateToProps,
-    null
-)(LocationItemComponent);
-
-export default LocationItem;
