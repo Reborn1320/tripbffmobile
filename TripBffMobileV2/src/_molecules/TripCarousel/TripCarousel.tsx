@@ -151,8 +151,6 @@ export class TripCarouselComponent extends React.Component<Props, State> {
           </View>
         </View>
         <StyledCarousel
-          title={tripEntry.title}
-          subtitle={tripEntry.subtitle}
           entries={tripEntry.entries}
           clickHandler={this._handleClickTrip}
         />
@@ -204,6 +202,7 @@ const styles = StyleSheet.create<Style>({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginBottom: 10,
   },
   headerLeftContainer: {
     display: "flex",

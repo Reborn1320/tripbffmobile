@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text } from "native-base";
+import { View } from "native-base";
 import _ from "lodash";
 import Carousel from 'react-native-snap-carousel';
 import styles from './index.style';
@@ -12,8 +12,6 @@ interface IMapDispatchToProps {
 }
 
 export interface Props extends IMapDispatchToProps {
-  title: string,
-  subtitle: string,
   entries: IEntry[],
   clickHandler: () => void;
 }
@@ -22,8 +20,8 @@ interface State {
 }
 
 export type IEntry = {
-  title: string,
-  subtitle: string,
+  title?: string,
+  subtitle?: string,
   illustration: string,
 }
 
@@ -55,7 +53,7 @@ export class StyledCarousel extends Component<Props & IStateProps, State> {
     return <SliderEntry data={item} even={false} clickHandler={this.props.clickHandler} />;
   }
 
-  layoutExample = (title, subtitle, type, entries: IEntry[]) => {
+  layoutExample = (type, entries: IEntry[]) => {
     const isTinder = type === 'tinder';
     return (
       <View style={[styles.exampleContainer, isTinder ? styles.exampleContainerDark : styles.exampleContainerLight]}>
@@ -74,9 +72,9 @@ export class StyledCarousel extends Component<Props & IStateProps, State> {
   }
 
   render() {
-    const { title, subtitle, entries } = this.props;
+    const { entries } = this.props;
 
-    const example4 = this.layoutExample(title, subtitle, "stack", entries);
+    const example4 = this.layoutExample("stack", entries);
     return (
       <View>
         {example4}

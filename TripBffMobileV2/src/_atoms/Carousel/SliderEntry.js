@@ -17,11 +17,16 @@ export default class SliderEntry extends Component {
     };
 
     get image () {
-        const { data: { subtitle, illustration }, parallax, parallaxProps, even } = this.props;
+        const { data: { title, subtitle, illustration }, parallax, parallaxProps, even } = this.props;
 
         if (illustration == "") {
             return (
-                <NoItemDefault viewContainerStyle={styles.imageEmptyContainer} titleStyle={styles.subtitle} title={subtitle}/>
+                <NoItemDefault
+                    viewContainerStyle={styles.imageEmptyContainer}
+                    titleStyle={styles.subtitle}
+                    title={title}
+                    subtitle={subtitle}
+                    />
             )
         }
 
@@ -38,13 +43,16 @@ export default class SliderEntry extends Component {
         ) : (
             <Image
               source={{ uri: illustration }}
-              style={styles.image}
+              style={ Object.assign(title ? {} : { 
+                borderBottomLeftRadius: 8,
+                borderBottomRightRadius: 8,
+            }, styles.image) }
             />
         );
     }
 
     render () {
-        const { data: { title, subtitle, illustration }, even, clickHandler } = this.props;
+        const { data: { title, illustration }, even, clickHandler } = this.props;
 
         const isEmpty = illustration == "";
         const uppercaseTitle = title ? (
@@ -64,12 +72,14 @@ export default class SliderEntry extends Component {
               >
                 <View style={styles.shadow} />
 
-                <View style={[styles.imageContainer]}>
+                <View style={[styles.imageContainer, { borderRadius: 10 }]}>
                     { this.image }                   
                 </View>
+                { uppercaseTitle &&
                 <View style={[styles.textContainer, even ? styles.textContainerEven : {}, !even ? styles.textContainerBorder : {}]}>
                     { uppercaseTitle }
                  </View>
+                }
             </TouchableOpacity>
         );
     }
