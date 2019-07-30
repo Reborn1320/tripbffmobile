@@ -40,9 +40,10 @@ const styles = StyleSheet.create<Style>({
         backgroundColor: '#F9F9F9',
         borderRadius: 6,
         flex: 1,
-        marginLeft: 15,
-        marginRight: 15,
-        marginTop: 10,
+        marginLeft: 12,
+        marginRight: 12,
+        marginTop: 8,
+        marginBottom: 8,
         height: 150,
         justifyContent: "center",
         alignItems: "center"
@@ -50,7 +51,7 @@ const styles = StyleSheet.create<Style>({
     titleStyle: {
         marginTop: 6,
         color: '#DADADA',
-        fontSize: 12,
+        fontSize: 14,
         fontFamily: 'SF Pro Text'
     }
 });
