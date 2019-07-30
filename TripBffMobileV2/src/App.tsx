@@ -26,6 +26,7 @@ import ImageUploadDoc from "./screens/trip/import/ImageUpload.doc";
 import LandingPageScreen from "./screens/LandingPage";
 import NBTheme from "./theme/variables/material.js";
 import { getLabel } from "../i18n";
+import TripEditBasicScreen from "./screens/trip/create/TripEditBasic";
 
 var mockLoginApi = mockLoginApiService;
 var mockTripApi = mockTripApiService;
@@ -88,6 +89,7 @@ const TripDetailsNavigator = createStackNavigator(
     LocationDetail: { screen: LocationDetailScreen },
     LocationImageDetail: { screen: LocationImageDetailScreen },
     InfographicPreview: { screen: InfographicPreviewScreen },
+    TripEditBasic: { screen: TripEditBasicScreen }
   },
   stackConfigs
 );
@@ -99,6 +101,7 @@ const ProfileNavigator = createStackNavigator(
     LocationDetail: { screen: LocationDetailScreen },
     LocationImageDetail: { screen: LocationImageDetailScreen },
     InfographicPreview: { screen: InfographicPreviewScreen },
+    TripEditBasic: { screen: TripEditBasicScreen }
   },
   stackConfigs
 );

@@ -6,24 +6,32 @@ import NBColor from "../../../theme/variables/commonColor.js";
 import { getLabel } from "../../../../i18n";
 
 export interface Props {
-    createTrip: (name: string, fromDate: Moment, toDate: Moment) => Promise<string>;
+    createTrip?: (name: string, fromDate: Moment, toDate: Moment) => Promise<string>;
     onTripCreatedUpdatedHandler?: (tripId: string, name: string) => void;
     updateTrip: (tripId: string, name: string, fromDate: Moment, toDate: Moment) => Promise<any>;
+    tripId?: string,
+    tripName?: string,
+    tripFromDate?: moment.Moment,
+    tripToDate?: moment.Moment,
+    titleButton: string
 }
 
 export class TripCreationForm extends PureComponent<Props, any> {
 
   constructor(props) {
     super(props);
+
     this.state = { 
-      tripId: '',
+      tripId: this.props.tripId,
+      tripName: this.props.tripName,
       isOpenDateRangePickerModal: false,
-      fromDate: moment(),
-      toDate: moment()
+      fromDate: this.props.tripFromDate ? this.props.tripFromDate : moment(),
+      toDate: this.props.tripToDate ? this.props.tripToDate : moment()
     };
   }  
 
   private _onClickCreateTrip = () => {
+
     let tripId = this.state.tripId,
         tripName = this.state.tripName,
         fromDate = moment(this.state.fromDate).startOf('day'),
@@ -69,7 +77,7 @@ export class TripCreationForm extends PureComponent<Props, any> {
       <Button
         style={{ alignSelf: 'center', backgroundColor: NBColor.brandMainColor }}
         onPress={this._onClickCreateTrip}>
-        <Text>{getLabel("create.create_button")}</Text>
+          <Text>{getLabel(this.props.titleButton)}</Text>
       </Button>
     );
   }
@@ -82,6 +90,7 @@ export class TripCreationForm extends PureComponent<Props, any> {
             <Item fixedLabel>
               <Label>{getLabel("create.trip_name")}</Label>
               <Input
+                value={this.state.tripName}
                 onChangeText={(tripName) => this.setState({ tripName })} />
             </Item>
             <Item style={{height: 50}}>

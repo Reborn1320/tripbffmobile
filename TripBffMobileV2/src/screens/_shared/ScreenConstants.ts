@@ -13,7 +13,8 @@ export const NavigationConstants = {
     LocationDetails: "LocationDetail",
     LocationImageDetails: "LocationImageDetail",
     TripImport: "TripImportation",
-    LandingPage: "LandingPage"
+    LandingPage: "LandingPage",
+    TripEditBasic: "TripEditBasic"
   }
 };
 

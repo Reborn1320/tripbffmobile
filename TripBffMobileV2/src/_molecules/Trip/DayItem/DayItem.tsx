@@ -23,7 +23,7 @@ export interface Props extends IMapDispatchToProps, PropsBase {
     locationIds?: Array<string>
     dateIdx: number
     date?: moment.Moment
-    dateVm: StoreData.DateVM
+    dateVm?: StoreData.DateVM
 }
 
 export interface State {

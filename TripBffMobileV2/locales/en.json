@@ -16,6 +16,7 @@
     },
     "create": {
         "screen_header_title": "Create new trip",
+        "screen_header_edit_title": "Edit trip",
         "trip_name": "Trip Name",
         "from_date": "From Date",
         "end_date": "End Date",
