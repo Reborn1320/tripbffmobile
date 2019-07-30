@@ -9,6 +9,7 @@ import { PropsBase } from '../../../screens/_shared/LayoutContainer';
 import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { getLabel } from "../../../../i18n";
 import NBTheme from "../../../theme/variables/material.js";
+import EmptyLocationItem from "./EmptyLocation";
 
 interface IMapDispatchToProps {
     openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
@@ -42,11 +43,14 @@ export class DayItemComponent extends Component<Props, State> {
             <View style={styles.dayItemContainer}>
                 <View style={styles.dayItemHeader}>
                     <Text style={{color: NBTheme.brandPrimary, fontSize: 20}}>{getLabel("trip_detail.day_label")} {dateIdx} - {currentDate}</Text>
-                    <Button small transparent
-                            onPress= {this._openAddLocationModal}>
-                        <Icon type={"FontAwesome"} name="plus-circle" />
-                    </Button>
-                </View>
+                    {
+                        this.props.locationIds.length > 0 &&
+                        <Button small transparent
+                                onPress= {this._openAddLocationModal}>
+                            <Icon type={"FontAwesome"} name="plus-circle" />
+                        </Button>
+                    }
+                 </View>
 
                 {this.props.locationIds.length > 0 && this.props.locationIds.map(e => 
                     <LocationItem tripId={this.props.tripId} dateIdx={dateIdx} key={e}
@@ -58,6 +62,15 @@ export class DayItemComponent extends Component<Props, State> {
                     </LocationItem>)
                 }
 
+                {
+                    this.props.locationIds.length == 0 &&
+                    (
+                        <EmptyLocationItem  
+                            openAddLocationModalHandler={this._openAddLocationModal}
+                            >
+                        </EmptyLocationItem>
+                    )
+                }
             </View>
         )
     }
