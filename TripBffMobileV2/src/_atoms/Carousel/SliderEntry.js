@@ -24,7 +24,6 @@ export default class SliderEntry extends Component {
                 <NoItemDefault
                     viewContainerStyle={styles.imageEmptyContainer}
                     titleStyle={styles.subtitle}
-                    title={title}
                     subtitle={subtitle}
                     />
             )

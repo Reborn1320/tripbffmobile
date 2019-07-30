@@ -6,18 +6,17 @@ import { Icon } from 'native-base';
 export interface Props {   
     viewContainerStyle: ViewStyle;
     titleStyle: TextStyle;
-    title: string;
     subtitle: string;
 }
 
 export default class NoItemDefault extends Component<Props, any> {   
 
     render () {
-        const { viewContainerStyle, titleStyle, title, subtitle } = this.props;
+        const { viewContainerStyle, titleStyle, subtitle } = this.props;
 
         return (
             <View style={viewContainerStyle}>
-                <Icon type="FontAwesome5" name="plus" style={{ fontSize: 40, color: "lightgrey" }}/>
+                <Icon type="FontAwesome5" name="plus" style={{ fontSize: 26, color: "lightgrey" }}/>
                 <Text style={titleStyle}>
                         { subtitle }
                 </Text>
