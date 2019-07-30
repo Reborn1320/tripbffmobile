@@ -77,7 +77,7 @@ export class TripCarouselComponent extends React.Component<Props, State> {
     let tripEntry: ITripEntry = {
         tripId: trip.tripId,
         title: trip.name,
-        subtitle: `${moment(trip.fromDate).utc().format("DD/MMM/YYYY")} - ${moment(trip.toDate).utc().format("DD/MMM/YYYY")}`,
+        subtitle: `${moment(trip.fromDate).format("DD/MMM/YYYY")} - ${moment(trip.toDate).format("DD/MMM/YYYY")}`,
         entries
     }
 

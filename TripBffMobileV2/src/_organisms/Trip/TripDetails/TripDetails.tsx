@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Spinner, View, Text } from 'native-base';
-import { FlatList, StyleSheet } from "react-native";
+import { Spinner, View, Text, Icon } from 'native-base';
+import { FlatList, StyleSheet, Button, TouchableOpacity } from "react-native";
 import _, { } from "lodash";
 import DayItem from "../../../_molecules/Trip/DayItem/DayItem";
 import EditPopupMenu from "../../../_molecules/Trip/EditPopupMenu/EditPopupMenu";
@@ -9,6 +9,7 @@ import { StoreData } from "../../../store/Interfaces";
 import { connect } from "react-redux";
 import TripName from "../../../_molecules/Trip/TripName";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
+import { NavigationConstants } from "../../../screens/_shared/ScreenConstants";
 
 interface IMapDispatchToProps {
     openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
@@ -54,18 +55,8 @@ export class TripDetailsComponent extends Component<Props, State> {
         return isUpdate;
     }
 
-    onPopupMenuSelect = (value) => {
-        console.log(`Selected number: ${value}`);
-        switch (value) {
-            case 1:
-                this.props.openEditDateRangeModalHandler();
-                break;
-            case 2:
-                this.props.openEditTripNameModalHandler();
-                break;
-            default:
-                break;
-        }
+    _onPopupMenuSelect = () => {
+        this.props.navigation.navigate(NavigationConstants.Screens.TripEditBasic);
     }
    
     _renderItem = (itemInfo) => {
@@ -102,7 +93,9 @@ export class TripDetailsComponent extends Component<Props, State> {
                     paddingBottom: 0,
                 }}>
                    <TripName tripId={this.props.tripId}/>
-                   <EditPopupMenu onSelect={this.onPopupMenuSelect} />
+                   <TouchableOpacity onPress={this._onPopupMenuSelect}>
+                        <Icon type="FontAwesome" name="cog"></Icon>
+                   </TouchableOpacity>
                 </View>
 
                 <FlatList

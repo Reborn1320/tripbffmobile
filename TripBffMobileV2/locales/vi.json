@@ -16,6 +16,7 @@
     },
     "create": {
         "screen_header_title": "Tạo mới chuyến đi",
+        "screen_header_edit_title": "Chỉnh sửa chuyến đi",
         "trip_name": "Tên chuyến đi",
         "from_date": "Ngày khởi hành",
         "end_date": "Ngày kết thúc",

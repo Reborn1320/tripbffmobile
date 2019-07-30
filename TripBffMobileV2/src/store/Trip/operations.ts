@@ -24,6 +24,7 @@ import moment from "moment";
 import { uploadFileApi } from "../../screens/_services/apis";
 import { Store } from "redux";
 import { uploadImageXmlHttpRequestAsync } from "../../screens/_services/Uploader/BlobUploader";
+import { toDateUtc } from "../../_function/dateFuncs";
 
 export function fetchTrip(tripId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
@@ -34,12 +35,12 @@ export function fetchTrip(tripId: string): ThunkResultBase {
         var trip: StoreData.TripVM = {
           tripId: rawTrip.tripId,
           name: rawTrip.name,
-          fromDate: moment(rawTrip.fromDate),
-          toDate: moment(rawTrip.toDate),
+          fromDate: moment(rawTrip.fromDate).local(),
+          toDate: moment(rawTrip.toDate).local(),
           rawLocations: rawTrip.locations,
           infographicId: rawTrip.infographicId,
         };
-
+        console.log('current trip: ' + JSON.stringify(trip));
         dispatch(replaceTrip(trip));
 
         return trip;
@@ -168,8 +169,8 @@ export function createTrip(name: string, fromDate: Moment, toDate: Moment): Thun
       var trip = {
         tripId: tripId,
         name: name,
-        fromDate: fromDate,
-        toDate: toDate
+        fromDate: toDateUtc(fromDate),
+        toDate: toDateUtc(toDate)
       };
       dispatch(createTripAction(trip));
       return tripId;
@@ -188,7 +189,9 @@ export function updateTrip(tripId: string,name: string, fromDate: Moment, toDate
     }
     return extraArguments.tripApiService.patch('/trips/' + tripId, { data })
     .then((res) => {
-       dispatch(updateTripAction(tripId, name, fromDate, toDate));
+      let utcFromDate = toDateUtc(fromDate),
+          utcToDate = toDateUtc(toDate);
+       dispatch(updateTripAction(tripId, name, utcFromDate, utcToDate));
     })
     .catch((err) => {
       console.log('error update trip api: ', err);

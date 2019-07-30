@@ -4,7 +4,6 @@ import { StyleSheet, ViewStyle, Modal } from "react-native";
 import { connectStyle } from 'native-base';
 import CalendarPicker from 'react-native-calendar-picker';
 import { Moment } from "moment";
-import { toDateUtc } from "../../_function/dateFuncs";
 import { getLabel } from "../../../i18n";
 
 export interface Props {
@@ -37,13 +36,11 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
 
   private _onSave = () => {
     let { fromDate, toDate } = this.state;
-    const newFromDate = toDateUtc(fromDate);
-    const newToDate = toDateUtc(toDate);
     
     console.log("on date range save");
-    console.log(newFromDate.format(), newToDate.format());
+    console.log(fromDate.format(), toDate.format());
 
-    this.props.confirmHandler(newFromDate, newToDate);
+    this.props.confirmHandler(fromDate, toDate);
   }  
 
   private onDateChange = (date, type) => {
