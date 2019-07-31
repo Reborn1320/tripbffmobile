@@ -21,7 +21,7 @@ class SelectedActivityItem extends React.PureComponent<any> {
   render() {
     return (
       <TouchableOpacity onPress={this._onPress}       
-          style={styles.activityItemContainer}>
+          style={[styles.activityItemContainer, styles.selectedActivityItemContainer]}>
           <View style={styles.activityItem}>          
             <Text>{this.props.item.label}</Text>   
             <Icon name='trash-alt' type="FontAwesome5" style={{fontSize: 20, marginLeft: 10}}/>           
@@ -285,6 +285,7 @@ interface Style {
   modalInnerContainer: ViewStyle;
   activityContainer: ViewStyle;
   activityItemContainer: ViewStyle;
+  selectedActivityItemContainer: ViewStyle;
   activityItem: ViewStyle;
   iconRemoved: ViewStyle;
 }
@@ -321,6 +322,9 @@ const styles = StyleSheet.create<Style>({
     flexDirection: "row",
     justifyContent: 'center',
     alignItems: "center"
+  },
+  selectedActivityItemContainer: {
+    marginBottom: 10
   },
   iconRemoved: {
     

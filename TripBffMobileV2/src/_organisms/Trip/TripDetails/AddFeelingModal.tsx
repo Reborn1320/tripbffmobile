@@ -21,7 +21,7 @@ class SelectedFeelingItem extends React.PureComponent<any> {
   render() {
     return (
       <TouchableOpacity onPress={this._onPress}       
-          style={styles.feelingItemContainer}>
+          style={[styles.feelingItemContainer, styles.selectedFeelingItemContainer]}>
           <View style={styles.feelingItem}>          
             <Text>{this.props.item.label}</Text>   
             <Icon name='trash-alt' type="FontAwesome5" style={{fontSize: 20, marginLeft: 10}}/>           
@@ -282,6 +282,7 @@ interface Style {
   modalInnerContainer: ViewStyle;
   feelingContainer: ViewStyle;
   feelingItemContainer: ViewStyle;
+  selectedFeelingItemContainer: ViewStyle;
   feelingItem: ViewStyle;
   iconRemoved: ViewStyle;
 }
@@ -312,6 +313,9 @@ const styles = StyleSheet.create<Style>({
     borderRadius: 4,
     borderWidth: 0.2,
     borderColor: '#d6d7da'
+  },
+  selectedFeelingItemContainer: {
+    marginBottom: 10
   },
   feelingItem: {
     flex: 1,
