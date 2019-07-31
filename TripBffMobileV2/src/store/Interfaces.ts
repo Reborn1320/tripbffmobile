@@ -24,7 +24,7 @@ export module StoreData {
     }
 
     export interface FeelingVM {
-        feelingId: number,
+        feelingId: string,
         label: string,
         icon: string
     }
@@ -68,7 +68,7 @@ export module StoreData {
         toDate: moment.Moment   
         dates?: Array<DateVM>     
         infographicId?: string,
-        rawLocations?: Array<LocationVM>  ,
+        rawLocations?: Array<LocationVM>,
         isDeleted?: boolean  
     }
 
@@ -113,7 +113,7 @@ export module StoreData {
     }
 
     export interface PreDefinedFeelingVM {
-        feelingId: number,
+        feelingId: string,
         label: string,
         icon: string
     }

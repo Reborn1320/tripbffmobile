@@ -40,7 +40,7 @@ export function fetchTrip(tripId: string): ThunkResultBase {
           rawLocations: rawTrip.locations,
           infographicId: rawTrip.infographicId,
         };
-        console.log('current trip: ' + JSON.stringify(trip));
+        //console.log('current trip: ' + JSON.stringify(trip));
         dispatch(replaceTrip(trip));
 
         return trip;
@@ -235,9 +235,7 @@ export function updateTripName(tripId: string, name: string): ThunkResultBase {
 
 export function updateLocationFeeling(tripId: string, dateIdx: number, locationId: string, feeling: StoreData.FeelingVM, cancelToken: any): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
-    const data = {
-      feelingId: feeling.feelingId
-    };
+    const data = feeling;
     var config = {
       cancelToken: cancelToken
     };
@@ -253,9 +251,7 @@ export function updateLocationFeeling(tripId: string, dateIdx: number, locationI
 
 export function updateLocationActivity(tripId: string, dateIdx: number, locationId: string, activity: StoreData.ActivityVM, cancelToken: any): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
-    const data = {
-      activityId: activity.activityId
-    };
+    const data = activity;
     var config = {
       cancelToken: cancelToken
     };

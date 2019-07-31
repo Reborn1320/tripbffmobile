@@ -2,7 +2,7 @@
 //input: isVisible, title, content, button confirm handler.
 
 import * as React from "react";
-import { View, Text, Button, Icon } from "native-base";
+import { View, Text, Button, Icon, Toast } from "native-base";
 import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
@@ -10,20 +10,25 @@ import { connect } from "react-redux";
 import { getAllActivities } from "../../../store/DataSource/operations";
 import { StoreData } from "../../../store/Interfaces";
 import { getLabel } from "../../../../i18n";
+import { SearchBar } from 'react-native-elements';
+import uuid4 from 'uuid/v4';
 
-interface IMapDispatchToProps {
-  getAllActivities: () => Promise<StoreData.ActivityVM>
-}
+class SelectedActivityItem extends React.PureComponent<any> {
+  _onPress = () => {
+    this.props.onPressItem(this.props.item);
+  };
 
-export interface Props {
-  isVisible: boolean;
-  locationId: string;
-  preDefinedActivities?: Array<StoreData.PreDefinedActivityVM>
-  confirmHandler: (locationId, activity) => void;
-  cancelHandler?: () => void;
-}
-
-interface State {
+  render() {
+    return (
+      <TouchableOpacity onPress={this._onPress}       
+          style={[styles.activityItemContainer, styles.selectedActivityItemContainer]}>
+          <View style={styles.activityItem}>          
+            <Text>{this.props.item.label}</Text>   
+            <Icon name='trash-alt' type="FontAwesome5" style={{fontSize: 20, marginLeft: 10}}/>           
+          </View>
+      </TouchableOpacity>
+    );
+  }
 }
 
 class ActivityItem extends React.PureComponent<any> {
@@ -47,6 +52,172 @@ class ActivityItem extends React.PureComponent<any> {
   }
 }
 
+class ActivityContainerComponent extends React.PureComponent<any, any> {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      search: '',
+      preDefinedItems: [],
+      newDefinedItem: null,
+      selectedItem: null
+    }
+  }
+
+  componentDidMount() {
+    this.setState({
+      preDefinedItems:  this.props.items.filter(item => !this.props.selectedItem || this.props.selectedItem.activityId != item.activityId),
+      selectedItem: this.props.selectedItem
+    });
+  }
+
+  _updateSearch = search => {
+    var filterItems = this.props.items.filter(item => !this.state.selectedItem || this.state.selectedItem.activityId != item.activityId);
+    var newItem = null;
+
+    if (search) {
+      let numberOfCharacters = search.length;
+
+      if (numberOfCharacters > 20) {
+        Toast.show({
+            text: getLabel("location_detail.user_defined_like_dislike_warning"),
+            buttonText: "Okay",
+            position: "top",
+            type: "warning",
+            duration: 3000
+        });
+      }
+      else {
+        var searchLower = search.toLowerCase();
+            filterItems = filterItems.filter(item => item.label.toLowerCase().includes(searchLower));
+
+        if (this.state.newDefinedItem)
+          filterItems = filterItems.filter(item => item.activityId != this.state.newDefinedItem.activityId);
+
+        var exactItem = filterItems.find(item => item.label.toLowerCase() == searchLower);
+
+        if (!exactItem) {
+          newItem = { 
+            label: search
+          };
+          filterItems.push(newItem);         
+        }     
+      }      
+    }
+    
+    this.setState({ preDefinedItems: filterItems, search: search, newDefinedItem: newItem });
+  };
+
+  _onDeselectConfirm = (deSelectedItem) => {
+    var selectedItem = null;
+    var existedPreDefinedItem = this.props.items.find(item => item.activityId == deSelectedItem.activityId);
+    var preDefinedItems = existedPreDefinedItem 
+                    ? [...this.state.preDefinedItems, deSelectedItem]
+                    : this.state.preDefinedItems;
+    var search = this.state.search;
+
+    if (search) {
+      var searchLower = search.toLowerCase();
+      preDefinedItems = preDefinedItems.filter(item => item.label.toLowerCase().includes(searchLower));
+    }
+
+    this.setState({
+      preDefinedItems: preDefinedItems,
+      selectedItem: selectedItem,
+      newDefinedItem: null
+    });
+
+    this.props.removeSelectedActivityHandler(deSelectedItem);
+  }
+
+  _onConfirm = (selectedItem) => {
+    let numberOfCharacters = selectedItem.label.length;
+
+    if (numberOfCharacters > 20) {
+      Toast.show({
+          text: getLabel("location_detail.user_defined_like_dislike_warning"),
+          buttonText: "Okay",
+          position: "top",
+          type: "warning",
+          duration: 3000
+      });
+    }
+    else {
+      if (this.state.newDefinedItem)
+          selectedItem.activityId = uuid4();
+
+      this.setState({
+        preDefinedItems: this.props.items,
+        selectedItem: null,
+        newDefinedItem: null,
+        search: ''
+      });
+      this.props.onConfirmHandler(selectedItem);
+    }   
+  }
+
+  _keyExtractor = (item, index) => item.activityId;
+
+  _renderItem = ({item}) => (
+      <ActivityItem
+        id={item.activityId}
+        label={item.label}
+        icon={item.icon}
+        onPressItem={this._onConfirm}
+      />
+    );
+
+  render() {
+    return (
+      <View style={{flex: 1}}>
+          <View>
+            {
+              this.state.selectedItem && this.state.selectedItem.activityId &&
+              <SelectedActivityItem
+                item={this.state.selectedItem}
+                onPressItem={this._onDeselectConfirm}
+              />
+            }
+          </View>
+          <View>
+             <SearchBar
+               placeholder={getLabel("action.search")}
+               onChangeText={this._updateSearch}
+               value={this.state.search}
+             />
+         </View>
+         <View style={{flex: 1}}>
+           <FlatList keyboardShouldPersistTaps={'handled'}            
+             style={{flex: 1, marginVertical: 20}}
+             data={this.state.preDefinedItems}
+             keyExtractor={this._keyExtractor}
+             renderItem={this._renderItem}
+             numColumns={2}
+           />
+         </View>
+      </View>
+   );
+  }
+}
+
+interface IMapDispatchToProps {
+  getAllActivities: () => Promise<StoreData.ActivityVM>
+}
+
+export interface Props {
+  isVisible: boolean;
+  locationId: string;
+  dateIdx: number;
+  preDefinedActivities?: Array<StoreData.PreDefinedActivityVM>
+  selectedActivity?: StoreData.ActivityVM;
+  confirmHandler: (locationId, activity) => void;
+  cancelHandler?: () => void;
+}
+
+interface State {
+  selectedItem: null
+}
+
 class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatchToProps, State> {
   constructor(props: Props & IMapDispatchToProps) {
     super(props);  
@@ -64,37 +235,30 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
     }
   };
 
-  _onConfirm(activity) { 
+  _removeSelectedActivity = () => {
+    this.setState({
+      selectedItem: null
+    });
+  }
+
+  _onConfirm = (activity) => { 
     this.props.confirmHandler(this.props.locationId, activity);
   }
 
-  _keyExtractor = (item, index) => item.activityId;
-
-  _renderItem = ({item}) => (
-      <ActivityItem
-        id={item.activityId}
-        label={item.label}
-        icon={item.icon}
-        onPressItem={(item) => this._onConfirm(item)}
-      />
-    );
-
-    _renderContent() {
-        return (
-          <FlatList
-              style={{flex: 1, marginVertical: 20}}
-              data={this.props.preDefinedActivities}
-              keyExtractor={this._keyExtractor}
-              renderItem={this._renderItem}
-              numColumns={2}
-            />
-        );
-    }
+  _onSave = () => {
+    this.props.confirmHandler(this.props.locationId, this.state.selectedItem);
+  }
 
   render() {
-    const { isVisible } = this.props;
-    var contentElement = this.props.preDefinedActivities
-          ? this._renderContent()   
+    const { isVisible, preDefinedActivities, selectedActivity } = this.props;
+    console.log('selected acvitiy: ' + JSON.stringify(selectedActivity));
+    var contentElement = preDefinedActivities
+          ? <ActivityContainerComponent
+              items={preDefinedActivities}
+              selectedItem={selectedActivity}
+              onConfirmHandler={this._onConfirm}
+              removeSelectedActivityHandler={this._removeSelectedActivity}>
+            </ActivityContainerComponent>
           : <ActivityIndicator size="small" color="#00ff00" />
           
     return (
@@ -104,6 +268,7 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
                     <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
+                    <Button transparent onPress={this._onSave}><Text>{getLabel("action.save")}</Text></Button>
                 </View>
                 <View style={styles.activityContainer}>
                   {contentElement}
@@ -120,7 +285,9 @@ interface Style {
   modalInnerContainer: ViewStyle;
   activityContainer: ViewStyle;
   activityItemContainer: ViewStyle;
+  selectedActivityItemContainer: ViewStyle;
   activityItem: ViewStyle;
+  iconRemoved: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -155,14 +322,29 @@ const styles = StyleSheet.create<Style>({
     flexDirection: "row",
     justifyContent: 'center',
     alignItems: "center"
+  },
+  selectedActivityItemContainer: {
+    marginBottom: 10
+  },
+  iconRemoved: {
+    
   }
 })
   
 const AddActivityModalStyle = connectStyle<typeof AddActivityModalComponent>('NativeBase.Modal', styles)(AddActivityModalComponent);
 
-const mapStateToProps = (storeState, ownProps: Props) => {
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+  let dateVm = storeState.currentTrip.dates.find(item => item.dateIdx == ownProps.dateIdx);
+  let activity = null;
+
+  if (dateVm) {
+    let location = dateVm.locations.find(item => item.locationId == ownProps.locationId);
+    activity = location && location.activity ? location.activity : activity;
+  }
+
   return {
-      preDefinedActivities: storeState.dataSource.activities
+      preDefinedActivities: storeState.dataSource.activities,
+      selectedActivity: activity
   };
 };
 
