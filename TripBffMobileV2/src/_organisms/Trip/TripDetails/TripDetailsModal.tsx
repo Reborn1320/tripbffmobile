@@ -125,6 +125,7 @@ class TripDetailsModalComponent extends PureComponent<Props, State> {
                 <AddFeelingModal
                     isVisible={this.props.isAddFeelingModalVisible}
                     locationId={this.props.locationId}
+                    dateIdx={this.props.dateIdx}
                     confirmHandler={this._updateFeelingConfirmed}
                     cancelHandler={this._cancelUpdatefeelingModal} />
                  <AddActivityModal

@@ -60,13 +60,13 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
 
   componentDidMount() {
     this.setState({
-      preDefinedItems: this.props.items.filter(item => !this.props.selectedItems.includes(item)),
+      preDefinedItems: this.props.items.filter(item => !this.props.selectedItems.find(se => se.highlightId == item.highlightId)),
       selectedItems: this.props.selectedItems
     });
   }
 
   updateSearch = search => {
-    var filterItems = this.props.items.filter(item => !this.state.selectedItems.includes(item));
+    var filterItems = this.props.items.filter(item => !this.state.selectedItems.find(se => se.highlightId == item.highlightId));
     var newItem = null;
 
     if (search) {
@@ -118,12 +118,14 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
       });
     }
     else {
-      selectedItem.highlightId = uuid4();
+      if (this.state.newDefinedItem)
+        selectedItem.highlightId = uuid4();
+
       var selectedItems = [...this.state.selectedItems, selectedItem];
       this.setState({
-        preDefinedItems: this.props.items.filter(item => !selectedItems.includes(item)),
+        preDefinedItems: this.props.items.filter(item => !selectedItems.find(se => se.highlightId == item.highlightId)),
         selectedItems: selectedItems,
-        newDefinedItem: {},
+        newDefinedItem: null,
         search: ''
       });
       this.props.addSelectedHighlights(selectedItem);
@@ -133,6 +135,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
   _onDeselectConfirm = (deSelectedItem) => {
     var selectedItems = this.state.selectedItems.filter(item => item.highlightId != deSelectedItem.highlightId);
     var existedPreDefinedItem = this.props.items.find(item => item.highlightId == deSelectedItem.highlightId);
+
     var preDefinedItems = existedPreDefinedItem 
                     ? [...this.state.preDefinedItems, deSelectedItem]
                     : this.state.preDefinedItems;
@@ -230,24 +233,12 @@ class AddHighlightModalContentComponent extends React.PureComponent<any, ModalSt
   render() {
     let likePreDefinedItems = this.props.preDefinedHighlights.filter(item =>  item.highlightType == "Like" );
     let dislikePreDefinedItems = this.props.preDefinedHighlights.filter(item => item.highlightType == "Dislike" );
-    let likeHighlightItems = [];
-    let disLikeHighlightItems = [];
+    let selectedLikeItems = [];
+    let selectedDisLikeItems = [];
 
     if (this.props.selectedHighlightItems && this.props.selectedHighlightItems.length > 0) {
-      var notSelectedPredefinedHighlights = this.props.preDefinedHighlights.filter(item => {
-          let selectedHighlight = 
-              this.props.selectedHighlightItems.find(selectedItem => selectedItem.highlightId == item.highlightId);
-
-          if (selectedHighlight)
-              return false;
-          return true;
-      });
-
-      likeHighlightItems = this.props.selectedHighlightItems.filter(item =>  item.highlightType == "Like" );
-      disLikeHighlightItems = this.props.selectedHighlightItems.filter(item =>  item.highlightType == "Dislike" );
-      
-      likePreDefinedItems = notSelectedPredefinedHighlights.filter(item =>  item.highlightType == "Like" );
-      dislikePreDefinedItems = notSelectedPredefinedHighlights.filter(item => item.highlightType == "Dislike" );
+      selectedLikeItems = this.props.selectedHighlightItems.filter(item =>  item.highlightType == "Like" );
+      selectedDisLikeItems = this.props.selectedHighlightItems.filter(item =>  item.highlightType == "Dislike" );
     }
 
     return (
@@ -257,13 +248,13 @@ class AddHighlightModalContentComponent extends React.PureComponent<any, ModalSt
           switch (route.key) {
             case 'first':
               return <TabHighlightComponent items={likePreDefinedItems}
-                                            selectedItems={likeHighlightItems}
+                                            selectedItems={selectedLikeItems}
                                             addSelectedHighlights={this._addSelectedHighlights} 
                                             removeSelectedHighlights={this._removeSelectedHighlights}
                                             styles={styles.tabScene} />;
             case 'second':
               return <TabHighlightComponent items={dislikePreDefinedItems}
-                                            selectedItems={disLikeHighlightItems}
+                                            selectedItems={selectedDisLikeItems}
                                             addSelectedHighlights={this._addSelectedHighlights} 
                                             removeSelectedHighlights={this._removeSelectedHighlights}
                                             styles={styles.tabScene} />;
