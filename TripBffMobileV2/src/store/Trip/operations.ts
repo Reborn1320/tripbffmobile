@@ -251,9 +251,7 @@ export function updateLocationFeeling(tripId: string, dateIdx: number, locationI
 
 export function updateLocationActivity(tripId: string, dateIdx: number, locationId: string, activity: StoreData.ActivityVM, cancelToken: any): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
-    const data = {
-      activityId: activity.activityId
-    };
+    const data = activity;
     var config = {
       cancelToken: cancelToken
     };
