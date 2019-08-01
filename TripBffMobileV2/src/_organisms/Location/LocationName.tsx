@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../store/Interfaces";
 import { View } from "react-native";
+import { mixins } from "../../_utils";
 
 interface IMapDispatchToProps {
     openUpdateLocationAddressModalHanlder: () => void
@@ -28,9 +29,12 @@ export default class LocationName extends React.PureComponent<Props, State> {
         return (
             <View>
                 <View>
-                    <Text style={{ 
+                    <Text
+                    style={{ 
                         fontSize: 26,
-                        fontWeight: "bold" }}>{this.props.locationName}
+                        ...mixins.themes.fontBold
+                        }}
+                        >{this.props.locationName}
                     </Text>
                 </View>
                 <View>

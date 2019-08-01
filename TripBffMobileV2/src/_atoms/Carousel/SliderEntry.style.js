@@ -1,5 +1,6 @@
 import { StyleSheet, Dimensions, Platform } from 'react-native';
 import { colors } from './index.style';
+import { mixins } from "../../_utils";
 
 const IS_IOS = Platform.OS === 'ios';
 const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
@@ -108,7 +109,7 @@ export default StyleSheet.create({
     title: {
         color: colors.black,
         fontSize: 13,
-        fontWeight: 'bold',
+        ...mixins.themes.fontBold,
         letterSpacing: 0.5
     },
     titleEven: {

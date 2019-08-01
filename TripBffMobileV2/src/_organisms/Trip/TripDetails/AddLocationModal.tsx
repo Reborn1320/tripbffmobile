@@ -15,6 +15,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from "moment";
 import SearchLocation from '../../../_molecules/Trip/SearchLocationComponent';
 import { getLabel } from "../../../../i18n";
+import { mixins } from "../../../_utils";
 
 export interface Props {
   isVisible: boolean;
@@ -201,11 +202,10 @@ const styles = StyleSheet.create<Style>({
     fontSize: 16,
     paddingLeft: 2,
     paddingTop: 2,
-    fontWeight: 'bold'    
+    ...mixins.themes.fontBold,    
   },
   addressText: {
     fontSize: 14, 
-    fontWeight: 'normal'
   }
 })
   

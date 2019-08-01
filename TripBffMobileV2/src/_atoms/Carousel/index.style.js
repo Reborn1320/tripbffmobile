@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { mixins } from "../../_utils";
 
 export const colors = {
     black: '#1a1917',
@@ -36,7 +37,7 @@ export default StyleSheet.create({
         backgroundColor: 'transparent',
         color: 'rgba(255, 255, 255, 0.9)',
         fontSize: 20,
-        fontWeight: 'bold',
+        ...mixins.themes.fontBold,
         textAlign: 'center'
     },
     titleDark: {
