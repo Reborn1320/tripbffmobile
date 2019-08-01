@@ -1,4 +1,4 @@
-import { ViewStyle } from "react-native";
+import { ViewStyle, TextStyle } from "react-native";
 
 export const mixins: Mixins = {
   themes: {
@@ -17,7 +17,18 @@ export const mixins: Mixins = {
     displayFlex: {
       display: "flex"
     },
-    
+    fontNormal: {
+      fontFamily: "Nunito-Regular"
+    },
+    fontSemiBold: {
+      fontFamily: "Nunito-SemiBold"
+    },
+    fontBold: {
+      fontFamily: "Nunito-Bold"
+    },
+    fontExtraBold: {
+      fontFamily: "Nunito-ExtraBold"
+    }
   },
   centering: {
     display: "flex",
@@ -32,6 +43,10 @@ type Mixins = {
     debug1: ViewStyle,
     debug2: ViewStyle,
     displayFlex: ViewStyle,
+    fontNormal: TextStyle,
+    fontSemiBold: TextStyle,
+    fontBold: TextStyle,
+    fontExtraBold: TextStyle,
   }
   centering: ViewStyle
 }

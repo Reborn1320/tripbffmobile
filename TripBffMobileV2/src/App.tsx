@@ -27,6 +27,7 @@ import LandingPageScreen from "./screens/LandingPage";
 import NBTheme from "./theme/variables/material.js";
 import { getLabel } from "../i18n";
 import TripEditBasicScreen from "./screens/trip/create/TripEditBasic";
+import { mixins } from "./_utils";
 
 var mockLoginApi = mockLoginApiService;
 var mockTripApi = mockTripApiService;
@@ -59,12 +60,11 @@ const stackConfigs =  {
     },
     headerTintColor: NBTheme.brandPrimary,
     headerTitleStyle: {
-      fontWeight: 'bold',
+      ...mixins.themes.fontBold,
       textAlign:"center",
       flex:1,
       fontSize: 20,
       fontStyle: "normal",
-      fontFamily: "Nunito",
       textTransform: 'capitalize'
     }
   },

@@ -151,7 +151,6 @@ const styles = StyleSheet.create<Style>({
     },
     locationName_Name: {
         fontSize: 16,
-        fontFamily: "Roboto",
         marginLeft: 10,
         marginRight: 10,
         flexGrow: 1,

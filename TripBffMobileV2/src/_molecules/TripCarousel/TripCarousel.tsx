@@ -15,6 +15,7 @@ import { StoreData } from "../../store/Interfaces";
 import moment from "moment";
 import { connect } from "react-redux";
 import { getLabel } from "../../../i18n";
+import { mixins } from "../../_utils";
 
 export type ITripEntry = {
   tripId: string,
@@ -218,7 +219,7 @@ const styles = StyleSheet.create<Style>({
     backgroundColor: 'transparent',
     color: 'rgba(255, 255, 255, 0.9)',
     fontSize: 20,
-    fontWeight: 'bold',
+    ...mixins.themes.fontBold,
     textAlign: 'center'
   },
   titleDark: {

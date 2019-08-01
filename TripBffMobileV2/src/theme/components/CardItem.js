@@ -27,7 +27,7 @@ export default (variables = variable) => {
         "NativeBase.Text": {
           ".note": {
             color: variables.listNoteColor,
-            fontWeight: "400",
+            // fontWeight: "400",
             marginRight: 20
           }
         },
