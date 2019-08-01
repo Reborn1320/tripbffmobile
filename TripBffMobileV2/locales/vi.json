@@ -22,7 +22,9 @@
         "from_date": "Ngày khởi hành",
         "end_date": "Ngày kết thúc",
         "date": "Ngày",
-        "create_button": "Tạo"
+        "create_button": "Tạo",
+        "next_month_label": "Kế tiếp",
+        "prev_month_label": "Trước"
     },
     "import": {
         "skip_button": "Bỏ qua",

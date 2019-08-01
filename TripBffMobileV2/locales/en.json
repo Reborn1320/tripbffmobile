@@ -23,6 +23,8 @@
         "end_date": "End Date",
         "date": "Date",
         "create_button": "Create",
+        "next_month_label": "Next",
+        "prev_month_label": "Previous"
     },
     "import": {
         "skip_button": "Skip",

@@ -1,10 +1,15 @@
 import * as React from "react";
-import { View, Text, Button } from "native-base";
-import { StyleSheet, ViewStyle, Modal } from "react-native";
+import { View, Text } from "native-base";
+import { StyleSheet, ViewStyle } from "react-native";
 import { connectStyle } from 'native-base';
 import CalendarPicker from 'react-native-calendar-picker';
-import { Moment } from "moment";
+import moment, { Moment } from "moment";
 import { getLabel } from "../../../i18n";
+import Modal from 'react-native-modal';
+import { Button } from 'react-native-elements';
+import NBColor from "../../theme/variables/commonColor.js";
+import DeviceInfo from 'react-native-device-info';
+import 'moment/locale/vi';
 
 export interface Props {
   isVisible: boolean;
@@ -60,63 +65,90 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
 
   render() {
     const { isVisible } = this.props;
-    const fromDate = this.state.fromDate;
+    let fromDate = this.state.fromDate;
     const toDate = this.state.toDate ? this.state.toDate.startOf("day") : null;
+    let deviceLocale = DeviceInfo.getDeviceLocale();
 
-    // if (fromDate && toDate) {
-    //   console.log("date range picker render");
-    //   console.log(fromDate.format(), toDate.format());
-    // }
-          
+    let mlist = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ]
+    let weekdays = [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+    if(deviceLocale == "vi-VN") {
+      mlist = [ "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12" ]
+      weekdays = [ "T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+    } 
+
+    let backgroundColor = "#F0F0F0",
+        isDisabled = true,
+        textColor = "#A1A1A1";
+    
+    if (this.state.isValid) {
+      backgroundColor = NBColor.brandMainColor,
+      isDisabled = false;
+      textColor = "#FFFFFF"
+    }     
+
     return (
-        <Modal      
-            visible={isVisible} 
-            onRequestClose={this.props.cancelHandler}>
-            <View style={styles.modalInnerContainer}>
-                <View style={styles.buttons}>
-                    <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
-                    {
-                      this.state.isValid && 
-                      <Button transparent onPress={this._onSave}><Text>{getLabel("action.save")}</Text></Button>
-                    }
-                </View>
-                <View style={styles.modalContentContainer}>
-                    <CalendarPicker
-                        startFromMonday={true}
-                        allowRangeSelection={true}
-                        initialDate={fromDate} 
-                        selectedStartDate={fromDate}
-                        selectedEndDate={toDate} 
-                        todayBackgroundColor="#569EAC"
-                        selectedDayColor="#2E97A1"
-                        selectedDayTextColor="#FFFFFF"
-                        onDateChange={this.onDateChange}
-                    />
-                </View>                
+      <Modal
+          isVisible={isVisible}
+          style={styles.bottomModal}
+          swipeDirection="down"
+          onSwipeComplete={this._onCancel}
+        >
+          <View style={styles.content}>
+              <View>
+                <CalendarPicker
+                    startFromMonday={true}
+                    allowRangeSelection={true}
+                    initialDate={fromDate} 
+                    selectedStartDate={fromDate}
+                    selectedEndDate={toDate} 
+                    todayBackgroundColor="rgba(46, 151, 161, 0.5)"
+                    selectedDayColor="#2E97A1"
+                    selectedDayTextColor="#FFFFFF"
+                    months={mlist}
+                    weekdays={weekdays}
+                    previousTitle={getLabel("create.prev_month_label")}
+                    nextTitle={getLabel("create.next_month_label")}
+                    onDateChange={this.onDateChange}                    
+                />
+              </View>                
+              <View style={styles.buttons}>
+                <Button
+                    buttonStyle={{ backgroundColor: "transparent"}}
+                    title={getLabel("action.cancel")}
+                    titleStyle={{color: NBColor.brandMainColor, fontFamily: "Nunito", textTransform: "capitalize",
+                          fontSize: 14, lineHeight: 16}}
+                    onPress={this._onCancel}>
+                </Button>
+                <Button
+                    buttonStyle={{backgroundColor: backgroundColor, 
+                              borderRadius: 4,  width: 96, height: 32                  
+                              }}
+                    disabled={isDisabled}
+                    title={getLabel("action.done")}
+                    titleStyle={{color: textColor, fontFamily: "Nunito", textTransform: "capitalize",
+                        fontSize: 14, lineHeight: 16}}
+                    onPress={this._onSave}>         
+                </Button>
             </View>
-        </Modal>
+          </View>         
+        </Modal>      
     );
   }
 }
 
 interface Style {
-  modal: ViewStyle,
   buttons: ViewStyle;
   modalInnerContainer: ViewStyle;
   modalContentContainer: ViewStyle;
+  bottomModal: ViewStyle;
+  content: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
-  modal: {
-    flex: 1,
-    margin: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white"
-  },
   buttons: {
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-evenly"
   },
   modalInnerContainer: {
     flex: 1,
@@ -125,7 +157,18 @@ const styles = StyleSheet.create<Style>({
   },
   modalContentContainer: {
     flex: 1
-  }
+  },
+  bottomModal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+  content: {
+    backgroundColor: 'white',
+    padding: 16,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
 })
   
 const DateRangePicker = 

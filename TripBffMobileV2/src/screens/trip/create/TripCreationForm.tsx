@@ -112,6 +112,7 @@ export class TripCreationForm extends PureComponent<Props, any> {
               value={this.state.tripName}
               onChangeText={(tripName) => this.setState({ tripName })} 
               inputStyle={{fontFamily: "Nunito", fontSize: 14, fontWeight: "600", color: "#383838", paddingLeft: 16 }}
+              inputContainerStyle={{ borderWidth: 1, borderStyle: "solid", borderColor: "#A1A1A1", borderRadius: 4, marginTop: 8}}
             />
             <TouchableOpacity onPress={this._openDateRangePickerModal} activeOpacity={1} style={{marginTop: 24}}>
               <Input
@@ -120,7 +121,8 @@ export class TripCreationForm extends PureComponent<Props, any> {
                 leftIcon={{ type: 'font-awesome', name: 'calendar', size: 20 }}
                 value={date}  
                 editable={false}
-                inputStyle={{fontFamily: "Nunito", fontSize: 14, fontWeight: "600", color: "#2E97A1", paddingLeft: 16 }}           
+                inputStyle={{fontFamily: "Nunito", fontSize: 14, fontWeight: "600", color: "#2E97A1", paddingLeft: 16 }}   
+                inputContainerStyle={{ borderWidth: 1, borderStyle: "solid", borderColor: "#A1A1A1", borderRadius: 4, marginTop: 8}}        
               />    
             </TouchableOpacity>    
           </View> 
