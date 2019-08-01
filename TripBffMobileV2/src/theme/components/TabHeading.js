@@ -1,4 +1,5 @@
 import variable from "./../variables/platform";
+import { mixins } from "../../_utils";
 
 export default (variables = variable) => {
   const platform = variables.platform;
@@ -25,7 +26,7 @@ export default (variables = variable) => {
     ".active": {
       "NativeBase.Text": {
         color: variables.topTabBarActiveTextColor,
-        fontWeight: "600"
+        ...mixins.themes.fontSemiBold
       },
       "NativeBase.Icon": {
         color: variables.topTabBarActiveTextColor

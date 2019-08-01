@@ -1,6 +1,7 @@
 import { PixelRatio, StatusBar } from "react-native";
 
 import variable from "./../variables/platform";
+import { mixins } from "../../_utils";
 
 export default (variables = variable) => {
   const platformStyle = variables.platformStyle;
@@ -28,7 +29,7 @@ export default (variables = variable) => {
           fontSize: variables.titleFontSize - 2,
           fontFamily: variables.titleFontfamily,
           textAlign: "center",
-          fontWeight: "500",
+          ...mixins.themes.fontSemiBold,
           paddingBottom: 3
         },
         "NativeBase.Subtitle": {
@@ -111,7 +112,7 @@ export default (variables = variable) => {
       ".transparent": {
         "NativeBase.Text": {
           color: variables.toolbarBtnTextColor,
-          fontWeight: "600"
+          ...mixins.themes.fontBold,
         },
         "NativeBase.Icon": {
           color: variables.toolbarBtnColor
@@ -155,7 +156,7 @@ export default (variables = variable) => {
       "NativeBase.Button": {
         ".transparent": {
           "NativeBase.Text": {
-            fontWeight: "500"
+            ...mixins.themes.fontSemiBold
           },
           paddingHorizontal: null,
           paddingLeft: platform === "ios" ? 10 : null
