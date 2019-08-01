@@ -1,6 +1,7 @@
 import { StyleSheet, Dimensions, Platform } from 'react-native';
 import { colors } from './index.style';
 import { mixins } from "../../_utils";
+import NBTheme from "../../theme/variables/material";
 
 const IS_IOS = Platform.OS === 'ios';
 const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
@@ -46,7 +47,7 @@ export default StyleSheet.create({
         borderTopRightRadius: entryBorderRadius
     },
     imageContainerEven: {
-        backgroundColor: colors.black,
+        backgroundColor: NBTheme.brandPrimary,
         borderRadius: 8,
     },
     image: {
@@ -100,7 +101,7 @@ export default StyleSheet.create({
         borderBottomRightRadius: entryBorderRadius
     },
     textContainerEven: {
-        backgroundColor: colors.black
+        backgroundColor: NBTheme.brandPrimary,
     },
     textContainerBorder: {
         borderColor: "lightgrey",

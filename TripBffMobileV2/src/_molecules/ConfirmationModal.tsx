@@ -43,8 +43,8 @@ class ConfirmationModal extends React.PureComponent<Props, State> {
           </View>
           <Text style={styles.contentText}>{content}</Text>
           <View style={styles.buttons}>
-            <Button transparent info style={styles.button} onPress={this._onCancel}><Text uppercase={false}>{getLabel("action.cancel")}</Text></Button>
-            <Button danger style={styles.button} onPress={this._onConfirm}><Text uppercase={false}>{getLabel("action.yes")}</Text></Button>
+            <Button transparent info style={styles.button} onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
+            <Button danger style={styles.button} onPress={this._onConfirm}><Text>{getLabel("action.yes")}</Text></Button>
           </View>
         </View>
       </Modal>
