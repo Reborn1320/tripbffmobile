@@ -3,10 +3,11 @@
 
 import * as React from "react";
 import { Modal } from "../_atoms";
-import { View, Text, Button, H2 } from "native-base";
+import { View, Text, Button, H2, H3 } from "native-base";
 import { StyleSheet, ViewStyle, TextStyle } from "react-native";
-import variables from "../theme/variables/material";
+import NBTheme from "../theme/variables/material";
 import { getLabel } from "../../i18n";
+import { mixins } from "../_utils";
 
 export interface Props {
   isVisible: boolean;
@@ -38,12 +39,12 @@ class ConfirmationModal extends React.PureComponent<Props, State> {
       <Modal isVisible={isVisible}>
         <View style={styles.modalInnerContainer}>
           <View style={styles.titleContainer}>
-            <H2 style={styles.titleText}>{title}</H2>
+            <H3 style={styles.titleText}>{title}</H3>
           </View>
           <Text style={styles.contentText}>{content}</Text>
           <View style={styles.buttons}>
-            <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
-            <Button onPress={this._onConfirm}><Text>{getLabel("action.yes")}</Text></Button>
+            <Button transparent info style={styles.button} onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
+            <Button danger style={styles.button} onPress={this._onConfirm}><Text>{getLabel("action.yes")}</Text></Button>
           </View>
         </View>
       </Modal>
@@ -53,6 +54,7 @@ class ConfirmationModal extends React.PureComponent<Props, State> {
 
 interface Style {
   buttons: ViewStyle;
+  button: ViewStyle;
   modalInnerContainer: ViewStyle;
   titleContainer: ViewStyle;
   titleText: TextStyle;
@@ -62,33 +64,39 @@ interface Style {
 const styles = StyleSheet.create<Style>({
   buttons: {    
     flexDirection: "row",
-    justifyContent: "center"
+    justifyContent: "center",
+    paddingHorizontal: 15,
+  },
+  button: {
+    flexGrow: 1,
+    flexBasis: "50%",
+    maxWidth: "50%",
+    justifyContent: "center",
   },
   modalInnerContainer: {
     width: "100%",
     paddingBottom: 15
-    // ...mixins.themes.debug1,
   },
   titleContainer: {
     margin: 0,
     paddingTop: 22,
-    paddingBottom: 10,
-    borderBottomColor: variables.listBorderColor,
+    paddingBottom: 14,
+    borderBottomColor: NBTheme.listBorderColor,
     borderBottomWidth: 1,
     paddingLeft: 15,
     paddingRight: 15,
     width: "100%",
-    // ...mixins.themes.debug,
   },
   titleText: {
-    color: variables.listBorderColor,
+    color: NBTheme.brandPrimary,
+    alignSelf: "center",
+    ...mixins.themes.fontBold,
   },
   contentText: {
     marginTop: 22,
     marginBottom: 30,
     marginLeft: 15,
     marginRight: 15,
-    color: variables.listBorderColor
   }
 })
 

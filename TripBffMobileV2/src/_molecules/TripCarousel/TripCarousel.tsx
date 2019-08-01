@@ -129,7 +129,7 @@ export class TripCarouselComponent extends React.Component<Props, State> {
             <Text style={[styles.subtitle, isTinder ? {} : styles.titleDark]}>{subtitle}</Text>
           </View>
           <View style={styles.headerRightContainer}>
-            <Button transparent primary small
+            <Button transparent dark small
                 onPress={this._handleShareClick}>
                 <Icon type="Ionicons" name="md-share-alt" />
             </Button>
@@ -241,7 +241,6 @@ const styles = StyleSheet.create<Style>({
     color: "#cccccc"
   },
   deleteLabel: {
-    color: NBColor.brandDanger,
     padding: 10
   }
 })
