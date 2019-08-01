@@ -24,7 +24,7 @@ class LandingPageComponent extends Component<Props & IMapDispatchToProps, any> {
         this.props.isLoggedIn()
         .then(isLoggedIn => {
             if (isLoggedIn) {
-                this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
+                this.props.navigation.navigate(NavigationConstants.Screens.Profile);
             }
             else {
                 this.props.navigation.navigate(NavigationConstants.Screens.Login);

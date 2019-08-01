@@ -12,7 +12,8 @@
         "search": "Search",
         "done": "Done",
         "delete": "Delete",
-        "okay": "Okay"
+        "okay": "Okay",
+        "next": "Next"
     },
     "create": {
         "screen_header_title": "Create new trip",
@@ -20,7 +21,8 @@
         "trip_name": "Trip Name",
         "from_date": "From Date",
         "end_date": "End Date",
-        "create_button": "Create"
+        "date": "Date",
+        "create_button": "Create",
     },
     "import": {
         "skip_button": "Skip",

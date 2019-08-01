@@ -59,7 +59,13 @@ const stackConfigs =  {
     },
     headerTintColor: NBTheme.brandPrimary,
     headerTitleStyle: {
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      textAlign:"center",
+      flex:1,
+      fontSize: 20,
+      fontStyle: "normal",
+      fontFamily: "Nunito",
+      textTransform: 'capitalize'
     }
   },
 } as any;

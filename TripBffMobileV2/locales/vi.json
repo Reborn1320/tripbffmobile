@@ -12,7 +12,8 @@
         "search": "Tìm kiếm",
         "done": "Hoàn thành",
         "delete": "Xóa",
-        "okay": "Đồng ý"
+        "okay": "Đồng ý",
+        "next": "Tiếp theo"
     },
     "create": {
         "screen_header_title": "Tạo mới chuyến đi",
@@ -20,6 +21,7 @@
         "trip_name": "Tên chuyến đi",
         "from_date": "Ngày khởi hành",
         "end_date": "Ngày kết thúc",
+        "date": "Ngày",
         "create_button": "Tạo"
     },
     "import": {
