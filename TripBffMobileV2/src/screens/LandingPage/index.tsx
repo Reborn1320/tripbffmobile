@@ -75,7 +75,6 @@ interface Style {
     firstAppName: {
         fontSize: 40,
         color: "black",
-        fontWeight: "normal"
     },
     secondAppName: {
         fontSize: 40,

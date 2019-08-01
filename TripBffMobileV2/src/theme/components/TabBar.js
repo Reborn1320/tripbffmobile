@@ -13,7 +13,7 @@ export default (variables = variable) => {
         "NativeBase.Text": {
           fontSize: variables.tabFontSize,
           color: variables.sTabBarActiveTextColor,
-          fontWeight: "400"
+          // fontWeight: "400"
         },
         "NativeBase.IconNB": {
           color: variables.sTabBarActiveTextColor
@@ -25,7 +25,7 @@ export default (variables = variable) => {
       "NativeBase.Text": {
         fontSize: variables.tabFontSize,
         color: variables.sTabBarActiveTextColor,
-        fontWeight: "400"
+        // fontWeight: "400"
       },
       ".isTabActive": {
         "NativeBase.Text": {

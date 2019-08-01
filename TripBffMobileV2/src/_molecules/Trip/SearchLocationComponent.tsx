@@ -9,6 +9,7 @@ import  Autocomplete  from "react-native-autocomplete-input";
 import { getAddressFromLocation } from "../../_function/commonFunc";
 import { TextInput } from "react-native-gesture-handler";
 import { getLabel } from "../../../i18n";
+import { mixins } from "../../_utils";
 
 export interface Props {
   confirmHandler: (name, address, long, lat) => void;
@@ -181,11 +182,10 @@ const styles = StyleSheet.create<Style>({
     fontSize: 16,
     paddingLeft: 2,
     paddingTop: 2,
-    fontWeight: 'bold'    
+    ...mixins.themes.fontBold,
   },
   addressText: {
     fontSize: 14, 
-    fontWeight: 'normal'
   },
   searchSection: {
     flexDirection: 'row',    

@@ -43,7 +43,6 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNI18nPackage(),
             new VectorIconsPackage(),
             new ReanimatedPackage(),
             new RNGestureHandlerPackage(),
@@ -51,7 +50,8 @@ public class MainApplication extends Application implements ReactApplication {
             new FBSDKPackage(mCallbackManager),
             new RNDeviceInfo(),
             new AsyncStoragePackage(),
-            new RCTMGLPackage()
+            new RCTMGLPackage(),
+            new RNI18nPackage()
       );
     }
 

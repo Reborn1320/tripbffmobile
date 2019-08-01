@@ -167,15 +167,8 @@ const styles = StyleSheet.create<Style>({
         fontSize: 14,
         paddingTop: 3,
         alignSelf: "flex-start",
-        fontWeight: "normal",
-        fontFamily: "Roboto",
-        // flexGrow: 1,
-        // ...mixins.themes.debug,
-        // color: "darkgrey",
     },
     locationAddress: {
         fontSize: 13,
-        // color: "darkgrey",
-        fontFamily: "Roboto",
     }
 })
