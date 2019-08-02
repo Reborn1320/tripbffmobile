@@ -13,7 +13,7 @@ import { getLabel } from "../../../../i18n";
 import { SearchBar } from 'react-native-elements';
 import uuid4 from 'uuid/v4';
 import NBColor from "../../../theme/variables/material.js";
-import { mixins } from "../../../_utils"
+import { mixins } from "../../../_utils";
 
 class SelectedFeelingItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -23,10 +23,14 @@ class SelectedFeelingItem extends React.PureComponent<any> {
   render() {
     return (
       <TouchableOpacity onPress={this._onPress}       
-          style={[styles.feelingItemContainer, styles.selectedFeelingItemContainer]}>
-          <View style={styles.feelingItem}>      
-            <Icon style={styles.feelingIcon} type="FontAwesome5" name={this.props.item.icon} />     
-            <Text>{this.props.item.label}</Text>   
+          style={[styles.selectedFeelingItemContainer]}>
+          <View style={styles.feelingItem}>  
+            <View style={styles.feelingIconSelectedIconContainer}>
+              <Icon type="FontAwesome5" name={this.props.item.icon} /> 
+            </View>                
+            <View style={styles.feelingNameSelectedContainer}>
+              <Text numberOfLines={1}>{this.props.item.label}</Text>   
+            </View> 
             <Icon name="md-close" type="Ionicons" style={styles.iconRemoved}/>           
           </View>
       </TouchableOpacity>
@@ -47,8 +51,10 @@ class FeelingItem extends React.PureComponent<any> {
     return (
       <TouchableOpacity onPress={this._onPress} style={styles.feelingItemContainer}>
         <View style={styles.feelingItem}>
-          <Icon style={styles.feelingIcon} type="FontAwesome5" name={this.props.icon} />  
-          <Text>{this.props.label}</Text>
+          <Icon style={styles.feelingIcon} type="FontAwesome5" name={this.props.icon} />
+          <View style={styles.feelingNameContainer}>
+            <Text numberOfLines={1}>{this.props.label}</Text>
+          </View> 
         </View>
       </TouchableOpacity>
     );
@@ -79,33 +85,20 @@ class FeelingContainerComponent extends React.Component<any, any> {
     var newItem = null;
 
     if (search) {
-      let numberOfCharacters = search.length;
+      var searchLower = search.toLowerCase();
+      filterItems = filterItems.filter(item => item.label.toLowerCase().includes(searchLower));
 
-      if (numberOfCharacters > 20) {
-        Toast.show({
-            text: getLabel("location_detail.user_defined_like_dislike_warning"),
-            buttonText: "Okay",
-            position: "top",
-            type: "warning",
-            duration: 3000
-        });
-      }
-      else {
-        var searchLower = search.toLowerCase();
-            filterItems = filterItems.filter(item => item.label.toLowerCase().includes(searchLower));
+      if (this.state.newDefinedItem)
+        filterItems = filterItems.filter(item => item.feelingId != this.state.newDefinedItem.feelingId);
 
-        if (this.state.newDefinedItem)
-          filterItems = filterItems.filter(item => item.feelingId != this.state.newDefinedItem.feelingId);
+      var exactItem = filterItems.find(item => item.label.toLowerCase() == searchLower);
 
-        var exactItem = filterItems.find(item => item.label.toLowerCase() == searchLower);
-
-        if (!exactItem) {
-          newItem = { 
-            label: search
-          };
-          filterItems.push(newItem);         
-        }     
-      }      
+      if (!exactItem) {
+        newItem = { 
+          label: search
+        };
+        filterItems.push(newItem);         
+      }          
     }
     
     this.setState({ preDefinedItems: filterItems, search: search, newDefinedItem: newItem });
@@ -134,29 +127,16 @@ class FeelingContainerComponent extends React.Component<any, any> {
   }
 
   _onConfirm = (selectedItem) => {
-    let numberOfCharacters = selectedItem.label.length;
+    if (this.state.newDefinedItem)
+      selectedItem.feelingId = uuid4();
 
-    if (numberOfCharacters > 20) {
-      Toast.show({
-          text: getLabel("location_detail.user_defined_like_dislike_warning"),
-          buttonText: "Okay",
-          position: "top",
-          type: "warning",
-          duration: 3000
-      });
-    }
-    else {
-      if (this.state.newDefinedItem)
-          selectedItem.feelingId = uuid4();
-
-      this.setState({
-        preDefinedItems: this.props.items,
-        selectedItem: null,
-        newDefinedItem: null,
-        search: ''
-      });
-      this.props.onConfirmHandler(selectedItem);
-    }   
+    this.setState({
+      preDefinedItems: this.props.items,
+      selectedItem: null,
+      newDefinedItem: null,
+      search: ''
+    });
+    this.props.onConfirmHandler(selectedItem); 
   }
 
   _keyExtractor = (item, index) => item.feelingId;
@@ -306,7 +286,10 @@ interface Style {
   feelingPreDefinedContainer: ViewStyle;
   feeelingPreDefinedFlatList: ViewStyle;
   feelingItemContainer: ViewStyle;
+  feelingNameContainer: ViewStyle;
   selectedFeelingItemContainer: ViewStyle;
+  feelingIconSelectedIconContainer: ViewStyle;
+  feelingNameSelectedContainer: ViewStyle;
   feelingItem: ViewStyle;
   feelingIcon: TextStyle;
   iconRemoved: TextStyle;
@@ -370,8 +353,26 @@ const styles = StyleSheet.create<Style>({
     borderStyle: "solid",
     borderColor: '#DADADA'
   },
+  feelingNameContainer: {
+    maxWidth: "80%"
+  },
   selectedFeelingItemContainer: {
+    width: "92%",
+    height: 44,
+    marginLeft: "4%",
+    marginRight: "4%",
+    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5,
+    borderStyle: "solid",
+    borderColor: '#DADADA',
+    
     marginBottom: 10
+  },
+  feelingIconSelectedIconContainer: {
+    width: "13%"
+  },
+  feelingNameSelectedContainer: {
+    maxWidth: "75%"
   },
   feelingItem: {
     flex: 1,

@@ -46,7 +46,8 @@
         "delete_location_modal_header": "Xóa địa điểm",
         "delete_location_modal_content": "Bạn có chắc là bạn muốn xóa địa điểm này không ?",
         "day_label": "Ngày",
-        "feeling_modal_title": "Cảm giác của bạn ?"
+        "feeling_modal_title": "Cảm giác của bạn ?",
+        "activity_modal_title": "Bạn đã làm gì ?"
     },
     "location_detail": {
         "like_dislike_section_label": "Những thứ bạn thích/không thích",
