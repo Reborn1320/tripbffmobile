@@ -45,7 +45,8 @@
         "activity_label": "Activity",
         "delete_location_modal_header": "Delete Location",
         "delete_location_modal_content": "Are you sure you want to delete this location ?",
-        "day_label": "Day"
+        "day_label": "Day",
+        "feeling_modal_title": "How were your feeling ?"
     },
     "location_detail": {
         "like_dislike_section_label": "Things you like/dislike",

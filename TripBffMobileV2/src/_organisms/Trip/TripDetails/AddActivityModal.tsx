@@ -215,7 +215,7 @@ export interface Props {
 }
 
 interface State {
-  selectedItem: null
+  selectedItem: StoreData.ActivityVM
 }
 
 class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatchToProps, State> {
@@ -227,6 +227,9 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
     if (!this.props.preDefinedActivities) {
       this.props.getAllActivities();
     }
+    this.setState({  
+      selectedItem: this.props.selectedActivity
+    })
   }
 
   _onCancel = () => {
