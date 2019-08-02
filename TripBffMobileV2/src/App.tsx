@@ -57,9 +57,10 @@ const stackConfigs =  {
     headerStyle: {
     },
     headerLayoutPreset: 'center',
-    headerTintColor: NBTheme.brandPrimary,
+    headerTintColor: "#1A051D",
     headerTitleStyle: {
       ...mixins.themes.fontBold,
+      color: NBTheme.brandPrimary,
       textAlign: "center",
       alignSelf: "center",
       flex: 1,
