@@ -30,7 +30,9 @@ export class TripCreationForm extends PureComponent<Props, any> {
       tripName: this.props.tripName,
       isOpenDateRangePickerModal: false,
       fromDate: this.props.tripFromDate ? this.props.tripFromDate : moment(),
-      toDate: this.props.tripToDate ? this.props.tripToDate : moment()
+      toDate: this.props.tripToDate ? this.props.tripToDate : moment(),
+      isNameFieldFocused: false,
+      isDateFieldFocused: false
     };
   }  
 
@@ -58,7 +60,9 @@ export class TripCreationForm extends PureComponent<Props, any> {
 
   private _openDateRangePickerModal = () => {
     this.setState({
-      isOpenDateRangePickerModal: true
+      isOpenDateRangePickerModal: true,
+      isNameFieldFocused: false,
+      isDateFieldFocused: true
     });
   }
 
@@ -66,15 +70,26 @@ export class TripCreationForm extends PureComponent<Props, any> {
     this.setState({
       isOpenDateRangePickerModal: false,
       fromDate: fromDate,
-      toDate: toDate
+      toDate: toDate,
+      isNameFieldFocused: false,
+      isDateFieldFocused: false
     });
   }
 
   private _cancelHandler = () => {
     this.setState({
-      isOpenDateRangePickerModal: false
+      isOpenDateRangePickerModal: false,
+      isNameFieldFocused: false,
+      isDateFieldFocused: false
     });
   }
+
+  private _onNameFieldFocus = () => {
+    this.setState({
+      isNameFieldFocused: !this.state.isNameFieldFocused,
+      isDateFieldFocused: false
+    })
+  } 
 
   renderImportBtn() {
     let buttonStyle = styles.buttonDisabled,
@@ -100,6 +115,10 @@ export class TripCreationForm extends PureComponent<Props, any> {
 
   render() {
     var date = this.state.fromDate.format(DATE_FORMAT) + " - " + this.state.toDate.format(DATE_FORMAT);
+    let nameInputContainerStyle = this.state.isNameFieldFocused ?
+                                   styles.formInputFocusedContainer : styles.formInputUnFocusedContainer;
+    let dateInputContainerStyle = this.state.isDateFieldFocused ?
+                                   styles.formInputFocusedContainer : styles.formInputUnFocusedContainer;                              
 
     return (
       <View>
@@ -111,9 +130,14 @@ export class TripCreationForm extends PureComponent<Props, any> {
               value={this.state.tripName}
               onChangeText={(tripName) => this.setState({ tripName })} 
               inputStyle={[styles.formInput, styles.formInputTripName]}
-              inputContainerStyle={styles.formInputContainer}
+              inputContainerStyle={[styles.formInputContainer, nameInputContainerStyle]}
+              onFocus={this._onNameFieldFocus}
+              onBlur={this._onNameFieldFocus}
             />
-            <TouchableOpacity onPress={this._openDateRangePickerModal} activeOpacity={1} style={{marginTop: 24}}>
+            <TouchableOpacity 
+                  onPress={this._openDateRangePickerModal}
+                  activeOpacity={1}
+                  style={styles.formDateContainer}>
               <Input
                 label={getLabel("create.date")}  
                 labelStyle={styles.formLabel}              
@@ -121,7 +145,7 @@ export class TripCreationForm extends PureComponent<Props, any> {
                 value={date}  
                 editable={false}
                 inputStyle={[styles.formInput, styles.formInputDateRange]}   
-                inputContainerStyle={styles.formInputContainer}        
+                inputContainerStyle={[styles.formInputContainer, dateInputContainerStyle]}        
               />    
             </TouchableOpacity>    
           </View> 
@@ -149,6 +173,9 @@ interface Style {
   formInputTripName: TextStyle;
   formInputDateRange: TextStyle;
   formInputContainer: ViewStyle;
+  formInputFocusedContainer: ViewStyle;
+  formInputUnFocusedContainer: ViewStyle;
+  formDateContainer: ViewStyle;
   buttonContainer: ViewStyle;
   button: ViewStyle;
   buttonDisabled: ViewStyle;
@@ -181,14 +208,22 @@ const styles = StyleSheet.create<Style>({
     color: "#383838"
   },
   formInputDateRange: {
-    color: NBColor.brandMainColor
+    color: "#383838"
   },
   formInputContainer: {
     borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "#A1A1A1",
+    borderStyle: "solid",    
     borderRadius: 4,
     marginTop: 8
+  },
+  formInputFocusedContainer: {
+    borderColor: NBColor.brandMainColor
+  },
+  formInputUnFocusedContainer: {
+    borderColor: "#A1A1A1"
+  },
+  formDateContainer: {
+    marginTop: 24
   },
   buttonContainer: {
     marginTop: 40,
