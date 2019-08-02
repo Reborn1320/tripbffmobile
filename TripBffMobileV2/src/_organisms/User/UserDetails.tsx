@@ -35,10 +35,6 @@ export class UserDetailsComponent extends PureComponent<Props & IStateProps, Sta
 
     return (
       <View style={styles.container}>
-        <View style={styles.headerContainer}>
-          <H3>{userName.slice(0, userName.length > 10 ? 10 : userName.length )}</H3>
-        </View>
-
         <View style={styles.contentContainer}>
           <View style={styles.avatar}>
             <Avatar

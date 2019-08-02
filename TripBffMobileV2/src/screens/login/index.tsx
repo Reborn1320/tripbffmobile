@@ -45,7 +45,7 @@ class Login extends Component<Props & IMapDispatchToProps, any>{
     return this.props.loginUsingFacebookAccessToken(facebookUserId, accessToken)
       .then(() => {
         if (isMoveToCreate) {
-          this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
+          this.props.navigation.navigate(NavigationConstants.Screens.Profile);
         }
       });
   }  
@@ -54,7 +54,7 @@ class Login extends Component<Props & IMapDispatchToProps, any>{
     this.props.loginUsingDeviceId()
       .then(() => {
         if (isMoveToCreate) {
-          this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
+          this.props.navigation.navigate(NavigationConstants.Screens.Profile);
         }
       });
   }

@@ -1,10 +1,21 @@
 import * as React from "react";
-import { View, Text, Button } from "native-base";
-import { StyleSheet, ViewStyle, Modal } from "react-native";
+import { View, Text } from "native-base";
+import { StyleSheet, ViewStyle, TextStyle } from "react-native";
 import { connectStyle } from 'native-base';
 import CalendarPicker from 'react-native-calendar-picker';
-import { Moment } from "moment";
+import moment, { Moment } from "moment";
 import { getLabel } from "../../../i18n";
+import Modal from 'react-native-modal';
+import { Button } from 'react-native-elements';
+import NBColor from "../../theme/variables/commonColor.js";
+import DeviceInfo from 'react-native-device-info';
+import { LIST_MONTHS_EN,
+          LIST_MONTHS_VI,
+          LIST_WEEKDAYS_EN,
+          LIST_WEEKDAYS_VI,
+          LOCALE_VI_VN,
+          LOCALE_VI } from "../../screens/_services/SystemConstants";
+import { mixins } from "../../_utils";
 
 export interface Props {
   isVisible: boolean;
@@ -60,63 +71,96 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
 
   render() {
     const { isVisible } = this.props;
-    const fromDate = this.state.fromDate;
+    let fromDate = this.state.fromDate;
     const toDate = this.state.toDate ? this.state.toDate.startOf("day") : null;
+    let deviceLocale = DeviceInfo.getDeviceLocale();
 
-    // if (fromDate && toDate) {
-    //   console.log("date range picker render");
-    //   console.log(fromDate.format(), toDate.format());
-    // }
-          
+    let mlist = LIST_MONTHS_EN;
+    let weekdays = LIST_WEEKDAYS_EN;
+
+    if(deviceLocale &&
+       (deviceLocale.toLowerCase() == LOCALE_VI_VN.toLowerCase() ||
+        deviceLocale.toLowerCase() == LOCALE_VI.toLowerCase())) {
+      mlist = LIST_MONTHS_VI;
+      weekdays = LIST_WEEKDAYS_VI;
+    } 
+
+    let buttonDoneStyle = styles.buttonDoneDisabled,
+        isDisabled = true,
+        buttonDoneTitleStyle = styles.buttonDoneTitleDisabled;
+    
+    if (this.state.isValid) {
+      buttonDoneStyle = styles.buttonDoneActived,
+      isDisabled = false;
+      buttonDoneTitleStyle = styles.buttonDoneTitleActived
+    }     
+
     return (
-        <Modal      
-            visible={isVisible} 
-            onRequestClose={this.props.cancelHandler}>
-            <View style={styles.modalInnerContainer}>
-                <View style={styles.buttons}>
-                    <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
-                    {
-                      this.state.isValid && 
-                      <Button transparent onPress={this._onSave}><Text>{getLabel("action.save")}</Text></Button>
-                    }
-                </View>
-                <View style={styles.modalContentContainer}>
-                    <CalendarPicker
-                        startFromMonday={true}
-                        allowRangeSelection={true}
-                        initialDate={fromDate} 
-                        selectedStartDate={fromDate}
-                        selectedEndDate={toDate} 
-                        todayBackgroundColor="#569EAC"
-                        selectedDayColor="#2E97A1"
-                        selectedDayTextColor="#FFFFFF"
-                        onDateChange={this.onDateChange}
-                    />
-                </View>                
+      <Modal
+          isVisible={isVisible}
+          style={styles.bottomModal}
+          swipeDirection="down"
+          onSwipeComplete={this._onCancel}
+        >
+          <View style={styles.content}>
+              <View>
+                <CalendarPicker
+                    startFromMonday={true}
+                    allowRangeSelection={true}
+                    initialDate={fromDate} 
+                    selectedStartDate={fromDate}
+                    selectedEndDate={toDate} 
+                    todayBackgroundColor="rgba(46, 151, 161, 0.5)"
+                    selectedDayColor={NBColor.brandMainColor}
+                    selectedDayTextColor="#FFFFFF"
+                    months={mlist}
+                    weekdays={weekdays}
+                    previousTitle={getLabel("create.prev_month_label")}
+                    nextTitle={getLabel("create.next_month_label")}
+                    onDateChange={this.onDateChange}                    
+                />
+              </View>                
+              <View style={styles.buttons}>
+                <Button
+                    buttonStyle={styles.buttonCancel}
+                    title={getLabel("action.cancel")}
+                    titleStyle={[styles.buttonTitle, styles.buttonCancelTitle]}
+                    onPress={this._onCancel}>
+                </Button>
+                <Button
+                    buttonStyle={[styles.buttonDone, buttonDoneStyle]}
+                    disabled={isDisabled}
+                    title={getLabel("action.done")}
+                    titleStyle={[styles.buttonTitle, buttonDoneTitleStyle]}
+                    onPress={this._onSave}>         
+                </Button>
             </View>
-        </Modal>
+          </View>         
+        </Modal>      
     );
   }
 }
 
 interface Style {
-  modal: ViewStyle,
   buttons: ViewStyle;
   modalInnerContainer: ViewStyle;
   modalContentContainer: ViewStyle;
+  bottomModal: ViewStyle;
+  content: ViewStyle;
+  buttonCancel: ViewStyle;
+  buttonTitle: TextStyle;
+  buttonCancelTitle: TextStyle;
+  buttonDone: ViewStyle;
+  buttonDoneDisabled: ViewStyle;
+  buttonDoneActived: ViewStyle;
+  buttonDoneTitleDisabled: TextStyle;
+  buttonDoneTitleActived: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
-  modal: {
-    flex: 1,
-    margin: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white"
-  },
   buttons: {
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-evenly"
   },
   modalInnerContainer: {
     flex: 1,
@@ -125,6 +169,46 @@ const styles = StyleSheet.create<Style>({
   },
   modalContentContainer: {
     flex: 1
+  },
+  bottomModal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+  content: {
+    backgroundColor: 'white',
+    padding: 16,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  buttonCancel: {
+    backgroundColor: "transparent"
+  },
+  buttonTitle: {    
+    fontFamily: mixins.themes.fontNormal.fontFamily,
+    textTransform: "capitalize",
+    fontSize: 14,
+    lineHeight: 16
+  },
+  buttonCancelTitle: {
+    color: NBColor.brandMainColor
+  },
+  buttonDone: {
+    borderRadius: 4,
+    width: 96,
+    height: 32 
+  },
+  buttonDoneDisabled: {
+    backgroundColor: "#F0F0F0"
+  },
+  buttonDoneActived: {
+    backgroundColor: NBColor.brandMainColor
+  },
+  buttonDoneTitleDisabled: {
+    color: "#A1A1A1"
+  },
+  buttonDoneTitleActived: {
+    color: "#FFFFFF"
   }
 })
   

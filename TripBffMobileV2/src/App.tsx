@@ -55,12 +55,18 @@ const stackConfigs =  {
   headerMode: "screen",
   defaultNavigationOptions: {
     headerStyle: {
-      // backgroundColor: NBColor.brandMainColor,
-      // color: NBTheme.brandPrimary
     },
-    headerTintColor: NBTheme.brandPrimary,
+    headerLayoutPreset: 'center',
+    headerTintColor: "#1A051D",
     headerTitleStyle: {
       ...mixins.themes.fontBold,
+      color: NBTheme.brandPrimary,
+      textAlign: "center",
+      alignSelf: "center",
+      flex: 1,
+      fontSize: 20,
+      fontStyle: "normal",
+      textTransform: 'capitalize'
     }
   },
 } as any;
