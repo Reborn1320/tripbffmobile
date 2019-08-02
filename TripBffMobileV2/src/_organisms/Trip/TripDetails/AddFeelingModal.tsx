@@ -10,10 +10,10 @@ import { connect } from "react-redux";
 import { getAllFeelings } from "../../../store/DataSource/operations";
 import { StoreData } from "../../../store/Interfaces";
 import { getLabel } from "../../../../i18n";
-import { SearchBar } from 'react-native-elements';
 import uuid4 from 'uuid/v4';
 import NBColor from "../../../theme/variables/material.js";
 import { mixins } from "../../../_utils";
+import SearchBarComponent from "../../../_atoms/SearchBarComponent";
 
 class SelectedFeelingItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -163,11 +163,7 @@ class FeelingContainerComponent extends React.Component<any, any> {
             }
           </View>
           <View>
-             <SearchBar
-               placeholder={getLabel("action.search")}
-               onChangeText={this._updateSearch}
-               value={this.state.search}
-             />
+            <SearchBarComponent updateSearch={this._updateSearch}></SearchBarComponent>             
          </View>
          <View style={styles.feelingPreDefinedContainer}>
            <FlatList keyboardShouldPersistTaps={'handled'}            

@@ -10,10 +10,10 @@ import { connect } from "react-redux";
 import { getAllActivities } from "../../../store/DataSource/operations";
 import { StoreData } from "../../../store/Interfaces";
 import { getLabel } from "../../../../i18n";
-import { SearchBar } from 'react-native-elements';
 import uuid4 from 'uuid/v4';
 import NBColor from "../../../theme/variables/material.js";
 import { mixins } from "../../../_utils";
+import SearchBarComponent from "../../../_atoms/SearchBarComponent";
 
 class SelectedActivityItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -49,7 +49,7 @@ class ActivityItem extends React.PureComponent<any> {
 
   render() {
     return (
-      <TouchableOpacity onPress={this._onPress} style={styles.activityItemContainer}>
+      <TouchableOpacity onPress={this._onPress} style={[styles.activityItemContainer, this.props.styles]}>
         <View style={styles.activityItem}>
           <View style={styles.activityIconContainer}>
             <Icon style={styles.activityIcon} type="FontAwesome5" name={this.props.icon} /> 
@@ -145,15 +145,23 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
 
   _keyExtractor = (item, index) => item.activityId;
 
-  _renderItem = ({item}) => (
+  _renderItem = ({item, index}) => {
+    let firstItemStyle;
+
+    if (index == 0) {
+      firstItemStyle = styles.firstActivityItemContainer;
+    }
+
+    return (    
       <ActivityItem
         id={item.activityId}
         label={item.label}
         icon={item.icon}
         onPressItem={this._onConfirm}
+        styles={firstItemStyle}
       />
     );
-
+  } 
   render() {
     return (
       <View style={styles.activityContainer}>
@@ -167,11 +175,7 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
             }
           </View>
           <View>
-             <SearchBar
-               placeholder={getLabel("action.search")}
-               onChangeText={this._updateSearch}
-               value={this.state.search}
-             />
+            <SearchBarComponent updateSearch={this._updateSearch}></SearchBarComponent>    
          </View>
          <View style={styles.activityPreDefinedContainer}>
            <FlatList keyboardShouldPersistTaps={'handled'}            
@@ -287,6 +291,7 @@ interface Style {
   modalInnerContainer: ViewStyle;
   activityContainer: ViewStyle;
   activityItemContainer: ViewStyle;
+  firstActivityItemContainer: ViewStyle;
   activityPreDefinedContainer: ViewStyle;
   activityPreDefinedFlatList: ViewStyle;
   selectedActivityItemContainer: ViewStyle;
@@ -354,9 +359,12 @@ const styles = StyleSheet.create<Style>({
     height: 44,
     marginLeft: "4%",
     marginRight: "4%",
-    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5,
     borderStyle: "solid",
     borderColor: '#DADADA'
+  },
+  firstActivityItemContainer: {
+    borderTopWidth: 0.5
   },
   activityItem: {
     flex: 1,
