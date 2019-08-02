@@ -66,7 +66,8 @@ class TripImportation extends Component<Props, State> {
         const { params } = navigation.state;
     
         return {
-          title: params ? params.otherParam : ''
+          title: params ? params.otherParam : '',
+          headerRight: (<View></View>)
         };
       };
 
