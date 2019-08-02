@@ -63,14 +63,12 @@ const styles = StyleSheet.create<Style>({
   },
   title: {
     // ...mixins.themes.debug2,
-    color: NBTheme.brandLight,
     alignSelf: "flex-start"
   },
   titleContainer: {
     // ...mixins.themes.debug,
     alignSelf: "stretch",
     // height: 50,
-    borderBottomColor: NBTheme.brandLight,
     borderBottomWidth: 1,
     paddingLeft: 20,
     paddingRight: 20,

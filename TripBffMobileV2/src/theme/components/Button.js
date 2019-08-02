@@ -381,7 +381,7 @@ export default (variables = variable) => {
     height: 45,
     alignSelf: "flex-start",
     flexDirection: "row",
-    elevation: 2,
+    elevation: null,
     shadowColor: platformStyle === "material" ? variables.brandDark : undefined,
     shadowOffset:
       platformStyle === "material" ? { width: 0, height: 2 } : undefined,

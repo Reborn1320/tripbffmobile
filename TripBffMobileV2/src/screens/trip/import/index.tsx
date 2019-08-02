@@ -361,7 +361,6 @@ const styles = StyleSheet.create<Style>({
         flexGrow: 1,
         justifyContent: "center",
         shadowColor: null,
-        elevation: null,
     }
 })
 

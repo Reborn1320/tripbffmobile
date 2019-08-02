@@ -24,7 +24,7 @@ export default {
   androidRipple: true,
   androidRippleColor: "rgba(256, 256, 256, 0.3)",
   androidRippleColorDark: "rgba(0, 0, 0, 0.15)",
-  btnUppercaseAndroidText: true,
+  btnUppercaseAndroidText: false,
 
   // Badge
   badgeBg: "#ED1727",
@@ -32,7 +32,7 @@ export default {
   badgePadding: 0,
 
   // Button
-  btnFontFamily: "Nunito",
+  btnFontFamily: "Nunito-Bold",
   btnDisabledBg: "#b5b5b5",
   buttonPadding: 6,
   get btnPrimaryBg() {
@@ -66,7 +66,7 @@ export default {
     return this.inverseTextColor;
   },
   get btnTextSize() {
-    return this.fontSizeBase - 1;
+    return this.fontSizeBase * 1.1;
   },
   get btnTextSizeLarge() {
     return this.fontSizeBase * 1.5;
@@ -104,9 +104,9 @@ export default {
 
   // Color
   brandPrimary: "#2E97A1",
-  brandInfo: "#3ACCE1",
+  brandInfo: "#A1A1A1",
   brandSuccess: "#5cb85c",
-  brandDanger: "#FF9057",
+  brandDanger: "#F83535",
   brandWarning: "#FFB900",
   brandDark: "#2A2E43",
   brandLight: "#f4f4f4",
