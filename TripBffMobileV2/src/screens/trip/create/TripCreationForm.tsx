@@ -1,11 +1,13 @@
 import React, { PureComponent, Component } from "react";
-import { Text, View, Form, Item, Label, Icon } from 'native-base';
+import { View } from 'native-base';
 import moment, { Moment } from "moment";
 import DateRangePicker from "../../../_atoms/DatePicker/DateRangePicker";
 import NBColor from "../../../theme/variables/commonColor.js";
 import { getLabel } from "../../../../i18n";
 import { Input, Button } from 'react-native-elements';
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from "react-native";
+import { mixins } from "../../../_utils";
+import { DATE_FORMAT } from "../../_services/SystemConstants";
 
 export interface Props {
     createTrip?: (name: string, fromDate: Moment, toDate: Moment) => Promise<string>;
@@ -75,63 +77,56 @@ export class TripCreationForm extends PureComponent<Props, any> {
   }
 
   renderImportBtn() {
-    let backgroundColor = "#F0F0F0",
+    let buttonStyle = styles.buttonDisabled,
         isDisabled = true,
-        textColor = "#A1A1A1";
+        buttonTitleStyle = styles.buttonTitleDisabled;
     
     if (this.state.tripName && this.state.fromDate && this.state.toDate ) {
-      backgroundColor = NBColor.brandMainColor,
+      buttonStyle = styles.buttonActived,
       isDisabled = false;
-      textColor = "#FFFFFF"
+      buttonTitleStyle = styles.buttonTitleActived
     } 
 
     return (
       <Button
-        buttonStyle={{backgroundColor: backgroundColor, 
-                  borderRadius: 6,  width: 160, height: 48                  
-                   }}
+        buttonStyle={[styles.button, buttonStyle]}
         disabled={isDisabled}
         title={getLabel(this.props.titleButton)}
-        titleStyle={{color: textColor, fontFamily: "Nunito", textTransform: "capitalize",
-            fontSize: 17, fontWeight: "600", lineHeight: 22}}
+        titleStyle={[styles.buttonTitle, buttonTitleStyle]}
         onPress={this._onClickCreateTrip}>         
       </Button>
     );
   }
 
   render() {
-    var date = this.state.fromDate.format('DD/MM/YYYY') + " - " + this.state.toDate.format('DD/MM/YYYY');
+    var date = this.state.fromDate.format(DATE_FORMAT) + " - " + this.state.toDate.format(DATE_FORMAT);
 
     return (
       <View>
-          <View style={{marginTop: 24, marginLeft: "3.33%", marginRight: "3.33%"}}>            
+          <View style={styles.formContainer}>            
             <Input
               label={getLabel("create.trip_name")}  
-              labelStyle={{color: "#383838", fontFamily: "Nunito", fontSize: 14, fontWeight: "600", lineHeight: 20}}            
+              labelStyle={styles.formLabel}            
               leftIcon={{ type: 'font-awesome', name: 'globe', size: 20 }}
               value={this.state.tripName}
               onChangeText={(tripName) => this.setState({ tripName })} 
-              inputStyle={{fontFamily: "Nunito", fontSize: 14, fontWeight: "600", color: "#383838", paddingLeft: 16 }}
-              inputContainerStyle={{ borderWidth: 1, borderStyle: "solid", borderColor: "#A1A1A1", borderRadius: 4, marginTop: 8}}
+              inputStyle={[styles.formInput, styles.formInputTripName]}
+              inputContainerStyle={styles.formInputContainer}
             />
             <TouchableOpacity onPress={this._openDateRangePickerModal} activeOpacity={1} style={{marginTop: 24}}>
               <Input
                 label={getLabel("create.date")}  
-                labelStyle={{color: "#383838", fontFamily: "Nunito", fontSize: 14, fontWeight: "600", lineHeight: 20}}              
+                labelStyle={styles.formLabel}              
                 leftIcon={{ type: 'font-awesome', name: 'calendar', size: 20 }}
                 value={date}  
                 editable={false}
-                inputStyle={{fontFamily: "Nunito", fontSize: 14, fontWeight: "600", color: "#2E97A1", paddingLeft: 16 }}   
-                inputContainerStyle={{ borderWidth: 1, borderStyle: "solid", borderColor: "#A1A1A1", borderRadius: 4, marginTop: 8}}        
+                inputStyle={[styles.formInput, styles.formInputDateRange]}   
+                inputContainerStyle={styles.formInputContainer}        
               />    
             </TouchableOpacity>    
           </View> 
 
-          <View style={{
-            marginTop: 40,
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
+          <View style={styles.buttonContainer}>
             {this.renderImportBtn()}
           </View>
 
@@ -146,3 +141,83 @@ export class TripCreationForm extends PureComponent<Props, any> {
     );
   }
 }
+
+interface Style {
+  formContainer: ViewStyle;
+  formLabel: TextStyle;
+  formInput: TextStyle;
+  formInputTripName: TextStyle;
+  formInputDateRange: TextStyle;
+  formInputContainer: ViewStyle;
+  buttonContainer: ViewStyle;
+  button: ViewStyle;
+  buttonDisabled: ViewStyle;
+  buttonActived: ViewStyle;
+  buttonTitle: TextStyle;
+  buttonTitleDisabled: TextStyle;
+  buttonTitleActived: TextStyle;
+}
+
+const styles = StyleSheet.create<Style>({
+  formContainer: {
+    marginTop: 24,
+    marginLeft: "3.33%",
+    marginRight: "3.33%"
+  },
+  formLabel: {
+    color: "#383838",
+    fontFamily: mixins.themes.fontNormal.fontFamily,
+    fontSize: 14,
+    fontWeight: "600",
+    lineHeight: 20
+  },
+  formInput: {
+    fontFamily: mixins.themes.fontNormal.fontFamily,
+    fontSize: 14,
+    fontWeight: "600",
+    paddingLeft: 16
+  },
+  formInputTripName: {
+    color: "#383838"
+  },
+  formInputDateRange: {
+    color: NBColor.brandMainColor
+  },
+  formInputContainer: {
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: "#A1A1A1",
+    borderRadius: 4,
+    marginTop: 8
+  },
+  buttonContainer: {
+    marginTop: 40,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  button: {
+    borderRadius: 6,
+    width: 160,
+     height: 48  
+  },
+  buttonDisabled: {
+    backgroundColor: "#F0F0F0"
+  },
+  buttonActived: {
+    backgroundColor: NBColor.brandMainColor
+  },
+  buttonTitle: {
+    fontFamily: mixins.themes.fontNormal.fontFamily,
+    textTransform: "capitalize",
+    fontSize: 17,
+    fontWeight: "600",
+    lineHeight: 22
+  },
+  buttonTitleDisabled: {
+    color: "#A1A1A1"
+  },
+  buttonTitleActived: {
+    color: "#FFFFFF"
+  }
+})
+  

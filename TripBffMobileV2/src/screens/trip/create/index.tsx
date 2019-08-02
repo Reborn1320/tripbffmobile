@@ -1,13 +1,11 @@
 import React, { Component } from "react";
-import { Keyboard } from "react-native";
-import { Container, Content, Footer } from 'native-base';
+import { Container, Content } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import { connect } from "react-redux";
 import { Moment } from "moment";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { TripCreationForm } from "./TripCreationForm";
 import { createTrip as createTripAsync, updateTrip } from "../../../store/Trip/operations";
-import AppFooter from "../../shared/AppFooter"
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import { getLabel } from "../../../../i18n";
 
