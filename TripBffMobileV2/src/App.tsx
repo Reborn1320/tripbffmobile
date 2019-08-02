@@ -55,14 +55,14 @@ const stackConfigs =  {
   headerMode: "screen",
   defaultNavigationOptions: {
     headerStyle: {
-      // backgroundColor: NBColor.brandMainColor,
-      // color: NBTheme.brandPrimary
     },
+    headerLayoutPreset: 'center',
     headerTintColor: NBTheme.brandPrimary,
     headerTitleStyle: {
       ...mixins.themes.fontBold,
-      textAlign:"center",
-      flex:1,
+      textAlign: "center",
+      alignSelf: "center",
+      flex: 1,
       fontSize: 20,
       fontStyle: "normal",
       textTransform: 'capitalize'

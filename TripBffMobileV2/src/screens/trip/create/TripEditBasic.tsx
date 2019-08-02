@@ -1,14 +1,11 @@
 import React, { Component } from "react";
-import { Keyboard } from "react-native";
-import { Container, Content, Footer } from 'native-base';
+import { Container, Content, View} from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import { connect } from "react-redux";
 import moment, { Moment } from "moment";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import { TripCreationForm } from "./TripCreationForm";
-import { createTrip as createTripAsync, updateTrip } from "../../../store/Trip/operations";
-import AppFooter from "../../shared/AppFooter"
-import { NavigationConstants } from "../../_shared/ScreenConstants";
+import { updateTrip } from "../../../store/Trip/operations";
 import { getLabel } from "../../../../i18n";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
@@ -30,7 +27,8 @@ class TripEditBasic extends Component<Props, State> {
 
   static navigationOptions = ({ navigation, navigationOptions }) => {
     return {
-      title:  getLabel('create.screen_header_edit_title')
+      title:  getLabel('create.screen_header_edit_title'),
+      headerRight: (<View></View>)
     };
   };    
 
