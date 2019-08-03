@@ -12,6 +12,7 @@ import NBTheme from "../../../theme/variables/material.js";
 import EmptyLocationItem from "./EmptyLocation";
 import { DATE_FORMAT } from "../../../screens/_services/SystemConstants";
 import { TouchableOpacity, Image } from 'react-native';
+import { mixins } from '../../../_utils';
 
 interface IMapDispatchToProps {
     openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
@@ -44,7 +45,9 @@ export class DayItemComponent extends Component<Props, State> {
         return (
             <View style={styles.dayItemContainer}>
                 <View style={styles.dayItemHeader}>
-                    <Text style={{color: NBTheme.brandPrimary, fontSize: 20}}>{getLabel("trip_detail.day_label")} {dateIdx} - {currentDate}</Text>
+                    <Text style={styles.dayLabel}>
+                        {getLabel("trip_detail.day_label")} {dateIdx} - {currentDate}
+                    </Text>
                     {
                         this.props.locationIds.length > 0 &&
                         <TouchableOpacity onPress= {this._openAddLocationModal}>
@@ -103,30 +106,34 @@ export default DayItem;
 interface Style {
     dayItemContainer: ViewStyle;
     dayItemHeader: TextStyle;
+    dayLabel: TextStyle;
     addLocationIcon: ImageStyle;
 }
 
 const styles = StyleSheet.create<Style>({
     dayItemContainer: {        
-        margin: 10,
-        // backgroundColor: "orange",
-        shadowColor: "grey",
+        margin: 12,
+        shadowColor: "rgba(0, 0, 0, 0.07)",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.03,
         shadowRadius: 1,
-        elevation: 2,
-        paddingTop: 15,
-        paddingBottom: 15,
-        borderRadius: 5,
+        elevation: 0.7,
+        borderRadius: 4
     },
     dayItemHeader: {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "stretch",
         flexDirection: "row",
-        paddingLeft: 10,
-        // paddingRight: 10,
-        paddingBottom: 10
+        marginTop: 16
+    },
+    dayLabel: {
+        color: NBTheme.brandPrimary,
+        fontSize: 14,
+        ...mixins.themes.fontBold,
+        fontStyle: "normal",
+        lineHeight: 20,
+        marginLeft: 12
     },
     addLocationIcon: {
         marginRight: 12

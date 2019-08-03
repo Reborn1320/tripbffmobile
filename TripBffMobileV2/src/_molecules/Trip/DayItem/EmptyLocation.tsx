@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from "react-native";
 import _, { } from "lodash";
 import NoItemDefault from "../../../_atoms/Carousel/NoItemDefault";
+import { mixins } from "../../../_utils";
 
 interface IMapDispatchToProps {
     openAddLocationModalHandler: () => void;
@@ -42,8 +43,8 @@ const styles = StyleSheet.create<Style>({
         flex: 1,
         marginLeft: 12,
         marginRight: 12,
-        marginTop: 8,
-        marginBottom: 8,
+        marginTop: 16,
+        marginBottom: 16,
         height: 150,
         justifyContent: "center",
         alignItems: "center"
@@ -51,7 +52,8 @@ const styles = StyleSheet.create<Style>({
     titleStyle: {
         marginTop: 6,
         color: '#DADADA',
-        fontSize: 14,
-        fontFamily: 'SF Pro Text'
+        fontSize: 12,
+        ...mixins.themes.fontBold,
+        lineHeight: 16
     }
 });
