@@ -72,7 +72,9 @@ export class DayItemComponent extends Component<Props, State> {
                 {
                     this.props.locationIds.length == 0 &&
                     (
-                        <EmptyLocationItem  
+                        <EmptyLocationItem
+                            viewContainerStyle={styles.emptyContainer}
+                            subTitle={"Click to add location(s)"}
                             openAddLocationModalHandler={this._openAddLocationModal}
                             >
                         </EmptyLocationItem>
@@ -108,6 +110,7 @@ interface Style {
     dayItemHeader: TextStyle;
     dayLabel: TextStyle;
     addLocationIcon: ImageStyle;
+    emptyContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -137,5 +140,17 @@ const styles = StyleSheet.create<Style>({
     },
     addLocationIcon: {
         marginRight: 12
-    }
+    },
+    emptyContainer: {
+        backgroundColor: '#F9F9F9',
+        borderRadius: 6,
+        flex: 1,
+        marginLeft: 12,
+        marginRight: 12,
+        marginTop: 16,
+        marginBottom: 16,
+        height: 150,
+        justifyContent: "center",
+        alignItems: "center"
+    },
 });

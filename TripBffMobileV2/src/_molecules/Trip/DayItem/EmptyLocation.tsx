@@ -9,6 +9,8 @@ interface IMapDispatchToProps {
 }
 
 export interface Props extends IMapDispatchToProps {
+    viewContainerStyle: ViewStyle;
+    subTitle: string
 }
 
 export interface State {
@@ -21,9 +23,9 @@ export default class EmptyLocationItem extends Component<Props, State> {
         return (
             <TouchableOpacity onPress={this.props.openAddLocationModalHandler}>
                 <NoItemDefault 
-                    viewContainerStyle={styles.emptyContainer}
+                    viewContainerStyle={this.props.viewContainerStyle}
                     titleStyle={styles.titleStyle}
-                    subtitle="Click add new location"
+                    subtitle={this.props.subTitle}
                     >
                 </NoItemDefault>
             </TouchableOpacity>
@@ -32,23 +34,10 @@ export default class EmptyLocationItem extends Component<Props, State> {
 }
 
 interface Style {
-    emptyContainer: ViewStyle,
     titleStyle: TextStyle
 }
 
 const styles = StyleSheet.create<Style>({
-    emptyContainer: {
-        backgroundColor: '#F9F9F9',
-        borderRadius: 6,
-        flex: 1,
-        marginLeft: 12,
-        marginRight: 12,
-        marginTop: 16,
-        marginBottom: 16,
-        height: 150,
-        justifyContent: "center",
-        alignItems: "center"
-    },
     titleStyle: {
         marginTop: 6,
         color: '#DADADA',

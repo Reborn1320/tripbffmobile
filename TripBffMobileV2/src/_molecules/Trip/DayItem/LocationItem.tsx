@@ -8,7 +8,8 @@ import { NavigationConstants } from "../../../screens/_shared/ScreenConstants";
 import { getLabel } from "../../../../i18n";
 import { StyledCarousel, IEntry } from "../../../_atoms/Carousel/StyledCarousel";
 import moment from "moment";
-import { mixins } from "../../../_utils"
+import { mixins } from "../../../_utils";
+import EmptyLocationItem from "../../Trip/DayItem/EmptyLocation";
 
 interface IMapDispatchToProps {
     removeLocationHandler?: (dateIdx: number, locationId: string) => void
@@ -64,29 +65,21 @@ export default class LocationItem extends Component<Props, State> {
         var activityIcon = location.activity && location.activity.icon ? location.activity.icon : "running";
 
         let locationImages: StoreData.ImportImageVM[] = [];
+        let locationImageEntries: IEntry[] = [];
 
-        if (location.images.length == 0) {
-            locationImages.push({
-                imageId: "000",
-                url: "",
-                time: moment(),
-                externalUrl: "",
-                thumbnailExternalUrl: "",
-                isFavorite: false,
-                type: "image/jpeg"
-            });
-        }
-        else {
+        if (location.images.length > 0) {
             locationImages = location.images.filter(item => item.isFavorite);
 
             if (locationImages.length == 0) {
                 locationImages = location.images.length > 3 ? location.images.slice(0, 3) : location.images;
             }
-        }
 
-        let locationImageEntries: IEntry[] = locationImages.map(img => ({
-            illustration: img.thumbnailExternalUrl,
-        }));
+            locationImageEntries = locationImages.map(img => ({
+                illustration: img.thumbnailExternalUrl,
+            }));
+        } 
+
+        console.log('location images: ' + JSON.stringify(locationImageEntries));
 
         return (
             <View style={{marginTop: 12}}>
@@ -102,11 +95,23 @@ export default class LocationItem extends Component<Props, State> {
                     </TouchableOpacity>
                 </View>
 
-                <StyledCarousel
-                    entries={locationImageEntries}
-                    clickHandler={this._toLocationDetail}
-                />
-                <View style={styles.activityContainer}>
+                {
+                    locationImageEntries.length > 0 &&              
+                     <StyledCarousel
+                        entries={locationImageEntries}
+                        clickHandler={this._toLocationDetail}
+                    /> 
+                }
+                {
+                    locationImageEntries.length == 0 &&
+                    <EmptyLocationItem
+                        viewContainerStyle={styles.emptyImageContainer}
+                        subTitle={"Click to add image(s)"}
+                        openAddLocationModalHandler={this._toLocationDetail}
+                        >
+                    </EmptyLocationItem>
+                }
+                  <View style={styles.activityContainer}>
                     <Button
                         style={styles.activityBtn}
                         primary transparent onPress={this._openUpdateFeelingModal}>
@@ -136,6 +141,8 @@ interface Style {
 
     activityContainer: ViewStyle;
     activityBtn: TextStyle;
+
+    emptyImageContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -174,5 +181,15 @@ const styles = StyleSheet.create<Style>({
     },
     activityBtn: {
         // ...mixins.themes.debug1,
-    }
+    },
+    emptyImageContainer: {
+        backgroundColor: '#F9F9F9',
+        borderRadius: 6,
+        flex: 1,
+        marginLeft: 12,
+        marginRight: 12,
+        height: 184,
+        justifyContent: "center",
+        alignItems: "center"
+    }   
 });
