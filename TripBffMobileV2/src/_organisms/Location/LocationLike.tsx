@@ -62,7 +62,6 @@ interface Style {
     editIcon: TextStyle;
     nameText: TextStyle;
     badge: ViewStyle;
-    badgeContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -85,9 +84,5 @@ const styles = StyleSheet.create<Style>({
         margin: 2,
         borderRadius: 5,
         height: 32,
-    },
-    badgeContainer: {
-        // height: 40,
     }
-
 });

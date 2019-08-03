@@ -5,6 +5,8 @@ import _, { } from "lodash";
 import { connectStyle } from 'native-base';
 import ViewMoreText from 'react-native-view-more-text';
 import { getLabel } from "../../../i18n";
+import { mixins } from "../../_utils";
+import NBTheme from "../../theme/variables/material.js";
 
 export interface Props {
     description: string,
@@ -34,13 +36,12 @@ class LocationDescriptionComponent1 extends React.PureComponent<Props, State> {
 
     render() {
         return (
-            <View>
+            <View style={styles.container}>
                 <TouchableOpacity
                     onPress={this._openUpdateLocationDescriptionModal}>
-                    <View>
-                        <Text>{getLabel("location_detail.description_section_label")}</Text>
-                        <Icon name='pencil-alt' type="FontAwesome5" style={[styles.icon, { fontSize: 20 }]}
-                        />
+                    <View style={styles.header}>
+                        <Text style={styles.nameText}>{getLabel("location_detail.description_section_label")}</Text>
+                        <Icon style={styles.editIcon} name='pencil-alt' type="FontAwesome5" />
                     </View>
                 </TouchableOpacity>
                 <View style={styles.textInputContainer}>
@@ -65,7 +66,7 @@ class LocationDescriptionComponent1 extends React.PureComponent<Props, State> {
                                     multiline={true}
                                     numberOfLines={3}
                                     editable={false}
-                                    style={[styles.textInput, { fontSize: 18 }]}
+                                    style={styles.textInput}
                                 />
                             )
                     }
@@ -78,33 +79,43 @@ class LocationDescriptionComponent1 extends React.PureComponent<Props, State> {
 }
 
 interface Style {
+    container: ViewStyle;
+
+    header: ViewStyle;
+    editIcon: TextStyle;
+    nameText: TextStyle;
+
     textInputContainer: ViewStyle,
     textInput: ViewStyle,
-    icon: ViewStyle,
     showMoreLessBtn: TextStyle
 }
 
 const styles = StyleSheet.create<Style>({
+    container: {
+        marginBottom: 15,
+    },
+    header: {
+        flexDirection: "row",
+        marginBottom: 5,
+    },
+    editIcon: {
+        fontSize: 18
+    },
+    nameText: {
+        flexGrow: 1,
+        color: NBTheme.brandPrimary,
+        ...mixins.themes.fontBold,
+    },
     textInputContainer: {
         flexDirection: "row",
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderRadius: 8,
-        borderWidth: 0.2,
-        borderColor: '#d6d7da',
-        marginTop: 10
     },
     textInput: {
         width: Dimensions.get('window').width - 50,
-        marginLeft: 10,
-        marginTop: 5
-    },
-    icon: {
-        marginRight: 10
     },
     showMoreLessBtn: {
-        color: 'blue',
-        marginLeft: 10
+        color: NBTheme.brandPrimary,
     }
 })
 
