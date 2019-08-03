@@ -302,7 +302,10 @@ const styles = StyleSheet.create<Style>({
   buttons: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 30
+    height: 56,
+    borderBottomWidth: 1,
+    borderBottomColor: "#DADADA",
+    marginBottom: 15
   },
   cancelButtonContainer: {
     marginTop: 15,
