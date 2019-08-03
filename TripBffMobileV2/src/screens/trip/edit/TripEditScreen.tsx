@@ -6,7 +6,7 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
 import { mixins } from "../../../_utils";
 import TripDetailScreenContent from "../detail/TripDetailScreenContent";
-import { StyleSheet, BackHandler, TouchableOpacity } from "react-native";
+import { StyleSheet, BackHandler, TouchableOpacity, Image } from "react-native";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -45,7 +45,9 @@ export class TripEditScreen extends Component<Props, State> {
         headerLeft:  <RNa.HeaderBackButton onPress={navigation.getParam('_goBack')} />,
         headerRight:  (<TouchableOpacity style={styles.settingButtonContainer}
                                 onPress={navigation.getParam('_goEditBasicTrip')}>
-                            <Icon name="md-settings" style={styles.settingIcon}></Icon>
+                            <Image                               
+                                source={require('../../../../assets/Setting.png')}
+                            />
                      </TouchableOpacity>)
      });
 

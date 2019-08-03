@@ -6,11 +6,12 @@ import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from '../../../screens/_shared/LayoutContainer';
-import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
+import { StyleSheet, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 import { getLabel } from "../../../../i18n";
 import NBTheme from "../../../theme/variables/material.js";
 import EmptyLocationItem from "./EmptyLocation";
 import { DATE_FORMAT } from "../../../screens/_services/SystemConstants";
+import { TouchableOpacity, Image } from 'react-native';
 
 interface IMapDispatchToProps {
     openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
@@ -46,10 +47,12 @@ export class DayItemComponent extends Component<Props, State> {
                     <Text style={{color: NBTheme.brandPrimary, fontSize: 20}}>{getLabel("trip_detail.day_label")} {dateIdx} - {currentDate}</Text>
                     {
                         this.props.locationIds.length > 0 &&
-                        <Button small transparent
-                                onPress= {this._openAddLocationModal}>
-                            <Icon type={"FontAwesome"} name="plus-circle" />
-                        </Button>
+                        <TouchableOpacity onPress= {this._openAddLocationModal}>
+                             <Image
+                                style={styles.addLocationIcon}
+                                source={require('../../../../assets/AddLocation.png')}
+                            />
+                        </TouchableOpacity>
                     }
                  </View>
 
@@ -100,6 +103,7 @@ export default DayItem;
 interface Style {
     dayItemContainer: ViewStyle;
     dayItemHeader: TextStyle;
+    addLocationIcon: ImageStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -123,5 +127,8 @@ const styles = StyleSheet.create<Style>({
         paddingLeft: 10,
         // paddingRight: 10,
         paddingBottom: 10
+    },
+    addLocationIcon: {
+        marginRight: 12
     }
 });

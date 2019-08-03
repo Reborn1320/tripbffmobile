@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Header, Content, Button, Text, View } from 'native-base';
-import { Alert, BackHandler, StyleSheet, TouchableOpacity } from "react-native";
+import { Alert, BackHandler, StyleSheet, TouchableOpacity, Image } from "react-native";
 import _, { } from "lodash";
 import { tripApi } from "../../_services/apis";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
@@ -41,7 +41,9 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
         headerLeft:  <RNa.HeaderBackButton onPress={navigation.getParam('_goProfile')}/>,
         headerRight:  (<TouchableOpacity style={styles.settingButtonContainer}
                                 onPress={navigation.getParam('_goEditBasicTrip')}>
-                            <Icon name="md-settings" style={styles.settingIcon}></Icon>
+                            <Image                               
+                                source={require('../../../../assets/Setting.png')}
+                            />
                     </TouchableOpacity>)
       });
 
