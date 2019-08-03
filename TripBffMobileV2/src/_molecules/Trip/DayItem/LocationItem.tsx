@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Text, Button, Icon } from "native-base";
-import { TouchableOpacity, View, StyleSheet, ViewStyle, TextStyle } from "react-native";
+import { TouchableOpacity, View, StyleSheet, ViewStyle, TextStyle, Dimensions } from "react-native";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
@@ -9,6 +9,7 @@ import { getLabel } from "../../../../i18n";
 import { StyledCarousel, IEntry } from "../../../_atoms/Carousel/StyledCarousel";
 import moment from "moment";
 import { mixins } from "../../../_utils";
+import NBColor from "../../../theme/variables/material.js";
 import EmptyLocationItem from "../../Trip/DayItem/EmptyLocation";
 
 interface IMapDispatchToProps {
@@ -79,10 +80,8 @@ export default class LocationItem extends Component<Props, State> {
             }));
         } 
 
-        console.log('location images: ' + JSON.stringify(locationImageEntries));
-
         return (
-            <View style={{marginTop: 12}}>
+            <View style={styles.locationContainer}>
                 <View style={styles.locationNameContainer}>
                     <Icon
                         style={styles.locationName_MapIcon}
@@ -112,21 +111,21 @@ export default class LocationItem extends Component<Props, State> {
                     </EmptyLocationItem>
                 }
                   <View style={styles.activityContainer}>
-                    <Button
-                        style={styles.activityBtn}
-                        primary transparent onPress={this._openUpdateFeelingModal}>
-                        <Icon name={feelingIcon} type="FontAwesome5" />
+                    <TouchableOpacity
+                        style={styles.feelingBtn}
+                        onPress={this._openUpdateFeelingModal}>
+                        <Icon name={feelingIcon} type="FontAwesome5" style={styles.activityIcon}/>
                         {
-                            feelingLabel && <Text>{getLabel("trip_detail.feeling_adjective")} {feelingLabel}</Text> ||
-                            <Text>{getLabel("trip_detail.feeling_label")}</Text>
+                            feelingLabel && <Text style={styles.activityContent} numberOfLines={2}>{getLabel("trip_detail.feeling_adjective")} {feelingLabel}</Text> ||
+                            <Text numberOfLines={2} style={styles.activityContent}>{getLabel("trip_detail.feeling_label")}</Text>
                         }
-                    </Button>
-                    <Button
+                    </TouchableOpacity>
+                    <TouchableOpacity
                         style={styles.activityBtn}
-                        primary transparent onPress={this._openUpdateActivityModal}>
-                        <Icon name={activityIcon} type="FontAwesome5" />
-                        <Text>{activityLabel}</Text>
-                    </Button>
+                        onPress={this._openUpdateActivityModal}>
+                        <Icon name={activityIcon} type="FontAwesome5" style={styles.activityIcon}/>
+                        <Text numberOfLines={2} style={styles.activityContent}>{activityLabel}</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -134,18 +133,25 @@ export default class LocationItem extends Component<Props, State> {
 }
 
 interface Style {
+    locationContainer: ViewStyle;
     locationNameContainer: ViewStyle;
     locationName_MapIcon: TextStyle;
     locationName_Name: TextStyle;
     locationName_CloseIcon: TextStyle;
 
     activityContainer: ViewStyle;
-    activityBtn: TextStyle;
+    activityBtn: ViewStyle;
+    feelingBtn: ViewStyle;
+    activityIcon: TextStyle;
+    activityContent: TextStyle;
 
     emptyImageContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
+    locationContainer: {
+        marginTop: 16
+    },
     locationNameContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -175,12 +181,34 @@ const styles = StyleSheet.create<Style>({
     activityContainer: {
         // ...mixins.themes.debug,
         flexDirection: "row",
-        justifyContent: "center",
+        justifyContent: "space-evenly",
         marginTop: 10,
         marginBottom: 5,
+        width: "90%"
     },
     activityBtn: {
-        // ...mixins.themes.debug1,
+        maxWidth: "45%",
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        marginLeft: "7%"
+    },
+    feelingBtn: {
+        maxWidth: "45%",
+        flexDirection: "row",
+        justifyContent: "flex-start"
+    },
+    activityIcon: {
+        marginLeft: 5,
+        fontSize: 22,
+        paddingTop: 1
+    },
+    activityContent: {
+        ...mixins.themes.fontBold,
+        fontSize: 14,
+        lineHeight: 20,
+        fontStyle: "normal",
+        color: NBColor.brandPrimary,
+        marginLeft: 10
     },
     emptyImageContainer: {
         backgroundColor: '#F9F9F9',
