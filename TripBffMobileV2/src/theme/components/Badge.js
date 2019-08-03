@@ -22,7 +22,8 @@ export default (variables = variable) => {
       fontSize: variables.fontSizeBase,
       lineHeight: variables.lineHeight - 1,
       textAlign: "center",
-      paddingHorizontal: 3
+      paddingHorizontal: 3,
+      marginTop: 3,
     },
     backgroundColor: variables.badgeBg,
     padding: variables.badgePadding,

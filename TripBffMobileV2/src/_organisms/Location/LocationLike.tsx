@@ -1,9 +1,11 @@
 import React from "react";
-import { Text, View, Icon, Button } from "native-base";
-import _, { } from "lodash";
+import { Text, View, Icon, Badge } from "native-base";
+import _ from "lodash";
 import { StoreData } from "../../store/Interfaces";
-import { Badge } from "react-native-elements";
 import { getLabel } from "../../../i18n";
+import { ViewStyle, TextStyle, StyleSheet, TouchableOpacity } from "react-native";
+import NBTheme from "../../theme/variables/material.js";
+import { mixins } from "../../_utils";
 
 export interface Props {
     likeItems: Array<StoreData.LocationLikeItemVM>,
@@ -13,7 +15,7 @@ export interface Props {
 export interface State {
 }
 
-export default class LocationLike extends React.PureComponent<Props, State> { 
+export default class LocationLike extends React.PureComponent<Props, State> {
 
     _openUpdateHighlightModal = () => {
         this.props.openUpdateLocationHighlightModalHanlder();
@@ -21,28 +23,71 @@ export default class LocationLike extends React.PureComponent<Props, State> {
 
     render() {
         return (
-            <View>
-                <Button transparent
-                    onPress={this._openUpdateHighlightModal}>
-                    <Icon name="thumbs-up" type="FontAwesome5" />
-                    <Text>{getLabel("location_detail.like_dislike_section_label")}</Text>
-                </Button>
-
+            <View style={styles.container}>
+                <TouchableOpacity
+                    onPress={this._openUpdateHighlightModal}
+                >
+                    <View style={styles.header}>
+                        <Text style={styles.nameText}>{getLabel("location_detail.like_dislike_section_label")}</Text>
+                        <Icon style={styles.editIcon} name="pencil-alt" type="FontAwesome5" />
+                    </View>
+                </TouchableOpacity>
                 {
-                    this.props.likeItems ? 
-                     <View style={{flexDirection: "row", flexWrap: 'wrap'}}>
-                        {
-                            this.props.likeItems.map(item => 
-                                (item.highlightType == "Like" 
-                                    ? <Badge key={item.highlightId} value={item.label} status="primary"/> 
-                                    : <Badge key={item.highlightId} value={item.label} status="warning"/>
-                                ))
-                        }
-                    </View> 
-                 : <View></View>
+                    this.props.likeItems ?
+                        <View style={{ flexDirection: "row", flexWrap: 'wrap' }}>
+                            {
+                                this.props.likeItems.map(item =>
+                                    (item.highlightType == "Like"
+                                        ? <Badge style={styles.badge} key={item.highlightId} primary>
+                                            <Text>{item.label}</Text>
+                                        </Badge>
+                                        : <Badge style={styles.badge} key={item.highlightId} danger>
+                                            <Text>{item.label}</Text>
+
+                                        </Badge>
+                                    ))
+                            }
+                        </View>
+                        : <View></View>
                 }
-                               
+
             </View>
         );
     }
 }
+
+interface Style {
+    container: ViewStyle;
+    header: ViewStyle;
+    editIcon: TextStyle;
+    nameText: TextStyle;
+    badge: ViewStyle;
+    badgeContainer: ViewStyle;
+}
+
+const styles = StyleSheet.create<Style>({
+    container: {
+        marginBottom: 20,
+    },
+    header: {
+        flexDirection: "row",
+        marginBottom: 5,
+    },
+    editIcon: {
+        fontSize: 18
+    },
+    nameText: {
+        flexGrow: 1,
+        color: NBTheme.brandPrimary,
+        ...mixins.themes.fontBold,
+    },
+    badge: {
+        margin: 2,
+        borderRadius: 5,
+        height: 32,
+    },
+    badgeContainer: {
+        // height: 40,
+    }
+
+});
