@@ -80,5 +80,6 @@ interface Style {
 const styles = StyleSheet.create<Style>({
     container: {
         padding: 15,
+        marginBottom: 45,
     },
 });
