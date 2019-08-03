@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { View, Text, ViewStyle, TextStyle } from 'react-native';
+import { View, Text, ViewStyle, TextStyle, Image } from 'react-native';
 import { Icon } from 'native-base';
 
 export interface Props {   
@@ -16,7 +16,9 @@ export default class NoItemDefault extends Component<Props, any> {
 
         return (
             <View style={viewContainerStyle}>
-                <Icon type="FontAwesome5" name="plus" style={{ fontSize: 26, color: "lightgrey" }}/>
+                <Image                               
+                    source={require('../../../assets/PlusIcon.png')}
+                />
                 <Text style={titleStyle}>
                         { subtitle }
                 </Text>

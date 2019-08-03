@@ -15,6 +15,10 @@
         "okay": "Đồng ý",
         "next": "Tiếp theo"
     },
+    "message": {
+        "add_location": "Nhấp để thêm địa điểm",
+        "add_image": "Nhấp để thêm hình"
+    },
     "create": {
         "screen_header_title": "Tạo mới chuyến đi",
         "screen_header_edit_title": "Chỉnh sửa chuyến đi",

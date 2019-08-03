@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Text, Button, Icon } from "native-base";
-import { TouchableOpacity, View, StyleSheet, ViewStyle, TextStyle } from "react-native";
+import { TouchableOpacity, View, StyleSheet, ViewStyle, TextStyle, Dimensions } from "react-native";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
@@ -8,7 +8,9 @@ import { NavigationConstants } from "../../../screens/_shared/ScreenConstants";
 import { getLabel } from "../../../../i18n";
 import { StyledCarousel, IEntry } from "../../../_atoms/Carousel/StyledCarousel";
 import moment from "moment";
-import { mixins } from "../../../_utils"
+import { mixins } from "../../../_utils";
+import NBColor from "../../../theme/variables/material.js";
+import EmptyLocationItem from "../../Trip/DayItem/EmptyLocation";
 
 interface IMapDispatchToProps {
     removeLocationHandler?: (dateIdx: number, locationId: string) => void
@@ -64,64 +66,66 @@ export default class LocationItem extends Component<Props, State> {
         var activityIcon = location.activity && location.activity.icon ? location.activity.icon : "running";
 
         let locationImages: StoreData.ImportImageVM[] = [];
+        let locationImageEntries: IEntry[] = [];
 
-        if (location.images.length == 0) {
-            locationImages.push({
-                imageId: "000",
-                url: "",
-                time: moment(),
-                externalUrl: "",
-                thumbnailExternalUrl: "",
-                isFavorite: false,
-                type: "image/jpeg"
-            });
-        }
-        else {
+        if (location.images.length > 0) {
             locationImages = location.images.filter(item => item.isFavorite);
 
             if (locationImages.length == 0) {
                 locationImages = location.images.length > 3 ? location.images.slice(0, 3) : location.images;
             }
-        }
 
-        let locationImageEntries: IEntry[] = locationImages.map(img => ({
-            illustration: img.thumbnailExternalUrl,
-        }));
+            locationImageEntries = locationImages.map(img => ({
+                illustration: img.thumbnailExternalUrl,
+            }));
+        } 
 
         return (
-            <View>
+            <View style={styles.locationContainer}>
                 <View style={styles.locationNameContainer}>
                     <Icon
                         style={styles.locationName_MapIcon}
                         name="map-marker-alt" type="FontAwesome5" />
                     <TouchableOpacity style={styles.locationName_Name} onPress={this._toLocationDetail}>
-                        <Text>{location.name}</Text>
+                        <Text numberOfLines={2}>{location.name}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={this._openRemoveLocationModal}>
                         <Icon style={styles.locationName_CloseIcon} name="times" type="FontAwesome5" />
                     </TouchableOpacity>
                 </View>
 
-                <StyledCarousel
-                    entries={locationImageEntries}
-                    clickHandler={this._toLocationDetail}
-                />
-                <View style={styles.activityContainer}>
-                    <Button
-                        style={styles.activityBtn}
-                        primary transparent onPress={this._openUpdateFeelingModal}>
-                        <Icon name={feelingIcon} type="FontAwesome5" />
+                {
+                    locationImageEntries.length > 0 &&              
+                     <StyledCarousel
+                        entries={locationImageEntries}
+                        clickHandler={this._toLocationDetail}
+                    /> 
+                }
+                {
+                    locationImageEntries.length == 0 &&
+                    <EmptyLocationItem
+                        viewContainerStyle={styles.emptyImageContainer}
+                        subTitle={getLabel("message.add_image")}
+                        openAddLocationModalHandler={this._toLocationDetail}
+                        >
+                    </EmptyLocationItem>
+                }
+                  <View style={styles.activityContainer}>
+                    <TouchableOpacity
+                        style={styles.feelingBtn}
+                        onPress={this._openUpdateFeelingModal}>
+                        <Icon name={feelingIcon} type="FontAwesome5" style={styles.activityIcon}/>
                         {
-                            feelingLabel && <Text>{getLabel("trip_detail.feeling_adjective")} {feelingLabel}</Text> ||
-                            <Text>{getLabel("trip_detail.feeling_label")}</Text>
+                            feelingLabel && <Text style={styles.activityContent} numberOfLines={2}>{getLabel("trip_detail.feeling_adjective")} {feelingLabel}</Text> ||
+                            <Text numberOfLines={2} style={styles.activityContent}>{getLabel("trip_detail.feeling_label")}</Text>
                         }
-                    </Button>
-                    <Button
+                    </TouchableOpacity>
+                    <TouchableOpacity
                         style={styles.activityBtn}
-                        primary transparent onPress={this._openUpdateActivityModal}>
-                        <Icon name={activityIcon} type="FontAwesome5" />
-                        <Text>{activityLabel}</Text>
-                    </Button>
+                        onPress={this._openUpdateActivityModal}>
+                        <Icon name={activityIcon} type="FontAwesome5" style={styles.activityIcon}/>
+                        <Text numberOfLines={2} style={styles.activityContent}>{activityLabel}</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -129,44 +133,91 @@ export default class LocationItem extends Component<Props, State> {
 }
 
 interface Style {
+    locationContainer: ViewStyle;
     locationNameContainer: ViewStyle;
     locationName_MapIcon: TextStyle;
     locationName_Name: TextStyle;
     locationName_CloseIcon: TextStyle;
 
     activityContainer: ViewStyle;
-    activityBtn: TextStyle;
+    activityBtn: ViewStyle;
+    feelingBtn: ViewStyle;
+    activityIcon: TextStyle;
+    activityContent: TextStyle;
+
+    emptyImageContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
+    locationContainer: {
+        marginTop: 16
+    },
     locationNameContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
-        paddingVertical: 5,
-        marginHorizontal: 10,
-        marginBottom: 10,
+        marginLeft: 12,
+        marginRight: 16,
+        marginBottom: 16
     },
     locationName_MapIcon: {
-        fontSize: 20,
+        fontSize: 16,
+        paddingTop: 3
     },
     locationName_Name: {
-        fontSize: 16,
-        marginLeft: 10,
-        marginRight: 10,
-        flexGrow: 1,
+        fontSize: 12,
+        ...mixins.themes.fontNormal,
+        fontStyle: "normal",
+        lineHeight: 18,
+        color: "#383838",
+        marginLeft: 5,
+        marginRight: 5,
+        maxWidth: "80%",        
+        flexGrow: 1
     },
     locationName_CloseIcon: {
-        fontSize: 20,
-        marginRight: 5,
+        fontSize: 16,
+        paddingTop: 3
     },
     activityContainer: {
         // ...mixins.themes.debug,
         flexDirection: "row",
-        justifyContent: "center",
+        justifyContent: "space-evenly",
         marginTop: 10,
         marginBottom: 5,
+        width: "90%"
     },
     activityBtn: {
-        // ...mixins.themes.debug1,
-    }
+        maxWidth: "45%",
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        marginLeft: "7%"
+    },
+    feelingBtn: {
+        maxWidth: "45%",
+        flexDirection: "row",
+        justifyContent: "flex-start"
+    },
+    activityIcon: {
+        marginLeft: 5,
+        fontSize: 22,
+        paddingTop: 1
+    },
+    activityContent: {
+        ...mixins.themes.fontBold,
+        fontSize: 14,
+        lineHeight: 20,
+        fontStyle: "normal",
+        color: NBColor.brandPrimary,
+        marginLeft: 10
+    },
+    emptyImageContainer: {
+        backgroundColor: '#F9F9F9',
+        borderRadius: 6,
+        flex: 1,
+        marginLeft: 12,
+        marginRight: 12,
+        height: 184,
+        justifyContent: "center",
+        alignItems: "center"
+    }   
 });

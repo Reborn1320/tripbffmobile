@@ -79,13 +79,7 @@ export class TripDetailsComponent extends Component<Props, State> {
         return (
             <View>
                 <View style={{
-                    // ...mixins.themes.debug1,
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: 10,
-                    paddingBottom: 0,
+                    margin: 12
                 }}>
                    <TripName tripId={this.props.tripId}/>
                 </View>

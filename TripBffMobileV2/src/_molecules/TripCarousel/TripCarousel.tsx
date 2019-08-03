@@ -41,14 +41,14 @@ export interface State {
 const EMPTY_TRIP_ENTRIES: IEntry[] = [
   {
     title: "NO LOCATION",
-    subtitle: "Click to add location(s)",
+    subtitle: getLabel("message.add_location"),
     illustration: ""
   }
 ];
 
 const EMPTY_LOCATION_ENTRY: IEntry = {
   title: "NO IMAGE",
-  subtitle: "Click to add image(s)",
+  subtitle: getLabel("message.add_image"),
   illustration: ""
 }
 
