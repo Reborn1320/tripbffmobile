@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, ViewStyle, TextStyle } from 'react-native'
+import { StyleSheet, ViewStyle, TextStyle, Dimensions } from 'react-native'
 import { View, Text } from "native-base";
 import _ from "lodash";
 import ImageList, { calculateImageListWidth, N_ITEMS_PER_ROW } from "../../_molecules/ImageList/ImageList";
@@ -8,6 +8,7 @@ import { ImageSelection } from "../../_molecules/ImageList/ImageSelection";
 import { ImageFavorable } from "../../_molecules/ImageList/ImageFavorable";
 import { getLabel } from "../../../i18n";
 import { mixins } from "../../_utils";
+import { AddLocationImageTile } from "./AddLocationImageTile";
 
 export interface Props {
   images: Array<ILocationMediaImage>
@@ -32,7 +33,7 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
 
   itemWidth: number;
   componentWillMount() {
-    const { itemWidth } = calculateImageListWidth();
+    const { itemWidth } = calculateImageListWidth(15, 15);
     this.itemWidth = itemWidth;
   }
 
@@ -43,6 +44,11 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
     const { massSelection } = this.props;
 
     if (massSelection == false) {
+      if (itemInfo.index === 0) {
+        return (
+          <AddLocationImageTile width={itemWidth} />
+        );
+      }
       return (
         <ImageFavorable
           key={img.imageId}
@@ -72,11 +78,14 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
   }
 
   render() {
+    let items = this.props.massSelection
+    ? this.props.images
+    : [{},...this.props.images];
     return (
       <View style={styles.locationMediaContainer}>
         <Text style={styles.headerText}>{getLabel("location_detail.media_section_label")}</Text>
         <ImageList
-          items={this.props.images}
+          items={items}
           renderItem={this.renderItem2}
         />
       </View>
