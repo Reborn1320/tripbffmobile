@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { View, Text, Button, H2, Icon } from "native-base";
-import { StyleSheet, ViewStyle, TextStyle, TouchableOpacity } from "react-native";
+import { StyleSheet, ViewStyle, TextStyle, TouchableOpacity, Image, ImageStyle } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
 import  Autocomplete  from "react-native-autocomplete-input";
@@ -127,20 +127,26 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.timeContainer}>
-                  <TouchableOpacity onPress={this._showDateTimePicker}>
-                    <Icon name="md-time" type="Ionicons" ></Icon>
-                    <Text>{getLabel("trip_detail.add_location_from_time_label")}: {this.state.displayTime}</Text>
+                  <TouchableOpacity onPress={this._showDateTimePicker} style={styles.timeLabelContainer}>
+                    <Image    
+                      style={styles.clockIcon}                  
+                      source={require('../../../../assets/ClockIcon.png')}
+                    />
+                    <Text style={styles.timeLabel}>{getLabel("trip_detail.add_location_from_time_label")}:
+                    </Text>
+                    <Text style={styles.time}>
+                       {this.state.displayTime}
+                    </Text>
                   </TouchableOpacity>
-                  {/* <DateTimePicker
+                  <DateTimePicker
                     mode="time"
                     is24Hour={false}
                     isVisible={this.state.isDateTimePickerVisible}
                     onConfirm={this._handleDatePicked}
                     onCancel={this._hideDateTimePicker}
-                  /> */}
+                  />
                 </View>
                 <View style={styles.placesContainer}>
-                  <Text>{getLabel("trip_detail.add_location_search_place_label")}: </Text>
                   <SearchLocation 
                     confirmHandler={this._selectedLocationHandler}>
                   </SearchLocation>
@@ -161,6 +167,10 @@ interface Style {
   saveButtonIcon: TextStyle;
   modalInnerContainer: ViewStyle;
   timeContainer: ViewStyle;
+  timeLabelContainer: ViewStyle;
+  timeLabel: TextStyle;
+  time: TextStyle;
+  clockIcon: ImageStyle;
   placesContainer: ViewStyle;
   searchPlacesLabel: TextStyle;
   inputContainerStyle: ViewStyle;
@@ -224,9 +234,25 @@ const styles = StyleSheet.create<Style>({
     margin: 5
   },
   timeContainer: {
-    margin: "3%",
+    margin: "3%"
+  },
+  timeLabelContainer: {
     flexDirection: "row",
     justifyContent: "flex-start"
+  },
+  timeLabel: {
+    marginLeft: 7,
+    color: "#383838",
+    ...mixins.themes.fontNormal
+  },
+  time: {
+    marginLeft: 7,
+    ...mixins.themes.fontBold,
+    color: "#383838"
+  },
+  clockIcon: {
+    marginTop: 3,
+    marginLeft: 3
   },
   searchPlacesLabel: {
     marginBottom: 5

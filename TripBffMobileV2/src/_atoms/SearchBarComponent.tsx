@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, ViewStyle, TextStyle } from "react-native";
+import { StyleSheet, ViewStyle, TextStyle, Image, ImageStyle } from "react-native";
 import { getLabel } from "../../i18n";
 import { SearchBar } from 'react-native-elements';
 import NBColor from "../theme/variables/material.js";
@@ -33,7 +33,10 @@ class SearchBarComponent extends React.PureComponent<any, any> {
                 containerStyle={styles.containerStyle}
                 inputContainerStyle={styles.inputContainerStyle}
                 inputStyle={styles.inputStyle}
-                searchIcon={{ name: "md-search", type: "ionicon", color: "#1A051D", size: 22}}
+                searchIcon={<Image
+                    style={styles.searchIcon}
+                    source={require('../../assets/SearchIcon.png')}
+                  />}
                 clearIcon={{ name:"md-close-circle", type: "ionicon", color: "#383838", size: 22}}
             />
         )        
@@ -44,6 +47,7 @@ interface Style {
     containerStyle: ViewStyle;
     inputContainerStyle: ViewStyle;
     inputStyle: TextStyle;
+    searchIcon: ImageStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -68,6 +72,9 @@ const styles = StyleSheet.create<Style>({
         fontStyle: "normal",
         fontSize: 18,
         color: "#383838"
+    },
+    searchIcon: {
+        marginLeft: 10
     }
 });
 
