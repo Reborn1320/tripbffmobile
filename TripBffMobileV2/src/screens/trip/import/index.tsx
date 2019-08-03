@@ -18,6 +18,7 @@ import { uploadLocationImage, addLocations, IImportLocation } from "../../../sto
 import { getAddressFromLocation, checkAndRequestPhotoPermissionAsync } from "../../../_function/commonFunc";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import { getLabel } from "../../../../i18n";
+import Footer2Buttons from "../../../_atoms/Footer2Buttons";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -321,27 +322,13 @@ class TripImportation extends Component<Props, State> {
                 </Content>
                 {
                     isHideFooter || 
-                    <Footer
-                        style={{
-                            justifyContent: "space-between", alignItems: "stretch", padding: 0,
-                            shadowColor: "black", elevation: 10,
-                            backgroundColor: "white"
-                        }}
-                        >
-                        <Button transparent
-                            onPress={() => this.props.navigation.navigate(NavigationConstants.Screens.TripDetail, { tripId: tripId })}
-                            style={styles.footerButton}
-                        >
-                            <Text>{getLabel("import.skip_button")}</Text>
-                        </Button>
-
-                        <Button primary
-                            onPress={this._import}
-                            style={styles.footerButton}
-                        >
-                            <Text>{getLabel("import.import_button")}</Text>
-                        </Button>
-                    </Footer>
+                    <Footer2Buttons 
+                        onCancel={() => this.props.navigation.navigate(NavigationConstants.Screens.TripDetail, { tripId: tripId })}
+                        onAction={this._import}
+                        cancelText="import.skip_button"
+                        actionText="import.import_button"
+                        primary
+                    />
                 }             
                       
             </Container>
