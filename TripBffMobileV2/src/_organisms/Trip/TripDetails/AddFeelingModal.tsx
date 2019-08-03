@@ -353,10 +353,10 @@ const styles = StyleSheet.create<Style>({
     maxWidth: "80%"
   },
   selectedFeelingItemContainer: {
-    width: "92%",
+    width: "94%",
     height: 44,
-    marginLeft: "4%",
-    marginRight: "4%",
+    marginLeft: "3%",
+    marginRight: "3%",
     borderTopWidth: 0.5,
     borderBottomWidth: 0.5,
     borderStyle: "solid",
