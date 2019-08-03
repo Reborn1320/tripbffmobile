@@ -50,7 +50,10 @@ const styles = StyleSheet.create<Style>({
     containerStyle: {
         backgroundColor: "transparent",
         borderTopWidth: 0,
-        borderBottomWidth: 0
+        borderBottomWidth: 0,
+        padding: 0,
+        marginLeft: "3%",
+        marginRight: "3%"
     },
     inputContainerStyle: {
         backgroundColor: "#FFFFFF",

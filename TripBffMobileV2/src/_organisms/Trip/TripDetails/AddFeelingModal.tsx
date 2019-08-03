@@ -303,9 +303,7 @@ const styles = StyleSheet.create<Style>({
     flexDirection: "row",
     justifyContent: "space-between",
     height: 56,
-    borderBottomWidth: 1,
-    borderBottomColor: "#DADADA",
-    marginBottom: 15
+    marginBottom: 12
   },
   cancelButtonContainer: {
     marginTop: 15,
@@ -343,7 +341,7 @@ const styles = StyleSheet.create<Style>({
   },
   feeelingPreDefinedFlatList: {
     flex: 1,
-    marginVertical: 20
+    marginTop: 12
   },
   feelingItemContainer: {
     width: Dimensions.get('window').width / 2,

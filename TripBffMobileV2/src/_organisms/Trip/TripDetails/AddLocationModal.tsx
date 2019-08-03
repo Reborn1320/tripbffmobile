@@ -181,9 +181,7 @@ const styles = StyleSheet.create<Style>({
     flexDirection: "row",
     justifyContent: "space-between",
     height: 56,
-    borderBottomWidth: 1,
-    borderBottomColor: "#DADADA",
-    marginBottom: 15
+    marginBottom: 12
   },
   cancelButtonContainer: {
     marginTop: 15,
