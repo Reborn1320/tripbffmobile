@@ -10,6 +10,7 @@ import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { getLabel } from "../../../../i18n";
 import NBTheme from "../../../theme/variables/material.js";
 import EmptyLocationItem from "./EmptyLocation";
+import { DATE_FORMAT } from "../../../screens/_services/SystemConstants";
 
 interface IMapDispatchToProps {
     openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
@@ -37,7 +38,7 @@ export class DayItemComponent extends Component<Props, State> {
 
     render() {
         const { dateIdx, dateVm } = this.props
-        let currentDate = moment(this.props.date).startOf("day").format('MMMM DD, YYYY');
+        let currentDate = moment(this.props.date).startOf("day").format(DATE_FORMAT);
 
         return (
             <View style={styles.dayItemContainer}>
@@ -76,7 +77,7 @@ export class DayItemComponent extends Component<Props, State> {
     }
 }
 
-//todo DO NOT MAP DATA DIRECT FROM REDUX, shoul pass data from higher level component
+//todo DO NOT MAP DATA DIRECT FROM REDUX, shoul pass data from higher level component --> Reborn: WHY ???
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     var tripId = ownProps.tripId;
     var dateVm = storeState.currentTrip.dates.find(d => d.dateIdx == ownProps.dateIdx);

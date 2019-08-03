@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { Spinner, View, Text, Icon } from 'native-base';
-import { FlatList, StyleSheet, Button, TouchableOpacity } from "react-native";
+import { FlatList, StyleSheet,  TouchableOpacity } from "react-native";
 import _, { } from "lodash";
 import DayItem from "../../../_molecules/Trip/DayItem/DayItem";
-import EditPopupMenu from "../../../_molecules/Trip/EditPopupMenu/EditPopupMenu";
 import moment from "moment";
 import { StoreData } from "../../../store/Interfaces";
 import { connect } from "react-redux";
@@ -54,10 +53,6 @@ export class TripDetailsComponent extends Component<Props, State> {
             this.props.tripToDate != nextProps.tripToDate;
         return isUpdate;
     }
-
-    _onPopupMenuSelect = () => {
-        this.props.navigation.navigate(NavigationConstants.Screens.TripEditBasic);
-    }
    
     _renderItem = (itemInfo) => {
         const day: DayVM = itemInfo.item;
@@ -93,9 +88,6 @@ export class TripDetailsComponent extends Component<Props, State> {
                     paddingBottom: 0,
                 }}>
                    <TripName tripId={this.props.tripId}/>
-                   <TouchableOpacity onPress={this._onPopupMenuSelect}>
-                        <Icon type="FontAwesome" name="cog"></Icon>
-                   </TouchableOpacity>
                 </View>
 
                 <FlatList

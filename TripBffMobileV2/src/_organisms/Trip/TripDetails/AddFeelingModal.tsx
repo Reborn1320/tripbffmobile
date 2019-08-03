@@ -2,16 +2,18 @@
 //input: isVisible, title, content, button confirm handler.
 
 import * as React from "react";
-import { View, Text, Button, Icon, Toast } from "native-base";
-import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
+import { View, Text, Button, Toast, Icon } from "native-base";
+import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator, Dimensions, TextStyle } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
 import { getAllFeelings } from "../../../store/DataSource/operations";
 import { StoreData } from "../../../store/Interfaces";
 import { getLabel } from "../../../../i18n";
-import { SearchBar } from 'react-native-elements';
 import uuid4 from 'uuid/v4';
+import NBColor from "../../../theme/variables/material.js";
+import { mixins } from "../../../_utils";
+import SearchBarComponent from "../../../_atoms/SearchBarComponent";
 
 class SelectedFeelingItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -21,10 +23,15 @@ class SelectedFeelingItem extends React.PureComponent<any> {
   render() {
     return (
       <TouchableOpacity onPress={this._onPress}       
-          style={[styles.feelingItemContainer, styles.selectedFeelingItemContainer]}>
-          <View style={styles.feelingItem}>          
-            <Text>{this.props.item.label}</Text>   
-            <Icon name='trash-alt' type="FontAwesome5" style={{fontSize: 20, marginLeft: 10}}/>           
+          style={[styles.selectedFeelingItemContainer]}>
+          <View style={styles.feelingItem}>  
+            <View style={styles.feelingIconSelectedIconContainer}>
+              <Icon type="FontAwesome5" name={this.props.item.icon} /> 
+            </View>                
+            <View style={styles.feelingNameSelectedContainer}>
+              <Text numberOfLines={1}>{this.props.item.label}</Text>   
+            </View> 
+            <Icon name="md-close" type="Ionicons" style={styles.iconRemoved}/>           
           </View>
       </TouchableOpacity>
     );
@@ -44,8 +51,10 @@ class FeelingItem extends React.PureComponent<any> {
     return (
       <TouchableOpacity onPress={this._onPress} style={styles.feelingItemContainer}>
         <View style={styles.feelingItem}>
-          <Icon style={{ marginRight: 5}} type="FontAwesome5" name={this.props.icon} />  
-          <Text>{this.props.label}</Text>
+          <Icon style={styles.feelingIcon} type="FontAwesome5" name={this.props.icon} />
+          <View style={styles.feelingNameContainer}>
+            <Text numberOfLines={1}>{this.props.label}</Text>
+          </View> 
         </View>
       </TouchableOpacity>
     );
@@ -76,33 +85,20 @@ class FeelingContainerComponent extends React.Component<any, any> {
     var newItem = null;
 
     if (search) {
-      let numberOfCharacters = search.length;
+      var searchLower = search.toLowerCase();
+      filterItems = filterItems.filter(item => item.label.toLowerCase().includes(searchLower));
 
-      if (numberOfCharacters > 20) {
-        Toast.show({
-            text: getLabel("location_detail.user_defined_like_dislike_warning"),
-            buttonText: "Okay",
-            position: "top",
-            type: "warning",
-            duration: 3000
-        });
-      }
-      else {
-        var searchLower = search.toLowerCase();
-            filterItems = filterItems.filter(item => item.label.toLowerCase().includes(searchLower));
+      if (this.state.newDefinedItem)
+        filterItems = filterItems.filter(item => item.feelingId != this.state.newDefinedItem.feelingId);
 
-        if (this.state.newDefinedItem)
-          filterItems = filterItems.filter(item => item.feelingId != this.state.newDefinedItem.feelingId);
+      var exactItem = filterItems.find(item => item.label.toLowerCase() == searchLower);
 
-        var exactItem = filterItems.find(item => item.label.toLowerCase() == searchLower);
-
-        if (!exactItem) {
-          newItem = { 
-            label: search
-          };
-          filterItems.push(newItem);         
-        }     
-      }      
+      if (!exactItem) {
+        newItem = { 
+          label: search
+        };
+        filterItems.push(newItem);         
+      }          
     }
     
     this.setState({ preDefinedItems: filterItems, search: search, newDefinedItem: newItem });
@@ -131,29 +127,16 @@ class FeelingContainerComponent extends React.Component<any, any> {
   }
 
   _onConfirm = (selectedItem) => {
-    let numberOfCharacters = selectedItem.label.length;
+    if (this.state.newDefinedItem)
+      selectedItem.feelingId = uuid4();
 
-    if (numberOfCharacters > 20) {
-      Toast.show({
-          text: getLabel("location_detail.user_defined_like_dislike_warning"),
-          buttonText: "Okay",
-          position: "top",
-          type: "warning",
-          duration: 3000
-      });
-    }
-    else {
-      if (this.state.newDefinedItem)
-          selectedItem.feelingId = uuid4();
-
-      this.setState({
-        preDefinedItems: this.props.items,
-        selectedItem: null,
-        newDefinedItem: null,
-        search: ''
-      });
-      this.props.onConfirmHandler(selectedItem);
-    }   
+    this.setState({
+      preDefinedItems: this.props.items,
+      selectedItem: null,
+      newDefinedItem: null,
+      search: ''
+    });
+    this.props.onConfirmHandler(selectedItem); 
   }
 
   _keyExtractor = (item, index) => item.feelingId;
@@ -169,7 +152,7 @@ class FeelingContainerComponent extends React.Component<any, any> {
 
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={styles.feelingContainer}>
           <View>
             {
               this.state.selectedItem && this.state.selectedItem.feelingId &&
@@ -180,15 +163,11 @@ class FeelingContainerComponent extends React.Component<any, any> {
             }
           </View>
           <View>
-             <SearchBar
-               placeholder={getLabel("action.search")}
-               onChangeText={this._updateSearch}
-               value={this.state.search}
-             />
+            <SearchBarComponent updateSearch={this._updateSearch}></SearchBarComponent>             
          </View>
-         <View style={{flex: 1}}>
+         <View style={styles.feelingPreDefinedContainer}>
            <FlatList keyboardShouldPersistTaps={'handled'}            
-             style={{flex: 1, marginVertical: 20}}
+             style={styles.feeelingPreDefinedFlatList}
              data={this.state.preDefinedItems}
              keyExtractor={this._keyExtractor}
              renderItem={this._renderItem}
@@ -215,18 +194,25 @@ export interface Props {
 }
 
 interface State {
-  selectedItem: null
+  selectedItem: StoreData.FeelingVM
 }
 
 class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToProps, State> {
   constructor(props: Props & IMapDispatchToProps) {
     super(props);  
+
+    this.state = {
+      selectedItem: this.props.selectedFeeling
+    }
   }
 
   _onModalShow = () => {
     if (!this.props.preDefinedFeelings) {
       this.props.getAllFeelings();
     }
+    this.setState({
+      selectedItem: this.props.selectedFeeling
+    })
   }
 
   _removeSelectedFeeling = () => {
@@ -264,8 +250,15 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
             isVisible={isVisible} hideModalContentWhileAnimating>
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
-                    <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
-                    <Button transparent onPress={this._onSave}><Text>{getLabel("action.save")}</Text></Button>
+                    <TouchableOpacity onPress={this._onCancel} style={styles.cancelButtonContainer}>
+                        <Icon name="md-close" type="Ionicons" style={styles.cancelButtonIcon}></Icon>
+                    </TouchableOpacity>
+                    <Text style={styles.title}
+                        >{getLabel("trip_detail.feeling_modal_title")}
+                    </Text>
+                    <TouchableOpacity onPress={this._onSave} style={styles.saveButtonContainer}>
+                        <Icon name="md-checkmark" type="Ionicons" style={styles.saveButtonIcon}></Icon>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.feelingContainer}>
                   {contentElement}
@@ -279,12 +272,23 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
 interface Style {
   modal: ViewStyle,
   buttons: ViewStyle;
+  cancelButtonContainer: ViewStyle;
+  cancelButtonIcon: TextStyle;
+  title: TextStyle;
+  saveButtonContainer: ViewStyle;
+  saveButtonIcon: TextStyle;
   modalInnerContainer: ViewStyle;
   feelingContainer: ViewStyle;
+  feelingPreDefinedContainer: ViewStyle;
+  feeelingPreDefinedFlatList: ViewStyle;
   feelingItemContainer: ViewStyle;
+  feelingNameContainer: ViewStyle;
   selectedFeelingItemContainer: ViewStyle;
+  feelingIconSelectedIconContainer: ViewStyle;
+  feelingNameSelectedContainer: ViewStyle;
   feelingItem: ViewStyle;
-  iconRemoved: ViewStyle;
+  feelingIcon: TextStyle;
+  iconRemoved: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -297,7 +301,31 @@ const styles = StyleSheet.create<Style>({
   },
   buttons: {
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    marginBottom: 30
+  },
+  cancelButtonContainer: {
+    marginTop: 15,
+    marginLeft: 20
+  },
+  cancelButtonIcon: {
+    fontSize: 26
+  },
+  title: {
+    marginTop: 15,
+    marginLeft: 20,
+    color: NBColor.brandPrimary,
+    fontSize: 18,
+    fontStyle: "normal",
+    fontFamily: mixins.themes.fontBold.fontFamily
+  },
+  saveButtonContainer:{
+    marginTop: 15,
+    marginRight: 20
+  },
+  saveButtonIcon: {
+    fontSize: 26,
+    color: NBColor.brandPrimary
   },
   modalInnerContainer: {
     flex: 1,
@@ -307,24 +335,56 @@ const styles = StyleSheet.create<Style>({
   feelingContainer: {
     flex: 1
   },
+  feelingPreDefinedContainer: {
+    flex: 1
+  },
+  feeelingPreDefinedFlatList: {
+    flex: 1,
+    marginVertical: 20
+  },
   feelingItemContainer: {
     width: Dimensions.get('window').width / 2,
-    height: 40,
-    borderRadius: 4,
-    borderWidth: 0.2,
-    borderColor: '#d6d7da'
+    height: 40,    
+    borderWidth: 0.5,
+    borderStyle: "solid",
+    borderColor: '#DADADA'
+  },
+  feelingNameContainer: {
+    maxWidth: "80%"
   },
   selectedFeelingItemContainer: {
+    width: "94%",
+    height: 44,
+    marginLeft: "3%",
+    marginRight: "3%",
+    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5,
+    borderStyle: "solid",
+    borderColor: '#DADADA',
+    
     marginBottom: 10
+  },
+  feelingIconSelectedIconContainer: {
+    width: "13%"
+  },
+  feelingNameSelectedContainer: {
+    maxWidth: "75%"
   },
   feelingItem: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: "center"
   },
+  feelingIcon: {
+    marginRight: 10,
+    marginLeft: 25
+  },
   iconRemoved: {
-    
+    fontSize: 18,
+    marginLeft: 10,
+    marginTop: 3,
+    color: "#383838"
   }
 })
   

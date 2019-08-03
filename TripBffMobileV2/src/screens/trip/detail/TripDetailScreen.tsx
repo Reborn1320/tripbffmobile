@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Header, Content, Button, Text, View } from 'native-base';
-import { Alert, BackHandler, StyleSheet } from "react-native";
+import { Alert, BackHandler, StyleSheet, TouchableOpacity } from "react-native";
 import _, { } from "lodash";
 import { tripApi } from "../../_services/apis";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
@@ -37,6 +37,14 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
         }
     }
 
+    static navigationOptions = ({ navigation }) => ({
+        headerLeft:  <RNa.HeaderBackButton onPress={navigation.getParam('_goProfile')}/>,
+        headerRight:  (<TouchableOpacity style={styles.settingButtonContainer}
+                                onPress={navigation.getParam('_goEditBasicTrip')}>
+                            <Icon name="md-settings" style={styles.settingIcon}></Icon>
+                    </TouchableOpacity>)
+      });
+
     componentWillUnmount() {
         if (this._didFocusSubscription) this._didFocusSubscription.remove();
         if (this._willBlurSubscription) this._willBlurSubscription.remove();
@@ -61,8 +69,15 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
                 tmp._backHardwareHandler.remove();
             }
         );
+
+        this.props.navigation.setParams({ _goProfile: this._handleBackPress });
+        this.props.navigation.setParams({ _goEditBasicTrip: this._onPopupMenuSelect });
     }
 
+    private _onPopupMenuSelect = () => {
+        this.props.navigation.navigate(NavigationConstants.Screens.TripEditBasic);
+    }
+    
     private _handleBackPress = () => {
         this.props.navigation.navigate(NavigationConstants.Screens.Profile);
         return true;
@@ -102,4 +117,10 @@ const styles = StyleSheet.create({
       height: 22,
       color: 'white',
     },
+    settingButtonContainer: {
+        marginRight: 15
+    },
+    settingIcon: {
+        fontSize: 24
+    }
   });

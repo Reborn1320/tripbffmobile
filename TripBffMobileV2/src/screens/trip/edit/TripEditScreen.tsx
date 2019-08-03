@@ -6,7 +6,7 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
 import { mixins } from "../../../_utils";
 import TripDetailScreenContent from "../detail/TripDetailScreenContent";
-import { StyleSheet, BackHandler } from "react-native";
+import { StyleSheet, BackHandler, TouchableOpacity } from "react-native";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -42,9 +42,11 @@ export class TripEditScreen extends Component<Props, State> {
     }
 
     static navigationOptions = ({ navigation }) => ({
-        headerLeft:  <RNa.HeaderBackButton tintColor={'#fff'}          
-           onPress={navigation.getParam('_goBack')}
-         />
+        headerLeft:  <RNa.HeaderBackButton onPress={navigation.getParam('_goBack')} />,
+        headerRight:  (<TouchableOpacity style={styles.settingButtonContainer}
+                                onPress={navigation.getParam('_goEditBasicTrip')}>
+                            <Icon name="md-settings" style={styles.settingIcon}></Icon>
+                     </TouchableOpacity>)
      });
 
     componentDidMount() {
@@ -67,6 +69,7 @@ export class TripEditScreen extends Component<Props, State> {
         );
 
         this.props.navigation.setParams({ _goBack: this._goBackAndRefreshTripLists });
+        this.props.navigation.setParams({ _goEditBasicTrip: this._onPopupMenuSelect });
         
         if (!this.props.trip) {
             this.props.fetchTrip(this.props.tripId)
@@ -80,6 +83,10 @@ export class TripEditScreen extends Component<Props, State> {
         if (this._didFocusSubscription) this._didFocusSubscription.remove();
         if (this._willBlurSubscription) this._willBlurSubscription.remove();
         if (this._backHardwareHandler) this._backHardwareHandler.remove();
+    }
+
+    private _onPopupMenuSelect = () => {
+        this.props.navigation.navigate(NavigationConstants.Screens.TripEditBasic);
     }
 
     private _goBackAndRefreshTripLists = () => {
@@ -132,6 +139,12 @@ const styles = StyleSheet.create({
       fontSize: 20,
       height: 22,
       color: 'white'
+    },
+    settingButtonContainer: {
+        marginRight: 15
+    },
+    settingIcon: {
+        fontSize: 24
     }
   });
 
