@@ -89,13 +89,13 @@ export default class LocationItem extends Component<Props, State> {
         }));
 
         return (
-            <View>
+            <View style={{marginTop: 12}}>
                 <View style={styles.locationNameContainer}>
                     <Icon
                         style={styles.locationName_MapIcon}
                         name="map-marker-alt" type="FontAwesome5" />
                     <TouchableOpacity style={styles.locationName_Name} onPress={this._toLocationDetail}>
-                        <Text>{location.name}</Text>
+                        <Text numberOfLines={2}>{location.name}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={this._openRemoveLocationModal}>
                         <Icon style={styles.locationName_CloseIcon} name="times" type="FontAwesome5" />
@@ -142,22 +142,28 @@ const styles = StyleSheet.create<Style>({
     locationNameContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
-        paddingVertical: 5,
-        marginHorizontal: 10,
-        marginBottom: 10,
+        marginLeft: 12,
+        marginRight: 16,
+        marginBottom: 16
     },
     locationName_MapIcon: {
-        fontSize: 20,
+        fontSize: 16,
+        paddingTop: 3
     },
     locationName_Name: {
-        fontSize: 16,
-        marginLeft: 10,
-        marginRight: 10,
-        flexGrow: 1,
+        fontSize: 12,
+        ...mixins.themes.fontNormal,
+        fontStyle: "normal",
+        lineHeight: 18,
+        color: "#383838",
+        marginLeft: 5,
+        marginRight: 5,
+        maxWidth: "80%",        
+        flexGrow: 1
     },
     locationName_CloseIcon: {
-        fontSize: 20,
-        marginRight: 5,
+        fontSize: 16,
+        paddingTop: 3
     },
     activityContainer: {
         // ...mixins.themes.debug,

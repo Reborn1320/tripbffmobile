@@ -129,7 +129,7 @@ const styles = StyleSheet.create<Style>({
     },
     dayLabel: {
         color: NBTheme.brandPrimary,
-        fontSize: 14,
+        fontSize: 16,
         ...mixins.themes.fontBold,
         fontStyle: "normal",
         lineHeight: 20,
