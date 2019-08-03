@@ -55,7 +55,7 @@
         "like_label": "Like",
         "dislike_label": "Dislike",
         "user_defined_like_dislike_warning": "Please input maximum 20 characters!",
-        "description_section_label": "description",
+        "description_section_label": "Description",
         "description_placeholder": "What are you feeling?",
         "description_view_more": "View more",
         "description_view_less": "View less",

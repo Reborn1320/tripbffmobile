@@ -1,10 +1,12 @@
 import React from "react";
-import { Dimensions, ViewStyle, StyleSheet, TextStyle, TextInput } from 'react-native'
+import { Dimensions, ViewStyle, StyleSheet, TextStyle, TextInput, TouchableOpacity } from 'react-native'
 import { Text, View, Icon } from "native-base";
 import _, { } from "lodash";
 import { connectStyle } from 'native-base';
 import ViewMoreText from 'react-native-view-more-text';
 import { getLabel } from "../../../i18n";
+import { mixins } from "../../_utils";
+import NBTheme from "../../theme/variables/material.js";
 
 export interface Props {
     description: string,
@@ -14,61 +16,62 @@ export interface Props {
 export interface State {
 }
 
-class LocationDescriptionComponent1 extends React.PureComponent<Props, State> { 
+class LocationDescriptionComponent1 extends React.PureComponent<Props, State> {
 
     _openUpdateLocationDescriptionModal = () => {
         this.props.openUpdateLocationDescriptionModalHandler();
     }
 
-    renderViewMore(onPress){
-        return(
-          <Text style={styles.showMoreLessBtn} onPress={onPress}>{getLabel("location_detail.description_view_more")}</Text>
+    renderViewMore(onPress) {
+        return (
+            <Text style={styles.showMoreLessBtn} onPress={onPress}>{getLabel("location_detail.description_view_more")}</Text>
         )
-      }
+    }
 
-    renderViewLess(onPress){
-        return(
+    renderViewLess(onPress) {
+        return (
             <Text style={styles.showMoreLessBtn} onPress={onPress}>{getLabel("location_detail.description_view_less")}</Text>
         )
     }
 
     render() {
         return (
-            <View>
-                <View>
-                    <Text>
-                        {getLabel("location_detail.description_section_label")}
-                    </Text>
-                </View>
+            <View style={styles.container}>
+                <TouchableOpacity
+                    onPress={this._openUpdateLocationDescriptionModal}>
+                    <View style={styles.header}>
+                        <Text style={styles.nameText}>{getLabel("location_detail.description_section_label")}</Text>
+                        <Icon style={styles.editIcon} name='pencil-alt' type="FontAwesome5" />
+                    </View>
+                </TouchableOpacity>
                 <View style={styles.textInputContainer}>
-                {
-                    this.props.description
-                    ?
-                        (
-                            <ViewMoreText
-                                numberOfLines={3}                        
-                                renderViewMore={this.renderViewMore}
-                                renderViewLess={this.renderViewLess}   
-                                textStyle={styles.textInput}                     
+                    {
+                        this.props.description
+                            ?
+                            (
+                                <ViewMoreText
+                                    numberOfLines={3}
+                                    renderViewMore={this.renderViewMore}
+                                    renderViewLess={this.renderViewLess}
+                                    textStyle={styles.textInput}
                                 >
-                                <Text>
-                                    {this.props.description}
-                                </Text>
-                            </ViewMoreText>
-                        )
-                    : (
-                        <TextInput
-                            placeholder = {getLabel("location_detail.description_placeholder")}
-                            multiline = {true}                        
-                            numberOfLines = {3}
-                            editable = {false}
-                            style={[styles.textInput, { fontSize: 18 }]}
-                        />
-                    )
-                }
-                                       
-                    <Icon name='pencil-alt' type="FontAwesome5" style={[styles.icon, {fontSize: 20}]} 
-                            onPress={this._openUpdateLocationDescriptionModal}/> 
+                                    <Text>
+                                        {this.props.description}
+                                    </Text>
+                                </ViewMoreText>
+                            )
+                            : (
+                                <TextInput
+                                    placeholder={getLabel("location_detail.description_placeholder")}
+                                    multiline={true}
+                                    numberOfLines={3}
+                                    editable={false}
+                                    style={styles.textInput}
+                                />
+                            )
+                    }
+
+
                 </View>
             </View>
         );
@@ -76,37 +79,47 @@ class LocationDescriptionComponent1 extends React.PureComponent<Props, State> {
 }
 
 interface Style {
+    container: ViewStyle;
+
+    header: ViewStyle;
+    editIcon: TextStyle;
+    nameText: TextStyle;
+
     textInputContainer: ViewStyle,
     textInput: ViewStyle,
-    icon: ViewStyle,
     showMoreLessBtn: TextStyle
-  }
-  
-  const styles = StyleSheet.create<Style>({
+}
+
+const styles = StyleSheet.create<Style>({
+    container: {
+        marginBottom: 15,
+    },
+    header: {
+        flexDirection: "row",
+        marginBottom: 5,
+    },
+    editIcon: {
+        fontSize: 18
+    },
+    nameText: {
+        flexGrow: 1,
+        color: NBTheme.brandPrimary,
+        ...mixins.themes.fontBold,
+    },
     textInputContainer: {
         flexDirection: "row",
         justifyContent: 'space-between',
-        alignItems: 'center', 
-        borderRadius: 8,
-        borderWidth: 0.2,
-        borderColor: '#d6d7da',
-        marginTop: 10
+        alignItems: 'center',
     },
     textInput: {
-        width: Dimensions.get('window').width - 50,        
-        marginLeft: 10,
-        marginTop: 5
-    },
-    icon: {
-        marginRight: 10
+        width: Dimensions.get('window').width - 50,
     },
     showMoreLessBtn: {
-        color: 'blue',
-        marginLeft: 10
+        color: NBTheme.brandPrimary,
     }
-  })
-    
-  const LocationDescription = 
-      connectStyle<typeof LocationDescriptionComponent1>('NativeBase.Modal', styles)(LocationDescriptionComponent1);
-  
-  export default LocationDescription;
+})
+
+const LocationDescription =
+    connectStyle<typeof LocationDescriptionComponent1>('NativeBase.Modal', styles)(LocationDescriptionComponent1);
+
+export default LocationDescription;
