@@ -217,7 +217,7 @@ const styles = StyleSheet.create<Style>({
     marginTop: 8
   },
   formInputFocusedContainer: {
-    borderColor: NBColor.brandMainColor
+    borderColor: NBColor.brandPrimary
   },
   formInputUnFocusedContainer: {
     borderColor: "#A1A1A1"
@@ -239,7 +239,7 @@ const styles = StyleSheet.create<Style>({
     backgroundColor: "#F0F0F0"
   },
   buttonActived: {
-    backgroundColor: NBColor.brandMainColor
+    backgroundColor: NBColor.brandPrimary
   },
   buttonTitle: {
     fontFamily: mixins.themes.fontNormal.fontFamily,

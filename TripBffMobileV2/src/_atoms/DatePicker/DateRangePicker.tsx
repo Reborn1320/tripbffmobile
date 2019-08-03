@@ -111,7 +111,7 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
                     selectedStartDate={fromDate}
                     selectedEndDate={toDate} 
                     todayBackgroundColor="rgba(46, 151, 161, 0.5)"
-                    selectedDayColor={NBColor.brandMainColor}
+                    selectedDayColor={NBColor.brandPrimary}
                     selectedDayTextColor="#FFFFFF"
                     months={mlist}
                     weekdays={weekdays}
@@ -191,7 +191,7 @@ const styles = StyleSheet.create<Style>({
     lineHeight: 16
   },
   buttonCancelTitle: {
-    color: NBColor.brandMainColor
+    color: NBColor.brandPrimary
   },
   buttonDone: {
     borderRadius: 4,
@@ -202,7 +202,7 @@ const styles = StyleSheet.create<Style>({
     backgroundColor: "#F0F0F0"
   },
   buttonDoneActived: {
-    backgroundColor: NBColor.brandMainColor
+    backgroundColor: NBColor.brandPrimary
   },
   buttonDoneTitleDisabled: {
     color: "#A1A1A1"

@@ -128,15 +128,16 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
                 </View>
                 <View style={styles.timeContainer}>
                   <TouchableOpacity onPress={this._showDateTimePicker}>
+                    <Icon name="md-time" type="Ionicons" ></Icon>
                     <Text>{getLabel("trip_detail.add_location_from_time_label")}: {this.state.displayTime}</Text>
                   </TouchableOpacity>
-                  <DateTimePicker
+                  {/* <DateTimePicker
                     mode="time"
                     is24Hour={false}
                     isVisible={this.state.isDateTimePickerVisible}
                     onConfirm={this._handleDatePicked}
                     onCancel={this._hideDateTimePicker}
-                  />
+                  /> */}
                 </View>
                 <View style={styles.placesContainer}>
                   <Text>{getLabel("trip_detail.add_location_search_place_label")}: </Text>
@@ -223,7 +224,9 @@ const styles = StyleSheet.create<Style>({
     margin: 5
   },
   timeContainer: {
-    margin: 5
+    margin: "3%",
+    flexDirection: "row",
+    justifyContent: "flex-start"
   },
   searchPlacesLabel: {
     marginBottom: 5
