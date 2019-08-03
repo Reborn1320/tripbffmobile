@@ -74,7 +74,7 @@ export class DayItemComponent extends Component<Props, State> {
                     (
                         <EmptyLocationItem
                             viewContainerStyle={styles.emptyContainer}
-                            subTitle={"Click to add location(s)"}
+                            subTitle={getLabel("message.add_location")}
                             openAddLocationModalHandler={this._openAddLocationModal}
                             >
                         </EmptyLocationItem>

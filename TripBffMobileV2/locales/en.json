@@ -15,6 +15,10 @@
         "okay": "Okay",
         "next": "Next"
     },
+    "message": {
+        "add_location": "Click to add location(s)",
+        "add_image": "Click to add image(s)"
+    },
     "create": {
         "screen_header_title": "Create new trip",
         "screen_header_edit_title": "Edit trip",

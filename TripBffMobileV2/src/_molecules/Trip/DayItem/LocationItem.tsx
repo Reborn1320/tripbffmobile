@@ -106,7 +106,7 @@ export default class LocationItem extends Component<Props, State> {
                     locationImageEntries.length == 0 &&
                     <EmptyLocationItem
                         viewContainerStyle={styles.emptyImageContainer}
-                        subTitle={"Click to add image(s)"}
+                        subTitle={getLabel("message.add_image")}
                         openAddLocationModalHandler={this._toLocationDetail}
                         >
                     </EmptyLocationItem>
