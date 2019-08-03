@@ -6,6 +6,7 @@ import LocationName from './LocationName'
 import LocationLike from './LocationLike'
 import LocationDescription from './LocationDescription'
 import LocationMedia from './LocationMedia'
+import { StyleSheet, ViewStyle } from 'react-native';
 
 interface IMapDispatchToProps {
     openUpdateLocationAddressModalHanlder: () => void
@@ -35,7 +36,7 @@ export default class LocationContent extends React.PureComponent<Props, State> {
     render() {
         const { isMassSelection, selectedImageIds } = this.props;
         return (
-            <View>
+            <View style={styles.container}>
                 <LocationName
                     locationName={this.props.name}
                     locationAddress={this.props.address}
@@ -43,8 +44,8 @@ export default class LocationContent extends React.PureComponent<Props, State> {
                 </LocationName>
 
                 <LocationLike
-                        likeItems={this.props.likeItems}
-                        openUpdateLocationHighlightModalHanlder={this.props.openUpdateLocationHighlightModalHanlder}>                        
+                    likeItems={this.props.likeItems}
+                    openUpdateLocationHighlightModalHanlder={this.props.openUpdateLocationHighlightModalHanlder}>
                 </LocationLike>
 
                 <LocationDescription
@@ -69,3 +70,13 @@ export default class LocationContent extends React.PureComponent<Props, State> {
         )
     }
 }
+
+interface Style {
+    container: ViewStyle;
+}
+
+const styles = StyleSheet.create<Style>({
+    container: {
+        padding: 15,
+    },
+});

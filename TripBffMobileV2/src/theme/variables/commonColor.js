@@ -103,14 +103,24 @@ export default {
   checkboxTickColor: "#fff",
 
   // Color
-  brandMainColor: "#2E97A1",
-  brandPrimary: platform === "ios" ? "#007aff" : "#3F51B5",
-  brandInfo: "#62B1F6",
+  brandPrimary: "#2E97A1",
+  brandInfo: "#A1A1A1",
   brandSuccess: "#5cb85c",
-  brandDanger: "#d9534f",
-  brandWarning: "#f0ad4e",
-  brandDark: "#000",
+  brandDanger: "#F83535",
+  brandWarning: "#FFB900",
+  brandDark: "#2A2E43",
   brandLight: "#f4f4f4",
+  colorRed: "#960018",
+  colorRosy: "#FF647C",
+
+  // brandMainColor: "#2E97A1",
+  // brandPrimary: platform === "ios" ? "#007aff" : "#3F51B5",
+  // brandInfo: "#62B1F6",
+  // brandSuccess: "#5cb85c",
+  // brandDanger: "#d9534f",
+  // brandWarning: "#f0ad4e",
+  // brandDark: "#000",
+  // brandLight: "#f4f4f4",
 
   //Date Picker
   datePickerTextColor: "#000",

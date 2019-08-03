@@ -54,7 +54,7 @@ class LocationDetail extends React.Component<Props, State> {
     _cancelRequest;
     _cancelToken;
 
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -65,6 +65,24 @@ class LocationDetail extends React.Component<Props, State> {
             isMassSelection: false,
             selectedImageIds: []
         }
+    }
+
+    static navigationOptions = ({ navigation, navigationOptions }) => {
+        const {state} = navigation;
+        return {
+            title: state.params.title ? `${state.params.title}` : "",
+            headerRight: (<View></View>)
+        };
+    };
+
+    _changeThisTitle = (titleText) => {
+        const {setParams} = this.props.navigation;
+        setParams({ title: titleText });
+        console.log("called")
+    }
+
+    componentWillMount() {
+        this._changeThisTitle(this.props.name);
     }
 
     componentDidMount() {

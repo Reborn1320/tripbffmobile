@@ -1,12 +1,13 @@
 import React from "react";
 import { StyleSheet, ViewStyle, TextStyle } from 'react-native'
-import { View, H3 } from "native-base";
-import _, { } from "lodash";
+import { View, Text } from "native-base";
+import _ from "lodash";
 import ImageList, { calculateImageListWidth, N_ITEMS_PER_ROW } from "../../_molecules/ImageList/ImageList";
 import NBTheme from "../../theme/variables/material.js";
 import { ImageSelection } from "../../_molecules/ImageList/ImageSelection";
 import { ImageFavorable } from "../../_molecules/ImageList/ImageFavorable";
 import { getLabel } from "../../../i18n";
+import { mixins } from "../../_utils";
 
 export interface Props {
   images: Array<ILocationMediaImage>
@@ -71,10 +72,9 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
   }
 
   render() {
-    // console.log("n images ", this.props.images.length);
     return (
       <View style={styles.locationMediaContainer}>
-        <H3 style={styles.headerText}>{getLabel("location_detail.media_section_label")}</H3>
+        <Text style={styles.headerText}>{getLabel("location_detail.media_section_label")}</Text>
         <ImageList
           items={this.props.images}
           renderItem={this.renderItem2}
@@ -92,7 +92,6 @@ interface Style {
 
 const styles = StyleSheet.create<Style>({
   locationMediaContainer: {
-    // ...mixins.themes.debug1,
     display: "flex",
     backgroundColor: NBTheme.cardDefaultBg,
     borderRadius: NBTheme.borderRadiusBase / 2,
@@ -101,9 +100,9 @@ const styles = StyleSheet.create<Style>({
 
   },
   headerText: {
-    marginTop: 10,
-    marginBottom: 12,
-    marginLeft: 10,
+    color: NBTheme.brandPrimary,
+    ...mixins.themes.fontBold,
+    marginBottom: 10,
   },
   normalImage: {
 
