@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { View, Text, Icon } from "native-base";
-import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle, Platform } from "react-native";
+import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle, Platform, Image, ImageStyle } from "react-native";
 import { connectStyle } from 'native-base';
 import  Autocomplete  from "react-native-autocomplete-input";
 import { getAddressFromLocation } from "../../_function/commonFunc";
@@ -36,7 +36,7 @@ class SearchLocationComponent extends React.Component<Props, State> {
     };    
   }  
 
-  searchPlaces(query){
+  private _searchPlaces = (query) => {
     var url = 'https://nominatim.openstreetmap.org/search?q=' + query +
                  '&format=jsonv2&addressdetails=1&namedetails=1';
 
@@ -91,14 +91,18 @@ class SearchLocationComponent extends React.Component<Props, State> {
     }
     else {
       return (
-        <View style={styles.searchSection}>            
+        <View style={styles.searchSection}> 
+            <Image
+              style={styles.searchIcon}
+              source={require('../../../assets/SearchIcon.png')}
+            />
             <TextInput 
                 {...props}    
                 style={styles.searchInput}                  
                 underlineColorAndroid="transparent"
             />
-            <Icon type={"Ionicons"} name="md-close"
-                  style={[styles.searchIcon, {fontSize: 21}]}
+            <Icon type={"Ionicons"} name="md-close-circle"
+                  style={[styles.clearIcon, {fontSize: 22, color: "#383838"}]}
                   onPress={this._clearInputData}
                 />
         </View>
@@ -120,6 +124,8 @@ class SearchLocationComponent extends React.Component<Props, State> {
   }
 
   render() {
+    let listContainerBorder= this.state.places.length > 0 ? styles.listContainerHasBorder : "";
+
     return (
       <View>        
         <Autocomplete
@@ -127,13 +133,14 @@ class SearchLocationComponent extends React.Component<Props, State> {
             placeholder={getLabel("action.search")}
             autoCorrect={false}
             value={this.state.query}      
-            onChangeText={text => this.searchPlaces(text)}               
+            onChangeText={this._searchPlaces}               
             data={this.state.places}
             renderItem={this._renderItem}
             renderTextInput={this._renderTextInput}
             containerStyle={styles.autocompleteContainer}
             inputContainerStyle={styles.inputContainerStyle}
             listStyle={styles.listStyle}
+            listContainerStyle={[styles.listContainerStyle, listContainerBorder]}
           />
       </View>      
     );
@@ -143,65 +150,93 @@ class SearchLocationComponent extends React.Component<Props, State> {
 interface Style {
   autocompleteContainer: ViewStyle;
   inputContainerStyle: ViewStyle;
+  listContainerStyle: ViewStyle;
+  listContainerHasBorder: ViewStyle;
   listViewContainer: ViewStyle;
   listStyle: ViewStyle;
   placeNameText: TextStyle;
   addressText: TextStyle;
   searchSection: ViewStyle;
-  searchIcon: TextStyle;
+  searchIcon: ImageStyle;
+  clearIcon: TextStyle;
   searchInput: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
   autocompleteContainer: {
     flex: 1,
-    left: 5,
+    left: "3%",
     position: 'absolute',
-    right: 5,
-    top: 5,
-    zIndex: 1
+    right: "3%",
+    top: "3%",
+    zIndex: 1    
   },
   listViewContainer: {
     flexDirection: 'column',
     justifyContent: 'space-around',
-    borderBottomWidth: 0.5,
     height: 50,
-    borderColor: '#d6d7da'
+    marginLeft: 10
   },
   inputContainerStyle: {    
-    borderRadius: 2,
+    borderStyle: "solid",
+    borderRadius: 3,
     borderWidth: 1,
-    borderColor: '#d6d7da',
+    borderColor: "#ECEBED",
+  },
+  listContainerStyle: {
+    borderStyle: "solid",
+    borderBottomLeftRadius: 3,
+    borderBottomRightRadius: 3,
+    borderWidth: 0,
+    borderColor: "#ECEBED"
+  },
+  listContainerHasBorder: {
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderTopWidth: 0
   },
   listStyle: {
     margin: 0,
-    borderRightWidth: 0.5,
-    borderLeftWidth: 0.5
+    borderWidth: 0
   },
   placeNameText: {
-    fontSize: 16,
+    fontSize: 15,
     paddingLeft: 2,
     paddingTop: 2,
-    ...mixins.themes.fontBold,
+    ...mixins.themes.fontNormal,
+    fontWeight: "600",
+    fontStyle: "normal",
+    color: '#383838',
+    lineHeight: 20
   },
   addressText: {
-    fontSize: 14, 
+    fontSize: 13, 
+    ...mixins.themes.fontNormal,
+    fontWeight: "normal",
+    color: '#383838',
+    lineHeight: 18
   },
   searchSection: {
     flexDirection: 'row',    
     justifyContent:'flex-start',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    height: 40
+    backgroundColor: '#FFFFFF',
+    height: 50
   },
   searchIcon: {
+    marginLeft: 10
+  },
+  clearIcon: {
       padding: 10,      
       color: "#cccccc"
   },
   searchInput: {
     flex: 1,
     backgroundColor: '#fff',
-    color: '#424242',
+    color: '#383838',
+    fontSize: 15,
+    fontFamily: mixins.themes.fontNormal.fontFamily
   },
 })
   

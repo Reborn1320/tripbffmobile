@@ -78,7 +78,7 @@ interface Style {
     },
     secondAppName: {
         fontSize: 40,
-        color: NBColor.brandMainColor,
+        color: NBColor.brandPrimary,
     }
   })
   
