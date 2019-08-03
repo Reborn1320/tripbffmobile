@@ -314,7 +314,8 @@ const styles = StyleSheet.create<Style>({
   buttons: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 30
+    height: 56,
+    marginBottom: 12,
   },
   cancelButtonContainer: {
     marginTop: 15,
@@ -352,7 +353,7 @@ const styles = StyleSheet.create<Style>({
   },
   activityPreDefinedFlatList: {
     flex: 1,
-    marginVertical: 20
+    marginTop: 12
   },
   activityItemContainer: {
     width: "94%",

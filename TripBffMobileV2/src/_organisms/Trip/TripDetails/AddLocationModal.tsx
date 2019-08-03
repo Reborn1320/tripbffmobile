@@ -2,20 +2,22 @@
 //input: isVisible, title, content, button confirm handler.
 
 import * as React from "react";
-import { View, Text, Button, H2 } from "native-base";
+import { View, Text, Button, H2, Icon } from "native-base";
 import { StyleSheet, ViewStyle, TextStyle, TouchableOpacity } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
 import  Autocomplete  from "react-native-autocomplete-input";
-const mbxClient = require('@mapbox/mapbox-sdk');
-const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
-const baseClient = mbxClient({ accessToken: 'pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g' });
-const geoCodingService = mbxGeocoding(baseClient);
+// const mbxClient = require('@mapbox/mapbox-sdk');
+// const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+// const baseClient = mbxClient({ accessToken: 'pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g' });
+// const geoCodingService = mbxGeocoding(baseClient);
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from "moment";
 import SearchLocation from '../../../_molecules/Trip/SearchLocationComponent';
 import { getLabel } from "../../../../i18n";
 import { mixins } from "../../../_utils";
+import NBColor from "../../../theme/variables/material.js";
+import { DATE_FORMAT } from "../../../screens/_services/SystemConstants";
 
 export interface Props {
   isVisible: boolean;
@@ -105,7 +107,8 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isVisible } = this.props;
+    const { isVisible, date } = this.props;
+    let displayDate = date ? date.format(DATE_FORMAT) + " - " : "";
 
     return (
         <RNModal style={styles.modal} 
@@ -113,8 +116,15 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
             onModalHide={() => this.onModalHide()}>
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
-                    <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
-                    <Button transparent onPress={this._onConfirm}><Text>{getLabel("action.add")}</Text></Button>
+                    <TouchableOpacity onPress={this._onCancel} style={styles.cancelButtonContainer}>
+                        <Icon name="md-close" type="Ionicons" style={styles.cancelButtonIcon}></Icon>
+                    </TouchableOpacity>
+                    <Text style={styles.title}
+                        >{displayDate + getLabel("trip_detail.add_location_modal_title")}
+                    </Text>
+                    <TouchableOpacity onPress={this._onConfirm} style={styles.saveButtonContainer}>
+                        <Icon name="md-checkmark" type="Ionicons" style={styles.saveButtonIcon}></Icon>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.timeContainer}>
                   <TouchableOpacity onPress={this._showDateTimePicker}>
@@ -143,6 +153,11 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
 interface Style {
   modal: ViewStyle,
   buttons: ViewStyle;
+  cancelButtonContainer: ViewStyle;
+  cancelButtonIcon: TextStyle;
+  title: TextStyle;
+  saveButtonContainer: ViewStyle;
+  saveButtonIcon: TextStyle;
   modalInnerContainer: ViewStyle;
   timeContainer: ViewStyle;
   placesContainer: ViewStyle;
@@ -164,7 +179,32 @@ const styles = StyleSheet.create<Style>({
   },
   buttons: {
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    height: 56,
+    marginBottom: 12
+  },
+  cancelButtonContainer: {
+    marginTop: 15,
+    marginLeft: 20
+  },
+  cancelButtonIcon: {
+    fontSize: 26
+  },
+  title: {
+    marginTop: 15,
+    marginLeft: 20,
+    color: NBColor.brandPrimary,
+    fontSize: 18,
+    fontStyle: "normal",
+    fontFamily: mixins.themes.fontBold.fontFamily
+  },
+  saveButtonContainer:{
+    marginTop: 15,
+    marginRight: 20
+  },
+  saveButtonIcon: {
+    fontSize: 26,
+    color: NBColor.brandPrimary
   },
   modalInnerContainer: {
     flex: 1,
