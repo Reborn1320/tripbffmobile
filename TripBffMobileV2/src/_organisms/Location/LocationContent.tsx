@@ -26,7 +26,7 @@ export interface Props extends IMapDispatchToProps {
     onFavorite: (imageId: string) => void
     onSelect: (imageId: string) => void
     onMassSelection: () => void
-
+    onAddingImages: () => void
 }
 
 interface State {
@@ -64,6 +64,8 @@ export default class LocationContent extends React.PureComponent<Props, State> {
                     onFavorite={this.props.onFavorite}
                     onSelect={this.props.onSelect}
                     selectedImageIds={selectedImageIds}
+
+                    onAddingImages={this.props.onAddingImages}
                 >
                 </LocationMedia>
             </View>

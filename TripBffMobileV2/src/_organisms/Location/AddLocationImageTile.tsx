@@ -6,7 +6,7 @@ import { mixins } from "../../_utils";
 
 export interface Props {
   width: number;
-  onPress?: () => void
+  onPress: () => void
 }
 
 export interface State {
@@ -22,13 +22,17 @@ export class AddLocationImageTile extends React.Component<Props, State> {
 
   render() {
     return (
-      <View style={
-        [
-          styles.container,
-          { width: this.props.width, height: this.props.width }
-        ]}>
-          <Icon style={styles.icon} name="image" type="FontAwesome5" /> 
+      <TouchableOpacity
+        onPress={this.props.onPress}
+      >
+        <View style={
+          [
+            styles.container,
+            { width: this.props.width, height: this.props.width }
+          ]}>
+          <Icon style={styles.icon} name="image" type="FontAwesome5" />
         </View>
+      </TouchableOpacity>
     );
   }
 

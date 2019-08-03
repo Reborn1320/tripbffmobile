@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Container, Header, Content, View, Text, Button } from 'native-base';
 import _, { } from "lodash";
-import { mixins } from "../../../_utils";
-import LocationMedia from "../LocationMedia";
-import { ImageSelection } from "../../../_molecules/ImageList/ImageSelection";
-import { ImageFavorable } from "../../../_molecules/ImageList/ImageFavorable";
+import { mixins } from "../../_utils";
+import LocationMedia from "./LocationMedia";
+import { ImageSelection } from "../../_molecules/ImageList/ImageSelection";
+import { ImageFavorable } from "../../_molecules/ImageList/ImageFavorable";
 
 interface IMapDispatchToProps {
 }

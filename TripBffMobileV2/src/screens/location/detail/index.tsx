@@ -1,16 +1,16 @@
 import React from 'react'
-import { Container, Header, Content, Button, Text } from 'native-base';
+import { Container, Button, Text, Footer } from 'native-base';
 import { StoreData, RawJsonData } from '../../../store/Interfaces';
 import { connect } from 'react-redux';
 import { NavigationScreenProp, ScrollView } from 'react-navigation';
 import _ from "lodash";
+import Footer2Buttons from "../../../_atoms/Footer2Buttons";
 import LocationContent from '../../../_organisms/Location/LocationContent';
 import LocationModal from '../../../_organisms/Location/LocationModal'
 import { updateLocationAddress, updateLocationHighlight, updateLocationDescription, deleteMultiLocationImages, addLocationImage, uploadLocationImage } from '../../../store/Trip/operations';
 import { View } from 'react-native';
 import { favorLocationImage } from '../../../store/Trip/operations';
 import { NavigationConstants } from '../../_shared/ScreenConstants';
-import AddLocationImageButton from '../../../_organisms/Location/AddLocationImageButton';
 import moment, { Moment } from 'moment';
 import { checkAndRequestPhotoPermissionAsync, runPromiseSeries, getCancelToken } from "../../../_function/commonFunc";
 import { AnyAction } from 'redux';
@@ -239,23 +239,6 @@ class LocationDetail extends React.Component<Props, State> {
         const { isMassSelection } = this.state;
         return (
             <Container>
-                {isMassSelection &&
-                (
-                    <Header>
-                        <View style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "stretch" }}>
-                        <Button transparent
-                            onPress={() => this.setState({ isMassSelection: false, selectedImageIds: [] })}
-                        >
-                            <Text>{getLabel("action.cancel")}</Text>
-                        </Button>
-                        <Button transparent danger
-                            onPress={this.onDeleteLocationImages}
-                        >
-                            <Text>{getLabel("action.delete")}</Text>
-                        </Button>
-                        </View>
-                    </Header>)
-                }
                 <View style={{ flex: 1 }}>
                     <ScrollView keyboardShouldPersistTaps={'handled'}>
                         <LocationContent
@@ -270,6 +253,8 @@ class LocationDetail extends React.Component<Props, State> {
                             onFavorite={this.onFavorite}
                             onSelect={this.onSelect}
                             selectedImageIds={this.state.selectedImageIds}
+
+                            onAddingImages={this._openImagePickerModal}
                             
                             openUpdateLocationAddressModalHanlder={this._openUpdateLocationAddressModal}
                             openUpdateLocationHighlightModalHanlder={this._openUpdateLocationHighlightModal}
@@ -300,11 +285,14 @@ class LocationDetail extends React.Component<Props, State> {
                             >
                         </LocationModal>
                 </View>
-                <View
-                    style={{ position: "absolute", bottom: 20, right: 20 }}>
-                    <AddLocationImageButton
-                        openImagePickerModal={this._openImagePickerModal}/>
-                </View>
+                {isMassSelection &&
+                (
+                    <Footer2Buttons 
+                        onCancel={() => this.setState({ isMassSelection: false, selectedImageIds: [] })}
+                        onAction={this.onDeleteLocationImages}
+                    />
+                    )
+                }
             </Container>
         )
     }

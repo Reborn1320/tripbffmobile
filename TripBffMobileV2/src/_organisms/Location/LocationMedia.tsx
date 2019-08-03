@@ -18,6 +18,8 @@ export interface Props {
 
   onMassSelection: () => void
   massSelection: boolean
+
+  onAddingImages: () => void
 }
 
 export interface State {
@@ -46,7 +48,7 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
     if (massSelection == false) {
       if (itemInfo.index === 0) {
         return (
-          <AddLocationImageTile width={itemWidth} />
+          <AddLocationImageTile width={itemWidth} onPress={this.props.onAddingImages} />
         );
       }
       return (
@@ -79,8 +81,8 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
 
   render() {
     let items = this.props.massSelection
-    ? this.props.images
-    : [{},...this.props.images];
+      ? this.props.images
+      : [{}, ...this.props.images];
     return (
       <View style={styles.locationMediaContainer}>
         <Text style={styles.headerText}>{getLabel("location_detail.media_section_label")}</Text>
