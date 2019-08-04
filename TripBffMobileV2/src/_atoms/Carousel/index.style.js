@@ -27,7 +27,7 @@ export default StyleSheet.create({
         paddingVertical: 0,
     },
     exampleContainerDark: {
-        backgroundColor: colors.black
+        backgroundColor: "white"
     },
     exampleContainerLight: {
         backgroundColor: 'white'
@@ -52,15 +52,14 @@ export default StyleSheet.create({
         fontStyle: 'italic',
         textAlign: 'center'
     },
-    slider: {
-        // marginTop: 15,
+    slider: {        
         overflow: 'visible' // for custom animations
     },
-    sliderContentContainer: {
-        // paddingVertical: 10 // for custom animation
+    sliderContentContainer: {        
     },
     paginationContainer: {
-        paddingVertical: 8
+        paddingVertical: 8,
+        backgroundColor: 'transparent'
     },
     paginationDot: {
         width: 8,

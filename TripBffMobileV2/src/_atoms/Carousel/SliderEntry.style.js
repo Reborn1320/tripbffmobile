@@ -12,20 +12,19 @@ function wp (percentage) {
 }
 
 const slideHeight = viewportHeight * 0.36;
-const slideWidth = wp(75);
+const slideWidth = wp(90);
 const itemHorizontalMargin = wp(2);
 
 export const sliderWidth = viewportWidth;
-export const itemWidth = slideWidth + itemHorizontalMargin * 2;
+export const itemWidth = viewportWidth - 24;
 
-const entryBorderRadius = 8;
+const entryBorderRadius = 6;
 
 export default StyleSheet.create({
     slideInnerContainer: {
-        width: itemWidth,
+        width: "100%",
         height: slideHeight,
-        paddingHorizontal: itemHorizontalMargin,
-        // paddingBottom: 18 // needed for shadow
+        backgroundColor: 'transparent',
     },
     shadow: {
         position: 'absolute',
@@ -37,14 +36,16 @@ export default StyleSheet.create({
         shadowOpacity: 0.25,
         shadowOffset: { width: 0, height: 10 },
         shadowRadius: 10,
-        borderRadius: entryBorderRadius
+        borderRadius: entryBorderRadius,
+        elevation: 0.7,
     },
     imageContainer: {
         flex: 1,
         marginBottom: IS_IOS ? 0 : -1, // Prevent a random Android rendering issue
         backgroundColor: 'white',
         borderTopLeftRadius: entryBorderRadius,
-        borderTopRightRadius: entryBorderRadius
+        borderTopRightRadius: entryBorderRadius,
+        marginRight: 24
     },
     imageContainerEven: {
         backgroundColor: NBTheme.brandPrimary,
@@ -61,13 +62,9 @@ export default StyleSheet.create({
         flex: 1,
         marginBottom: IS_IOS ? 0 : -1,
         justifyContent: "center",
-        alignItems: "center",
-        // width: "100%",
-        // height: "100%",
-        //backgroundColor: "orange",
+        alignItems: "center", 
         borderColor: "lightgrey",
         borderWidth: 1,
-        // borderStyle: "dashed",
         borderRadius: IS_IOS ? entryBorderRadius : 0,
         borderTopLeftRadius: entryBorderRadius,
         borderTopRightRadius: entryBorderRadius

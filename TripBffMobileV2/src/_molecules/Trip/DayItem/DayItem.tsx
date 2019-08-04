@@ -8,7 +8,7 @@ import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from '../../../screens/_shared/LayoutContainer';
 import { StyleSheet, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 import { getLabel } from "../../../../i18n";
-import NBTheme from "../../../theme/variables/material.js";
+import NBColor from "../../../theme/variables/commonColor.js";
 import EmptyLocationItem from "./EmptyLocation";
 import { DATE_FORMAT } from "../../../screens/_services/SystemConstants";
 import { TouchableOpacity, Image } from 'react-native';
@@ -131,7 +131,7 @@ const styles = StyleSheet.create<Style>({
         marginTop: 16
     },
     dayLabel: {
-        color: NBTheme.brandPrimary,
+        color: NBColor.brandPrimary,
         fontSize: 16,
         ...mixins.themes.fontBold,
         fontStyle: "normal",

@@ -17,6 +17,7 @@ export interface Props extends IMapDispatchToProps {
 }
 
 interface State {
+  numberOfEntries: number
 }
 
 export type IEntry = {
@@ -30,6 +31,7 @@ export class StyledCarousel extends Component<Props & IStateProps, State> {
     super(props);
 
     this.state = {
+      numberOfEntries: this.props.entries.length
     };
   }
 
@@ -49,11 +51,12 @@ export class StyledCarousel extends Component<Props & IStateProps, State> {
     );
   }
 
-  _renderLightItem = ({ item }) => {
-    return <SliderEntry data={item} even={false} clickHandler={this.props.clickHandler} />;
+  _renderLightItem = ({ item, index }) => {
+    return <SliderEntry data={item} index={index} numberOfEntries={this.state.numberOfEntries} even={false} clickHandler={this.props.clickHandler} />;
   }
 
   layoutExample = (type, entries: IEntry[]) => {
+    console.log("numberof entries: " + this.state.numberOfEntries);
     const isTinder = type === 'tinder';
     return (
       <View style={[styles.exampleContainer, isTinder ? styles.exampleContainerDark : styles.exampleContainerLight]}>
@@ -65,7 +68,7 @@ export class StyledCarousel extends Component<Props & IStateProps, State> {
           containerCustomStyle={styles.slider}
           contentContainerCustomStyle={styles.sliderContentContainer}
           layout={type}
-          loop={true}
+          loop={false}
         />
       </View>
     );
@@ -74,7 +77,7 @@ export class StyledCarousel extends Component<Props & IStateProps, State> {
   render() {
     const { entries } = this.props;
 
-    const example4 = this.layoutExample("stack", entries);
+    const example4 = this.layoutExample("tinder", entries);
     return (
       <View>
         {example4}

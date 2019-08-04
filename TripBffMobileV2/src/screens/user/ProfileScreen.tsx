@@ -146,12 +146,6 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                         <UserDetails 
                             onClickEdit={this.handleEditBtnClick}
                         />
-                        <Divider style={
-                            {
-                                marginTop: 20,
-                                marginBottom: 20,
-                            }
-                        }></Divider>
                         {isLoaded && <Loading message={this.state.loadingMessage} />}
                         <TripsComponent
                             handleClick={this._handleTripItemClick}

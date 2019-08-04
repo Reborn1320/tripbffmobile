@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Icon } from 'native-base';
 import PropTypes from 'prop-types';
-import { ParallaxImage } from 'react-native-snap-carousel';
+import { ParallaxImage, Pagination } from 'react-native-snap-carousel';
 import styles from './SliderEntry.style';
+import stylesPaging, { colors } from './index.style';
 import NoItemDefault from "./NoItemDefault";
 
 export default class SliderEntry extends Component {
@@ -50,6 +51,23 @@ export default class SliderEntry extends Component {
         );
     }
 
+    setFavorite() {
+        return (
+            <View style={styles1.footerContainer}>
+                <Pagination
+                    dotsLength={this.props.numberOfEntries}
+                    activeDotIndex={this.props.index}
+                    containerStyle={stylesPaging.paginationContainer}
+                    dotColor={'rgba(255, 255, 255, 0.92)'}
+                    dotStyle={stylesPaging.paginationDot}
+                    inactiveDotColor={colors.gray}
+                    inactiveDotOpacity={0.6}
+                    inactiveDotScale={0.7}
+                    />
+            </View>
+        )
+    }
+
     render () {
         const { data: { title, illustration }, even, clickHandler } = this.props;
 
@@ -69,10 +87,9 @@ export default class SliderEntry extends Component {
               style={styles.slideInnerContainer}
               onPress={clickHandler}
               >
-                <View style={styles.shadow} />
-
                 <View style={[styles.imageContainer, { borderRadius: 10 }]}>
-                    { this.image }                   
+                    { this.image }       
+                    { this.setFavorite() }           
                 </View>
                 { uppercaseTitle &&
                 <View style={[styles.textContainer, even ? styles.textContainerEven : {}, !even ? styles.textContainerBorder : {}]}>
@@ -83,3 +100,15 @@ export default class SliderEntry extends Component {
         );
     }
 }
+
+const styles1 = StyleSheet.create({    
+    footerContainer: {
+        bottom: 0,
+        height: 40,
+        position: 'absolute',
+        backgroundColor: 'transparent',
+        width: '100%',
+        justifyContent: "center",
+        alignItems: "center"
+    }
+  })
