@@ -18,6 +18,7 @@ import { uploadLocationImage, addLocations, IImportLocation } from "../../../sto
 import { getAddressFromLocation, checkAndRequestPhotoPermissionAsync } from "../../../_function/commonFunc";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import { getLabel } from "../../../../i18n";
+import { toDateUtc as toDateUtcFunc } from "../../../_function/dateFuncs";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -185,8 +186,8 @@ class TripImportation extends Component<Props, State> {
                 var locationVM: IImportLocation = {
                     name: element.name,
                     location: element.location,
-                    fromTime: element.fromTime,
-                    toTime: element.toTime,
+                    fromTime: toDateUtcFunc(element.fromTime.clone()),
+                    toTime: toDateUtcFunc(element.toTime.clone()),
                     images: element.images.filter((img) => img.isSelected)
                         .map(img => {
                             return {

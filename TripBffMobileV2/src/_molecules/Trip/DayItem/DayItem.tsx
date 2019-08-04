@@ -40,7 +40,7 @@ export class DayItemComponent extends Component<Props, State> {
 
     render() {
         const { dateIdx, dateVm } = this.props
-        let currentDate = moment(this.props.date).startOf("day").format(DATE_FORMAT);
+        let currentDate = moment(this.props.date).format(DATE_FORMAT);
 
         return (
             <View style={styles.dayItemContainer}>

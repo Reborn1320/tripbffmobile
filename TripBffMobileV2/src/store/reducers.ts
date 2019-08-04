@@ -7,8 +7,6 @@ import {
     LOCATION_ADD,
     LOCATION_UPDATE_FEELING,
     LOCATION_UPDATE_ACTIVITY,
-    TRIP_UPDATE_DATE_RANGE,
-    TRIP_UPDATE_TRIP_NAME,
     LOCATION_UPDATE_ADDRESS,
     TripActions,
     LocationActions,
@@ -229,7 +227,7 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
             };
         case IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS:
             const { locations } = action;
-            const mappedLocations: StoreData.LocationVM[] = locations.map(loc => ({
+            const mappedLocations: any = locations.map(loc => ({
                 ...loc,
                 images: loc.images.map(im => ({
                     ...im,
@@ -237,7 +235,6 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
                     thumbnailExternalUrl: "",
                     isFavorite: false,
                 }))
-
             }));
 
             return {
@@ -245,25 +242,13 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
                 locations, //todo: remove this property
                 dates: getDatesProperty(state.fromDate, state.toDate, mappedLocations)
             }
-        case TRIP_UPDATE_DATE_RANGE:
-            return {
-                ...state,
-                fromDate: action.fromDate,
-                toDate: action.toDate,
-                dates: getDatesProperty(action.fromDate, action.toDate, action.locations)
-            }
-        case TRIP_UPDATE_TRIP_NAME:
-            return {
-                ...state,
-                name: action.tripName
-            }
         case TRIP_UPDATE:
             return {
                 ...state,
                 name: action.name,
                 fromDate: action.fromDate,
                 toDate: action.toDate,
-                dates: getDatesProperty(action.fromDate, action.toDate, [])
+                dates: getDatesProperty(action.fromDate, action.toDate, action.locations)
             };
         default:
             {
