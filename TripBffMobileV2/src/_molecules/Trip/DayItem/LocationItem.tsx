@@ -161,7 +161,7 @@ const styles = StyleSheet.create<Style>({
     },
     locationName_MapIcon: {
         fontSize: 16,
-        paddingTop: 3
+        paddingTop: 4
     },
     locationName_Name: {
         fontSize: 12,
