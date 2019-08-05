@@ -72,7 +72,7 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
   render() {
     const { isVisible } = this.props;
     let fromDate = this.state.fromDate;
-    const toDate = this.state.toDate ? this.state.toDate.startOf("day") : null;
+    const toDate = this.state.toDate;
     let deviceLocale = DeviceInfo.getDeviceLocale();
 
     let mlist = LIST_MONTHS_EN;

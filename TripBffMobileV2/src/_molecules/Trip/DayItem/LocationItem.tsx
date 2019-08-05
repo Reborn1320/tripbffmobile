@@ -182,8 +182,8 @@ const styles = StyleSheet.create<Style>({
         // ...mixins.themes.debug,
         flexDirection: "row",
         justifyContent: "space-evenly",
-        marginTop: 10,
-        marginBottom: 5,
+        marginTop: 14,
+        marginBottom: 18,
         width: "90%"
     },
     activityBtn: {

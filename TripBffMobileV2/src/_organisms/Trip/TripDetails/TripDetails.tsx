@@ -15,8 +15,6 @@ interface IMapDispatchToProps {
     openUpdateActivityModalHandler?: (dateIdx: number, locationId: string) => void;
     openRemoveLocationModalHandler?: (dateIdx: number, locationId: string) => void;
     openAddLocationModalHandler?: (dateIdx: number, date: moment.Moment) => void;
-    openEditDateRangeModalHandler?: () => void;
-    openEditTripNameModalHandler?: () => void;
 }
 
 export interface Props extends IMapDispatchToProps, PropsBase {

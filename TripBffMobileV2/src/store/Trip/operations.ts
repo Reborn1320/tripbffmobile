@@ -3,8 +3,6 @@ import {
   addLocation as addLocationAction,
   updateLocationFeeling as updateLocationFeelingAction,
   updateLocationActivity as updateLocationActivityAction,
-  updateTripDateRange as updateTripDateRangeAction,
-  updateTripName as updateTripNameAction,
   updateLocationAddress as updateLocationAddressAction,
   updateLocationHighlight as updateLocationHighlightAction,
   updateLocationDescription as  updateLocationDescriptionAction,
@@ -24,7 +22,8 @@ import moment from "moment";
 import { uploadFileApi } from "../../screens/_services/apis";
 import { Store } from "redux";
 import { uploadImageXmlHttpRequestAsync } from "../../screens/_services/Uploader/BlobUploader";
-import { toDateUtc } from "../../_function/dateFuncs";
+import { toDateUtc as toDateUtcFunc } from "../../_function/dateFuncs";
+import { Item } from "native-base";
 
 export function fetchTrip(tripId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
@@ -95,7 +94,14 @@ export function addLocations(tripId, selectedLocations: IImportLocation[]): Thun
       .then((res) => {
         console.log("import trip succeeded")
         console.log('result after import trip: ', res.data);
-        dispatch(importSelectedLocations(tripId, res.data.locations));
+
+        var rawLocations = res.data.locations.map(item => ({
+            ...item,
+            fromTime: moment(item.fromTime).local(),
+            toTime: moment(item.toTime).local()
+        }));
+
+        dispatch(importSelectedLocations(tripId, rawLocations));
         // this.setState({ UIState: "import images" })
       })
       .catch(function (error) {
@@ -126,8 +132,8 @@ export function addLocation(tripId: string, dateIdx: number, location: StoreData
     
     var data = {
         name: location.name,
-        fromTime: location.fromTime,
-        toTime: location.toTime,
+        fromTime: toDateUtcFunc(location.fromTime.clone()),
+        toTime: toDateUtcFunc(location.toTime.clone()),
         location: location.location,
         images: location.images
     };
@@ -159,8 +165,11 @@ export function addLocation(tripId: string, dateIdx: number, location: StoreData
 export function createTrip(name: string, fromDate: Moment, toDate: Moment): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
 
+    let fromDateUtc = toDateUtcFunc(fromDate.clone());
+    let toDateUtc = toDateUtcFunc(toDate.clone());
+
     var data = {
-      name, fromDate, toDate
+      name, fromDate: fromDateUtc, toDate: toDateUtc
     }
     return extraArguments.tripApiService.post('/trips', { data })
     .then((res) => {
@@ -169,8 +178,8 @@ export function createTrip(name: string, fromDate: Moment, toDate: Moment): Thun
       var trip = {
         tripId: tripId,
         name: name,
-        fromDate: toDateUtc(fromDate),
-        toDate: toDateUtc(toDate)
+        fromDate: fromDate,
+        toDate: toDate
       };
       dispatch(createTripAction(trip));
       return tripId;
@@ -184,51 +193,20 @@ export function createTrip(name: string, fromDate: Moment, toDate: Moment): Thun
 export function updateTrip(tripId: string,name: string, fromDate: Moment, toDate: Moment): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
 
+    let fromDateUtc = toDateUtcFunc(fromDate.clone());
+    let toDateUtc = toDateUtcFunc(toDate.clone());
+
     var data = {
-      name, fromDate, toDate
+      name, fromDate: fromDateUtc, toDate: toDateUtc
     }
     return extraArguments.tripApiService.patch('/trips/' + tripId, { data })
     .then((res) => {
-      let utcFromDate = toDateUtc(fromDate),
-          utcToDate = toDateUtc(toDate);
-       dispatch(updateTripAction(tripId, name, utcFromDate, utcToDate));
+       const trip: RawJsonData.TripVM = res.data;
+       //todo need a proper conversion
+       dispatch(updateTripAction(tripId, name, fromDate, toDate, trip.locations));
     })
     .catch((err) => {
       console.log('error update trip api: ', err);
-    });
-  };
-}
-
-export function updateTripDateRange(tripId: string, fromDate: Moment, toDate: Moment): ThunkResultBase {
-  return async function (dispatch, getState, extraArguments): Promise<any> {
-    const data = { 
-      fromDate: fromDate, 
-      toDate: toDate
-    };
-    return extraArguments.tripApiService.patch(`trips/${tripId}`, { data })
-    .then((res) => {
-        const trip: RawJsonData.TripVM = res.data;
-        //todo need a proper conversion
-        dispatch(updateTripDateRangeAction(tripId, data.fromDate, data.toDate, trip.locations));
-    })
-    .catch((err) => {
-      console.log('error update trip date range api: ', err);
-    });
-  };
-}
-
-export function updateTripName(tripId: string, name: string): ThunkResultBase {
-  return async function (dispatch, getState, extraArguments): Promise<any> {
-
-    const data = { 
-      name
-    };
-    return extraArguments.tripApiService.patch(`trips/${tripId}`, { data })
-    .then((res) => {
-        dispatch(updateTripNameAction(tripId, name));
-    })
-    .catch((err) => {
-      console.log('error update trip name api: ', err);
     });
   };
 }

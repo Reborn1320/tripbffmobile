@@ -11,7 +11,6 @@ import { updateLocationFeeling,
     updateLocationActivity, 
     removeLocation, 
     addLocation } from "../../../store/Trip/operations";
-  import { updateTripDateRange, updateTripName } from "../../../store/Trip/operations";
 import { connect } from "react-redux";
 import { getCancelToken } from "../../../_function/commonFunc";
 
@@ -20,8 +19,6 @@ export interface IMapDispatchToProps {
     updateLocationActivity: (tripId: string, dateIdx: number, locationId: string, activity: StoreData.ActivityVM, cancelToken: any) => Promise<void>
     removeLocation: (tripId: string, dateIdx: number, locationId: string, cancelToken: any) => Promise<void>
     addLocation: (tripId: string, dateIdx: number, location: StoreData.LocationVM, cancelToken: any) => Promise<void>;
-    updateTripDateRange: (tripId: string, fromDate: moment.Moment, toDate: moment.Moment) => Promise<StoreData.TripVM>;
-    updateTripName: (tripId: string, tripName: string) => Promise<StoreData.TripVM>;
 }
 
 export interface Props {
@@ -36,9 +33,7 @@ interface State {
     isAddActivityModalVisible: boolean,
     isConfirmationModalVisible: boolean,
     isAddLocationModalVisible: boolean,
-    addLocationSelectedDate: moment.Moment,
-    isUpdateDateRangeModalVisible: boolean,
-    isUpdateNameModalVisible: boolean
+    addLocationSelectedDate: moment.Moment
 }
 
 class TripDetailScreenContentInternal extends Component<Props & IMapDispatchToProps, State> {
@@ -56,9 +51,7 @@ class TripDetailScreenContentInternal extends Component<Props & IMapDispatchToPr
             isAddFeelingModalVisible: false,
             isConfirmationModalVisible: false,
             isAddLocationModalVisible: false,
-            addLocationSelectedDate: null,
-            isUpdateDateRangeModalVisible: false,
-            isUpdateNameModalVisible: false
+            addLocationSelectedDate: null
         }
     }    
 
@@ -177,43 +170,6 @@ class TripDetailScreenContentInternal extends Component<Props & IMapDispatchToPr
         });
     }
 
-    private _openEditDateRangeModal = () => {
-        this.setState({
-            isUpdateDateRangeModalVisible: true
-        });
-    }
-
-    private _onUpdateDateRange = (fromDate: moment.Moment, toDate: moment.Moment) => {
-        this.setState({
-            isUpdateDateRangeModalVisible: false
-        });
-
-        fromDate = moment(fromDate).startOf('day');
-        toDate = moment(toDate).endOf('day');
-
-        this.props.updateTripDateRange(this.props.tripId, fromDate, toDate);            
-    }
-
-    private _cancelUpdateDateRangeModal = () => {
-        this.setState({ isUpdateDateRangeModalVisible: false });
-    }
-
-    private _openUpdateNameModal = () => {
-        this.setState({
-            isUpdateNameModalVisible: true
-        });
-    }
-
-    private _onUpdateTripName = (tripName: string) => {
-        this.setState({ isUpdateNameModalVisible: false });
-        this.props.updateTripName(this.props.tripId, tripName);            
-    }
-
-    private _cancelUpdateNameModal = () => {
-        this.setState({ isUpdateNameModalVisible: false });
-    }
-
-
     render() {
         const tripId = this.props.tripId;
         const navigation = this.props.navigation;
@@ -225,9 +181,7 @@ class TripDetailScreenContentInternal extends Component<Props & IMapDispatchToPr
                     openUpdateFeelingModalHandler={this._openUpdateFeelingModal}
                     openUpdateActivityModalHandler={this._openUpdateActivityModal} 
                     openRemoveLocationModalHandler={this._openRemoveLocationModal}
-                    openAddLocationModalHandler={this._openAddLocationModal}
-                    openEditDateRangeModalHandler={this._openEditDateRangeModal}
-                    openEditTripNameModalHandler={this._openUpdateNameModal}/>
+                    openAddLocationModalHandler={this._openAddLocationModal}/>
 
                 <TripDetailsModal                            
                     tripId={tripId}
@@ -249,15 +203,7 @@ class TripDetailScreenContentInternal extends Component<Props & IMapDispatchToPr
                     isAddLocationModalVisible={this.state.isAddLocationModalVisible}     
                     addLocationConfirmedHandler={this._addLocationConfirmed}
                     cancelAddLocationModalHandler={this._cancelAddLocationModal}                   
-                    selectedDate={this.state.addLocationSelectedDate}
-
-                    isUpdateDateRangeModalVisible={this.state.isUpdateDateRangeModalVisible}
-                    updateTripDateRangeHandler={this._onUpdateDateRange}
-                    cancelUpdateDateRangeModalHandler={this._cancelUpdateDateRangeModal}
-
-                    isUpdateNameModalVisible={this.state.isUpdateNameModalVisible}
-                    updateTripNameHandler={this._onUpdateTripName}
-                    cancelUpdateNameModal={this._cancelUpdateNameModal}/>     
+                    selectedDate={this.state.addLocationSelectedDate}/>     
             </View>                                                       
         );
     }
@@ -269,8 +215,6 @@ const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
       updateLocationActivity: (tripId, dateIdx, locationId, activity, cancelToken) => dispatch(updateLocationActivity(tripId, dateIdx, locationId, activity, cancelToken)),
       removeLocation: (tripId, dateIdx, locationId, cancelToken) => dispatch(removeLocation(tripId, dateIdx, locationId, cancelToken)),
       addLocation: (tripId, dateIdx, location, cancelToken) => dispatch(addLocation(tripId, dateIdx, location, cancelToken)),
-      updateTripDateRange: (tripId, fromDate, toDate) => dispatch(updateTripDateRange(tripId, fromDate, toDate)),
-      updateTripName: (tripId, tripName) => dispatch(updateTripName(tripId, tripName))
     };
   };
   

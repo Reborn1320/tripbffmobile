@@ -26,8 +26,6 @@ export type TripActions = {
 | AddTripAction
 | ReplaceTripAction
 | RemoveLocation
-| UpdateTripDateRange
-| UpdateTripName
 | AddInfographicId
 | ImportSelectedLocations
 | UpdateBasicTrip
@@ -51,20 +49,6 @@ type RemoveLocation = {
     locationId: string
 }
 
-type UpdateTripDateRange = {
-    type: "TRIP_UPDATE_DATE_RANGE",
-    tripId: string
-    fromDate: Moment
-    toDate: Moment
-    locations: StoreData.LocationVM[]
-}
-
-type UpdateTripName = {
-    type: "TRIP_UPDATE_TRIP_NAME",
-    tripId: string,
-    tripName: string
-}
-
 type ImportSelectedLocations = {
     type: "TRIP/IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS",
     tripId: string
@@ -83,7 +67,8 @@ type UpdateBasicTrip = {
     tripId: string,
     name: string,
     fromDate: Moment,
-    toDate: Moment
+    toDate: Moment,
+    locations: StoreData.LocationVM[]
 }
 
 
@@ -111,21 +96,9 @@ export function addLocation(tripId: string, dateIdx: number, location: StoreData
     }
 }
 
-export function updateTripDateRange(tripId: string, fromDate: moment.Moment, toDate: moment.Moment, locations: StoreData.LocationVM[]) {
+export function updateTrip(tripId: string, name: string, fromDate: moment.Moment, toDate: moment.Moment, locations: StoreData.LocationVM[]) : UpdateBasicTrip {
     return {
-        type: TRIP_UPDATE_DATE_RANGE, tripId, fromDate, toDate, locations
-    }
-}
-
-export function updateTripName(tripId: string, tripName: string) {
-    return {
-        type: TRIP_UPDATE_TRIP_NAME, tripId, tripName
-    }
-}
-
-export function updateTrip(tripId: string, name: string, fromDate: moment.Moment, toDate: moment.Moment) : UpdateBasicTrip {
-    return {
-        type: TRIP_UPDATE, tripId, name, fromDate, toDate
+        type: TRIP_UPDATE, tripId, name, fromDate, toDate, locations
     }
 }
 

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Icon } from 'native-base';
 import PropTypes from 'prop-types';
-import { ParallaxImage } from 'react-native-snap-carousel';
+import { ParallaxImage, Pagination } from 'react-native-snap-carousel';
 import styles from './SliderEntry.style';
+import stylesPaging, { colors } from './index.style';
 import NoItemDefault from "./NoItemDefault";
 
 export default class SliderEntry extends Component {
@@ -50,16 +51,30 @@ export default class SliderEntry extends Component {
         );
     }
 
+    setFavorite() {
+        return (
+            <View style={styles1.footerContainer}>
+                <Pagination
+                    dotsLength={this.props.numberOfEntries}
+                    activeDotIndex={this.props.index}
+                    containerStyle={stylesPaging.paginationContainer}
+                    dotStyle={stylesPaging.paginationDot}
+                    inactiveDotStyle={stylesPaging.inactivePaginationDot}
+                    inactiveDotOpacity={1}
+                    inactiveDotScale={1}
+                    />
+            </View>
+        )
+    }
+
     render () {
         const { data: { title, illustration }, even, clickHandler } = this.props;
-
-        const isEmpty = illustration == "";
         const uppercaseTitle = title ? (
             <Text
-              style={[styles.title, even ? styles.titleEven : {}]}
-              numberOfLines={2}
+              style={[styles.title]}
+              numberOfLines={1}
             >
-                { title.toUpperCase() }
+                { title }
             </Text>
         ) : false;
 
@@ -69,13 +84,12 @@ export default class SliderEntry extends Component {
               style={styles.slideInnerContainer}
               onPress={clickHandler}
               >
-                <View style={styles.shadow} />
-
                 <View style={[styles.imageContainer, { borderRadius: 10 }]}>
-                    { this.image }                   
+                    { this.image }       
+                    { this.setFavorite() }           
                 </View>
                 { uppercaseTitle &&
-                <View style={[styles.textContainer, even ? styles.textContainerEven : {}, !even ? styles.textContainerBorder : {}]}>
+                <View style={[styles.textContainer]}>
                     { uppercaseTitle }
                  </View>
                 }
@@ -83,3 +97,15 @@ export default class SliderEntry extends Component {
         );
     }
 }
+
+const styles1 = StyleSheet.create({    
+    footerContainer: {
+        bottom: 0,
+        height: 40,
+        position: 'absolute',
+        backgroundColor: 'transparent',
+        width: '100%',
+        justifyContent: "center",
+        alignItems: "center"
+    }
+  })

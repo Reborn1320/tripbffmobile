@@ -27,10 +27,10 @@ export default StyleSheet.create({
         paddingVertical: 0,
     },
     exampleContainerDark: {
-        backgroundColor: colors.black
+        backgroundColor: "transparent"
     },
     exampleContainerLight: {
-        backgroundColor: 'white'
+        backgroundColor: 'transparent'
     },
     title: {
         paddingHorizontal: 30,
@@ -52,20 +52,27 @@ export default StyleSheet.create({
         fontStyle: 'italic',
         textAlign: 'center'
     },
-    slider: {
-        // marginTop: 15,
+    slider: {        
         overflow: 'visible' // for custom animations
     },
-    sliderContentContainer: {
-        // paddingVertical: 10 // for custom animation
+    sliderContentContainer: {        
     },
     paginationContainer: {
-        paddingVertical: 8
+        paddingVertical: 4,
+        backgroundColor: 'transparent'
     },
     paginationDot: {
         width: 8,
         height: 8,
         borderRadius: 4,
-        marginHorizontal: 8
+        marginHorizontal: 0,
+        backgroundColor: "#FFFFFF"
+    },
+    inactivePaginationDot: {
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        marginHorizontal: 0,
+        backgroundColor: colors.gray
     }
 });
