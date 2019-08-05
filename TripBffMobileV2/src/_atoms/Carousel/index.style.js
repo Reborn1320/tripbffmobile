@@ -58,13 +58,21 @@ export default StyleSheet.create({
     sliderContentContainer: {        
     },
     paginationContainer: {
-        paddingVertical: 8,
+        paddingVertical: 4,
         backgroundColor: 'transparent'
     },
     paginationDot: {
         width: 8,
         height: 8,
         borderRadius: 4,
-        marginHorizontal: 8
+        marginHorizontal: 0,
+        backgroundColor: "#FFFFFF"
+    },
+    inactivePaginationDot: {
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        marginHorizontal: 0,
+        backgroundColor: colors.gray
     }
 });

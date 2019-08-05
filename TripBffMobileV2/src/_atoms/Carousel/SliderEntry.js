@@ -58,11 +58,10 @@ export default class SliderEntry extends Component {
                     dotsLength={this.props.numberOfEntries}
                     activeDotIndex={this.props.index}
                     containerStyle={stylesPaging.paginationContainer}
-                    dotColor={'rgba(255, 255, 255, 0.92)'}
                     dotStyle={stylesPaging.paginationDot}
-                    inactiveDotColor={colors.gray}
-                    inactiveDotOpacity={0.6}
-                    inactiveDotScale={0.7}
+                    inactiveDotStyle={stylesPaging.inactivePaginationDot}
+                    inactiveDotOpacity={1}
+                    inactiveDotScale={1}
                     />
             </View>
         )
@@ -70,14 +69,12 @@ export default class SliderEntry extends Component {
 
     render () {
         const { data: { title, illustration }, even, clickHandler } = this.props;
-
-        const isEmpty = illustration == "";
         const uppercaseTitle = title ? (
             <Text
-              style={[styles.title, even ? styles.titleEven : {}]}
-              numberOfLines={2}
+              style={[styles.title]}
+              numberOfLines={1}
             >
-                { title.toUpperCase() }
+                { title }
             </Text>
         ) : false;
 
@@ -92,7 +89,7 @@ export default class SliderEntry extends Component {
                     { this.setFavorite() }           
                 </View>
                 { uppercaseTitle &&
-                <View style={[styles.textContainer, even ? styles.textContainerEven : {}, !even ? styles.textContainerBorder : {}]}>
+                <View style={[styles.textContainer]}>
                     { uppercaseTitle }
                  </View>
                 }

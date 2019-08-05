@@ -41,14 +41,14 @@ export interface State {
 
 const EMPTY_TRIP_ENTRIES: IEntry[] = [
   {
-    title: "NO LOCATION",
+    title: "No Location",
     subtitle: getLabel("message.add_location"),
     illustration: ""
   }
 ];
 
 const EMPTY_LOCATION_ENTRY: IEntry = {
-  title: "NO IMAGE",
+  title: "No Image",
   subtitle: getLabel("message.add_image"),
   illustration: ""
 }
@@ -119,7 +119,6 @@ export class TripCarouselComponent extends React.Component<Props, State> {
     const { currentMinimizedTrip, trip } = this.props;
     let tripEntry = currentMinimizedTrip ? this._normalizeTripEntry(currentMinimizedTrip) :this._normalizeTripEntry(trip);
     const { title, subtitle } = tripEntry;
-    const isTinder = false;
     
     return (      
       <View style={styles.container}>
@@ -159,11 +158,12 @@ export class TripCarouselComponent extends React.Component<Props, State> {
                 <Text style={styles.subtitle}>{subtitle}</Text>
               </View>
           </View>         
-
+          <View style={{marginVertical: 16}}>
             <StyledCarousel
               entries={tripEntry.entries}
               clickHandler={this._handleClickTrip}
             />
+          </View>
       </View>
     );
   }
@@ -224,7 +224,7 @@ const styles = StyleSheet.create<Style>({
   },
   title: {
     color: NBColor.brandPrimary,
-    fontSize: 16,
+    fontSize: 18,
     ...mixins.themes.fontBold,
     fontStyle: "normal",
     lineHeight: 20    

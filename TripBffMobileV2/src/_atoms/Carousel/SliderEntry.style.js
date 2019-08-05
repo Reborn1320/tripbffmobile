@@ -2,6 +2,7 @@ import { StyleSheet, Dimensions, Platform } from 'react-native';
 import { colors } from './index.style';
 import { mixins } from "../../_utils";
 import NBTheme from "../../theme/variables/material";
+import NBColor from "../../theme/variables/commonColor.js";
 
 const IS_IOS = Platform.OS === 'ios';
 const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
@@ -58,15 +59,11 @@ export default StyleSheet.create({
         borderTopRightRadius: entryBorderRadius,
     },
     imageEmptyContainer: {
+        backgroundColor: '#F9F9F9',
+        borderRadius: 6,
         flex: 1,
-        marginBottom: IS_IOS ? 0 : -1,
         justifyContent: "center",
-        alignItems: "center", 
-        borderColor: "lightgrey",
-        borderWidth: 1,
-        borderRadius: IS_IOS ? entryBorderRadius : 0,
-        borderTopLeftRadius: entryBorderRadius,
-        borderTopRightRadius: entryBorderRadius
+        alignItems: "center"
     },
     // image's border radius is buggy on iOS; let's hack it!
     radiusMask: {
@@ -89,10 +86,11 @@ export default StyleSheet.create({
     },
     textContainer: {
         justifyContent: 'center',
-        paddingTop: 20 - entryBorderRadius,
-        paddingBottom: 20,
+        paddingTop: 13,
+        paddingBottom: 13,
         paddingHorizontal: 16,    
-        backgroundColor: 'white',    
+        marginRight: 24,
+        backgroundColor: NBColor.brandPrimary,    
         borderBottomLeftRadius: entryBorderRadius,
         borderBottomRightRadius: entryBorderRadius
     },
@@ -104,9 +102,10 @@ export default StyleSheet.create({
         borderWidth: 1 
     },
     title: {
-        color: colors.black,
-        fontSize: 13,
-        ...mixins.themes.fontBold,
+        color: "#FFFFFF",
+        fontSize: 14,
+        ...mixins.themes.fontNormal,
+        lineHeight: 18,
         letterSpacing: 0.5
     },
     titleEven: {
@@ -114,9 +113,10 @@ export default StyleSheet.create({
     },
     subtitle: {
         marginTop: 6,
-        color: colors.gray,
+        color: '#DADADA',
         fontSize: 12,
-        fontStyle: 'italic'
+        ...mixins.themes.fontBold,
+        lineHeight: 16
     },
     subtitleEven: {
         color: 'rgba(255, 255, 255, 0.7)'
