@@ -6,7 +6,6 @@ import TripsComponent from "../../_organisms/Trips/TripsList/TripsComponent";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import { StoreData } from "../../store/Interfaces";
 import { NavigationScreenProp } from "react-navigation";
-import { Divider } from "react-native-elements";
 import UserDetails from "../../_organisms/User/UserDetails";
 import { logOut } from "../../store/User/operations";
 import { getCancelToken } from "../../_function/commonFunc";

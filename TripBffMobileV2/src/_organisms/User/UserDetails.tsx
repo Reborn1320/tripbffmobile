@@ -1,8 +1,8 @@
 import React, { Component, PureComponent } from "react";
-import { View, H1, H2, H3, Button } from "native-base";
+import { View, H1, H2, H3, Button, Text } from "native-base";
 import _ from "lodash";
 import { StyleSheet, ViewStyle, TextStyle } from "react-native";
-import { Avatar, Text } from "react-native-elements";
+import { Avatar } from "react-native-elements";
 import { StoreData } from "../../store/Interfaces";
 import { connect } from "react-redux";
 import { getLabel } from "../../../i18n";
