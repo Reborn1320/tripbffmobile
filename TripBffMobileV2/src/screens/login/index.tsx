@@ -10,6 +10,7 @@ import * as RNa from "react-navigation";
 import { loginUsingFacebookAccessToken, loginUsingDeviceId } from "../../store/User/operations";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import { mixins } from "../../_utils";
+import { getLabel } from "../../../i18n";
 
 export interface Props {
   navigation: RNa.NavigationScreenProp<any, any>;
@@ -66,7 +67,7 @@ class Login extends Component<Props & IMapDispatchToProps, any>{
       <ImageBackground source={require('../../../assets/04.jpg')} style={styles.imageBackground}>
           <View style={styles.loginContainer}>
             <View style={styles.welcomeContainer}>
-              <Text style={styles.welcomeTitle}>Welcome to TripBFF.</Text>
+              <Text style={styles.welcomeTitle}>{getLabel("login.welcome_title")}</Text>
             </View>
             <View style={styles.buttonsContainer}>
               <Button
@@ -75,12 +76,12 @@ class Login extends Component<Props & IMapDispatchToProps, any>{
                 style={styles.facebookButton}              
               >
                 <Icon name='facebook-f' type="FontAwesome5" style={styles.facebookIcon}/> 
-                <Text style={{...mixins.themes.fontNormal}}>Continue with Facebook</Text>
+                <Text style={styles.buttonTitle}>{getLabel("login.facebook_button_title")}</Text>
               </Button>             
 
               <Button style={styles.noLoginButton}
                 dark onPress={this._loginUniqueDevice}>
-                <Text style={{...mixins.themes.fontNormal}}>Continue without login</Text>
+                <Text style={styles.buttonTitle}>{getLabel("login.no_login_button_title")}</Text>
               </Button>
             </View>
         </View>
@@ -100,6 +101,7 @@ interface Style {
   facebookButton: ViewStyle;
   facebookIcon: TextStyle;
   noLoginButton: ViewStyle;
+  buttonTitle: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -112,11 +114,12 @@ const styles = StyleSheet.create<Style>({
   },
   welcomeContainer: {
     flex: 1,
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
+    alignItems: "center"
   },
   welcomeTitle: {
     color: "white",
-    alignSelf: "center",
+    textAlign: 'center',
     ...mixins.themes.fontNormal,
     fontSize: 30
   },
@@ -130,7 +133,7 @@ const styles = StyleSheet.create<Style>({
     alignSelf: "center",
     justifyContent: "center",
     backgroundColor: "#4267B2",
-    width: "70%"
+    width: "80%"
   },
   facebookIcon: {
     fontSize: 16
@@ -139,7 +142,10 @@ const styles = StyleSheet.create<Style>({
     margin: 5,              
     alignSelf: "center",
     justifyContent: "center",
-    width: "70%"
+    width: "80%"
+  },
+  buttonTitle: {
+    ...mixins.themes.fontNormal
   }
 })
 

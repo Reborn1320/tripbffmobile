@@ -19,6 +19,11 @@
         "add_location": "Nhấp để thêm địa điểm",
         "add_image": "Nhấp để thêm hình"
     },
+    "login": {
+        "welcome_title": "Chào mừng bạn đến với TripBFF.",
+        "facebook_button_title": "Tiếp tục với Facebook",
+        "no_login_button_title": "Tiếp tục không cần đăng nhập"
+    },
     "create": {
         "screen_header_title": "Tạo mới chuyến đi",
         "screen_header_edit_title": "Chỉnh sửa chuyến đi",
