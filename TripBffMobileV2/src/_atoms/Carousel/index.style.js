@@ -27,10 +27,10 @@ export default StyleSheet.create({
         paddingVertical: 0,
     },
     exampleContainerDark: {
-        backgroundColor: "white"
+        backgroundColor: "transparent"
     },
     exampleContainerLight: {
-        backgroundColor: 'white'
+        backgroundColor: 'transparent'
     },
     title: {
         paddingHorizontal: 30,

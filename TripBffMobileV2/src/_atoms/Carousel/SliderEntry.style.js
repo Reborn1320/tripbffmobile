@@ -23,8 +23,7 @@ const entryBorderRadius = 6;
 export default StyleSheet.create({
     slideInnerContainer: {
         width: "100%",
-        height: slideHeight,
-        backgroundColor: 'transparent',
+        height: slideHeight
     },
     shadow: {
         position: 'absolute',
@@ -42,7 +41,7 @@ export default StyleSheet.create({
     imageContainer: {
         flex: 1,
         marginBottom: IS_IOS ? 0 : -1, // Prevent a random Android rendering issue
-        backgroundColor: 'white',
+        backgroundColor: 'transparent',
         borderTopLeftRadius: entryBorderRadius,
         borderTopRightRadius: entryBorderRadius,
         marginRight: 24
