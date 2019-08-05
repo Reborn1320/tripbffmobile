@@ -1,12 +1,11 @@
 import * as React from "react";
 import { View, Text } from "native-base";
 import { StyleSheet, ViewStyle, TextStyle } from "react-native";
-import { connectStyle } from 'native-base';
+import { connectStyle, Button } from 'native-base';
 import CalendarPicker from 'react-native-calendar-picker';
 import moment, { Moment } from "moment";
-import { getLabel } from "../../../i18n";
-import Modal from 'react-native-modal';
-import { Button } from 'react-native-elements';
+import { getLabel } from "../../../i18n";import Modal from 'react-native-modal';
+
 import NBColor from "../../theme/variables/commonColor.js";
 import DeviceInfo from 'react-native-device-info';
 import { LIST_MONTHS_EN,
@@ -122,17 +121,15 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
               </View>                
               <View style={styles.buttons}>
                 <Button
-                    buttonStyle={styles.buttonCancel}
-                    title={getLabel("action.cancel")}
-                    titleStyle={[styles.buttonTitle, styles.buttonCancelTitle]}
+                    style={styles.buttonCancel}
                     onPress={this._onCancel}>
+                    <Text style={[styles.buttonTitle, styles.buttonCancelTitle]}>{getLabel("action.cancel")}</Text>
                 </Button>
                 <Button
-                    buttonStyle={[styles.buttonDone, buttonDoneStyle]}
+                    style={[styles.buttonDone, buttonDoneStyle]}
                     disabled={isDisabled}
-                    title={getLabel("action.done")}
-                    titleStyle={[styles.buttonTitle, buttonDoneTitleStyle]}
-                    onPress={this._onSave}>         
+                    onPress={this._onSave}>
+                    <Text style={[styles.buttonTitle, buttonDoneTitleStyle]}>{getLabel("action.done")}</Text>         
                 </Button>
             </View>
           </View>         
@@ -187,16 +184,15 @@ const styles = StyleSheet.create<Style>({
   buttonTitle: {    
     fontFamily: mixins.themes.fontNormal.fontFamily,
     textTransform: "capitalize",
-    fontSize: 14,
-    lineHeight: 16
+    fontSize: 17,
+    lineHeight: 22
   },
   buttonCancelTitle: {
     color: NBColor.brandPrimary
   },
-  buttonDone: {
-    borderRadius: 4,
+  buttonDone: {    
     width: 96,
-    height: 32 
+    justifyContent: "center"
   },
   buttonDoneDisabled: {
     backgroundColor: "#F0F0F0"

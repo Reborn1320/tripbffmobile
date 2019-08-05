@@ -62,16 +62,16 @@ export default StyleSheet.create({
         backgroundColor: 'transparent'
     },
     paginationDot: {
-        width: 8,
-        height: 8,
-        borderRadius: 4,
+        width: 6,
+        height: 6,
+        borderRadius: 3,
         marginHorizontal: 0,
         backgroundColor: "#FFFFFF"
     },
     inactivePaginationDot: {
-        width: 8,
-        height: 8,
-        borderRadius: 4,
+        width: 6,
+        height: 6,
+        borderRadius: 3,
         marginHorizontal: 0,
         backgroundColor: colors.gray
     }
