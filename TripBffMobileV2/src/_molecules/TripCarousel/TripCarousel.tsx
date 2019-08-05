@@ -125,9 +125,11 @@ export class TripCarouselComponent extends React.Component<Props, State> {
           <View style={{marginLeft: 12}}>
             <View style={styles.headerContainer}>              
                 <View style={styles.titleContainer}>
-                  <Text numberOfLines={2} style={styles.title}>
-                      {title}
-                  </Text>  
+                  <TouchableOpacity onPress={this._handleClickTrip}>
+                    <Text numberOfLines={2} style={styles.title}>
+                        {title}
+                    </Text>  
+                  </TouchableOpacity>
                 </View>   
                 <View style={{marginTop: 13, marginRight: 10}}>
                   <TouchableOpacity
