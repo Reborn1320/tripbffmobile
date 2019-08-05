@@ -27,8 +27,7 @@ class TripNameComponent extends React.Component<Props, State> {
                 style={{
                     fontSize: 20,
                     lineHeight: 26,
-                    ...mixins.themes.fontNormal,
-                    fontWeight: "800",
+                    ...mixins.themes.fontExtraBold,
                     fontStyle: "normal",                  
                     color: NBTheme.brandPrimary,
                 }}>{this.props.tripName}

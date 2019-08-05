@@ -100,7 +100,7 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
                     <TripDetailScreenContent tripId={tripId} navigation={navigation}/>                    
                 </Content>
                 <ActionButton
-                    buttonColor={NBTheme.brandSuccess}
+                    buttonColor={NBTheme.colorRosy}
                     position="center"
                     onPress={this._exportInfographic}
                     renderIcon={() => 
