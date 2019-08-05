@@ -61,13 +61,9 @@ class LocationDescriptionComponent1 extends React.PureComponent<Props, State> {
                                 </ViewMoreText>
                             )
                             : (
-                                <TextInput
-                                    placeholder={getLabel("location_detail.description_placeholder")}
-                                    multiline={true}
-                                    numberOfLines={3}
-                                    editable={false}
-                                    style={styles.textInput}
-                                />
+                                <Text style={styles.textInput}>
+                                    {getLabel("location_detail.description_placeholder")}
+                                </Text>
                             )
                     }
 
@@ -86,7 +82,7 @@ interface Style {
     nameText: TextStyle;
 
     textInputContainer: ViewStyle,
-    textInput: ViewStyle,
+    textInput: TextStyle,
     showMoreLessBtn: TextStyle
 }
 
@@ -107,12 +103,9 @@ const styles = StyleSheet.create<Style>({
         ...mixins.themes.fontBold,
     },
     textInputContainer: {
-        flexDirection: "row",
-        justifyContent: 'space-between',
-        alignItems: 'center',
     },
     textInput: {
-        width: Dimensions.get('window').width - 50,
+        color: NBTheme.colorGrey,
     },
     showMoreLessBtn: {
         color: NBTheme.brandPrimary,
