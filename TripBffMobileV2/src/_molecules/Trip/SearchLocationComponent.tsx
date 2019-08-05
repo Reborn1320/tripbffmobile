@@ -204,8 +204,7 @@ const styles = StyleSheet.create<Style>({
     fontSize: 15,
     paddingLeft: 2,
     paddingTop: 2,
-    ...mixins.themes.fontNormal,
-    fontWeight: "600",
+    ...mixins.themes.fontSemiBold,
     fontStyle: "normal",
     color: '#383838',
     lineHeight: 20
@@ -213,7 +212,6 @@ const styles = StyleSheet.create<Style>({
   addressText: {
     fontSize: 13, 
     ...mixins.themes.fontNormal,
-    fontWeight: "normal",
     color: '#383838',
     lineHeight: 18
   },

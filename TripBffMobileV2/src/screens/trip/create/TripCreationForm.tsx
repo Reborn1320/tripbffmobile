@@ -193,15 +193,13 @@ const styles = StyleSheet.create<Style>({
   },
   formLabel: {
     color: "#383838",
-    fontFamily: mixins.themes.fontNormal.fontFamily,
+    ...mixins.themes.fontSemiBold,
     fontSize: 14,
-    fontWeight: "600",
     lineHeight: 20
   },
   formInput: {
-    fontFamily: mixins.themes.fontNormal.fontFamily,
+    ...mixins.themes.fontSemiBold,
     fontSize: 14,
-    fontWeight: "600",
     paddingLeft: 16
   },
   formInputTripName: {
@@ -242,10 +240,9 @@ const styles = StyleSheet.create<Style>({
     backgroundColor: NBColor.brandPrimary
   },
   buttonTitle: {
-    fontFamily: mixins.themes.fontNormal.fontFamily,
+    ...mixins.themes.fontSemiBold,
     textTransform: "capitalize",
     fontSize: 17,
-    fontWeight: "600",
     lineHeight: 22
   },
   buttonTitleDisabled: {
