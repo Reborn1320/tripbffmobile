@@ -6,6 +6,7 @@ import * as RNa from "react-navigation";
 import { isLoggedIn } from "../../store/User/operations";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import NBColor from "../../theme/variables/commonColor.js";
+import { mixins } from "../../_utils";
 
 export interface Props {
   navigation: RNa.NavigationScreenProp<any, any>;
@@ -75,10 +76,12 @@ interface Style {
     firstAppName: {
         fontSize: 40,
         color: "black",
+        ...mixins.themes.fontBold
     },
     secondAppName: {
         fontSize: 40,
         color: NBColor.brandPrimary,
+        ...mixins.themes.fontBold
     }
   })
   

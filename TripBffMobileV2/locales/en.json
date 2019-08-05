@@ -19,6 +19,11 @@
         "add_location": "Click to add location(s)",
         "add_image": "Click to add image(s)"
     },
+    "login": {
+        "welcome_title": "Welcome to TripBFF.",
+        "facebook_button_title": "Continue with Facebook",
+        "no_login_button_title": "Continue without login"
+    },
     "create": {
         "screen_header_title": "Create new trip",
         "screen_header_edit_title": "Edit trip",

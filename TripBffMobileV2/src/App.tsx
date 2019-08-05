@@ -146,25 +146,25 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
   let iconName;
 
   if (routeName === 'Create') {
-    iconName = 'plus';
+    iconName = 'md-add';
   } else if (routeName === 'Me') {
-    iconName = 'user';
+    iconName = 'md-contact';
   }
 
-  return <Icon name={iconName}  style={{ fontSize: 20, color: tintColor }} type="FontAwesome5" />;
+  return <Icon name={iconName}  style={{ fontSize: 30, color: tintColor, paddingHorizontal: 5 }} type="Ionicons" />;
 };
 
 const TabNavigator = createBottomTabNavigator({
   "Create": {
     screen: TripCreationNavigator,
     navigationOptions: {
-      tabBarLabel: getLabel("menu.create")
+      tabBarLabel: getLabel("menu.create").toUpperCase()  
     }
   },
   "Me": {
     screen: ProfileNavigator,
     navigationOptions: {
-      tabBarLabel: getLabel("menu.profile")
+      tabBarLabel: getLabel("menu.profile").toUpperCase()  
     }
   }
 },
@@ -177,7 +177,14 @@ const TabNavigator = createBottomTabNavigator({
     activeTintColor: NBTheme.brandPrimary,
     inactiveTintColor: 'gray',
     labelStyle: {
-      fontSize: 12,
+      fontSize: 10,
+      ...mixins.themes.fontSemiBold,
+      lineHeight: 13,
+      fontStyle: "normal",
+      marginBottom: 12
+    },
+    tabStyle: {
+      height: 57
     }
   },
 });
