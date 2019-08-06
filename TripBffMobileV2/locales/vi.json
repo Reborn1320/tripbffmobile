@@ -69,7 +69,8 @@
         "description_view_more": "Xem thêm",
         "description_view_less": "Thu gọn",
         "media_section_label": "Hình ảnh",
-        "image_uploading_message": "Đang tải lên hình ảnh. Xin vui lòng chờ!"
+        "image_uploading_message": "Đang tải lên hình ảnh. Xin vui lòng chờ!",
+        "update_address_title": "Chỉnh sửa địa điểm"
     },
     "export": {
         "infographic_tab_label": "infographic",

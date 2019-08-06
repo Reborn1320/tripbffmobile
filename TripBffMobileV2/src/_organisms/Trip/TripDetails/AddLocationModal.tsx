@@ -112,7 +112,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
     let displayDate = date ? date.format(DATE_FORMAT) + " - " : "";
 
     var contentElement = (
-      <View>
+      <View style={styles.container}>
         <View style={styles.timeContainer}>
             <TouchableOpacity onPress={this._showDateTimePicker} style={styles.timeLabelContainer}>
               <Image    
@@ -155,7 +155,8 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
   }
 }
 
-interface Style {  
+interface Style { 
+  container: ViewStyle; 
   timeContainer: ViewStyle;
   timeLabelContainer: ViewStyle;
   timeLabel: TextStyle;
@@ -171,6 +172,9 @@ interface Style {
 }
 
 const styles = StyleSheet.create<Style>({  
+  container: {
+    marginTop: 16
+  },
   listViewContainer: {
     flexDirection: 'column',
     justifyContent: 'space-around',

@@ -274,7 +274,8 @@ interface Style {
 
 const styles = StyleSheet.create<Style>({  
   feelingContainer: {
-    flex: 1
+    flex: 1,
+    marginTop: 16
   },
   feelingPreDefinedContainer: {
     flex: 1

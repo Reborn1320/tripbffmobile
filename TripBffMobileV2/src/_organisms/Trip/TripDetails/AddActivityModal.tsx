@@ -286,7 +286,8 @@ interface Style {
 
 const styles = StyleSheet.create<Style>({  
   activityContainer: {
-    flex: 1
+    flex: 1,
+    marginTop: 16
   },
   activityPreDefinedContainer: {
     flex: 1
