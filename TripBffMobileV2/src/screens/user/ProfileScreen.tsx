@@ -143,23 +143,27 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         const { isLoaded } = this.state;
 
         return (
-            <View style={{flex: 1}}>
-                <UserDetails 
-                    onClickEdit={this.handleEditBtnClick}
-                />
-                {isLoaded && <Loading message={this.state.loadingMessage} />}
-                <TripsComponent
-                    handleClick={this._handleTripItemClick}
-                    handleShareClick={this._handleShareBtnClick}
-                    handleDeleteTrip={this._handleDeleteTrip}
-                    handleCreateClick={this._handleCreateBtnClick}
-                />
-                <ConfirmationModal title={getLabel("profile.delete_trip_modal_header")}
-                    content={getLabel("profile.delete_trip_modal_content")}
-                    confirmHandler={this._confirmDeleteTrip}
-                    cancelHandler={this._cancelDeleteModal}
-                    isVisible={this.state.isOpenDeleteConfirmModal} />
-            </View>
+            <Container>
+                <Content>
+                    <View style={{flex: 1}}>
+                        <UserDetails 
+                            onClickEdit={this.handleEditBtnClick}
+                        />
+                        {isLoaded && <Loading message={this.state.loadingMessage} />}
+                        <TripsComponent
+                            handleClick={this._handleTripItemClick}
+                            handleShareClick={this._handleShareBtnClick}
+                            handleDeleteTrip={this._handleDeleteTrip}
+                            handleCreateClick={this._handleCreateBtnClick}
+                        />
+                        <ConfirmationModal title={getLabel("profile.delete_trip_modal_header")}
+                            content={getLabel("profile.delete_trip_modal_content")}
+                            confirmHandler={this._confirmDeleteTrip}
+                            cancelHandler={this._cancelDeleteModal}
+                            isVisible={this.state.isOpenDeleteConfirmModal} />
+                    </View>
+                </Content>
+            </Container>            
         );
     }
 }
