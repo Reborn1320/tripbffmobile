@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import _, { } from "lodash";
 import { mixins } from "../../_utils";
-import { Container } from "native-base";
+import { Container, View } from "native-base";
 import CameraRollPicker from "./index";
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+import NBTheme from "../../theme/variables/material.js";
+import { SelectedTileOverlay } from "./SelectedTileOverlay";
 
 interface IMapDispatchToProps {
 }
@@ -15,16 +17,25 @@ export interface Props extends IMapDispatchToProps {
 interface State {
   num: number,
   selectedImages: Array<any>,
+  imageWidth: number,
 }
 
 export default class CameraRollPickerDoc extends Component<Props, State> {
 
+  private imageWidth: number;
+
   constructor(props: Props) {
     super(props)
+
+    let { width } = Dimensions.get('window');
+    console.log(width);
+    const imageMargin = 1;
+    const imagesPerRow = 3;
 
     this.state = {
       num: 0,
       selectedImages: [],
+      imageWidth: (width - (imagesPerRow + 1) * imageMargin) / imagesPerRow
     }
   }
 
@@ -43,7 +54,8 @@ export default class CameraRollPickerDoc extends Component<Props, State> {
       <Container>
         <CameraRollPicker
           selected={this.state.selectedImages}
-          selectedMarker={(<Icon name="check-circle" style={styles.marker} />)}
+          imageMargin={1}
+          selectedMarker={(<SelectedTileOverlay width={this.state.imageWidth} />)}
           callback={this._pickImage} />
       </Container>
     );
@@ -63,7 +75,8 @@ const styles = StyleSheet.create<Style>({
     backgroundColor: 'transparent',
     fontSize: 25,
     height: 27,
-    color: "green"
+    color: "green",
+    // ...mixins.centering,
   },
 })
   
