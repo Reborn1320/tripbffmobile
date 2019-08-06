@@ -7,6 +7,7 @@ import { isLoggedIn } from "../../store/User/operations";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import NBColor from "../../theme/variables/commonColor.js";
 import { mixins } from "../../_utils";
+import SplashScreen from 'react-native-splash-screen';
 
 export interface Props {
   navigation: RNa.NavigationScreenProp<any, any>;
@@ -30,6 +31,8 @@ class LandingPageComponent extends Component<Props & IMapDispatchToProps, any> {
             else {
                 this.props.navigation.navigate(NavigationConstants.Screens.Login);
             }
+
+            SplashScreen.hide();
         })
     }, 500);    
   }  
@@ -40,15 +43,7 @@ class LandingPageComponent extends Component<Props & IMapDispatchToProps, any> {
 
   render() {    
     return (
-      <Container>
-        <Content
-          contentContainerStyle={styles.contentContainer}>
-          <View style={styles.appNameContainer}>   
-              <Text style={styles.firstAppName}>Trip</Text>    
-              <Text style={styles.secondAppName}>BFF</Text>  
-          </View>
-        </Content>
-      </Container>
+      <View></View>
     );
   }
 }
