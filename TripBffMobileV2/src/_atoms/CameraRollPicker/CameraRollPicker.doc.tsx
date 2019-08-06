@@ -1,41 +1,30 @@
 import React, { Component } from "react";
-import _, { } from "lodash";
-import { mixins } from "../../_utils";
 import { Container, View } from "native-base";
-import CameraRollPicker from "./index";
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import { StyleSheet, Dimensions } from "react-native";
-import NBTheme from "../../theme/variables/material.js";
-import { SelectedTileOverlay } from "./SelectedTileOverlay";
+import StyledCameraRollPicker from "./StyledCameraRollPicker";
+import { mixins } from "../../_utils";
+import Footer2Buttons from "../Footer2Buttons";
 
-interface IMapDispatchToProps {
-}
-
-export interface Props extends IMapDispatchToProps {
+export interface Props {
 }
 
 interface State {
   num: number,
   selectedImages: Array<any>,
-  imageWidth: number,
+  containerWidth: number,
 }
 
 export default class CameraRollPickerDoc extends Component<Props, State> {
-
-  private imageWidth: number;
 
   constructor(props: Props) {
     super(props)
 
     let { width } = Dimensions.get('window');
-    console.log(width);
-    const imageMargin = 1;
-    const imagesPerRow = 3;
 
     this.state = {
       num: 0,
       selectedImages: [],
-      imageWidth: (width - (imagesPerRow + 1) * imageMargin) / imagesPerRow
+      containerWidth: width - 10 * 2
     }
   }
 
@@ -52,32 +41,20 @@ export default class CameraRollPickerDoc extends Component<Props, State> {
   render() {
     return (
       <Container>
-        <CameraRollPicker
-          selected={this.state.selectedImages}
-          imageMargin={1}
-          selectedMarker={(<SelectedTileOverlay width={this.state.imageWidth} />)}
-          callback={this._pickImage} />
+        <View style={{ ...mixins.centering, flex: 1 }}>
+          <StyledCameraRollPicker
+            containerWidth={this.state.containerWidth}
+            selected={this.state.selectedImages}
+            callback={this._pickImage} />
+        </View>
+        <Footer2Buttons
+          onCancel={() => {}}
+          onAction={() => {}}
+          cancelText="action.cancel"
+          actionText="action.delete"
+          primary
+        />
       </Container>
     );
   }
 }
-
-
-interface Style {
-  marker: any;
-}
-
-const styles = StyleSheet.create<Style>({
-  marker: {
-    position: 'absolute',
-    top: 5,
-    right: 5,
-    backgroundColor: 'transparent',
-    fontSize: 25,
-    height: 27,
-    color: "green",
-    // ...mixins.centering,
-  },
-})
-  
-

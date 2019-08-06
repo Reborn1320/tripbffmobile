@@ -20,23 +20,22 @@ export class SelectedTileOverlay extends React.Component<Props, State> {
   }
 
   render() {
-      const { width } = this.props;
-      console.log("w", width);
-      return (
-        <View style={{ position: "absolute", width, height: width, top: 0, left: 0 }}>
-      <View
-        style={{
-          width, height: width,
-          position: "relative",
-        }}
-      >
-        <View style={Object.assign({ width, height: width }, styles.overlay)}>
+    const { width } = this.props;
+    return (
+      <View style={{ position: "absolute", width, height: width, top: 0, left: 0 }}>
+        <View
+          style={{
+            width, height: width,
+            position: "relative",
+          }}
+        >
+          <View style={Object.assign({ width, height: width }, styles.overlay)}>
+          </View>
+          <View style={Object.assign({ width, height: width, position: "absolute", ...mixins.centering })}>
+            <View style={{ position: "absolute", width: 19, height: 19, backgroundColor: "white", borderRadius: 99 }} />
+            <Icon style={styles.checkIcon} solid type="FontAwesome5" name="check-circle" />
+          </View>
         </View>
-        <View style={Object.assign({ width, height: width, position: "absolute", ...mixins.centering })}>
-          <View style={{ position: "absolute", width: 19, height: 19, backgroundColor: "white", borderRadius: 99 }} />
-          <Icon style={styles.checkIcon} solid type="FontAwesome5" name="check-circle" />
-        </View>
-      </View>
       </View>
     );
   }
@@ -52,6 +51,8 @@ const styles = StyleSheet.create<Style>({
   overlay: {
     flex: 1,
     position: 'absolute',
+    top: 0,
+    left: 0,
     backgroundColor: "black",
     opacity: 0.35
   },
