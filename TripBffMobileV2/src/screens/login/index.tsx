@@ -64,7 +64,12 @@ class Login extends Component<Props & IMapDispatchToProps, any>{
 
   render() {
     return (
-      <ImageBackground source={require('../../../assets/04.jpg')} style={styles.imageBackground}>
+      <View>
+          <ImageBackground source={require('../../../assets/03.jpg')} style={styles.imageBackground}>              
+          </ImageBackground>
+
+          <View style={[styles.overlay]} />
+          
           <View style={styles.loginContainer}>
             <View style={styles.welcomeContainer}>
               <Text style={styles.welcomeTitle}>{getLabel("login.welcome_title")}</Text>
@@ -85,9 +90,7 @@ class Login extends Component<Props & IMapDispatchToProps, any>{
               </Button>
             </View>
         </View>
-      </ImageBackground>
-
-         
+      </View>      
     );
   }
 }
@@ -102,6 +105,7 @@ interface Style {
   facebookIcon: TextStyle;
   noLoginButton: ViewStyle;
   buttonTitle: TextStyle;
+  overlay: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -110,18 +114,23 @@ const styles = StyleSheet.create<Style>({
     height: '100%'
   },
   loginContainer: {
-    flex: 1
+    flex: 1,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: '100%',
+    height: '100%'
   },
   welcomeContainer: {
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: "center",
     alignItems: "center"
   },
   welcomeTitle: {
     color: "white",
     textAlign: 'center',
     ...mixins.themes.fontNormal,
-    fontSize: 30
+    fontSize: 44
   },
   buttonsContainer: {
     justifyContent: 'center',
@@ -146,7 +155,17 @@ const styles = StyleSheet.create<Style>({
   },
   buttonTitle: {
     ...mixins.themes.fontNormal
-  }
+  },
+  overlay: {
+    flex: 1,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    opacity: 0.2,
+    backgroundColor: 'black',
+    width: "100%",
+    height: "100%"
+  }  
 })
 
 const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
