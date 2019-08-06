@@ -18,6 +18,7 @@ import { getLabel } from "../../../../i18n";
 import { mixins } from "../../../_utils";
 import NBColor from "../../../theme/variables/material.js";
 import { DATE_FORMAT } from "../../../screens/_services/SystemConstants";
+import ActionModal from "../../../_molecules/ActionModal";
 
 export interface Props {
   isVisible: boolean;
@@ -91,7 +92,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
     this._hideDateTimePicker();
   };
 
-  onModalHide() {
+  private _onModalHide = () => {
     this.setState({
       places: [],
       query: ''
@@ -110,62 +111,51 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
     const { isVisible, date } = this.props;
     let displayDate = date ? date.format(DATE_FORMAT) + " - " : "";
 
+    var contentElement = (
+      <View>
+        <View style={styles.timeContainer}>
+            <TouchableOpacity onPress={this._showDateTimePicker} style={styles.timeLabelContainer}>
+              <Image    
+                style={styles.clockIcon}                  
+                source={require('../../../../assets/ClockIcon.png')}
+              />
+              <Text style={styles.timeLabel}>{getLabel("trip_detail.add_location_from_time_label")}:
+              </Text>
+              <Text style={styles.time}>
+                  {this.state.displayTime}
+              </Text>
+            </TouchableOpacity>
+            <DateTimePicker
+              mode="time"
+              is24Hour={false}
+              isVisible={this.state.isDateTimePickerVisible}
+              onConfirm={this._handleDatePicked}
+              onCancel={this._hideDateTimePicker}
+            />
+        </View>
+        <View style={styles.placesContainer}>
+            <SearchLocation 
+              confirmHandler={this._selectedLocationHandler}>
+            </SearchLocation>
+        </View>
+      </View>
+    );
+
     return (
-        <RNModal style={styles.modal} 
-            isVisible={isVisible} hideModalContentWhileAnimating 
-            onModalHide={() => this.onModalHide()}>
-            <View style={styles.modalInnerContainer}>
-                <View style={styles.buttons}>
-                    <TouchableOpacity onPress={this._onCancel} style={styles.cancelButtonContainer}>
-                        <Icon name="md-close" type="Ionicons" style={styles.cancelButtonIcon}></Icon>
-                    </TouchableOpacity>
-                    <Text style={styles.title}
-                        >{displayDate + getLabel("trip_detail.add_location_modal_title")}
-                    </Text>
-                    <TouchableOpacity onPress={this._onConfirm} style={styles.saveButtonContainer}>
-                        <Icon name="md-checkmark" type="Ionicons" style={styles.saveButtonIcon}></Icon>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.timeContainer}>
-                  <TouchableOpacity onPress={this._showDateTimePicker} style={styles.timeLabelContainer}>
-                    <Image    
-                      style={styles.clockIcon}                  
-                      source={require('../../../../assets/ClockIcon.png')}
-                    />
-                    <Text style={styles.timeLabel}>{getLabel("trip_detail.add_location_from_time_label")}:
-                    </Text>
-                    <Text style={styles.time}>
-                       {this.state.displayTime}
-                    </Text>
-                  </TouchableOpacity>
-                  <DateTimePicker
-                    mode="time"
-                    is24Hour={false}
-                    isVisible={this.state.isDateTimePickerVisible}
-                    onConfirm={this._handleDatePicked}
-                    onCancel={this._hideDateTimePicker}
-                  />
-                </View>
-                <View style={styles.placesContainer}>
-                  <SearchLocation 
-                    confirmHandler={this._selectedLocationHandler}>
-                  </SearchLocation>
-              </View>
-            </View>
-        </RNModal>
+        <ActionModal
+          title={displayDate + getLabel("trip_detail.add_location_modal_title")}
+          isVisible={isVisible}
+          onModalHideHandler={this._onModalHide}
+          onCancelHandler={this._onCancel}
+          onConfirmHandler={this._onConfirm}
+          >
+          {contentElement}
+        </ActionModal>
     );
   }
 }
 
-interface Style {
-  modal: ViewStyle,
-  buttons: ViewStyle;
-  cancelButtonContainer: ViewStyle;
-  cancelButtonIcon: TextStyle;
-  title: TextStyle;
-  saveButtonContainer: ViewStyle;
-  saveButtonIcon: TextStyle;
-  modalInnerContainer: ViewStyle;
+interface Style {  
   timeContainer: ViewStyle;
   timeLabelContainer: ViewStyle;
   timeLabel: TextStyle;
@@ -180,48 +170,7 @@ interface Style {
   addressText: TextStyle;
 }
 
-const styles = StyleSheet.create<Style>({
-  modal: {
-    flex: 1,
-    margin: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white"
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    height: 56,
-    marginBottom: 12
-  },
-  cancelButtonContainer: {
-    marginTop: 15,
-    marginLeft: 20
-  },
-  cancelButtonIcon: {
-    fontSize: 26
-  },
-  title: {
-    marginTop: 15,
-    marginLeft: 20,
-    color: NBColor.brandPrimary,
-    fontSize: 18,
-    fontStyle: "normal",
-    fontFamily: mixins.themes.fontBold.fontFamily
-  },
-  saveButtonContainer:{
-    marginTop: 15,
-    marginRight: 20
-  },
-  saveButtonIcon: {
-    fontSize: 26,
-    color: NBColor.brandPrimary
-  },
-  modalInnerContainer: {
-    flex: 1,
-    width: "100%",
-    height: "100%"
-  },
+const styles = StyleSheet.create<Style>({  
   listViewContainer: {
     flexDirection: 'column',
     justifyContent: 'space-around',

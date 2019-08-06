@@ -14,6 +14,7 @@ import uuid4 from 'uuid/v4';
 import NBColor from "../../../theme/variables/material.js";
 import { mixins } from "../../../_utils";
 import SearchBarComponent from "../../../_atoms/SearchBarComponent";
+import ActionModal from "../../../_molecules/ActionModal";
 
 class SelectedActivityItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -256,39 +257,19 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
           : <ActivityIndicator size="small" color="#00ff00" />
           
     return (
-        <RNModal style={styles.modal} 
-            onModalShow={this._onModalShow}
-            isVisible={isVisible} hideModalContentWhileAnimating>
-            <View style={styles.modalInnerContainer}>
-                <View style={styles.buttons}>
-                  <TouchableOpacity onPress={this._onCancel} style={styles.cancelButtonContainer}>
-                      <Icon name="md-close" type="Ionicons" style={styles.cancelButtonIcon}></Icon>
-                  </TouchableOpacity>
-                  <Text style={styles.title}
-                      >{getLabel("trip_detail.activity_modal_title")}
-                  </Text>
-                  <TouchableOpacity onPress={this._onSave} style={styles.saveButtonContainer}>
-                      <Icon name="md-checkmark" type="Ionicons" style={styles.saveButtonIcon}></Icon>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.activityContainer}>
-                  {contentElement}
-                </View>                
-            </View>
-        </RNModal>
+        <ActionModal
+          title={getLabel("trip_detail.activity_modal_title")}
+          isVisible={isVisible}
+          onModalShowHandler={this._onModalShow}
+          onCancelHandler={this._onCancel}
+          onConfirmHandler={this._onSave}>
+            {contentElement}
+        </ActionModal>        
     );
   }
 }
 
-interface Style {
-  modal: ViewStyle,
-  buttons: ViewStyle;
-  cancelButtonContainer: ViewStyle;
-  cancelButtonIcon: TextStyle;
-  title: TextStyle;
-  saveButtonContainer: ViewStyle;
-  saveButtonIcon: TextStyle;
-  modalInnerContainer: ViewStyle;
+interface Style { 
   activityContainer: ViewStyle;
   activityItemContainer: ViewStyle;
   firstActivityItemContainer: ViewStyle;
@@ -303,48 +284,7 @@ interface Style {
   iconRemoved: TextStyle;
 }
 
-const styles = StyleSheet.create<Style>({
-  modal: {
-    flex: 1,
-    margin: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white"
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    height: 56,
-    marginBottom: 12,
-  },
-  cancelButtonContainer: {
-    marginTop: 15,
-    marginLeft: 20
-  },
-  cancelButtonIcon: {
-    fontSize: 26
-  },
-  title: {
-    marginTop: 15,
-    marginLeft: 20,
-    color: NBColor.brandPrimary,
-    fontSize: 18,
-    fontStyle: "normal",
-    fontFamily: mixins.themes.fontBold.fontFamily
-  },
-  saveButtonContainer:{
-    marginTop: 15,
-    marginRight: 20
-  },
-  saveButtonIcon: {
-    fontSize: 26,
-    color: NBColor.brandPrimary
-  },
-  modalInnerContainer: {
-    flex: 1,
-    width: "100%",
-    height: "100%"
-  },
+const styles = StyleSheet.create<Style>({  
   activityContainer: {
     flex: 1
   },
