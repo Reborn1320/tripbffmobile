@@ -88,6 +88,10 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         this.props.getCurrentMinimizedTrip(tripId);
     }
     
+    private _handleCreateBtnClick = () => {
+        this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
+    }
+
     private _handleTripItemClick = (tripId: string) => {
         this.props.navigation.navigate(
             NavigationConstants.Screens.TripEdit,
@@ -139,26 +143,23 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         const { isLoaded } = this.state;
 
         return (
-            <Container>
-                <Content>
-                    <View>
-                        <UserDetails 
-                            onClickEdit={this.handleEditBtnClick}
-                        />
-                        {isLoaded && <Loading message={this.state.loadingMessage} />}
-                        <TripsComponent
-                            handleClick={this._handleTripItemClick}
-                            handleShareClick={this._handleShareBtnClick}
-                            handleDeleteTrip={this._handleDeleteTrip}
-                        />
-                        <ConfirmationModal title={getLabel("profile.delete_trip_modal_header")}
-                            content={getLabel("profile.delete_trip_modal_content")}
-                            confirmHandler={this._confirmDeleteTrip}
-                            cancelHandler={this._cancelDeleteModal}
-                            isVisible={this.state.isOpenDeleteConfirmModal} />
-                    </View>
-                </Content>
-            </Container>
+            <View style={{flex: 1}}>
+                <UserDetails 
+                    onClickEdit={this.handleEditBtnClick}
+                />
+                {isLoaded && <Loading message={this.state.loadingMessage} />}
+                <TripsComponent
+                    handleClick={this._handleTripItemClick}
+                    handleShareClick={this._handleShareBtnClick}
+                    handleDeleteTrip={this._handleDeleteTrip}
+                    handleCreateClick={this._handleCreateBtnClick}
+                />
+                <ConfirmationModal title={getLabel("profile.delete_trip_modal_header")}
+                    content={getLabel("profile.delete_trip_modal_content")}
+                    confirmHandler={this._confirmDeleteTrip}
+                    cancelHandler={this._cancelDeleteModal}
+                    isVisible={this.state.isOpenDeleteConfirmModal} />
+            </View>
         );
     }
 }

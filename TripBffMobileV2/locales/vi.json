@@ -20,12 +20,12 @@
         "add_image": "Nhấp để thêm hình"
     },
     "login": {
-        "welcome_title": "Chào mừng bạn đến với TripBFF.",
+        "welcome_title": "Chào mừng bạn đến với TripBFF",
         "facebook_button_title": "Tiếp tục với Facebook",
         "no_login_button_title": "Tiếp tục không cần đăng nhập"
     },
     "create": {
-        "screen_header_title": "Tạo mới chuyến đi",
+        "screen_header_title": "Tạo chuyến đi",
         "screen_header_edit_title": "Chỉnh sửa chuyến đi",
         "trip_name": "Tên chuyến đi",
         "from_date": "Ngày khởi hành",
@@ -81,6 +81,9 @@
         "trips_label": "Chuyến đi",
         "delete_trip_menu": "Xóa chuyến đi",
         "delete_trip_modal_header": "Xóa chuyến đi",
-        "delete_trip_modal_content": "Bạn có chắc là bạn muốn xóa chuyến đi này ? Xóa chuyến đi sẽ xóa tất cả những dữ liệu mà bạn đã thêm vào. Chuyến đi sẽ không thể truy cập nếu nó bị xóa."
+        "delete_trip_modal_content": "Bạn có chắc là bạn muốn xóa chuyến đi này ? Xóa chuyến đi sẽ xóa tất cả những dữ liệu mà bạn đã thêm vào. Chuyến đi sẽ không thể truy cập nếu nó bị xóa.",
+        "empty_trips_first_title": "Bạn đã trải qua những chuyến đi tuyệt vời nào ?",
+        "empty_trips_second_title": "Hãy lưu trữ và chia sẻ chúng nào",
+        "emptry_trips_button_title": "Bắt đầu"
     }       
 }
