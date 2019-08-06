@@ -81,7 +81,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
             this.props.addTrips(trips);
             this.setState({
                 isLoaded: false,
-                isEmptyTrips: trips && trips.length == 0,
+                isEmptyTrips: !trips || trips.length == 0,
                 loadingMessage: "",
                 UIState: "NORMAL",
             });
