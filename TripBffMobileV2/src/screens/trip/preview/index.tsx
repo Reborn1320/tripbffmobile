@@ -332,9 +332,8 @@ class InfographicPreview extends React.PureComponent<Props, State> {
 
   render() {
       return (
-        <Container>
-          <Content>
-            <View>             
+        <View style={styles.container}>
+            <View style={styles.tabViewContainer}>             
                   <TabView
                     navigationState={this.state}
                     renderTabBar={this._renderTabBar}
@@ -381,8 +380,8 @@ class InfographicPreview extends React.PureComponent<Props, State> {
                   <Loading message={'loading'}/> 
                 </View>
             }           
-          </Content>    
-          <ActionButton
+  
+              <ActionButton
                   buttonColor={'#3D5A96'}
                   position="center"
                   onPress={this._sharePhotoWithShareDialog}
@@ -393,7 +392,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
                   }
                   >                    
               </ActionButton>        
-        </Container>
+        </View>
       );
     }
 }  
@@ -443,6 +442,12 @@ const InfographicPreviewScreen = connect(
 export default InfographicPreviewScreen;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  tabViewContainer: {
+    flex: 1
+  },
   actionButtonIcon: {
     fontSize: 28,
     height: 22,

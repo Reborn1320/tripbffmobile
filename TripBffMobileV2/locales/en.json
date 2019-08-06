@@ -84,6 +84,7 @@
         "delete_trip_modal_content": "Are you sure you want to delete this Trip ? Deleting a Trip will delete all the items you have added to it. The Trip cannot be retrived once it is deleted.",
         "empty_trips_first_title": "What were your past amazing adventures ?",
         "empty_trips_second_title": "Let's record and share them",
-        "emptry_trips_button_title": "Start"
+        "emptry_trips_button_title": "Start",
+        "loading_trips_message": "Loading trips"
     }       
 }

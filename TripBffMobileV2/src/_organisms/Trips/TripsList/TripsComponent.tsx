@@ -4,7 +4,6 @@ import _ from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import  TripCarousel from "../../../_molecules/TripCarousel/TripCarousel";
 import { connect } from "react-redux";
-import TripsEmptyComponent from "./TripsEmptyComponent";
 
 export interface IStateProps {
 }
@@ -17,7 +16,6 @@ export interface Props extends IMapDispatchToProps {
   trips: StoreData.MinimizedTripVM[];
   handleShareClick: (tripId: string) => void;
   handleDeleteTrip: (tripId:string) => void;
-  handleCreateClick: () => void;
 }
 
 interface State {
@@ -46,8 +44,7 @@ export class TripsContentComponent extends PureComponent<Props & IStateProps, St
     return (
       <View style={{flex: 1}}>
         {
-            trips && trips.length > 0 && trips.map((trip, index) => this._renderItem({ item: trip, index })) ||
-            <TripsEmptyComponent handleCreateClick={this.props.handleCreateClick}></TripsEmptyComponent>
+          trips.map((trip, index) => this._renderItem({ item: trip, index }))
         }
       </View>
     );

@@ -20,7 +20,6 @@ import {
 } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
 import { TRIPS_GET_CURRENT_MINIMIZED } from "./Trips/actions";
-import { State } from 'react-native-image-pan-zoom/built/image-zoom/image-zoom.type';
 
 const userInitState: StoreData.UserVM = {
     id: "",

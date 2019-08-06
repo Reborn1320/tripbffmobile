@@ -1,13 +1,9 @@
 import React, { PureComponent } from "react";
-import {  Image, Dimensions } from "react-native";
-import { View } from "native-base";
 import { tripApi  } from "../../_services/apis";
 var RNFS = require('react-native-fs');
 import _, { } from "lodash";
-import { calculateByPercentage } from "../../../_function/commonFunc";
-import ImageZoom from 'react-native-image-pan-zoom';
 import { getCancelToken } from "../../../_function/commonFunc";
-import { runPromiseSeries, deleteFilesInFolder } from "../../../_function/commonFunc";
+import Gallery from 'react-native-image-gallery';
 
 export default class PreviewInfographicComponent extends PureComponent<any, any> {
 
@@ -79,35 +75,14 @@ export default class PreviewInfographicComponent extends PureComponent<any, any>
         });
     }
 
-    render() {
-      let { width, height } = Dimensions.get('window');
-      let infoHeight = width < height ? calculateByPercentage(height, 90) : calculateByPercentage(height, 98);
-      let barHeight = width < height ? calculateByPercentage(height, 10) : calculateByPercentage(height, 2);
-        
-      return (
-          <View style={{                        
-            width: width,
-            height: infoHeight }}>
-            <ImageZoom cropWidth={Dimensions.get('window').width}
-                       cropHeight={Dimensions.get('window').height}
-                       imageWidth={width}
-                       imageHeight={infoHeight}>
-                <Image
-                  source={{
-                    uri: this.state.imageUri             
-                  }}
-                  resizeMode='contain'
-                  style= {{
-                    position: 'absolute',
-                    top: -barHeight,
-                    left: 0,
-                    right: 0,
-                    width: width,
-                    height: infoHeight}}
-                />  
-            </ImageZoom>
-              
-          </View>
+    render() {        
+      return (           
+         <Gallery
+            flatListProps={{showsHorizontalScrollIndicator: false}}
+            style={{ flex: 1}}
+            initialPage={0}
+            images={[{source: { uri: this.state.imageUri }}]}
+        /> 
       );
     }
   }

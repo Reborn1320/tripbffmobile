@@ -11,6 +11,7 @@ import { logOut } from "../../store/User/operations";
 import { getCancelToken } from "../../_function/commonFunc";
 import ConfirmationModal from "../../_molecules/ConfirmationModal";
 import { getLabel } from "../../../i18n";
+import TripsEmptyComponent from "../../_organisms/Trips/TripsList/TripsEmptyComponent";
 
 export interface IStateProps { }
 
@@ -34,6 +35,7 @@ interface State {
     isLoaded: boolean;
     loadingMessage: string;
     UIState: UIState;
+    isEmptyTrips: boolean;
     isOpenDeleteConfirmModal: boolean,
     deletedTripId: string
 }
@@ -49,9 +51,10 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         super(props);
 
         this.state = {
-            isLoaded: false,
-            loadingMessage: "loading trips belong to this user",
+            isLoaded: true,
+            loadingMessage: getLabel("profile.loading_trips_message"),
             UIState: "LOADING_TRIP",
+            isEmptyTrips: false,
             isOpenDeleteConfirmModal: false,
             deletedTripId: ""
         };
@@ -78,6 +81,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
             this.props.addTrips(trips);
             this.setState({
                 isLoaded: false,
+                isEmptyTrips: trips && trips.length == 0,
                 loadingMessage: "",
                 UIState: "NORMAL",
             });
@@ -140,7 +144,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     }
 
     render() {
-        const { isLoaded } = this.state;
+        const { isLoaded, isEmptyTrips } = this.state;
 
         return (
             <Container>
@@ -150,12 +154,18 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                             onClickEdit={this.handleEditBtnClick}
                         />
                         {isLoaded && <Loading message={this.state.loadingMessage} />}
-                        <TripsComponent
-                            handleClick={this._handleTripItemClick}
-                            handleShareClick={this._handleShareBtnClick}
-                            handleDeleteTrip={this._handleDeleteTrip}
-                            handleCreateClick={this._handleCreateBtnClick}
-                        />
+                        {
+                            !isLoaded && isEmptyTrips &&
+                            <TripsEmptyComponent handleCreateClick={this._handleCreateBtnClick}></TripsEmptyComponent>
+                        }
+                        {
+                            !isEmptyTrips && 
+                            <TripsComponent
+                                handleClick={this._handleTripItemClick}
+                                handleShareClick={this._handleShareBtnClick}
+                                handleDeleteTrip={this._handleDeleteTrip}
+                            />
+                        }
                         <ConfirmationModal title={getLabel("profile.delete_trip_modal_header")}
                             content={getLabel("profile.delete_trip_modal_content")}
                             confirmHandler={this._confirmDeleteTrip}
