@@ -54,6 +54,7 @@ const styles = StyleSheet.create<Style>({
     container: {
         marginBottom: 15,
         flexDirection: "row",
+        justifyContent: "space-between",
         alignItems: "stretch",
     },
     mapIcon: {
@@ -65,7 +66,7 @@ const styles = StyleSheet.create<Style>({
     },
     nameContainer: {
         flexGrow: 1,
-        maxWidth: "87%"
+        maxWidth: "88%"
     },
     nameText: {
         //flexGrow: 1
