@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import { getLabel } from "../../../i18n";
 import { mixins } from "../../_utils";
 import NBColor from "../../theme/variables/commonColor.js";
+import { GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 
 export interface IStateProps {
 }
@@ -20,6 +21,7 @@ export interface Props extends IMapDispatchToProps {
   fullName: string;
 
   nTrips: number;
+  facebookId: string;
 
   onClickEdit: () => void;
 }
@@ -41,7 +43,7 @@ export class UserDetailsComponent extends PureComponent<Props & IStateProps, Sta
             <Avatar
               size="large"
               rounded
-              source={{ uri: "http://placekitten.com/250/250" }}
+              source={{ uri: "http://graph.facebook.com/" + this.props.facebookId + "/picture?type=normal" }}
               >
             </Avatar>
           </View>
@@ -67,7 +69,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   return {
     userName: storeState.user.username,
     fullName: storeState.user.fullName,
-    nTrips: storeState.trips.length
+    nTrips: storeState.trips.length,
+    facebookId: storeState.user.facebook ? storeState.user.facebook.id : ""
   };
 };
 

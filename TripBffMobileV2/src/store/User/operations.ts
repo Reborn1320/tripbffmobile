@@ -61,7 +61,8 @@ export function loginUsingFacebookAccessToken(facebookUserId: string, accessToke
           email: userName,
           token: token,
           facebook: {
-            accessToken
+            accessToken,
+            id: facebookUserId
           }
         };
 
