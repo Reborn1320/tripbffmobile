@@ -1,12 +1,14 @@
 import * as React from "react";
-import { View, Text, Button } from "native-base";
-import { StyleSheet, ViewStyle, Image, ImageStyle } from "react-native";
+import { View, Text } from "native-base";
+import { StyleSheet, ViewStyle, Dimensions } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
-import CameraRollPicker from 'react-native-camera-roll-picker';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+// import CameraRollPicker from 'react-native-camera-roll-picker';
 import Loading from "./Loading/Loading";
 import { getLabel } from "../../i18n";
+import StyledCameraRollPicker from "./CameraRollPicker/StyledCameraRollPicker";
+import Footer2Buttons from "./Footer2Buttons";
+import { mixins } from "../_utils";
 
 export interface Props {
   isVisible: boolean;
@@ -15,24 +17,28 @@ export interface Props {
 }
 
 interface State {
-    num: number,
-    numUploaded: number,
-    numCount: number,
-    selectedImages: Array<any>,
-    isUploadingImages: boolean
+  num: number,
+  numUploaded: number,
+  numCount: number,
+  selectedImages: Array<any>,
+  isUploadingImages: boolean,
+  containerWidth: number;
 }
 
 class ImagePickerModalComponent extends React.PureComponent<Props, State> {
   constructor(props: Props) {
-    super(props);  
+    super(props);
+
+    let { width } = Dimensions.get('window');
     this.state = {
       num: 0,
       numUploaded: 0,
       numCount: 0,
       selectedImages: [],
-      isUploadingImages: false
+      isUploadingImages: false,
+      containerWidth: width - 10 * 2
     }
-  } 
+  }
 
   componentDidUpdate() {
     let { selectedImages, num, numUploaded, numCount, isUploadingImages } = this.state;
@@ -40,14 +46,14 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
     if (isUploadingImages) {
       if (num > numCount) {
         let selectedImage = selectedImages[numCount];
-  
+
         this.props.confirmHandler([selectedImage])
-        .then(numberImagesUploaded => {
+          .then(numberImagesUploaded => {
             this.setState({
-                numCount: numCount + 1,
-                numUploaded: numUploaded + numberImagesUploaded
-            });        
-         });
+              numCount: numCount + 1,
+              numUploaded: numUploaded + numberImagesUploaded
+            });
+          });
       }
       else {
         this.setState({
@@ -59,7 +65,7 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
         });
         this.props.cancelHandler();
       }
-    }    
+    }
   }
 
   private _onCancel = () => {
@@ -69,8 +75,8 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
   private _onSave = () => {
     this.setState({
       isUploadingImages: true
-     });  
-  }    
+    });
+  }
 
   private _pickImage = (images) => {
     var num = images.length;
@@ -83,38 +89,40 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
 
   render() {
     const { isVisible } = this.props;
-    const { num, numUploaded } = this.state;       
+    const { num, numUploaded } = this.state;
 
     return (
-        <RNModal style={styles.modal}            
-            isVisible={isVisible} hideModalContentWhileAnimating>
-            {this.state.isUploadingImages ? (
-                <View style={[styles.modalInnerContainer, styles.loading]}>
-                     <Loading message={getLabel("location_detail.image_uploading_message")} />
-                     <Text>{numUploaded + "/" + num}</Text>
-                </View>
-            ) : (
-                <View style={styles.modalInnerContainer}>
-                <View style={styles.buttons}>
-                        <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
-                        <Button transparent onPress={this._onSave}><Text>{getLabel("action.add")}</Text></Button>
-                    </View>
-                    <View style={styles.modalContentContainer}>
-                        <CameraRollPicker
-                            selected={this.state.selectedImages}
-                            selectedMarker={(<Icon name="check-circle" style={styles.marker} />)}
-                            callback={this._pickImage} />
-                    </View>     
+      <RNModal style={styles.modal}
+        isVisible={isVisible} hideModalContentWhileAnimating>
+        {this.state.isUploadingImages ? (
+          <View style={[styles.modalInnerContainer, styles.loading]}>
+            <Loading message={getLabel("location_detail.image_uploading_message")} />
+            <Text>{numUploaded + "/" + num}</Text>
+          </View>
+        ) : (
+            <View style={styles.modalInnerContainer}>
+              <View style={styles.modalContentContainer}>
+                <StyledCameraRollPicker
+                  containerWidth={this.state.containerWidth}
+                  selected={this.state.selectedImages}
+                  callback={this._pickImage} />
+              </View>
+              <Footer2Buttons
+                onCancel={this._onCancel}
+                onAction={this._onSave}
+                cancelText="action.cancel"
+                actionText="action.add"
+                primary
+              />
             </View>
-            )}
-        </RNModal>
+          )}
+      </RNModal>
     );
   }
 }
 
 interface Style {
   modal: ViewStyle,
-  buttons: ViewStyle;
   modalInnerContainer: ViewStyle;
   modalContentContainer: ViewStyle;
   marker: any;
@@ -129,17 +137,14 @@ const styles = StyleSheet.create<Style>({
     alignItems: "center",
     backgroundColor: "white"
   },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
   modalInnerContainer: {
     flex: 1,
     width: "100%",
     height: "100%"
   },
   modalContentContainer: {
-    flex: 1
+    flex: 1,
+    ...mixins.centering,
   },
   marker: {
     position: 'absolute',
@@ -155,8 +160,8 @@ const styles = StyleSheet.create<Style>({
     alignItems: "center"
   }
 })
-  
-const ImagePickerModal = 
-    connectStyle<typeof ImagePickerModalComponent>('NativeBase.Modal', styles)(ImagePickerModalComponent);
+
+const ImagePickerModal =
+  connectStyle<typeof ImagePickerModalComponent>('NativeBase.Modal', styles)(ImagePickerModalComponent);
 
 export default ImagePickerModal;
