@@ -95,7 +95,8 @@ export module StoreData {
 
         token: string,
         facebook?: {
-            accessToken
+            accessToken,
+            id: string
         }
         //TODO: expired time...
     }
