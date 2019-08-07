@@ -3,7 +3,7 @@ import { Text, Icon } from "native-base";
 import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../store/Interfaces";
-import { View, ViewStyle, StyleSheet, TextStyle } from "react-native";
+import { View, ViewStyle, StyleSheet, TextStyle, TouchableOpacity } from "react-native";
 import { mixins } from "../../_utils";
 
 interface IMapDispatchToProps {
@@ -26,14 +26,18 @@ export default class LocationName extends React.PureComponent<Props, State> {
     }
 
     render() {
-        return (
-            <View style={styles.container}>
-                <Icon style={styles.mapIcon} name="map-marker-alt" type="FontAwesome5" />
-                <Text style={styles.nameText} onPress={this._openMapLocation}>
-                    {this.props.locationAddress}
-                </Text>
-                <Icon style={styles.editIcon} name="pencil-alt" type="FontAwesome5" />
-            </View>
+        return (   
+            <TouchableOpacity onPress={this._openMapLocation}>
+                <View style={styles.container}>                
+                    <Icon style={styles.mapIcon} name="map-marker-alt" type="FontAwesome5" />
+                    <View style={styles.nameContainer}>
+                        <Text numberOfLines={2} style={styles.nameText}>
+                            {this.props.locationAddress}
+                        </Text>
+                    </View>
+                    <Icon style={styles.editIcon} name="pencil-alt" type="FontAwesome5" />
+                </View>
+            </TouchableOpacity>         
         );
     }
 }
@@ -42,6 +46,7 @@ interface Style {
     container: ViewStyle;
     mapIcon: TextStyle;
     editIcon: TextStyle;
+    nameContainer: ViewStyle;
     nameText: TextStyle;
 }
 
@@ -58,7 +63,11 @@ const styles = StyleSheet.create<Style>({
     editIcon: {
         fontSize: 18
     },
+    nameContainer: {
+        flexGrow: 1,
+        maxWidth: "87%"
+    },
     nameText: {
-        flexGrow: 1
+        //flexGrow: 1
     }
 });

@@ -1,15 +1,19 @@
 import * as React from "react";
-import { View, Text, Button, Icon, Toast, Root } from "native-base";
-import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
-import RNModal from "react-native-modal";
+import { View, Text, Icon, Toast, Root } from "native-base";
+import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, 
+  ActivityIndicator, Dimensions, TextStyle } from "react-native";
 import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
 import { getAllHighlights } from "../../store/DataSource/operations";
 import { StoreData } from "../../store/Interfaces";
 import { TabView } from 'react-native-tab-view';
-import { SearchBar } from 'react-native-elements';
 import uuid4 from 'uuid/v4';
 import { getLabel } from "../../../i18n";
+import ActionModal from "../../_molecules/ActionModal";
+import TabBarComponent from "../../_atoms/TabBar";
+import SearchBarComponent from "../../_atoms/SearchBarComponent";
+import { mixins } from "../../_utils";
+import  NBColor from "../../theme/variables/commonColor.js";
 
 class SelectedHighlightItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -17,12 +21,16 @@ class SelectedHighlightItem extends React.PureComponent<any> {
   };
 
   render() {
+    let textColor = this.props.item.highlightType == "Like" ? NBColor.brandPrimary : NBColor.brandDanger;
+
     return (
       <TouchableOpacity onPress={this._onPress}       
           style={styles.highlightItemContainer}>
-          <View style={styles.highlightItem}>          
-            <Text>{this.props.item.label}</Text>   
-            <Icon name='trash-alt' type="FontAwesome5" style={{fontSize: 20, marginLeft: 10}}/>           
+          <View style={styles.highlightItem}>
+            <View style={styles.highlightNameSelectedContainer}>
+              <Text numberOfLines={1} style={{color: textColor}}>{this.props.item.label}</Text>   
+            </View>       
+            <Icon name='md-close' type="Ionicons" style={[styles.iconRemoved, {color: textColor}]}/>           
           </View>
       </TouchableOpacity>
     );
@@ -76,6 +84,12 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
         Toast.show({
             text: getLabel("location_detail.user_defined_like_dislike_warning"),
             buttonText: "Okay",
+            textStyle: {
+              ...mixins.themes.fontNormal
+            },
+            buttonTextStyle: {
+              ...mixins.themes.fontNormal
+            },
             position: "top",
             type: "warning",
             duration: 3000
@@ -112,6 +126,12 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
       Toast.show({
           text: getLabel("location_detail.user_defined_like_dislike_warning"),
           buttonText: "Okay",
+          textStyle: {
+            ...mixins.themes.fontNormal
+          },
+          buttonTextStyle: {
+            ...mixins.themes.fontNormal
+          },
           position: "top",
           type: "warning",
           duration: 3000
@@ -174,25 +194,26 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
   render() {       
     return (
        <View style={this.props.styles}>
-           <View>
-            <FlatList keyboardShouldPersistTaps={'handled'}            
-                style={{marginVertical: 20}}
-                data={this.state.selectedItems}
-                keyExtractor={this._keySelectedExtractor}
-                renderItem={this._renderSelectedItem}
-                numColumns={2}
-              />
-           </View>
-           <View>
-              <SearchBar
-                placeholder={getLabel("action.search")}
-                onChangeText={this.updateSearch}
-                value={this.state.search}
-              />
+           <View style={styles.searchBarContainer}>
+             <SearchBarComponent updateSearch={this.updateSearch}></SearchBarComponent>  
           </View>
-          <View style={{flex: 1}}>
+
+           <View>
+             {
+               this.state.selectedItems && this.state.selectedItems.length > 0 &&
+               <FlatList keyboardShouldPersistTaps={'handled'}            
+                  style={styles.selectedItemContainer}
+                  data={this.state.selectedItems}
+                  keyExtractor={this._keySelectedExtractor}
+                  renderItem={this._renderSelectedItem}
+                  numColumns={2}
+                />
+             }              
+           </View>
+
+          <View style={styles.preDefinedItemContainer}>
             <FlatList keyboardShouldPersistTaps={'handled'}            
-              style={{flex: 1, marginVertical: 20}}
+              style={{flex: 1}}
               data={this.state.preDefinedItems}
               keyExtractor={this._keyExtractor}
               renderItem={this._renderItem}
@@ -230,6 +251,12 @@ class AddHighlightModalContentComponent extends React.PureComponent<any, ModalSt
     this.props.removeSelectedHighlights(deSelectedItem);
   }
 
+  private _renderTabBar = (props) => {
+    return (
+      <TabBarComponent tabProps={props}></TabBarComponent>
+    )
+  }
+
   render() {
     let likePreDefinedItems = this.props.preDefinedHighlights.filter(item =>  item.highlightType == "Like" );
     let dislikePreDefinedItems = this.props.preDefinedHighlights.filter(item => item.highlightType == "Dislike" );
@@ -242,8 +269,10 @@ class AddHighlightModalContentComponent extends React.PureComponent<any, ModalSt
     }
 
     return (
-      <TabView
+      <Root>
+          <TabView
         navigationState={this.state}
+        renderTabBar={this._renderTabBar}
         renderScene={({ route }) => {
           switch (route.key) {
             case 'first':
@@ -265,6 +294,7 @@ class AddHighlightModalContentComponent extends React.PureComponent<any, ModalSt
         onIndexChange={index => this.setState({ index })}
         initialLayout={{ width: Dimensions.get('window').width }}
       />
+      </Root>      
   );
   }
 }
@@ -340,57 +370,30 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
           : <ActivityIndicator size="small" color="#00ff00" />
           
     return (
-        <RNModal style={styles.modal} 
-            onModalShow={this._onModalWillShow}
-            isVisible={isVisible} hideModalContentWhileAnimating>
-              <View style={styles.modalInnerContainer}>
-                  <View style={styles.buttons}>
-                      <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
-                      <Button transparent onPress={this._onSave}><Text>{getLabel("action.save")}</Text></Button>
-                  </View>
-                  <View style={styles.modalContentContainer}>
-                    <Root>
-                      {contentElement}
-                    </Root>                    
-                  </View>                
-              </View>           
-        </RNModal>
-        
+        <ActionModal
+          title={getLabel("location_detail.update_highlight_title")}
+          isVisible={isVisible}
+          onModalShowHandler={this._onModalWillShow}
+          onCancelHandler={this._onCancel}
+          onConfirmHandler={this._onSave}>
+          {contentElement}
+        </ActionModal>
     );
   }
 }
 
-interface Style {
-  modal: ViewStyle,
-  buttons: ViewStyle;
-  modalInnerContainer: ViewStyle;
-  modalContentContainer: ViewStyle;
+interface Style {  
   tabScene: ViewStyle;
   highlightItemContainer: ViewStyle;
   highlightItem: ViewStyle;
-  iconRemoved: ViewStyle;
+  highlightNameSelectedContainer: ViewStyle;
+  iconRemoved: TextStyle;
+  searchBarContainer: ViewStyle;
+  selectedItemContainer: ViewStyle;
+  preDefinedItemContainer: ViewStyle;
 }
 
-const styles = StyleSheet.create<Style>({
-  modal: {
-    flex: 1,
-    margin: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white"
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-  modalInnerContainer: {
-    flex: 1,
-    width: "100%",
-    height: "100%"
-  },
-  modalContentContainer: {
-    flex: 1
-  },
+const styles = StyleSheet.create<Style>({  
   tabScene: {
     flex: 1,
   },
@@ -407,8 +410,24 @@ const styles = StyleSheet.create<Style>({
     justifyContent: 'center',
     alignItems: "center"
   },
+  highlightNameSelectedContainer: {
+    maxWidth: "75%"
+  },
   iconRemoved: {
-    
+    fontSize: 18,
+    marginLeft: 10,
+    marginTop: 3,
+    color: "#383838"
+  },
+  searchBarContainer: {
+    marginTop: 12
+  },
+  selectedItemContainer: {
+    marginTop: 20
+  },
+  preDefinedItemContainer: {
+    flex: 1,
+    marginTop: 20
   }
 })
   

@@ -63,13 +63,16 @@
         "like_dislike_section_label": "Things you like/dislike",
         "like_label": "Like",
         "dislike_label": "Dislike",
-        "user_defined_like_dislike_warning": "Please input maximum 20 characters!",
+        "user_defined_like_dislike_warning": "It could be better with short description!",
         "description_section_label": "Description",
-        "description_placeholder": "What are you feeling?",
+        "description_placeholder": "Please describe more details about this location!",
         "description_view_more": "View more",
         "description_view_less": "View less",
         "media_section_label": "Photos & Videos",
-        "image_uploading_message": "Uploading images. Please wait!"
+        "image_uploading_message": "Uploading images. Please wait!",
+        "update_address_title": "Edit Location",
+        "update_highlight_title": "Like/Dislike",
+        "update_description_title": "Description"
     },
     "export": {
         "infographic_tab_label": "Infographic",

@@ -6,6 +6,8 @@ import { ParallaxImage, Pagination } from 'react-native-snap-carousel';
 import styles from './SliderEntry.style';
 import stylesPaging, { colors } from './index.style';
 import NoItemDefault from "./NoItemDefault";
+import indexStyle from './index.style';
+import { NUMBER_PAGINATION_DOTS, INDEX_STABLE } from "../../screens/_services/SystemConstants";
 
 export default class SliderEntry extends Component {
 
@@ -51,12 +53,37 @@ export default class SliderEntry extends Component {
         );
     }
 
+    _calculatePagination = (numberOfEntries, index) => {
+        let numberOfDots = numberOfEntries,
+            indexOfDot = index;
+
+        if (numberOfEntries > NUMBER_PAGINATION_DOTS) {
+            numberOfDots = NUMBER_PAGINATION_DOTS;
+
+            if (index <= INDEX_STABLE - 1) {
+                indexOfDot = index;
+            }
+            else if (index >= numberOfEntries - INDEX_STABLE + 1) {
+                indexOfDot = index - (numberOfEntries - NUMBER_PAGINATION_DOTS);
+            }
+            else {
+                indexOfDot = INDEX_STABLE;
+            }
+        }
+
+        return {
+            numberOfDots, indexOfDot
+        };
+    }
+
     setFavorite() {
+        let paginationDot = this._calculatePagination(this.props.numberOfEntries, this.props.index);
+
         return (
             <View style={styles1.footerContainer}>
                 <Pagination
-                    dotsLength={this.props.numberOfEntries}
-                    activeDotIndex={this.props.index}
+                    dotsLength={paginationDot.numberOfDots}
+                    activeDotIndex={paginationDot.indexOfDot}
                     containerStyle={stylesPaging.paginationContainer}
                     dotStyle={stylesPaging.paginationDot}
                     inactiveDotStyle={stylesPaging.inactivePaginationDot}

@@ -69,30 +69,31 @@ class LocationDetail extends React.Component<Props, State> {
 
     static navigationOptions = ({ navigation, navigationOptions }) => {
         const {state} = navigation;
+
         return {
             title: state.params.title ? `${state.params.title}` : "",
             headerRight: (<View></View>)
         };
     };
 
-    _changeThisTitle = (titleText) => {
-        const {setParams} = this.props.navigation;
-        setParams({ title: titleText });
-        console.log("called")
-    }
-
     componentWillMount() {
         this._changeThisTitle(this.props.name);
     }
 
+
     componentDidMount() {
         let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
         this._cancelToken = cancelToken;
-        this._cancelRequest = cancelRequest;
+        this._cancelRequest = cancelRequest;        
     }
 
     componentWillUnmount() {
         this._cancelRequest('Operation canceled by the user.');
+    }
+
+    private _changeThisTitle = (titleText) => {
+        const {setParams} = this.props.navigation;
+        setParams({ title: titleText });
     }
 
     private _openUpdateLocationAddressModal = () => {
@@ -103,8 +104,10 @@ class LocationDetail extends React.Component<Props, State> {
         var location: RawJsonData.LocationAddressVM = {
             name, address, long, lat
         };
+        var tmp = this;
         this.props.updateLocationAddress(this.props.tripId, this.props.dateIdx, this.props.locationId, location, this._cancelToken)
         .then(() => {
+            tmp._changeThisTitle(name);
             this.setState({isUpdateLocationAddressModalVisible: false})
         });;
     }

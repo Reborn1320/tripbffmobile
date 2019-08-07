@@ -13,7 +13,8 @@ const geoCodingService = mbxGeocoding(baseClient);
 import Mapbox from '@mapbox/react-native-mapbox-gl';
 Mapbox.setAccessToken('pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g');
 import { getLabel } from "../../../i18n";
-import SearchLocation from '../../_molecules/Trip/SearchLocationComponent'
+import SearchLocation from '../../_molecules/Trip/SearchLocationComponent';
+import ActionModal from "../../_molecules/ActionModal";
 
 export interface Props {
   isVisible: boolean;
@@ -62,58 +63,57 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
   render() {
     const { isVisible } = this.props;
 
-    return (
-        <RNModal style={styles.modal} 
-            isVisible={isVisible} hideModalContentWhileAnimating>
-            <View style={styles.modalInnerContainer}>
-                <View style={styles.buttons}>
-                    <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
-                    <Button transparent onPress={this._onConfirm}><Text>{getLabel("action.save")}</Text></Button>
-                </View>
-                <SearchLocation 
-                    confirmHandler={this._selectedLocationHandler}>
-                  </SearchLocation>
-                <View style={styles.mapContainer}>
-                    <Mapbox.MapView
-                        styleURL={Mapbox.StyleURL.Street}
-                        zoomLevel={15}
-                        centerCoordinate={[this.state.long, this.state.lat]}                        
-                        style={{ flex: 1 }}
-                        >
-                    </Mapbox.MapView>                
-                </View>                
+    var contentElement = (
+        <View style={styles.container}>
+            <View style={styles.searchContainer}>
+              <SearchLocation
+                confirmHandler={this._selectedLocationHandler}>
+              </SearchLocation>
             </View>
-        </RNModal>
+            <View style={styles.mapContainer}>
+                <Mapbox.MapView
+                    styleURL={Mapbox.StyleURL.Street}
+                    zoomLevel={15}
+                    centerCoordinate={[this.state.long, this.state.lat]}                        
+                    style={{ flex: 1 }}
+                    >
+                </Mapbox.MapView>                
+            </View>             
+        </View>
+    );  
+
+    return (
+        <ActionModal
+          title={getLabel("location_detail.update_address_title")}
+          isVisible={isVisible}
+          onCancelHandler={this._onCancel}
+          onConfirmHandler={this._onConfirm}
+          >
+            {contentElement}
+        </ActionModal>
     );
   }
 }
 
 interface Style {
-  modal: ViewStyle,
-  buttons: ViewStyle;
-  modalInnerContainer: ViewStyle;
+  container: ViewStyle,
+  searchContainer: ViewStyle;
   mapContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
-  modal: {
-    flex: 1,
-    margin: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white"
+  container: {
+    flex: 1
   },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-  modalInnerContainer: {
-    flex: 1,
-    width: "100%",
-    height: "100%"
+  searchContainer: {
+    position: "absolute",
+    top: "3%",
+    left: "3%",
+    right: "3%"
   },
   mapContainer: {
-    flex: 1
+    flex: 1,
+    margin: 5
   }
 })
   

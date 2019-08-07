@@ -222,6 +222,12 @@ class InfographicPreview extends React.PureComponent<Props, State> {
         Toast.show({
           text: getLabel("export.images_selection_warning"),
           buttonText: "Okay",
+          textStyle: {
+            ...mixins.themes.fontNormal
+          },
+          buttonTextStyle: {
+            ...mixins.themes.fontNormal
+          },
           type: "warning",
           position: "top",
           duration: 3000
@@ -269,6 +275,12 @@ class InfographicPreview extends React.PureComponent<Props, State> {
                       Toast.show({
                         text: "Got error when share to Facebook. Please try again!",
                         buttonText: "Okay",
+                        textStyle: {
+                          ...mixins.themes.fontNormal
+                        },
+                        buttonTextStyle: {
+                          ...mixins.themes.fontNormal
+                        },
                         type: "danger",
                         duration: 3000
                       });
@@ -360,6 +372,12 @@ class InfographicPreview extends React.PureComponent<Props, State> {
                         Toast.show({
                           text: getLabel("export.images_selection_warning"),
                           buttonText: "Okay",
+                          textStyle: {
+                            ...mixins.themes.fontNormal
+                          },
+                          buttonTextStyle: {
+                            ...mixins.themes.fontNormal
+                          },
                           type: "success",
                           position: "top",
                           duration: 1500

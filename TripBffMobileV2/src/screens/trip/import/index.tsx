@@ -20,6 +20,7 @@ import { NavigationConstants } from "../../_shared/ScreenConstants";
 import { getLabel } from "../../../../i18n";
 import { toDateUtc as toDateUtcFunc } from "../../../_function/dateFuncs";
 import Footer2Buttons from "../../../_atoms/Footer2Buttons";
+import { mixins } from "../../../_utils";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -138,6 +139,12 @@ class TripImportation extends Component<Props, State> {
         Toast.show({
             text: getLabel("import.location_information_text"),
             buttonText: getLabel("action.okay"),
+            textStyle: {
+                ...mixins.themes.fontNormal
+              },
+              buttonTextStyle: {
+                ...mixins.themes.fontNormal
+              },
             position: "top",
             type: "success",
             duration: 3000
