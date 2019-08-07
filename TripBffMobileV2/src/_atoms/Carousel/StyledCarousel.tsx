@@ -26,12 +26,6 @@ export type IEntry = {
 }
 
 export class StyledCarousel extends Component<Props & IStateProps, State> {
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-    };
-  }
 
   _renderItem = ({ item, index }) => {
     return <SliderEntry data={item} even={(index + 1) % 2 === 0} clickHandler={this.props.clickHandler} />;
@@ -49,14 +43,15 @@ export class StyledCarousel extends Component<Props & IStateProps, State> {
     );
   }
 
-  _renderLightItem = ({ item }) => {
-    return <SliderEntry data={item} even={false} clickHandler={this.props.clickHandler} />;
+  _renderLightItem = ({ item, index }) => {
+    return <SliderEntry data={item} index={index} numberOfEntries={this.props.entries.length} 
+            even={false} clickHandler={this.props.clickHandler} />;
   }
 
   layoutExample = (type, entries: IEntry[]) => {
     const isTinder = type === 'tinder';
     return (
-      <View style={[styles.exampleContainer, isTinder ? styles.exampleContainerDark : styles.exampleContainerLight]}>
+      <View style={[styles.exampleContainer]}>
         <Carousel
           data={isTinder ? entries : entries}
           renderItem={isTinder ? this._renderLightItem : this._renderItem}
@@ -65,7 +60,7 @@ export class StyledCarousel extends Component<Props & IStateProps, State> {
           containerCustomStyle={styles.slider}
           contentContainerCustomStyle={styles.sliderContentContainer}
           layout={type}
-          loop={true}
+          loop={false}
         />
       </View>
     );
@@ -73,8 +68,7 @@ export class StyledCarousel extends Component<Props & IStateProps, State> {
 
   render() {
     const { entries } = this.props;
-
-    const example4 = this.layoutExample("stack", entries);
+    const example4 = this.layoutExample("tinder", entries);
     return (
       <View>
         {example4}

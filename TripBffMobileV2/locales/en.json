@@ -15,8 +15,17 @@
         "okay": "Okay",
         "next": "Next"
     },
+    "message": {
+        "add_location": "Click to add location(s)",
+        "add_image": "Click to add image(s)"
+    },
+    "login": {
+        "welcome_title": "Welcome to TripBFF",
+        "facebook_button_title": "Continue with Facebook",
+        "no_login_button_title": "Continue without login"
+    },
     "create": {
-        "screen_header_title": "Create new trip",
+        "screen_header_title": "Create trip",
         "screen_header_edit_title": "Edit trip",
         "trip_name": "Trip Name",
         "from_date": "From Date",
@@ -72,7 +81,10 @@
         "trips_label": "Trips",
         "delete_trip_menu": "Delete Trip",
         "delete_trip_modal_header": "Delete Trip",
-        "delete_trip_modal_content": "Are you sure you want to delete this Trip ? Deleting a Trip will delete all the items you have added to it. The Trip cannot be retrived once it is deleted."
-
+        "delete_trip_modal_content": "Are you sure you want to delete this Trip ? Deleting a Trip will delete all the items you have added to it. The Trip cannot be retrived once it is deleted.",
+        "empty_trips_first_title": "What were your past amazing adventures ?",
+        "empty_trips_second_title": "Let's record and share them",
+        "emptry_trips_button_title": "Start",
+        "loading_trips_message": "Loading trips"
     }       
 }

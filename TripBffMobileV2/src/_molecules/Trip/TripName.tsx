@@ -1,9 +1,11 @@
 import React from "react";
 import { H1 } from "native-base";
+import { Text } from "react-native";
 import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../store/Interfaces";
 import NBTheme from "../../theme/variables/material.js";
+import { mixins } from "../../_utils";
 
 export interface Props {
     tripName: string
@@ -20,13 +22,16 @@ class TripNameComponent extends React.Component<Props, State> {
 
     render() {
         return (
-            <H1 style={{
-                fontSize: 32,
-                lineHeight: 50,
-                flexGrow: 9,
-                maxWidth: "90%",
-                color: NBTheme.brandPrimary,
-            }}>{this.props.tripName}</H1>     
+            <Text 
+                numberOfLines={2}
+                style={{
+                    fontSize: 20,
+                    lineHeight: 26,
+                    ...mixins.themes.fontExtraBold,
+                    fontStyle: "normal",                  
+                    color: NBTheme.brandPrimary,
+                }}>{this.props.tripName}
+            </Text>     
         );
     }
 }

@@ -8,10 +8,11 @@ import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from '../../../screens/_shared/LayoutContainer';
 import { StyleSheet, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 import { getLabel } from "../../../../i18n";
-import NBTheme from "../../../theme/variables/material.js";
+import NBColor from "../../../theme/variables/commonColor.js";
 import EmptyLocationItem from "./EmptyLocation";
 import { DATE_FORMAT } from "../../../screens/_services/SystemConstants";
 import { TouchableOpacity, Image } from 'react-native';
+import { mixins } from '../../../_utils';
 
 interface IMapDispatchToProps {
     openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
@@ -39,12 +40,14 @@ export class DayItemComponent extends Component<Props, State> {
 
     render() {
         const { dateIdx, dateVm } = this.props
-        let currentDate = moment(this.props.date).startOf("day").format(DATE_FORMAT);
+        let currentDate = moment(this.props.date).format(DATE_FORMAT);
 
         return (
             <View style={styles.dayItemContainer}>
                 <View style={styles.dayItemHeader}>
-                    <Text style={{color: NBTheme.brandPrimary, fontSize: 20}}>{getLabel("trip_detail.day_label")} {dateIdx} - {currentDate}</Text>
+                    <Text style={styles.dayLabel}>
+                        {getLabel("trip_detail.day_label")} {dateIdx} - {currentDate}
+                    </Text>
                     {
                         this.props.locationIds.length > 0 &&
                         <TouchableOpacity onPress= {this._openAddLocationModal}>
@@ -69,7 +72,9 @@ export class DayItemComponent extends Component<Props, State> {
                 {
                     this.props.locationIds.length == 0 &&
                     (
-                        <EmptyLocationItem  
+                        <EmptyLocationItem
+                            viewContainerStyle={styles.emptyContainer}
+                            subTitle={getLabel("message.add_location")}
                             openAddLocationModalHandler={this._openAddLocationModal}
                             >
                         </EmptyLocationItem>
@@ -103,32 +108,49 @@ export default DayItem;
 interface Style {
     dayItemContainer: ViewStyle;
     dayItemHeader: TextStyle;
+    dayLabel: TextStyle;
     addLocationIcon: ImageStyle;
+    emptyContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
     dayItemContainer: {        
-        margin: 10,
-        // backgroundColor: "orange",
-        shadowColor: "grey",
+        margin: 12,
+        shadowColor: "rgba(0, 0, 0, 0.07)",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.03,
         shadowRadius: 1,
-        elevation: 2,
-        paddingTop: 15,
-        paddingBottom: 15,
-        borderRadius: 5,
+        elevation: 0.7,
+        borderRadius: 4
     },
     dayItemHeader: {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "stretch",
         flexDirection: "row",
-        paddingLeft: 10,
-        // paddingRight: 10,
-        paddingBottom: 10
+        marginTop: 16
+    },
+    dayLabel: {
+        color: NBColor.brandPrimary,
+        fontSize: 16,
+        ...mixins.themes.fontBold,
+        fontStyle: "normal",
+        lineHeight: 20,
+        marginLeft: 12
     },
     addLocationIcon: {
         marginRight: 12
-    }
+    },
+    emptyContainer: {
+        backgroundColor: '#F9F9F9',
+        borderRadius: 6,
+        flex: 1,
+        marginLeft: 12,
+        marginRight: 12,
+        marginTop: 16,
+        marginBottom: 16,
+        height: 150,
+        justifyContent: "center",
+        alignItems: "center"
+    },
 });

@@ -42,8 +42,10 @@ export class TripsContentComponent extends PureComponent<Props & IStateProps, St
     const { trips } = this.props;    
 
     return (
-      <View>
-        {trips.map((trip, index) => this._renderItem({ item: trip, index }))}
+      <View style={{flex: 1}}>
+        {
+          trips.map((trip, index) => this._renderItem({ item: trip, index }))
+        }
       </View>
     );
   }

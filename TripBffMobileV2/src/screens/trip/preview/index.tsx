@@ -6,7 +6,8 @@ import {
   Button,
   Text,
   View,
-  Toast
+  Toast,
+  Icon
 } from "native-base";
 import { ThunkDispatch } from "redux-thunk";
 import { PropsBase } from "../../_shared/LayoutContainer";
@@ -22,9 +23,8 @@ import {
 import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
-import { TabView } from 'react-native-tab-view';
+import { TabView, TabBar } from 'react-native-tab-view';
 import ActionButton from 'react-native-action-button';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { runPromiseSeries, deleteFilesInFolder } from "../../../_function/commonFunc";
 import Loading from "../../../_atoms/Loading/Loading";
 import { addInfographicId } from "../../../store/Trip/actions";
@@ -34,6 +34,8 @@ import NBTheme from "../../../theme/variables/commonColor.js";
 import { fetchTrip } from "../../../store/Trip/operations";
 import { loginUsingFacebookAccessToken } from "../../../store/User/operations";
 import { getLabel } from "../../../../i18n";
+import { mixins } from "../../../_utils";
+import TabBarComponent from "../../../_atoms/TabBar";
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
@@ -86,17 +88,19 @@ class InfographicPreview extends React.PureComponent<Props, State> {
 
   static navigationOptions = ({ navigation, navigationOptions }) => {
     return {
-      title: '',
+      title: 'Export',
       headerLeft:  (
-        <RNa.HeaderBackButton tintColor={'#fff'}          
+        <RNa.HeaderBackButton   
            onPress={navigation.getParam('_handleBackPress')}
          />),
       headerRight: (
         <Button transparent style={{
-          alignSelf: "stretch"
+          alignSelf: "center"
               }}
           onPress={navigation.getParam('_cancel')}>
-          <Text style={{ color: "white" }}>{getLabel("action.cancel")}</Text>
+          <Text style={{ color: "#FF647C", ...mixins.themes.fontNormal, 
+                        fontSize: 16, lineHeight: 18 }}>
+              {getLabel("action.cancel")}</Text>
         </Button>
       ),
     };
@@ -305,6 +309,12 @@ class InfographicPreview extends React.PureComponent<Props, State> {
       }       
   }
 
+  private _renderTabBar = (props) => {
+    return (
+      <TabBarComponent tabProps={props}></TabBarComponent>
+    )
+  }
+
   private _cancel = () => {
     this._navigateToProfile();
   }
@@ -322,11 +332,11 @@ class InfographicPreview extends React.PureComponent<Props, State> {
 
   render() {
       return (
-        <Container>
-          <Content>
-            <View>             
+        <View style={styles.container}>
+            <View style={styles.tabViewContainer}>             
                   <TabView
                     navigationState={this.state}
+                    renderTabBar={this._renderTabBar}
                     renderScene={({ route }) => {
                       switch (route.key) {
                         case 'first':
@@ -370,19 +380,19 @@ class InfographicPreview extends React.PureComponent<Props, State> {
                   <Loading message={'loading'}/> 
                 </View>
             }           
-          </Content>    
-          <ActionButton
-                  buttonColor={NBTheme.brandInfo}
+  
+              <ActionButton
+                  buttonColor={'#3D5A96'}
                   position="center"
                   onPress={this._sharePhotoWithShareDialog}
                   renderIcon={() => 
                     <View style={{alignItems: "center"}}>
-                        <Icon name="logo-facebook" style={styles.actionButtonIcon} />
+                        <Icon name="facebook-f" type="FontAwesome" style={styles.actionButtonIcon} />
                     </View>
                   }
                   >                    
               </ActionButton>        
-        </Container>
+        </View>
       );
     }
 }  
@@ -432,8 +442,14 @@ const InfographicPreviewScreen = connect(
 export default InfographicPreviewScreen;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  tabViewContainer: {
+    flex: 1
+  },
   actionButtonIcon: {
-    fontSize: 20,
+    fontSize: 28,
     height: 22,
     color: 'white',
   },

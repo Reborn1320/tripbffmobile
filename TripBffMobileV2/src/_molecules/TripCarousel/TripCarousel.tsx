@@ -16,6 +16,7 @@ import moment from "moment";
 import { connect } from "react-redux";
 import { getLabel } from "../../../i18n";
 import { mixins } from "../../_utils";
+import { DATE_FORMAT } from "../../screens/_services/SystemConstants";
 
 export type ITripEntry = {
   tripId: string,
@@ -40,15 +41,15 @@ export interface State {
 
 const EMPTY_TRIP_ENTRIES: IEntry[] = [
   {
-    title: "NO LOCATION",
-    subtitle: "Click to add location(s)",
+    title: "No Location",
+    subtitle: getLabel("message.add_location"),
     illustration: ""
   }
 ];
 
 const EMPTY_LOCATION_ENTRY: IEntry = {
-  title: "NO IMAGE",
-  subtitle: "Click to add image(s)",
+  title: "No Image",
+  subtitle: getLabel("message.add_image"),
   illustration: ""
 }
 
@@ -78,7 +79,7 @@ export class TripCarouselComponent extends React.Component<Props, State> {
     let tripEntry: ITripEntry = {
         tripId: trip.tripId,
         title: trip.name,
-        subtitle: `${moment(trip.fromDate).format("DD/MMM/YYYY")} - ${moment(trip.toDate).format("DD/MMM/YYYY")}`,
+        subtitle: `${moment(trip.fromDate).format(DATE_FORMAT)} - ${moment(trip.toDate).format(DATE_FORMAT)}`,
         entries
     }
 
@@ -118,43 +119,53 @@ export class TripCarouselComponent extends React.Component<Props, State> {
     const { currentMinimizedTrip, trip } = this.props;
     let tripEntry = currentMinimizedTrip ? this._normalizeTripEntry(currentMinimizedTrip) :this._normalizeTripEntry(trip);
     const { title, subtitle } = tripEntry;
-    const isTinder = false;
     
-    return (
+    return (      
       <View style={styles.container}>
-        <View style={styles.headerContainer}>
-          <View style={styles.headerLeftContainer}>
-
-            <Text style={[styles.title, isTinder ? {} : styles.titleDark]}>{title}</Text>
-            <Text style={[styles.subtitle, isTinder ? {} : styles.titleDark]}>{subtitle}</Text>
+          <View style={{marginLeft: 12}}>
+            <View style={styles.headerContainer}>              
+                <View style={styles.titleContainer}>
+                  <TouchableOpacity onPress={this._handleClickTrip}>
+                    <Text numberOfLines={2} style={styles.title}>
+                        {title}
+                    </Text>  
+                  </TouchableOpacity>
+                </View>   
+                <View style={{marginTop: 13, marginRight: 10}}>
+                  <TouchableOpacity
+                      onPress={this._handleShareClick}>
+                      <Icon type="Ionicons" name="md-share-alt" style={{color:"#cccccc", fontSize: 24}}/>
+                  </TouchableOpacity>                
+                </View>
+                <View style={{marginTop: 10}}>
+                  <Menu>
+                      <MenuTrigger>
+                        <Icon type="Ionicons" name="md-more" style={styles.moreMenu} />
+                      </MenuTrigger>
+                      <MenuOptions customStyles={
+                            {
+                              optionsContainer: menuOptionStyles.optionsContainer,
+                              optionWrapper: menuOptionStyles.optionWrapper,
+                              optionText: menuOptionStyles.optionText,
+                            }
+                          }>
+                        <MenuOption onSelect={this._handleDeleteTrip} >
+                          <Text style={styles.deleteLabel}>{getLabel("profile.delete_trip_menu")}</Text>
+                        </MenuOption>
+                      </MenuOptions>
+                    </Menu>
+                </View>      
+              </View>
+              <View style={{marginTop: 4}}>
+                <Text style={styles.subtitle}>{subtitle}</Text>
+              </View>
+          </View>         
+          <View style={{marginVertical: 16}}>
+            <StyledCarousel
+              entries={tripEntry.entries}
+              clickHandler={this._handleClickTrip}
+            />
           </View>
-          <View style={styles.headerRightContainer}>
-            <Button transparent dark small
-                onPress={this._handleShareClick}>
-                <Icon type="Ionicons" name="md-share-alt" />
-            </Button>
-            <Menu>
-              <MenuTrigger>
-                <Icon type="Ionicons" name="md-more" style={styles.moreMenu} />
-              </MenuTrigger>
-              <MenuOptions customStyles={
-                  {
-                    optionsContainer: menuOptionStyles.optionsContainer,
-                    optionWrapper: menuOptionStyles.optionWrapper,
-                    optionText: menuOptionStyles.optionText,
-                  }
-                }>
-                <MenuOption onSelect={this._handleDeleteTrip} >
-                  <Text style={styles.deleteLabel}>{getLabel("profile.delete_trip_menu")}</Text>
-                </MenuOption>
-              </MenuOptions>
-            </Menu>
-          </View>
-        </View>
-        <StyledCarousel
-          entries={tripEntry.entries}
-          clickHandler={this._handleClickTrip}
-        />
       </View>
     );
   }
@@ -177,8 +188,7 @@ export default TripCarousel;
 interface Style {
   container: ViewStyle;
   headerContainer: ViewStyle;
-  headerLeftContainer: ViewStyle;
-  headerRightContainer: ViewStyle;
+  titleContainer: ViewStyle;  
   title: TextStyle;
   subtitle: TextStyle;
   titleDark: TextStyle;
@@ -195,47 +205,43 @@ export const colors = {
 
 const styles = StyleSheet.create<Style>({
   container: {
-    // ...mixins.themes.debug1,
-    paddingVertical: 10,
+    margin: 12,
+    marginBottom: 20,
+    shadowColor: "rgba(0, 0, 0, 0.07)",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.03,
+    shadowRadius: 1,
+    elevation: 0.7,
+    borderRadius: 4
   },
   headerContainer: {
     display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  headerLeftContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start"
-  },
-  headerRightContainer: {
-    display: "flex",
-    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "flex-start",
+    flexDirection: "row"
+  }, 
+  titleContainer: {
+    width: "80%",
+    marginTop: 16
   },
   title: {
-    paddingHorizontal: 20,
-    backgroundColor: 'transparent',
-    color: 'rgba(255, 255, 255, 0.9)',
-    fontSize: 20,
+    color: NBColor.brandPrimary,
+    fontSize: 18,
     ...mixins.themes.fontBold,
-    textAlign: 'center'
+    fontStyle: "normal",
+    lineHeight: 20    
   },
   titleDark: {
     color: colors.black
   },
   subtitle: {
-    marginTop: 2,
-    paddingHorizontal: 20,
-    backgroundColor: 'transparent',
-    color: 'rgba(255, 255, 255, 0.75)',
-    fontSize: 13,
-    fontStyle: 'italic',
-    textAlign: 'center'
+    fontStyle: 'normal',
+    fontSize: 14,
+    ...mixins.themes.fontNormal,
+    lineHeight: 18,
   },
   moreMenu: {
-    marginRight: 30,
+    marginRight: 20,
     marginTop: 2,
     marginLeft: 10,
     color: "#cccccc"

@@ -1,10 +1,10 @@
 import React, { PureComponent, Component } from "react";
-import { View } from 'native-base';
+import { View, Button, Text } from 'native-base';
 import moment, { Moment } from "moment";
 import DateRangePicker from "../../../_atoms/DatePicker/DateRangePicker";
 import NBColor from "../../../theme/variables/commonColor.js";
 import { getLabel } from "../../../../i18n";
-import { Input, Button } from 'react-native-elements';
+import { Input } from 'react-native-elements';
 import { TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from "react-native";
 import { mixins } from "../../../_utils";
 import { DATE_FORMAT } from "../../_services/SystemConstants";
@@ -104,11 +104,10 @@ export class TripCreationForm extends PureComponent<Props, any> {
 
     return (
       <Button
-        buttonStyle={[styles.button, buttonStyle]}
+        style={[styles.button, buttonStyle]}
         disabled={isDisabled}
-        title={getLabel(this.props.titleButton)}
-        titleStyle={[styles.buttonTitle, buttonTitleStyle]}
-        onPress={this._onClickCreateTrip}>         
+        onPress={this._onClickCreateTrip}> 
+        <Text style={[styles.buttonTitle, buttonTitleStyle]}>{getLabel(this.props.titleButton)}</Text>       
       </Button>
     );
   }
@@ -193,15 +192,13 @@ const styles = StyleSheet.create<Style>({
   },
   formLabel: {
     color: "#383838",
-    fontFamily: mixins.themes.fontNormal.fontFamily,
+    ...mixins.themes.fontSemiBold,
     fontSize: 14,
-    fontWeight: "600",
     lineHeight: 20
   },
   formInput: {
-    fontFamily: mixins.themes.fontNormal.fontFamily,
+    ...mixins.themes.fontSemiBold,
     fontSize: 14,
-    fontWeight: "600",
     paddingLeft: 16
   },
   formInputTripName: {
@@ -230,10 +227,10 @@ const styles = StyleSheet.create<Style>({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  button: {
-    borderRadius: 6,
+  button: {    
     width: 160,
-     height: 48  
+    alignSelf: "center",
+    justifyContent: "center",
   },
   buttonDisabled: {
     backgroundColor: "#F0F0F0"
@@ -242,10 +239,9 @@ const styles = StyleSheet.create<Style>({
     backgroundColor: NBColor.brandPrimary
   },
   buttonTitle: {
-    fontFamily: mixins.themes.fontNormal.fontFamily,
+    ...mixins.themes.fontSemiBold,
     textTransform: "capitalize",
     fontSize: 17,
-    fontWeight: "600",
     lineHeight: 22
   },
   buttonTitleDisabled: {

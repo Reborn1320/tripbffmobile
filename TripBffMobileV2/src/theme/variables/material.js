@@ -254,7 +254,7 @@ export default {
   titleFontColor: "#FFF",
 
   // Other
-  borderRadiusBase: 12,
+  borderRadiusBase: 6,
   borderWidth: 1 / PixelRatio.getPixelSizeForLayoutSize(1),
   contentPadding: 10,
   dropdownLinkColor: "#414142",

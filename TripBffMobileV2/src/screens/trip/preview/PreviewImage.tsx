@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import {  ActivityIndicator } from "react-native";
-import { View } from "native-base";
+import { View, Container, Content } from "native-base";
 import { StoreData } from "../../../store/Interfaces";
 import _, { } from "lodash";
 import ImageList, { calculateImageListWidth, N_ITEMS_PER_ROW } from "../../../_molecules/ImageList/ImageList";
@@ -76,16 +76,20 @@ export default class PreviewImages extends PureComponent<ImageProps, any> {
 
     render() {
         return (
-        <View>
-            {
-            this.state.images ?
-                <ImageList
-                items={this.state.images}
-                renderItem={this.renderItem}
-            />
-            : <ActivityIndicator size="small" color="#00ff00" />
-            }
-        </View>
+            <Container>
+                <Content>
+                    <View>
+                        {
+                        this.state.images ?
+                            <ImageList
+                            items={this.state.images}
+                            renderItem={this.renderItem}
+                        />
+                        : <ActivityIndicator size="small" color="#00ff00" />
+                        }
+                    </View>
+                </Content>
+            </Container>
         );
     } 
 }  

@@ -7,9 +7,6 @@ import AddActivityModal from "../../../_organisms/Trip/TripDetails/AddActivityMo
 import ConfirmationModal from "../../../_molecules/ConfirmationModal";
 import AddLocationModal from "../../../_organisms/Trip/TripDetails/AddLocationModal"
 import moment, { Moment } from 'moment';
-import { Modal } from "../../../_atoms";
-import TripEditForm, { TripEditFormEnum } from "../../TripEditForm/TripEditForm";
-import DateRangePicker from "../../../_atoms/DatePicker/DateRangePicker";
 import { connect } from "react-redux";
 import { getLabel } from "../../../../i18n";
 
@@ -22,10 +19,6 @@ interface IMapDispatchToProps {
     cancelUpdateActivityModalHandler: () => void
     addLocationConfirmedHandler: (dateIdx: number, location: StoreData.LocationVM) => void
     cancelAddLocationModalHandler: () => void
-    updateTripDateRangeHandler: (fromDate: moment.Moment, toDate: moment.Moment) => void
-    cancelUpdateDateRangeModalHandler: () => void
-    updateTripNameHandler: (nane: string) => void
-    cancelUpdateNameModal: () => void
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -39,9 +32,7 @@ export interface Props extends IMapDispatchToProps {
     isAddActivityModalVisible: boolean,
     isConfirmationModalVisible: boolean,
     isAddLocationModalVisible: boolean,
-    selectedDate: moment.Moment,
-    isUpdateDateRangeModalVisible: boolean,
-    isUpdateNameModalVisible: boolean
+    selectedDate: moment.Moment
 }
 
 interface State {
@@ -96,23 +87,7 @@ class TripDetailsModalComponent extends PureComponent<Props, State> {
 
     _cancelAddLocationModal = () => {
         this.props.cancelAddLocationModalHandler();
-    }
-
-    _onUpdateDateRange = (fromDate: moment.Moment, toDate: moment.Moment) => {
-        this.props.updateTripDateRangeHandler(fromDate, toDate);            
-    }
-
-    _cancelUpdateDateRangeModal = () => {
-        this.props.cancelUpdateDateRangeModalHandler();
-    }
-
-    _onUpdateTripName = (tripName: string) => {
-        this.props.updateTripNameHandler(tripName);         
-    }
-
-    _cancelUpdateNameModal = () => {
-        this.props.cancelUpdateNameModal();
-    }
+    }    
 
     render() {
         return (
@@ -138,23 +113,7 @@ class TripDetailsModalComponent extends PureComponent<Props, State> {
                     isVisible={this.props.isAddLocationModalVisible}
                     date={this.props.selectedDate}
                     confirmHandler={this._addLocationConfirmed}
-                    cancelHandler={this._cancelAddLocationModal} />
-                <DateRangePicker 
-                    isVisible={this.props.isUpdateDateRangeModalVisible}
-                    fromDate={this.props.fromDate}
-                    toDate={this.props.toDate}
-                    cancelHandler={this._cancelUpdateDateRangeModal}
-                    confirmHandler={this._onUpdateDateRange}>            
-                </DateRangePicker> 
-                <Modal isVisible={this.props.isUpdateNameModalVisible}
-                    title={getLabel("trip_detail.edit_trip_name_modal_header")}
-                >
-                    <TripEditForm
-                        fields={[TripEditFormEnum.Name]}
-                        tripName={this.props.tripName}
-                        onClickEdit={this._onUpdateTripName}
-                        onCancel={this._cancelUpdateNameModal} />
-                </Modal>
+                    cancelHandler={this._cancelAddLocationModal} />                
             </View>
         );
     }
@@ -166,8 +125,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
   
     return {
         tripName: trip.name,
-        fromDate: moment(trip.fromDate).local(),
-        toDate: moment(trip.toDate).local()
+        fromDate: trip.fromDate,
+        toDate: trip.toDate
     };
   };
   
