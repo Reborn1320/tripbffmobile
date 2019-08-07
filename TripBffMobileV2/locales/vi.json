@@ -63,14 +63,15 @@
         "like_dislike_section_label": "Những thứ bạn thích/không thích",
         "like_label": "Thích",
         "dislike_label": "Không thích",
-        "user_defined_like_dislike_warning": "Xin vui lòng chỉ nhập tối đa 20 kí tự!",
+        "user_defined_like_dislike_warning": "Bạn vui lòng mô tả ngắn gọn thì sẽ tốt hơn!",
         "description_section_label": "Mô tả",
         "description_placeholder": "Cảm giác của bạn là gì?",
         "description_view_more": "Xem thêm",
         "description_view_less": "Thu gọn",
         "media_section_label": "Hình ảnh",
         "image_uploading_message": "Đang tải lên hình ảnh. Xin vui lòng chờ!",
-        "update_address_title": "Chỉnh sửa địa điểm"
+        "update_address_title": "Chỉnh sửa địa điểm",
+        "update_highlight_title": "Thích/Không thích"
     },
     "export": {
         "infographic_tab_label": "infographic",

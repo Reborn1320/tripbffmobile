@@ -74,7 +74,7 @@ const styles = StyleSheet.create<Style>({
     flexDirection: "row",
     justifyContent: "space-between",
     height: 40,
-    marginBottom: 12,
+    marginBottom: 12
   },
   cancelButtonContainer: {
     marginTop: 15,
