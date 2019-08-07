@@ -62,7 +62,6 @@ class LocationDescriptionComponent1 extends React.PureComponent<Props, State> {
                             )
                             : (
                                 <Text style={styles.textInput}>
-                                    {getLabel("location_detail.description_placeholder")}
                                 </Text>
                             )
                     }

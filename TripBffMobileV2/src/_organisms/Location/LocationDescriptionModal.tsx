@@ -1,9 +1,11 @@
 import * as React from "react";
 import { View, Text, Button, Icon } from "native-base";
-import { StyleSheet, ViewStyle, TextInput, Keyboard } from "react-native";
+import { StyleSheet, ViewStyle, TextInput, Keyboard, TextStyle } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
 import { getLabel } from "../../../i18n";
+import ActionModal from "../../_molecules/ActionModal";
+import { mixins } from "../../_utils";
 
 export interface Props {
   isVisible: boolean;
@@ -42,29 +44,29 @@ class UpdateLocationDescriptionComponent extends React.PureComponent<Props, Stat
 
   render() {
     const { isVisible } = this.props;
+    var contentElement = (
+      <View style={styles.modalContentContainer}>
+          <TextInput
+                  placeholder = {getLabel("location_detail.description_placeholder")}
+                  multiline = {true}                        
+                  numberOfLines = {10}
+                  textAlignVertical = "top"
+                  editable = {true}
+                  value={this.state.description}
+                  onChangeText={this._updateLocationDescription}
+                  style={styles.textInput}
+              />
+      </View>    
+    );
           
     return (
-        <RNModal style={styles.modal} 
-            isVisible={isVisible} hideModalContentWhileAnimating>
-            <View style={styles.modalInnerContainer}>
-                <View style={styles.buttons}>
-                    <Button transparent onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
-                    <Button transparent onPress={this._onSave}><Text>{getLabel("action.save")}</Text></Button>
-                </View>
-                <View style={styles.modalContentContainer}>
-                    <TextInput
-                            placeholder = {getLabel("location_detail.description_placeholder")}
-                            multiline = {true}                        
-                            numberOfLines = {15}
-                            textAlignVertical = "top"
-                            editable = {true}
-                            value={this.state.description}
-                            onChangeText={this._updateLocationDescription}
-                            style={[styles.textInput, { fontSize: 18 }]}
-                        />
-                </View>                
-            </View>
-        </RNModal>
+        <ActionModal
+          title={getLabel("location_detail.update_description_title")}
+          isVisible={isVisible}
+          onCancelHandler={this._onCancel}
+          onConfirmHandler={this._onSave}>
+          {contentElement}
+        </ActionModal>
     );
   }
 }
@@ -74,7 +76,7 @@ interface Style {
   buttons: ViewStyle;
   modalInnerContainer: ViewStyle;
   modalContentContainer: ViewStyle;
-  textInput: ViewStyle;
+  textInput: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -95,16 +97,22 @@ const styles = StyleSheet.create<Style>({
     height: "100%"
   },
   modalContentContainer: {
-    flex: 1
+    flex: 1,
+    marginTop: 20
   },
   textInput: {
-    borderRadius: 8,
-    borderWidth: 0.2,
-    borderColor: '#d6d7da',
-    marginLeft: 10,
-    marginRight: 10,
-    paddingLeft: 10,
-    paddingTop: 10
+    borderRadius: 4,
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: '#DADADA',
+    marginLeft: 12,
+    marginRight: 15,
+    paddingLeft: 15,
+    paddingTop: 12,
+    ...mixins.themes.fontNormal,
+    fontSize: 16,
+    lineHeight: 18,
+    color: "#383838"
   }
 })
   
