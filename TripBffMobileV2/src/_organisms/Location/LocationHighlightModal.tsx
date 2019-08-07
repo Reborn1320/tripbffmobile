@@ -420,7 +420,7 @@ const styles = StyleSheet.create<Style>({
     color: "#383838"
   },
   searchBarContainer: {
-    marginTop: 10
+    marginTop: 12
   },
   selectedItemContainer: {
     marginTop: 20
