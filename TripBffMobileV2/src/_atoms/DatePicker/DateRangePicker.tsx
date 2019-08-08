@@ -191,7 +191,7 @@ const styles = StyleSheet.create<Style>({
     color: NBColor.brandPrimary
   },
   buttonDone: {    
-    width: 96,
+    width: 160,
     justifyContent: "center"
   },
   buttonDoneDisabled: {
