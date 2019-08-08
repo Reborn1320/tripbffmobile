@@ -1,7 +1,11 @@
 package com.tripbff.android;
 
 import android.app.Application;
+import android.util.Log;
 
+import com.facebook.react.PackageList;
+import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
+import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.ReactApplication;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
@@ -55,6 +59,11 @@ public class MainApplication extends Application implements ReactApplication {
             new RCTMGLPackage(),
             new RNI18nPackage()
       );
+      // @SuppressWarnings("UnnecessaryLocalVariable")
+      // List<ReactPackage> packages = new PackageList(this).getPackages();
+      // // Packages that cannot be autolinked yet can be added manually here, for example:
+      // // packages.add(new MyReactNativePackage());
+      // return packages;
     }
 
     @Override
