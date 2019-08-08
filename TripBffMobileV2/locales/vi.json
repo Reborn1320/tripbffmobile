@@ -77,7 +77,9 @@
     "export": {
         "infographic_tab_label": "infographic",
         "images_tab_label": "Hình ảnh",
-        "images_selection_warning": "Xin vui lòng chọn tối đa 5 hình ảnh bạn yêu thích nhất để chia sẻ!"
+        "images_selection_warning": "Xin vui lòng chọn tối đa 5 hình ảnh bạn yêu thích nhất để chia sẻ!",
+        "no_infographic": "Xin vui lòng thêm địa điểm và hình ảnh để xuất ra infographic!",
+        "nothing_to_share_message": "Xin vui lòng thêm địa điểm và hình ảnh để chia sẻ qua Facebook!"
     },
     "profile": {
         "trip_label": "Chuyến đi",

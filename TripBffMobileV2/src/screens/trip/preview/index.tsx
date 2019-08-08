@@ -44,12 +44,13 @@ export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   infographicId: string,
   images: Array<StoreData.ImportImageVM>,
   isExistedCurrentTrip: boolean,
-  userId: string
+  userId: string,
+  numberOfLocations: number
 }
 
 interface IMapDispatchToProps {    
   addInfographicId: (tripId: string, infographicId: string) => void;
-  fetchTrip: (tripId: string) => Promise<void>;
+  fetchTrip: (tripId: string) => Promise<StoreData.TripVM>;
   loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId) => Promise<void>
 }
 
@@ -80,7 +81,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
       ],
       infographicUrl: "",
       selectedImages: [],
-      displayLoading: true,
+      displayLoading: !this.props.isExistedCurrentTrip || this.props.numberOfLocations > 0,
       firstRendered: true,
       isLoggedSocial: false
     }
@@ -131,10 +132,19 @@ class InfographicPreview extends React.PureComponent<Props, State> {
     let tripId = this.props.tripId;
 
     if(!this.props.isExistedCurrentTrip) {
-      this.props.fetchTrip(tripId);
-    }
+      this.props.fetchTrip(tripId).then((trip: StoreData.TripVM) => {
+          var numberOfLocations = trip.rawLocations ? trip.rawLocations.length : 0;
 
-    this._createInfographic(tripId);  
+          if(numberOfLocations > 0) 
+            this._createInfographic(tripId);
+          else 
+            this.setState({displayLoading: false});
+      });
+    }
+    else if (this.props.numberOfLocations > 0)
+    {
+      this._createInfographic(tripId);  
+    }
   }
 
   componentWillUnmount() {
@@ -218,9 +228,112 @@ class InfographicPreview extends React.PureComponent<Props, State> {
   private _sharePhotoWithShareDialog = async () => {
       var tmp = this;      
       
-      if (this.state.selectedImages.length > 5) {
+      if (this.props.infographicId) {
+        if (this.state.selectedImages.length > 5) {
+          Toast.show({
+            text: getLabel("export.images_selection_warning"),
+            buttonText: "Okay",
+            textStyle: {
+              ...mixins.themes.fontNormal
+            },
+            buttonTextStyle: {
+              ...mixins.themes.fontNormal
+            },
+            type: "warning",
+            position: "top",
+            duration: 3000
+          });
+        }
+        else {
+          this.setState({displayLoading: true});        
+  
+          let localImageUris = await this._storeExternalImageIntoLocalStorage(this.state.selectedImages); 
+          let imageUrls = [this.state.infographicUrl].concat(localImageUris);        
+  
+          console.log('final selected image url: ' + JSON.stringify(imageUrls));
+          let photos = imageUrls.map(item => {
+            return {  imageUrl: item }
+          });
+  
+          const sharePhotoContent = {
+            contentType: "photo",
+            photos: photos
+          } as any;
+  
+          AccessToken.getCurrentAccessToken().then(
+              (data) => {
+                if (data) {
+                  try{
+                    ShareDialog.canShow(sharePhotoContent)
+                    .then(function(canShow) {
+                      tmp.setState({displayLoading: false});
+  
+                      if (canShow) {
+                        return ShareDialog.show(sharePhotoContent)                    
+                      }                    
+                    })
+                    .then(
+                      function(result) {
+                        console.log("Share result: " + JSON.stringify(result));
+                        if (result.isCancelled) {
+                          console.log("Share cancelled");
+                        } else {
+                          console.log("Share success");
+                          tmp._navigateToProfile();
+                        }
+                      },
+                      function(error) {
+                        Toast.show({
+                          text: "Got error when share to Facebook. Please try again!",
+                          buttonText: "Okay",
+                          textStyle: {
+                            ...mixins.themes.fontNormal
+                          },
+                          buttonTextStyle: {
+                            ...mixins.themes.fontNormal
+                          },
+                          type: "danger",
+                          duration: 3000
+                        });
+                        console.log("Share fail with error: " + error);
+                      }
+                    );
+                  }
+                  catch(error) {
+                      console.log('come here error try catch');
+                  }
+                  
+                }
+                else {
+                    console.log('need to log-in');
+                    LoginManager.logInWithReadPermissions(["public_profile", "user_photos", "user_posts"]).then(
+                      function(result) {
+                        if (result.isCancelled) {
+                          console.log("Login cancelled");
+                        } else {                      
+                          console.log(
+                            "Login success with permissions: " + JSON.stringify(result)
+                          );
+                          // call api to login with FB
+                          AccessToken.getCurrentAccessToken().then(data => {     
+                            tmp.props.loginUsingFacebookAccessToken(data.userID, data.accessToken, tmp.props.userId);
+                          });
+                          tmp._sharePhotoWithShareDialog();
+                          tmp.setState({ isLoggedSocial: true });
+                        }
+                      },
+                      function(error) {
+                        console.log("Login fail with error: " + error);
+                      }
+                    );
+                }
+              } 
+            );    
+        }       
+      }
+      else {
         Toast.show({
-          text: getLabel("export.images_selection_warning"),
+          text: getLabel("export.nothing_to_share_message"),
           buttonText: "Okay",
           textStyle: {
             ...mixins.themes.fontNormal
@@ -228,97 +341,10 @@ class InfographicPreview extends React.PureComponent<Props, State> {
           buttonTextStyle: {
             ...mixins.themes.fontNormal
           },
-          type: "warning",
-          position: "top",
+          position: "bottom",
           duration: 3000
         });
       }
-      else {
-        this.setState({displayLoading: true});        
-
-        let localImageUris = await this._storeExternalImageIntoLocalStorage(this.state.selectedImages); 
-        let imageUrls = [this.state.infographicUrl].concat(localImageUris);        
-
-        console.log('final selected image url: ' + JSON.stringify(imageUrls));
-        let photos = imageUrls.map(item => {
-          return {  imageUrl: item }
-        });
-
-        const sharePhotoContent = {
-          contentType: "photo",
-          photos: photos
-        } as any;
-
-        AccessToken.getCurrentAccessToken().then(
-            (data) => {
-              if (data) {
-                try{
-                  ShareDialog.canShow(sharePhotoContent)
-                  .then(function(canShow) {
-                    tmp.setState({displayLoading: false});
-
-                    if (canShow) {
-                      return ShareDialog.show(sharePhotoContent)                    
-                    }                    
-                  })
-                  .then(
-                    function(result) {
-                      console.log("Share result: " + JSON.stringify(result));
-                      if (result.isCancelled) {
-                        console.log("Share cancelled");
-                      } else {
-                        console.log("Share success");
-                        tmp._navigateToProfile();
-                      }
-                    },
-                    function(error) {
-                      Toast.show({
-                        text: "Got error when share to Facebook. Please try again!",
-                        buttonText: "Okay",
-                        textStyle: {
-                          ...mixins.themes.fontNormal
-                        },
-                        buttonTextStyle: {
-                          ...mixins.themes.fontNormal
-                        },
-                        type: "danger",
-                        duration: 3000
-                      });
-                      console.log("Share fail with error: " + error);
-                    }
-                  );
-                }
-                catch(error) {
-                    console.log('come here error try catch');
-                }
-                
-              }
-              else {
-                  console.log('need to log-in');
-                  LoginManager.logInWithReadPermissions(["public_profile", "user_photos", "user_posts"]).then(
-                    function(result) {
-                      if (result.isCancelled) {
-                        console.log("Login cancelled");
-                      } else {                      
-                        console.log(
-                          "Login success with permissions: " + JSON.stringify(result)
-                        );
-                        // call api to login with FB
-                        AccessToken.getCurrentAccessToken().then(data => {     
-                          tmp.props.loginUsingFacebookAccessToken(data.userID, data.accessToken, tmp.props.userId);
-                        });
-                        tmp._sharePhotoWithShareDialog();
-                        tmp.setState({ isLoggedSocial: true });
-                      }
-                    },
-                    function(error) {
-                      console.log("Login fail with error: " + error);
-                    }
-                  );
-              }
-            } 
-          );    
-      }       
   }
 
   private _renderTabBar = (props) => {
@@ -343,6 +369,25 @@ class InfographicPreview extends React.PureComponent<Props, State> {
   }
 
   render() {
+    let { numberOfLocations, isExistedCurrentTrip } = this.props;
+    let isDisplayEmptyMessage = numberOfLocations == 0 && isExistedCurrentTrip;
+
+    var previewInfographicElement = 
+          isDisplayEmptyMessage ?
+          (
+            <View style={styles.emptyMsgcontainer}>
+              <View style={styles.emptyMsgContainer}>
+                  <Text numberOfLines={2} style={styles.emptyMsg}>
+                      {getLabel("export.no_infographic")}
+                  </Text>
+              </View>
+            </View>
+          ) :  
+          <PreviewInfographicComponent tripId={this.props.tripId}
+              infographicId={this.props.infographicId}
+              updateShareInfographicUrl={this._updateShareInfographicUrl}>
+          </PreviewInfographicComponent>  
+
       return (
         <View style={styles.container}>
             <View style={styles.tabViewContainer}>             
@@ -352,10 +397,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
                     renderScene={({ route }) => {
                       switch (route.key) {
                         case 'first':
-                          return <PreviewInfographicComponent tripId={this.props.tripId}
-                                    infographicId={this.props.infographicId}
-                                    updateShareInfographicUrl={this._updateShareInfographicUrl}>
-                                </PreviewInfographicComponent>;
+                          return previewInfographicElement;
                         case 'second':                            
                           return <PreviewImages images={this.props.images}
                                     isExistedCurrentTrip={this.props.isExistedCurrentTrip}
@@ -368,7 +410,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
                     onIndexChange={index =>  {
                       let displayLoading = false;
 
-                      if (index == 1 && this.state.firstRendered) {
+                      if (index == 1 && this.state.firstRendered && this.props.images.length > 0) {
                         Toast.show({
                           text: getLabel("export.images_selection_warning"),
                           buttonText: "Okay",
@@ -383,7 +425,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
                           duration: 1500
                         });
                       }
-                      else if (index == 0 && !this.state.infographicUrl) {
+                      else if (index == 0 && !this.state.infographicUrl && !isDisplayEmptyMessage) {
                         displayLoading = true;
                       }
 
@@ -420,12 +462,15 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
   var trip = storeState.currentTrip;
   var images = [];
   var isExistedCurrentTrip = false;
+  var numberOfLocations = 0;
 
   if (trip && trip.tripId == tripId) {
     isExistedCurrentTrip = true;
-
+    
     trip.dates.forEach(date => {
-      date.locations.forEach(location => {
+      numberOfLocations += date.locations.length;
+
+      date.locations.forEach(location => {        
         images = images.concat(location.images.map(img => {
           return {
             ...img,
@@ -439,6 +484,7 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
   return {
     userId: storeState.user.id,
     tripId: tripId,
+    numberOfLocations: numberOfLocations,
     infographicId: trip ? trip.infographicId : "",
     images: images,
     isExistedCurrentTrip: isExistedCurrentTrip
@@ -478,5 +524,21 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     alignItems: 'center'
+  },
+  emptyMsgcontainer: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center"
+  },
+  emptyMsgContainer: {
+      maxWidth: "80%",
+      marginTop: "20%"
+  },
+  emptyMsg: {
+      ...mixins.themes.fontNormal,
+      fontSize: 18,
+      textAlign: "center",
+      color: "#383838"
   }
 });
