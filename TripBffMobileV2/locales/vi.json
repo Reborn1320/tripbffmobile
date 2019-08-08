@@ -13,7 +13,8 @@
         "done": "Hoàn thành",
         "delete": "Xóa",
         "okay": "Đồng ý",
-        "next": "Tiếp theo"
+        "next": "Tiếp theo",
+        "loading": "Đang tải"
     },
     "message": {
         "add_location": "Nhấp để thêm địa điểm",
@@ -51,7 +52,7 @@
         "add_location_search_place_label": "Địa điểm",
         "feeling_label": "Cảm nhận",
         "feeling_adjective": "Cảm thấy",
-        "activity_label": "Họat động",
+        "activity_label": "Hoạt động",
         "delete_location_modal_header": "Xóa địa điểm",
         "delete_location_modal_content": "Bạn có chắc là bạn muốn xóa địa điểm này không ?",
         "day_label": "Ngày",
@@ -79,7 +80,8 @@
         "images_tab_label": "Hình ảnh",
         "images_selection_warning": "Xin vui lòng chọn tối đa 5 hình ảnh bạn yêu thích nhất để chia sẻ!",
         "no_infographic": "Xin vui lòng thêm địa điểm và hình ảnh để xuất ra infographic!",
-        "nothing_to_share_message": "Xin vui lòng thêm địa điểm và hình ảnh để chia sẻ qua Facebook!"
+        "nothing_to_share_message": "Xin vui lòng thêm địa điểm và hình ảnh để chia sẻ qua Facebook!",
+        "title": "Xem trước và chia sẻ"
     },
     "profile": {
         "trip_label": "Chuyến đi",

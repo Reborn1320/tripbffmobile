@@ -13,7 +13,8 @@
         "done": "Done",
         "delete": "Delete",
         "okay": "Okay",
-        "next": "Next"
+        "next": "Next",
+        "loading": "Loading"
     },
     "message": {
         "add_location": "Click to add location(s)",
@@ -79,7 +80,8 @@
         "images_tab_label": "Images",
         "images_selection_warning": "Please select maximum 5 most favorite images to share!",
         "no_infographic": "Please add locations and upload images to export infographic!",
-        "nothing_to_share_message": "Please add locations and upload images to share on Facebook!"
+        "nothing_to_share_message": "Please add locations and upload images to share on Facebook!",
+        "title": "Preview & Share"
     },
     "profile": {
         "trip_label": "Trip",

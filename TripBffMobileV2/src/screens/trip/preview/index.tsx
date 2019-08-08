@@ -89,7 +89,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
 
   static navigationOptions = ({ navigation, navigationOptions }) => {
     return {
-      title: 'Export',
+      title: getLabel("export.title"),
       headerLeft:  (
         <RNa.HeaderBackButton   
            onPress={navigation.getParam('_handleBackPress')}
@@ -437,7 +437,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
             {
               this.state.displayLoading && 
                 <View style={styles.loading}>
-                  <Loading message={'loading'}/> 
+                  <Loading message={getLabel("action.loading")}/> 
                 </View>
             }           
   
