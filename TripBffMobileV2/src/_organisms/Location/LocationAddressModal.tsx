@@ -10,8 +10,8 @@ const mbxClient = require('@mapbox/mapbox-sdk');
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const baseClient = mbxClient({ accessToken: 'pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g' });
 const geoCodingService = mbxGeocoding(baseClient);
-import Mapbox from '@mapbox/react-native-mapbox-gl';
-Mapbox.setAccessToken('pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g');
+import MapboxGL from '@react-native-mapbox-gl/maps';
+MapboxGL.setAccessToken('pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g');
 import { getLabel } from "../../../i18n";
 import SearchLocation from '../../_molecules/Trip/SearchLocationComponent';
 import ActionModal from "../../_molecules/ActionModal";
@@ -71,13 +71,13 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
               </SearchLocation>
             </View>
             <View style={styles.mapContainer}>
-                <Mapbox.MapView
-                    styleURL={Mapbox.StyleURL.Street}
+                <MapboxGL.MapView
+                    styleURL={MapboxGL.StyleURL.Street}
                     zoomLevel={15}
                     centerCoordinate={[this.state.long, this.state.lat]}                        
                     style={{ flex: 1 }}
                     >
-                </Mapbox.MapView>                
+                </MapboxGL.MapView>                
             </View>             
         </View>
     );  
