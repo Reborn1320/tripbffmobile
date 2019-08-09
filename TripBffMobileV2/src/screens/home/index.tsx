@@ -39,9 +39,6 @@ const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const baseClient = mbxClient({ accessToken: 'pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g' });
 const geoCodingService = mbxGeocoding(baseClient);
 
-import Mapbox from '@mapbox/react-native-mapbox-gl';
-Mapbox.setAccessToken('pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g');
-
 import CalendarPicker from 'react-native-calendar-picker';
 import moment from "moment";
 
