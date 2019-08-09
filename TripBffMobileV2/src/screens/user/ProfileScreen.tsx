@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { TouchableOpacity, Image, StyleSheet } from "react-native";
 import { Container, Content, Footer, View } from "native-base";
 import _ from "lodash";
 import Loading from "../../_atoms/Loading/Loading";
@@ -60,9 +61,14 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         };
     }
 
-    static navigationOptions = {
-        header: null
-    };
+    static navigationOptions = ({ navigation }) => ({
+        headerRight: (<TouchableOpacity style={styles.settingButtonContainer}
+                                onPress={navigation.getParam('_editUserSettings')}>
+                            <Image                               
+                                source={require('../../../assets/Setting.png')}
+                            />
+                    </TouchableOpacity>)
+    });
 
     componentDidMount() {
         let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
@@ -70,10 +76,15 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         this._cancelRequest = cancelRequest;
 
         this._refreshTrips();
+        this.props.navigation.setParams({ _editUserSettings: this._editUserSettings });
     } 
 
     componentWillUnmount() {        
         this._cancelRequest('Operation canceled by the user.');
+    }
+
+    private _editUserSettings = () => {
+        this.props.navigation.navigate(NavigationConstants.Screens.UserSettingsScreen);
     }
 
     private _refreshTrips = () => {
@@ -177,3 +188,17 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         );
     }
 }
+
+const styles = StyleSheet.create({
+    actionButtonIcon: {
+      fontSize: 20,
+      height: 22,
+      color: 'white',
+    },
+    settingButtonContainer: {
+        marginRight: 15
+    },
+    settingIcon: {
+        fontSize: 24
+    }
+  });

@@ -14,7 +14,8 @@ export const NavigationConstants = {
     LocationImageDetails: "LocationImageDetail",
     TripImport: "TripImportation",
     LandingPage: "LandingPage",
-    TripEditBasic: "TripEditBasic"
+    TripEditBasic: "TripEditBasic",
+    UserSettingsScreen: "UserSettings"
   }
 };
 

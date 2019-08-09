@@ -13,8 +13,6 @@ I18n.translations = {
   vi
 };
 
-I18n.locale = 'vi';
-
 // The method we'll use instead of a regular string
 export function getLabel(name, params = {}) {
   return I18n.t(name, params);

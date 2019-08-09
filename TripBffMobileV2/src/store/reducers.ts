@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment, { Moment } from "moment";
 import { StoreData } from "./Interfaces";
-import { AUTH_ADD_TOKEN } from './User/actions';
+import { AUTH_ADD_TOKEN, UPDATE_LOCALE } from './User/actions';
 import {
     LOCATION_REMOVE,
     LOCATION_ADD,
@@ -26,7 +26,8 @@ const userInitState: StoreData.UserVM = {
     username: "asdf",
     fullName: "adffff",
     email: "asdf@gmail.com",
-    token: "ASdf"
+    token: "ASdf",
+    locale: "en"
 }
 
 const initState: StoreData.BffStoreData = {
@@ -69,6 +70,12 @@ function getDatesProperty(fromDate: Moment, toDate: Moment, locations: StoreData
 function userReducer(state, action) {
     if (action.type == AUTH_ADD_TOKEN) {
         return action.user;
+    }
+    else if (action.type == UPDATE_LOCALE) {
+        return {
+            ...state,
+            locale: action.locale
+        }
     }
 
     return state;

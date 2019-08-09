@@ -54,7 +54,7 @@ class FeelingItem extends React.PureComponent<any> {
         <View style={styles.feelingItem}>
           <Icon style={styles.feelingIcon} type="FontAwesome5" name={this.props.icon} />
           <View style={styles.feelingNameContainer}>
-            <Text numberOfLines={1}>{this.props.label}</Text>
+            <Text numberOfLines={2}>{this.props.label}</Text>
           </View> 
         </View>
       </TouchableOpacity>
@@ -292,7 +292,7 @@ const styles = StyleSheet.create<Style>({
     borderColor: '#DADADA'
   },
   feelingNameContainer: {
-    maxWidth: "80%"
+    maxWidth: "50%"
   },
   selectedFeelingItemContainer: {
     width: "94%",

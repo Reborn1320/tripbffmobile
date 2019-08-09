@@ -26,6 +26,8 @@ export module StoreData {
     export interface FeelingVM {
         feelingId: string,
         label: string,
+        label_en: string,
+        label_vi: string,
         icon: string
     }
 
@@ -97,7 +99,8 @@ export module StoreData {
         facebook?: {
             accessToken,
             id: string
-        }
+        },
+        locale: string
         //TODO: expired time...
     }
 
@@ -115,7 +118,8 @@ export module StoreData {
 
     export interface PreDefinedFeelingVM {
         feelingId: string,
-        label: string,
+        label_en: string,
+        label_vi: string,
         icon: string
     }
 

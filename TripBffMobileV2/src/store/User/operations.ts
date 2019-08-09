@@ -1,4 +1,4 @@
-import { addToken } from "./actions";
+import { addToken, updateLocate as updateLocaleAction } from "./actions";
 import { StoreData } from "../Interfaces";
 import { setAuthorizationHeader } from "../../screens/_services/apis";
 import { setAuthorizationHeader as setAuthorizationHeader2 } from "../../store/ApisAsAService";
@@ -27,6 +27,7 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
           fullName: "adffff",
           email: email,
           token: token,
+          locale: "en"
         };
 
         dispatch(addToken(user));
@@ -63,7 +64,8 @@ export function loginUsingFacebookAccessToken(facebookUserId: string, accessToke
           facebook: {
             accessToken,
             id: facebookUserId
-          }
+          },
+          locale: "en"
         };
 
         dispatch(addToken(user));
@@ -106,6 +108,7 @@ export function loginUsingDeviceId(): ThunkResultBase {
           fullName: "Quest",
           email: userName,
           token: token,
+          locale: "en"
         };
 
         dispatch(addToken(user));
@@ -127,6 +130,20 @@ export function isLoggedIn(): ThunkResultBase {
 
 export async function logOut() {
   return await AsyncStorage.removeItem(STORAGE_KEYS.USER);
+}
+
+export function updateLocale(locale: string): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {    
+
+    //TODO: provide uri
+    return extraArguments.loginApiService.patch("")
+      .then(async (res) => {
+        dispatch(updateLocaleAction(locale));
+      })
+      .catch(error => {
+        console.log("error updae locale", error);
+      });
+  };
 }
 
 async function loadLoggedUser(dispatch) {

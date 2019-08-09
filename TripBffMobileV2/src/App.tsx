@@ -28,6 +28,7 @@ import NBTheme from "./theme/variables/material.js";
 import { getLabel } from "../i18n";
 import TripEditBasicScreen from "./screens/trip/create/TripEditBasic";
 import { mixins } from "./_utils";
+import UserSettingsScreen from "./screens/user/UserSetting";
 
 var mockLoginApi = mockLoginApiService;
 var mockTripApi = mockTripApiService;
@@ -104,6 +105,7 @@ const TripDetailsNavigator = createStackNavigator(
 const ProfileNavigator = createStackNavigator(
   {
     Profile: {screen: ProfileScreenContainer },
+    UserSettings: { screen: UserSettingsScreen },
     TripEdition: { screen: TripEditScreenContainer }, 
     LocationDetail: { screen: LocationDetailScreen },
     LocationImageDetail: { screen: LocationImageDetailScreen },
