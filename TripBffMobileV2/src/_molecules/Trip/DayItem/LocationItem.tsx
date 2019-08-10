@@ -22,6 +22,7 @@ export interface Props extends IMapDispatchToProps, PropsBase {
     tripId: string,
     dateIdx: number,
     location: StoreData.LocationVM,
+    locale: string
 }
 
 export interface State {
@@ -59,11 +60,25 @@ export default class LocationItem extends Component<Props, State> {
     render() {
 
         var location: StoreData.LocationVM = this.props.location;
+        var { locale } = this.props;
 
-        var feelingLabel = location.feeling && location.feeling.label ? location.feeling.label : "";
-        var feelingIcon = location.feeling && location.feeling.icon ? location.feeling.icon : "smile";
-        var activityLabel = location.activity && location.activity.label ? location.activity.label : getLabel("trip_detail.activity_label");
-        var activityIcon = location.activity && location.activity.icon ? location.activity.icon : "running";
+        var feelingLabel = "",
+            feelingIcon = "smile";
+
+        if (location.feeling) {
+            feelingLabel = location.feeling["label_" + locale]
+                     ? location.feeling["label_" + locale] : location.feeling["label_en"]; //default is en if locale not found
+            feelingIcon = location.feeling.icon ? location.feeling.icon : "smile";
+        }
+
+        var activityLabel = getLabel("trip_detail.activity_label"),
+            activityIcon = "running";
+
+        if (location.activity) {
+            activityLabel = location.activity["label_" + locale]
+                 ? location.activity["label_" + locale] : location.activity["label_en"];
+            activityIcon = location.activity.icon ? location.activity.icon : "running";
+        }
 
         let locationImages: StoreData.ImportImageVM[] = [];
         let locationImageEntries: IEntry[] = [];

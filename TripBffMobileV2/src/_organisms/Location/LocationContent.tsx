@@ -15,6 +15,8 @@ interface IMapDispatchToProps {
 }
 
 export interface Props extends IMapDispatchToProps {
+    locale: string,
+
     name: string,
     address: string,
     likeItems: Array<StoreData.LocationLikeItemVM>,
@@ -44,6 +46,7 @@ export default class LocationContent extends React.PureComponent<Props, State> {
                 </LocationName>
 
                 <LocationLike
+                    locale={this.props.locale}
                     likeItems={this.props.likeItems}
                     openUpdateLocationHighlightModalHanlder={this.props.openUpdateLocationHighlightModalHanlder}>
                 </LocationLike>

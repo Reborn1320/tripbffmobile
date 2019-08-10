@@ -26,7 +26,8 @@ export interface Props extends IMapDispatchToProps, PropsBase {
     locationIds?: Array<string>
     dateIdx: number
     date?: moment.Moment
-    dateVm?: StoreData.DateVM
+    dateVm?: StoreData.DateVM,
+    locale?: string
 }
 
 export interface State {
@@ -63,6 +64,7 @@ export class DayItemComponent extends Component<Props, State> {
                     <LocationItem tripId={this.props.tripId} dateIdx={dateIdx} key={e}
                         location={_.find(dateVm.locations, (item) => item.locationId == e)}
                         navigation={this.props.navigation}
+                        locale={this.props.locale}
                         removeLocationHandler={this.props.openRemoveLocationModalHandler}
                         openUpdateFeelingModalHandler={this.props.openUpdateFeelingModalHandler}
                         openUpdateActivityModalHandler={this.props.openUpdateActivityModalHandler}>
@@ -94,7 +96,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
         tripId: tripId,
         locationIds: dateVm.locationIds,
         date: dateVm.date,
-        dateVm
+        dateVm,
+        locale: storeState.user.locale
     };
 };
 

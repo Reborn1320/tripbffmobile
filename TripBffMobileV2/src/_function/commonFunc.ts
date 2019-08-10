@@ -4,6 +4,7 @@ import { func } from "prop-types";
 const CancelToken = axios.CancelToken;
 var RNFS = require('react-native-fs');
 import _, { } from "lodash";
+import { LOCALES } from "../screens/_services/SystemConstants";
 
 export function getAddressFromLocation (locationJson) {
     let address = "";
@@ -88,4 +89,14 @@ export async function deleteFilesInFolder(folderPath) {
       .catch((err) => {
         console.log(err.message, err.code);
       });;
+}
+
+export function createLabelLocales(label) {
+  var item = {};
+
+  LOCALES.forEach(locale => {
+    item["label_" + locale.locale] = label;
+  });
+
+  return item;
 }

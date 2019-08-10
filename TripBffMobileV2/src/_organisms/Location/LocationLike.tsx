@@ -8,6 +8,7 @@ import NBTheme from "../../theme/variables/material.js";
 import { mixins } from "../../_utils";
 
 export interface Props {
+    locale: string,
     likeItems: Array<StoreData.LocationLikeItemVM>,
     openUpdateLocationHighlightModalHanlder: () => void
 }
@@ -36,16 +37,20 @@ export default class LocationLike extends React.PureComponent<Props, State> {
                     this.props.likeItems ?
                         <View style={{ flexDirection: "row", flexWrap: 'wrap' }}>
                             {
-                                this.props.likeItems.map(item =>
-                                    (item.highlightType == "Like"
-                                        ? <Badge style={styles.badge} key={item.highlightId} primary>
-                                            <Text>{item.label}</Text>
-                                        </Badge>
-                                        : <Badge style={styles.badge} key={item.highlightId} danger>
-                                            <Text>{item.label}</Text>
+                                this.props.likeItems.map(item => {
+                                    var label = item["label_" + this.props.locale] 
+                                        ? item["label_" + this.props.locale] : item["label_en"];
 
-                                        </Badge>
-                                    ))
+                                    if (item.highlightType == "Like")
+                                        return <Badge style={styles.badge} key={item.highlightId} primary>
+                                                 <Text>{label}</Text>
+                                               </Badge>
+                                    else { 
+                                        return <Badge style={styles.badge} key={item.highlightId} danger>
+                                                 <Text>{label}</Text>
+                                               </Badge>                                          
+                                    }                                 
+                                })
                             }
                         </View>
                         : <View></View>

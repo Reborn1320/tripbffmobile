@@ -19,13 +19,13 @@ export module StoreData {
 
     export interface LocationLikeItemVM {
         highlightId: string,
-        label: string,
+        label_en: string,
+        label_vi: string,
         highlightType: LikeTypeVM
     }
 
     export interface FeelingVM {
         feelingId: string,
-        label: string,
         label_en: string,
         label_vi: string,
         icon: string
@@ -33,7 +33,8 @@ export module StoreData {
 
     export interface ActivityVM {
         activityId: number,
-        label: string,
+        label_en: string,
+        label_vi: string,
         icon: string
     }
 
@@ -112,7 +113,8 @@ export module StoreData {
 
     export interface PreDefinedHighlightVM {
         highlightId: string,
-        label: string,
+        label_en: string,
+        label_vi: string,
         highlightType: LikeTypeVM
     }
 
@@ -125,7 +127,8 @@ export module StoreData {
 
     export interface PreDefinedActivityVM {
         activityId: number,
-        label: string,
+        label_en: string,
+        label_vi: string,
         icon: string
     }
 

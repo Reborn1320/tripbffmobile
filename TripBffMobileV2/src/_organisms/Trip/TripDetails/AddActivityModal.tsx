@@ -2,19 +2,17 @@
 //input: isVisible, title, content, button confirm handler.
 
 import * as React from "react";
-import { View, Text, Button, Icon, Toast } from "native-base";
-import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator, Dimensions, TextStyle } from "react-native";
-import RNModal from "react-native-modal";
+import { View, Text, Icon } from "native-base";
+import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator, TextStyle } from "react-native";
 import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
 import { getAllActivities } from "../../../store/DataSource/operations";
 import { StoreData } from "../../../store/Interfaces";
 import { getLabel } from "../../../../i18n";
 import uuid4 from 'uuid/v4';
-import NBColor from "../../../theme/variables/material.js";
-import { mixins } from "../../../_utils";
 import SearchBarComponent from "../../../_atoms/SearchBarComponent";
 import ActionModal from "../../../_molecules/ActionModal";
+import { createLabelLocales } from "../../../_function/commonFunc";
 
 class SelectedActivityItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -30,7 +28,7 @@ class SelectedActivityItem extends React.PureComponent<any> {
               <Icon style={styles.activityIcon} type="FontAwesome5" name={this.props.item.icon} />
             </View>
             <View style={styles.activityNameSelectedContainer}>
-              <Text numberOfLines={1}>{this.props.item.label}</Text>   
+              <Text numberOfLines={1}>{this.props.item["label_" + this.props.locale]}</Text>   
             </View>
             <Icon name="md-close" type="Ionicons" style={styles.iconRemoved}/>          
           </View>
@@ -41,11 +39,7 @@ class SelectedActivityItem extends React.PureComponent<any> {
 
 class ActivityItem extends React.PureComponent<any> {
   _onPress = () => {
-    this.props.onPressItem({
-      activityId: this.props.id,
-      label: this.props.label,
-      icon: this.props.icon
-    });
+    this.props.onPressItem(this.props.item);
   };
 
   render() {
@@ -53,10 +47,10 @@ class ActivityItem extends React.PureComponent<any> {
       <TouchableOpacity onPress={this._onPress} style={[styles.activityItemContainer, this.props.styles]}>
         <View style={styles.activityItem}>
           <View style={styles.activityIconContainer}>
-            <Icon style={styles.activityIcon} type="FontAwesome5" name={this.props.icon} /> 
+            <Icon style={styles.activityIcon} type="FontAwesome5" name={this.props.item.icon} /> 
           </View>
           <View style={styles.activityNameContainer}>
-            <Text numberOfLines={1}>{this.props.label}</Text>
+            <Text numberOfLines={1}>{this.props.item["label_" + this.props.locale]}</Text>
           </View>          
         </View>
       </TouchableOpacity>
@@ -91,17 +85,15 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
       let numberOfCharacters = search.length;
 
       var searchLower = search.toLowerCase();
-      filterItems = filterItems.filter(item => item.label.toLowerCase().includes(searchLower));
+      filterItems = filterItems.filter(item => item["label_" + this.props.locale].toLowerCase().includes(searchLower));
 
       if (this.state.newDefinedItem)
         filterItems = filterItems.filter(item => item.activityId != this.state.newDefinedItem.activityId);
 
-      var exactItem = filterItems.find(item => item.label.toLowerCase() == searchLower);
+      var exactItem = filterItems.find(item => item["label_" + this.props.locale].toLowerCase() == searchLower);
 
       if (!exactItem) {
-        newItem = { 
-          label: search
-        };
+        newItem = createLabelLocales(search);
         filterItems.push(newItem);         
       }        
     }
@@ -119,7 +111,7 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
 
     if (search) {
       var searchLower = search.toLowerCase();
-      preDefinedItems = preDefinedItems.filter(item => item.label.toLowerCase().includes(searchLower));
+      preDefinedItems = preDefinedItems.filter(item => item["label_" + this.props.locale].toLowerCase().includes(searchLower));
     }
 
     this.setState({
@@ -144,7 +136,7 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
     this.props.onConfirmHandler(selectedItem);
   }
 
-  _keyExtractor = (item, index) => item.activityId;
+  _keyExtractor = (item, index) => item.label_en;
 
   _renderItem = ({item, index}) => {
     let firstItemStyle;
@@ -155,11 +147,10 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
 
     return (    
       <ActivityItem
-        id={item.activityId}
-        label={item.label}
-        icon={item.icon}
+        item={item}
         onPressItem={this._onConfirm}
         styles={firstItemStyle}
+        locale={this.props.locale}
       />
     );
   } 
@@ -172,6 +163,7 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
               <SelectedActivityItem
                 item={this.state.selectedItem}
                 onPressItem={this._onDeselectConfirm}
+                locale={this.props.locale}
               />
             }
           </View>
@@ -202,6 +194,7 @@ export interface Props {
   dateIdx: number;
   preDefinedActivities?: Array<StoreData.PreDefinedActivityVM>
   selectedActivity?: StoreData.ActivityVM;
+  locale?: string;
   confirmHandler: (locationId, activity) => void;
   cancelHandler?: () => void;
 }
@@ -245,14 +238,15 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
   }
 
   render() {
-    const { isVisible, preDefinedActivities, selectedActivity } = this.props;
+    const { isVisible, preDefinedActivities, selectedActivity, locale } = this.props;
     console.log('selected acvitiy: ' + JSON.stringify(selectedActivity));
     var contentElement = preDefinedActivities
           ? <ActivityContainerComponent
               items={preDefinedActivities}
               selectedItem={selectedActivity}
               onConfirmHandler={this._onConfirm}
-              removeSelectedActivityHandler={this._removeSelectedActivity}>
+              removeSelectedActivityHandler={this._removeSelectedActivity}
+              locale={locale}>
             </ActivityContainerComponent>
           : <ActivityIndicator size="small" color="#00ff00" />
           
@@ -352,7 +346,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 
   return {
       preDefinedActivities: storeState.dataSource.activities,
-      selectedActivity: activity
+      selectedActivity: activity,
+      locale: storeState.user.locale
   };
 };
 

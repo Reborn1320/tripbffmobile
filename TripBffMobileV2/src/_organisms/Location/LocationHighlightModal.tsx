@@ -14,6 +14,7 @@ import TabBarComponent from "../../_atoms/TabBar";
 import SearchBarComponent from "../../_atoms/SearchBarComponent";
 import { mixins } from "../../_utils";
 import  NBColor from "../../theme/variables/commonColor.js";
+import { createLabelLocales } from "../../_function/commonFunc";
 
 class SelectedHighlightItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -28,7 +29,7 @@ class SelectedHighlightItem extends React.PureComponent<any> {
           style={styles.highlightItemContainer}>
           <View style={styles.highlightItem}>
             <View style={styles.highlightNameSelectedContainer}>
-              <Text numberOfLines={1} style={{color: textColor}}>{this.props.item.label}</Text>   
+              <Text numberOfLines={1} style={{color: textColor}}>{this.props.item["label_" + this.props.locale]}</Text>   
             </View>       
             <Icon name='md-close' type="Ionicons" style={[styles.iconRemoved, {color: textColor}]}/>           
           </View>
@@ -47,7 +48,7 @@ class HighlightItem extends React.PureComponent<any> {
       <TouchableOpacity onPress={this._onPress}       
           style={styles.highlightItemContainer}>
           <View style={styles.highlightItem}>          
-            <Text>{this.props.item.label}</Text>               
+            <Text>{this.props.item["label_" + this.props.locale]}</Text>               
           </View>
       </TouchableOpacity>
     );
@@ -97,20 +98,17 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
       }
       else {
         var searchLower = search.toLowerCase();
-            filterItems = filterItems.filter(item => item.label.toLowerCase().includes(searchLower));
+            filterItems = filterItems.filter(item => item["label_" + this.props.locale].toLowerCase().includes(searchLower));
 
         if (this.state.newDefinedItem)
           filterItems = filterItems.filter(item => item.highlightId != this.state.newDefinedItem.highlightId);
 
-        var exactItem = filterItems.find(item => item.label.toLowerCase() == searchLower);
+        var exactItem = filterItems.find(item => item["label_" + this.props.locale].toLowerCase() == searchLower);
 
         if (!exactItem) {
           var lastPredefinedItem = this.props.items.slice(-1);
-
-          newItem = { 
-            label: search,
-            highlightType: lastPredefinedItem[0].highlightType
-          };
+          newItem = createLabelLocales(search);
+          newItem.highlightType = lastPredefinedItem[0].highlightType;         
           filterItems.push(newItem);         
         }     
       }      
@@ -120,7 +118,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
   };
 
   _onConfirm = (selectedItem) => {
-    let numberOfCharacters = selectedItem.label.length;
+    let numberOfCharacters = selectedItem["label_" + this.props.locale].length;
 
     if (numberOfCharacters > 20) {
       Toast.show({
@@ -163,7 +161,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
 
     if (search) {
       var searchLower = search.toLowerCase();
-      preDefinedItems = preDefinedItems.filter(item => item.label.toLowerCase().includes(searchLower));
+      preDefinedItems = preDefinedItems.filter(item => item["label_" + this.props.locale].toLowerCase().includes(searchLower));
     }
 
     this.setState({
@@ -179,15 +177,17 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
     <SelectedHighlightItem
       item={item}
       onPressItem={this._onDeselectConfirm}
+      locale={this.props.locale}
     />
   );
 
-  _keyExtractor = (item, index) => item.highlightId;
+  _keyExtractor = (item, index) => item["label_en"];
 
   _renderItem = ({item}) => (
     <HighlightItem
       item={item}
       onPressItem={this._onConfirm}
+      locale={this.props.locale}
     />
   );
   
@@ -280,13 +280,15 @@ class AddHighlightModalContentComponent extends React.PureComponent<any, ModalSt
                                             selectedItems={selectedLikeItems}
                                             addSelectedHighlights={this._addSelectedHighlights} 
                                             removeSelectedHighlights={this._removeSelectedHighlights}
-                                            styles={styles.tabScene} />;
+                                            styles={styles.tabScene} 
+                                            locale={this.props.locale}/>;
             case 'second':
               return <TabHighlightComponent items={dislikePreDefinedItems}
                                             selectedItems={selectedDisLikeItems}
                                             addSelectedHighlights={this._addSelectedHighlights} 
                                             removeSelectedHighlights={this._removeSelectedHighlights}
-                                            styles={styles.tabScene} />;
+                                            styles={styles.tabScene}
+                                            locale={this.props.locale} />;
             default:
               return null;
           }
@@ -307,6 +309,7 @@ export interface Props {
   isVisible: boolean;
   preDefinedHighlights?: Array<StoreData.PreDefinedHighlightVM>,
   likeItems: Array<StoreData.LocationLikeItemVM>,
+  locale?: string,
   confirmHandler: (highlights: Array<StoreData.LocationLikeItemVM>) => void;
   cancelHandler?: () => void;
 }
@@ -365,7 +368,8 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
               preDefinedHighlights={this.props.preDefinedHighlights}
               selectedHighlightItems={this.props.likeItems}
               addSelectedHighlights={this._addSelectedHighlights}
-              removeSelectedHighlights={this._removeSelectedHighlights}>            
+              removeSelectedHighlights={this._removeSelectedHighlights}
+              locale={this.props.locale}>            
           </AddHighlightModalContentComponent>
           : <ActivityIndicator size="small" color="#00ff00" />
           
@@ -433,9 +437,10 @@ const styles = StyleSheet.create<Style>({
   
 const AddHighlightModalStyle = connectStyle<typeof AddHighlightModalComponent>('NativeBase.Modal', styles)(AddHighlightModalComponent);
 
-const mapStateToProps = (storeState, ownProps: Props) => {
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
   return {
-      preDefinedHighlights: storeState.dataSource.highlights
+      preDefinedHighlights: storeState.dataSource.highlights,
+      locale: storeState.user.locale
   };
 };
 

@@ -37,7 +37,8 @@ export interface Props extends IMapDispatchToProps {
     lat: number,
     likeItems: Array<StoreData.LocationLikeItemVM>,
     description: string,
-    images: Array<StoreData.ImportImageVM>
+    images: Array<StoreData.ImportImageVM>,
+    locale: string
 }
 
 interface State {
@@ -245,6 +246,8 @@ class LocationDetail extends React.Component<Props, State> {
                 <View style={{ flex: 1 }}>
                     <ScrollView keyboardShouldPersistTaps={'handled'}>
                         <LocationContent
+                            locale={this.props.locale}
+                            
                             address={this.props.address}
                             name={this.props.name}
                             likeItems={this.props.likeItems}
@@ -320,7 +323,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
         lat: location.location.lat,
         likeItems: location.highlights,
         description: location.description,
-        images: location.images
+        images: location.images,
+        locale: storeState.user.locale
     };
 };
 
