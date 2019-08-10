@@ -45,9 +45,11 @@ class FeelingItem extends React.PureComponent<any> {
 
   render() {
     return (
-      <TouchableOpacity onPress={this._onPress} style={styles.feelingItemContainer}>
+      <TouchableOpacity onPress={this._onPress} style={[styles.feelingItemContainer, this.props.styles]}>
         <View style={styles.feelingItem}>
-          <Icon style={styles.feelingIcon} type="FontAwesome5" name={this.props.item.icon} />
+          <View style={styles.feelingIconContainer}>
+            <Icon style={styles.feelingIcon} type="FontAwesome5" name={this.props.item.icon} />
+          </View>
           <View style={styles.feelingNameContainer}>
             <Text numberOfLines={2}>{this.props.item["label_" + this.props.locale]}</Text>
           </View> 
@@ -135,13 +137,21 @@ class FeelingContainerComponent extends React.Component<any, any> {
 
   _keyExtractor = (item, index) => item.label_en;
 
-  _renderItem = ({item}) => (
-    <FeelingItem
-      item={item}
-      onPressItem={this._onConfirm}
-      locale={this.props.locale}
-    />
-  );
+  _renderItem = ({item, index}) => {
+    let firstItemStyle;
+
+    if (index == 0) {
+      firstItemStyle = styles.firstFeelingItemContainer;
+    }
+
+    return (
+      <FeelingItem
+        item={item}
+        onPressItem={this._onConfirm}
+        locale={this.props.locale}
+      />
+    )
+  };
 
   render() {
     return (
@@ -165,7 +175,7 @@ class FeelingContainerComponent extends React.Component<any, any> {
              data={this.state.preDefinedItems}
              keyExtractor={this._keyExtractor}
              renderItem={this._renderItem}
-             numColumns={2}
+             numColumns={1}
            />
          </View>
       </View>
@@ -258,7 +268,9 @@ interface Style {
   feelingPreDefinedContainer: ViewStyle;
   feeelingPreDefinedFlatList: ViewStyle;
   feelingItemContainer: ViewStyle;
+  firstFeelingItemContainer: ViewStyle;
   feelingNameContainer: ViewStyle;
+  feelingIconContainer: ViewStyle;
   selectedFeelingItemContainer: ViewStyle;
   feelingIconSelectedIconContainer: ViewStyle;
   feelingNameSelectedContainer: ViewStyle;
@@ -280,14 +292,22 @@ const styles = StyleSheet.create<Style>({
     marginTop: 12
   },
   feelingItemContainer: {
-    width: Dimensions.get('window').width / 2,
-    height: 40,    
-    borderWidth: 0.5,
+    width: "94%",
+    height: 44,
+    marginLeft: "3%",
+    marginRight: "3%",
+    borderBottomWidth: 0.5,
     borderStyle: "solid",
     borderColor: '#DADADA'
   },
+  firstFeelingItemContainer: {
+    borderTopWidth: 0.5
+  },
   feelingNameContainer: {
-    maxWidth: "50%"
+    maxWidth: "85%"
+  },
+  feelingIconContainer: {
+    width: "15%"
   },
   selectedFeelingItemContainer: {
     width: "94%",
