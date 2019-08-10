@@ -93,5 +93,10 @@
         "empty_trips_second_title": "Hãy lưu trữ và chia sẻ chúng nào",
         "emptry_trips_button_title": "Bắt đầu",
         "loading_trips_message": "Đang tải các chuyến đi"
-    }       
+    },
+    "setting": {
+        "header_title": "Cài đặt",
+        "language_setting_label": "Ngôn Ngữ",
+        "feedback_setting_label": "Phản hồi"
+    }            
 }

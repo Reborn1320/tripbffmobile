@@ -3,6 +3,7 @@ package com.tripbff.android;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -44,6 +45,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactNativeRestartPackage(),
             new SplashScreenReactPackage(),
             new VectorIconsPackage(),
             new ReanimatedPackage(),

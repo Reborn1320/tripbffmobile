@@ -15,7 +15,8 @@ export const NavigationConstants = {
     TripImport: "TripImportation",
     LandingPage: "LandingPage",
     TripEditBasic: "TripEditBasic",
-    UserSettingsScreen: "UserSettings"
+    UserSettingsScreen: "UserSettings",
+    LanguageSelection: "LanguageSelection"
   }
 };
 

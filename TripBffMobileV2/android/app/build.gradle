@@ -154,6 +154,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-restart')
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-reanimated')

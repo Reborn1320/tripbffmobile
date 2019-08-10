@@ -29,6 +29,8 @@ import { getLabel } from "../i18n";
 import TripEditBasicScreen from "./screens/trip/create/TripEditBasic";
 import { mixins } from "./_utils";
 import UserSettingsScreen from "./screens/user/UserSetting";
+import LanguageSelection from "./_organisms/User/LanguageSelection";
+import { DEFAULT_LOCALE } from "./screens/_services/SystemConstants";
 
 var mockLoginApi = mockLoginApiService;
 var mockTripApi = mockTripApiService;
@@ -110,7 +112,8 @@ const ProfileNavigator = createStackNavigator(
     LocationDetail: { screen: LocationDetailScreen },
     LocationImageDetail: { screen: LocationImageDetailScreen },
     InfographicPreview: { screen: InfographicPreviewScreen },
-    TripEditBasic: { screen: TripEditBasicScreen }
+    TripEditBasic: { screen: TripEditBasicScreen },
+    LanguageSelection: { screen: LanguageSelection }
   },
   stackConfigs
 );
@@ -158,16 +161,10 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
 
 const TabNavigator = createBottomTabNavigator({
   "Create": {
-    screen: TripCreationNavigator,
-    navigationOptions: {
-      tabBarLabel: getLabel("menu.create").toUpperCase()  
-    }
+    screen: TripCreationNavigator
   },
   "Me": {
-    screen: ProfileNavigator,
-    navigationOptions: {
-      tabBarLabel: getLabel("menu.profile").toUpperCase()  
-    }
+    screen: ProfileNavigator
   }
 },
 {
@@ -178,16 +175,17 @@ const TabNavigator = createBottomTabNavigator({
   tabBarOptions: {
     activeTintColor: NBTheme.brandPrimary,
     inactiveTintColor: 'gray',
-    labelStyle: {
-      fontSize: 10,
-      ...mixins.themes.fontSemiBold,
-      lineHeight: 13,
-      fontStyle: "normal",
-      marginBottom: 12
-    },
-    tabStyle: {
-      height: 57
-    }
+    showLabel:false,
+    // labelStyle: {
+    //   fontSize: 10,
+    //   ...mixins.themes.fontSemiBold,
+    //   lineHeight: 13,
+    //   fontStyle: "normal",
+    //   marginBottom: 12
+    // },
+    // tabStyle: {
+    //   height: 57
+    // }
   },
 });
 
@@ -206,12 +204,28 @@ const AppNavigator = createSwitchNavigator(
 
 let Navigation = createAppContainer(AppNavigator);
 
-export default () => (
-  <Provider store={store}>
-    <Root>
-      <Navigation/>
-    </Root>
-  </Provider>
-);
+export default class App extends React.Component {
+  state = {
+    locale: DEFAULT_LOCALE,
+  };
+
+  setLocale = locale => {
+    console.log('set locale: ' + locale);
+    this.setState({ locale });
+  };
+
+
+  render() {
+    return (
+      <Provider store={store}>
+        <Root>
+          <Navigation screenProps={{
+              setLocale: this.setLocale,
+            }}/>
+        </Root>
+      </Provider>
+    );
+  }
+}
 
 console.disableYellowBox = true;

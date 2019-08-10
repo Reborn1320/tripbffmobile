@@ -93,5 +93,10 @@
         "empty_trips_second_title": "Let's record and share them",
         "emptry_trips_button_title": "Start",
         "loading_trips_message": "Loading trips"
-    }       
+    },
+    "setting": {
+        "header_title": "Settings",
+        "language_setting_label": "Language",
+        "feedback_setting_label": "App Feedback"
+    }      
 }

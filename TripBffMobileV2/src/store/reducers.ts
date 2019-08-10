@@ -20,6 +20,7 @@ import {
 } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
 import { TRIPS_GET_CURRENT_MINIMIZED } from "./Trips/actions";
+import { DEFAULT_LOCALE } from "../screens/_services/SystemConstants";
 
 const userInitState: StoreData.UserVM = {
     id: "",
@@ -27,7 +28,7 @@ const userInitState: StoreData.UserVM = {
     fullName: "adffff",
     email: "asdf@gmail.com",
     token: "ASdf",
-    locale: "en"
+    locale: DEFAULT_LOCALE
 }
 
 const initState: StoreData.BffStoreData = {
@@ -70,14 +71,14 @@ function getDatesProperty(fromDate: Moment, toDate: Moment, locations: StoreData
 function userReducer(state, action) {
     if (action.type == AUTH_ADD_TOKEN) {
         return action.user;
-    }
+    }   
     else if (action.type == UPDATE_LOCALE) {
         return {
             ...state,
             locale: action.locale
         }
     }
-
+    
     return state;
 }
 

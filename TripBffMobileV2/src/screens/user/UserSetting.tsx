@@ -1,17 +1,12 @@
 import React, { Component } from "react";
-import { TouchableOpacity, Image, StyleSheet } from "react-native";
 import { Container, Content, List, ListItem, Text, View, Left, Right, Icon } from "native-base";
 import _ from "lodash";
 import { NavigationConstants } from "../_shared/ScreenConstants";
-import { StoreData } from "../../store/Interfaces";
 import { NavigationScreenProp } from "react-navigation";
 import { getLabel } from "../../../i18n";
-import LanguageModal from "../../_organisms/User/LanguageModal";
-import I18n from 'react-native-i18n';
-
-export interface IStateProps { }
 
 interface IMapDispatchToProps {
+    updateLocale: (locale: string) => Promise<void>;
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -19,42 +14,18 @@ export interface Props extends IMapDispatchToProps {
 }
 
 interface State { 
-    isOpenLanguageModal: boolean   
 }
 
-export default class UserSettingsScreen extends Component<Props & IStateProps, State> {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            isOpenLanguageModal: false
-        }
-    }
+export default class UserSettingsScreen extends Component<Props & IMapDispatchToProps, State> {
 
     static navigationOptions = ({ navigation }) => ({
-        title: "Settings",
+        title: getLabel("setting.header_title"),
         headerRight: <View></View>
     });
    
-    private _changeLanguage = () => {
-        this.setState({
-            isOpenLanguageModal: true
-        })
-    }
-    
-    private _onConfirmLanguageHandler = (locale) => {
-        I18n.locale =  locale;
-        this.setState({
-            isOpenLanguageModal: false
-        })
-    }
-
-    private _onCancelLanguageHandler = () => {
-        this.setState({
-            isOpenLanguageModal: false
-        })
-    }
+    private _changeLanguage = () => {        
+       this.props.navigation.navigate(NavigationConstants.Screens.LanguageSelection);
+    }  
 
     render() {
         return (
@@ -63,7 +34,7 @@ export default class UserSettingsScreen extends Component<Props & IStateProps, S
                     <List>
                         <ListItem onPress={this._changeLanguage}>
                              <Left>
-                                <Text>Language</Text>
+                                <Text>{getLabel("setting.language_setting_label")}</Text>
                              </Left>
                             <Right>  
                                 <Icon name="arrow-forward" />
@@ -72,24 +43,15 @@ export default class UserSettingsScreen extends Component<Props & IStateProps, S
                                             
                         <ListItem>
                             <Left>
-                                <Text>App Feedback</Text>
+                                <Text>{getLabel("setting.feedback_setting_label")}</Text>
                             </Left>
                             <Right>
                                 <Icon name="arrow-forward" />
                             </Right>
                         </ListItem>   
-                    </List>
-                    <LanguageModal
-                        isVisible={this.state.isOpenLanguageModal}
-                        locale={"en"}
-                        confirmHandler={this._onConfirmLanguageHandler}
-                        cancelHandler={this._onCancelLanguageHandler}>
-                    </LanguageModal>
+                    </List>  
                 </Content>
             </Container>            
         );
     }
 }
-
-const styles = StyleSheet.create({
-    });

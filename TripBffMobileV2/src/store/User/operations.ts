@@ -27,7 +27,7 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
           fullName: "adffff",
           email: email,
           token: token,
-          locale: "en"
+          locale: "en" //TODO: move to System Constants
         };
 
         dispatch(addToken(user));
@@ -51,7 +51,7 @@ export function loginUsingFacebookAccessToken(facebookUserId: string, accessToke
 
     return extraArguments.loginApiService.post("facebook/verify", { data: loginUser })
       .then(res => {
-        const { user: { id, userName, fullName, facebook: { accessToken } }, token } = res.data;
+        const { user: { id, userName, fullName, facebook: { accessToken }, locale }, token } = res.data;
         console.log(`user info id=${id}, userName=${userName}`);
         console.log("token ", token);
 
@@ -65,7 +65,7 @@ export function loginUsingFacebookAccessToken(facebookUserId: string, accessToke
             accessToken,
             id: facebookUserId
           },
-          locale: "en"
+          locale: locale
         };
 
         dispatch(addToken(user));
@@ -98,7 +98,7 @@ export function loginUsingDeviceId(): ThunkResultBase {
 
     return extraArguments.loginApiService.post("device/login", { data: loginUser })
       .then(async (res) => {
-        const { user: { id, userName }, token } = res.data;
+        const { user: { id, userName, locale }, token } = res.data;
         console.log(`user info id=${id}, userName=${userName}`);
         console.log("token ", token);
 
@@ -108,7 +108,7 @@ export function loginUsingDeviceId(): ThunkResultBase {
           fullName: "Quest",
           email: userName,
           token: token,
-          locale: "en"
+          locale: locale
         };
 
         dispatch(addToken(user));
@@ -132,16 +132,26 @@ export async function logOut() {
   return await AsyncStorage.removeItem(STORAGE_KEYS.USER);
 }
 
-export function updateLocale(locale: string): ThunkResultBase {
-  return async function (dispatch, getState, extraArguments): Promise<any> {    
+export function updateLocaleFacebookUser(userId: string, locale: string): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> { 
 
-    //TODO: provide uri
-    return extraArguments.loginApiService.patch("")
-      .then(async (res) => {
+    var data = {
+      userId,
+      locale
+    }
+
+    return extraArguments.loginApiService.patch("/setting/locale",  { data })
+      .then(async (res) => { 
+        const user: StoreData.UserVM = JSON.parse(await getDataFromStorage(STORAGE_KEYS.USER));
+        if (user == null) return false;
+
+        user.locale = locale;
         dispatch(updateLocaleAction(locale));
+        await storeDataIntoStorage(STORAGE_KEYS.USER, JSON.stringify(user));
+        return true;
       })
       .catch(error => {
-        console.log("error updae locale", error);
+        console.log("error update locale", error);
       });
   };
 }
