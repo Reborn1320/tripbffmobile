@@ -1,6 +1,3 @@
-//this is the component that reuse `Modal` component and make it easy to use in the context of confirmation
-//input: isVisible, title, content, button confirm handler.
-
 import * as React from "react";
 import { View, Text, Button, H2 } from "native-base";
 import { StyleSheet, ViewStyle } from "react-native";
@@ -33,7 +30,7 @@ interface State {
 
 class LocationAddressModalComponent extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props);    
+    super(props);
 
     this.state = {
       name: "",
@@ -43,54 +40,54 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
     }
   }
 
-  _selectedLocationHandler = (name, address, long, lat) => {
-      this.setState({
-        name: name,
-        address: address,
-        long: long,
-        lat: lat
-      });
+  private _selectedLocationHandler = (name, address, long, lat) => {
+    this.setState({
+      name: name,
+      address: address,
+      long: long,
+      lat: lat
+    });
   }
 
-  _onCancel = () => {
-      this.props.cancelHandler();
+  private _onCancel = () => {
+    this.props.cancelHandler();
   };
 
-  _onConfirm = () => {
-      this.props.confirmHandler(this.state.name, this.state.address, this.state.long, this.state.lat);
-  }  
+  private _onConfirm = () => {
+    this.props.confirmHandler(this.state.name, this.state.address, this.state.long, this.state.lat);
+  }
 
   render() {
     const { isVisible } = this.props;
 
     var contentElement = (
-        <View style={styles.container}>
-            <View style={styles.searchContainer}>
-              <SearchLocation
-                confirmHandler={this._selectedLocationHandler}>
-              </SearchLocation>
-            </View>
-            <View style={styles.mapContainer}>
-                <MapboxGL.MapView
-                    styleURL={MapboxGL.StyleURL.Street}
-                    zoomLevel={15}
-                    centerCoordinate={[this.state.long, this.state.lat]}                        
-                    style={{ flex: 1 }}
-                    >
-                </MapboxGL.MapView>                
-            </View>             
+      <View style={styles.container}>
+        <View style={styles.searchContainer}>
+          <SearchLocation
+            confirmHandler={this._selectedLocationHandler}>
+          </SearchLocation>
         </View>
-    );  
+        <View style={styles.mapContainer}>
+          <MapboxGL.MapView
+            styleURL={MapboxGL.StyleURL.Street}
+            zoomLevel={15}
+            centerCoordinate={[this.state.long, this.state.lat]}
+            style={{ flex: 1 }}
+          >
+          </MapboxGL.MapView>
+        </View>
+      </View>
+    );
 
     return (
-        <ActionModal
-          title={getLabel("location_detail.update_address_title")}
-          isVisible={isVisible}
-          onCancelHandler={this._onCancel}
-          onConfirmHandler={this._onConfirm}
-          >
-            {contentElement}
-        </ActionModal>
+      <ActionModal
+        title={getLabel("location_detail.update_address_title")}
+        isVisible={isVisible}
+        onCancelHandler={this._onCancel}
+        onConfirmHandler={this._onConfirm}
+      >
+        {contentElement}
+      </ActionModal>
     );
   }
 }
@@ -116,6 +113,6 @@ const styles = StyleSheet.create<Style>({
     margin: 5
   }
 })
-  
+
 const LocationAddressModal = connectStyle<typeof LocationAddressModalComponent>('NativeBase.Modal', styles)(LocationAddressModalComponent);
 export default LocationAddressModal;

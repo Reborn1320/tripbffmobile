@@ -1,6 +1,3 @@
-//this is the component that reuse `Modal` component and make it easy to use in the context of confirmation
-//input: isVisible, title, content, button confirm handler.
-
 import * as React from "react";
 import { View, Text, Icon } from "native-base";
 import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle, Platform, Image, ImageStyle } from "react-native";
@@ -62,7 +59,7 @@ class SearchLocationComponent extends React.Component<Props, State> {
             });
   }
  
-  _onSelectedLocation(item) {
+  private _onSelectedLocation(item) {
     this.setState({ 
         query: item.placeName,
         address: item.address,
@@ -73,7 +70,7 @@ class SearchLocationComponent extends React.Component<Props, State> {
     this.props.confirmHandler(item.placeName, item.address, item.long, item.lat);
   }
 
-  _clearInputData = () => {
+  private _clearInputData = () => {
     this.setState({
         places: [],
         query: '',
@@ -83,7 +80,7 @@ class SearchLocationComponent extends React.Component<Props, State> {
     });
   }
 
-  _renderTextInput = (props) => {
+  private _renderTextInput = (props) => {
     if (Platform.OS === 'ios') {
       return (
         <TextInput {...props} clearButtonMode='always'/>
@@ -110,7 +107,7 @@ class SearchLocationComponent extends React.Component<Props, State> {
     }
   }
 
-  _renderItem = (item) => {
+  private _renderItem = ({ item }) => {
     var placeAddress =  item.address.replace(item.placeName + ',', '');
 
     return (
