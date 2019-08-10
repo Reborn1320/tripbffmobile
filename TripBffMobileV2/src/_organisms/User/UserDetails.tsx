@@ -22,8 +22,6 @@ export interface Props extends IMapDispatchToProps {
 
   nTrips: number;
   facebookId: string;
-
-  onClickEdit: () => void;
 }
 
 interface State {
@@ -54,12 +52,6 @@ export class UserDetailsComponent extends PureComponent<Props & IStateProps, Sta
                 <Text style={styles.numberOfTrips}>{nTrips} {getLabel("profile.trips_label")}</Text>
               </View>
           </View>
-
-
-            {/* <Button full light rounded bordered
-              onPress={this.props.onClickEdit}>
-              <Text>Edit Profile</Text>
-            </Button> */}
       </View>
     );
   }

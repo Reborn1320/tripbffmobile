@@ -97,6 +97,7 @@
     "setting": {
         "header_title": "Cài đặt",
         "language_setting_label": "Ngôn Ngữ",
-        "feedback_setting_label": "Phản hồi"
+        "feedback_setting_label": "Phản hồi",
+        "logout_setting_label": "Đăng xuất"
     }            
 }

@@ -4,6 +4,7 @@ import _ from "lodash";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import { NavigationScreenProp } from "react-navigation";
 import { getLabel } from "../../../i18n";
+import { logOut } from "../../store/User/operations";
 
 interface IMapDispatchToProps {
     updateLocale: (locale: string) => Promise<void>;
@@ -27,6 +28,13 @@ export default class UserSettingsScreen extends Component<Props & IMapDispatchTo
        this.props.navigation.navigate(NavigationConstants.Screens.LanguageSelection);
     }  
 
+    private _handleEditBtnClick = () => {
+        logOut()
+        .then(() => {
+            this.props.navigation.navigate(NavigationConstants.Screens.Login)
+        })
+    }
+
     render() {
         return (
             <Container>
@@ -49,6 +57,12 @@ export default class UserSettingsScreen extends Component<Props & IMapDispatchTo
                                 <Icon name="arrow-forward" />
                             </Right>
                         </ListItem>   
+
+                        <ListItem onPress={this._handleEditBtnClick}>
+                            <Left>
+                                <Text>{getLabel("setting.logout_setting_label")}</Text>
+                            </Left>                            
+                        </ListItem> 
                     </List>  
                 </Content>
             </Container>            

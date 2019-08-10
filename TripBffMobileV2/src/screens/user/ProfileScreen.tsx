@@ -8,7 +8,6 @@ import { NavigationConstants } from "../_shared/ScreenConstants";
 import { StoreData } from "../../store/Interfaces";
 import { NavigationScreenProp } from "react-navigation";
 import UserDetails from "../../_organisms/User/UserDetails";
-import { logOut } from "../../store/User/operations";
 import { getCancelToken } from "../../_function/commonFunc";
 import ConfirmationModal from "../../_molecules/ConfirmationModal";
 import { getLabel } from "../../../i18n";
@@ -145,14 +144,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
             isOpenDeleteConfirmModal: false,
             deletedTripId: ""
         });
-    }
-
-    private handleEditBtnClick = () => {
-        logOut()
-        .then(() => {
-            this.props.navigation.navigate(NavigationConstants.Screens.Login)
-        })
-    }
+    }   
 
     render() {
         const { isLoaded, isEmptyTrips } = this.state;
@@ -161,9 +153,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
             <Container>
                 <Content>
                     <View style={{flex: 1}}>
-                        <UserDetails 
-                            onClickEdit={this.handleEditBtnClick}
-                        />
+                        <UserDetails />
                         {isLoaded && <Loading message={this.state.loadingMessage} />}
                         {
                             !isLoaded && isEmptyTrips &&

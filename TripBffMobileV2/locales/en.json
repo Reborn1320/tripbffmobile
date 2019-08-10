@@ -97,6 +97,7 @@
     "setting": {
         "header_title": "Settings",
         "language_setting_label": "Language",
-        "feedback_setting_label": "App Feedback"
+        "feedback_setting_label": "App Feedback",
+        "logout_setting_label": "Log Out"
     }      
 }
