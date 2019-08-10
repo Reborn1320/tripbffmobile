@@ -7,19 +7,20 @@ import moment, { Moment } from "moment";
 import { getLabel } from "../../../i18n";import Modal from 'react-native-modal';
 
 import NBColor from "../../theme/variables/commonColor.js";
-import DeviceInfo from 'react-native-device-info';
 import { LIST_MONTHS_EN,
           LIST_MONTHS_VI,
           LIST_WEEKDAYS_EN,
           LIST_WEEKDAYS_VI,
-          LOCALE_VI_VN,
           LOCALE_VI } from "../../screens/_services/SystemConstants";
 import { mixins } from "../../_utils";
+import { connect } from "react-redux";
+import { StoreData } from "../../store/Interfaces";
 
 export interface Props {
   isVisible: boolean;
   fromDate: Moment;
   toDate: Moment;
+  locale?: string;
   confirmHandler: (fromDate: Moment, toDate: Moment) => void;
   cancelHandler?: () => void;
 }
@@ -69,17 +70,14 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
   }
 
   render() {
-    const { isVisible } = this.props;
+    const { isVisible, locale } = this.props;
     let fromDate = this.state.fromDate;
     const toDate = this.state.toDate;
-    let deviceLocale = DeviceInfo.getDeviceLocale();
 
     let mlist = LIST_MONTHS_EN;
     let weekdays = LIST_WEEKDAYS_EN;
 
-    if(deviceLocale &&
-       (deviceLocale.toLowerCase() == LOCALE_VI_VN.toLowerCase() ||
-        deviceLocale.toLowerCase() == LOCALE_VI.toLowerCase())) {
+    if(locale && locale == LOCALE_VI) {
       mlist = LIST_MONTHS_VI;
       weekdays = LIST_WEEKDAYS_VI;
     } 
@@ -208,7 +206,15 @@ const styles = StyleSheet.create<Style>({
   }
 })
   
-const DateRangePicker = 
+const DateRangePickerStyle = 
     connectStyle<typeof DateRangePickerModalComponent>('NativeBase.Modal', styles)(DateRangePickerModalComponent);
 
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => { 
+  
+  return {
+      locale: storeState.user.locale
+  };
+};
+const DateRangePicker = connect(mapStateToProps, null)(DateRangePickerStyle);
+  
 export default DateRangePicker;
