@@ -295,7 +295,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
               }
               else {
                   console.log('need to log-in');
-                  LoginManager.logInWithReadPermissions(["public_profile", "user_photos", "user_posts"]).then(
+                  LoginManager.logInWithPermissions(["public_profile", "user_photos", "user_posts"]).then(
                     function(result) {
                       if (result.isCancelled) {
                         console.log("Login cancelled");
