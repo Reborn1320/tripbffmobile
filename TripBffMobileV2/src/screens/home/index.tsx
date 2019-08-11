@@ -33,14 +33,10 @@ import { ThunkDispatch } from "redux-thunk";
 import { PropsBase } from "../_shared/LayoutContainer";
 import AppFooter from "../shared/AppFooter";
 import { loginUsingUserPass } from "../../store/User/operations";
-import  Autocomplete  from "react-native-autocomplete-input";
 const mbxClient = require('@mapbox/mapbox-sdk');
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const baseClient = mbxClient({ accessToken: 'pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g' });
 const geoCodingService = mbxGeocoding(baseClient);
-
-import Mapbox from '@mapbox/react-native-mapbox-gl';
-Mapbox.setAccessToken('pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g');
 
 import CalendarPicker from 'react-native-calendar-picker';
 import moment from "moment";
@@ -117,7 +113,7 @@ class Home extends React.Component<Props, any> {
   }
 
   requestPublishPermissions() {
-    LoginManager.logInWithPublishPermissions(["publish_to_groups"]).then(
+    LoginManager.logInWithPermissions(["publish_to_groups"]).then(
       function(result) {
         if (result.isCancelled) {
           console.log("Login cancelled");
