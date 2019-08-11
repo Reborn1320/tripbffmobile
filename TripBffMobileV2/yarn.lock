@@ -983,10 +983,10 @@
   dependencies:
     "@mapbox/sphericalmercator" "~1.1.0"
 
-"@mapbox/mapbox-sdk@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@mapbox/mapbox-sdk/-/mapbox-sdk-0.5.0.tgz#4e4eba3777688df1a0ccf9882d4ce09c52b8ac8e"
-  integrity sha512-BYD527EQZLkrwM8vvYDEvHgPs3R4sQFgMoTZaElpwwHxcDba/kmiE3wUaPzyIT3GcGkJJeXSihLrL23Tfo99kQ==
+"@mapbox/mapbox-sdk@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/mapbox-sdk/-/mapbox-sdk-0.6.0.tgz#532f18eb8ce56c65460c766032ccafc88031344f"
+  integrity sha512-3T+jt3w7ma9/jInjJCZuvp5x+3k5c18W+nrQ8OWYLRgH6nlnmmC7LUw8p0w3MgdAvpSKRT34g62gfDL2VLgRNg==
   dependencies:
     "@mapbox/fusspot" "^0.4.0"
     "@mapbox/parse-mapbox-token" "^0.2.0"
@@ -6150,10 +6150,9 @@ react-native-fast-image@^7.0.2:
   resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-7.0.2.tgz#e06b21f42f4a9786eaa86f3db35d919070fb8403"
   integrity sha512-MfuzJbC0RjYobR2gFCdqe1I7jvNOCfDkjQ7VGOHXniqjohhULMkcWNBE9Umovi9Dx93lJ6t5utcE2wf/09zvlg==
 
-react-native-fbsdk@^1.0.1:
+"react-native-fbsdk@https://github.com/HelloCore/react-native-fbsdk.git#fix/android-callback-manager":
   version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-fbsdk/-/react-native-fbsdk-1.0.1.tgz#0c34e519d4ef1c3d4b12c1b64dc645d719988ad8"
-  integrity sha512-5TNPOMb+Wq5Z7jmUHGF9f6WrmSl3LeKoZZcgTBUp6Qt/o7g1+VzbI3a9gCrGwJcvWZrdN8qlBhMNcwQ3y8ecyg==
+  resolved "https://github.com/HelloCore/react-native-fbsdk.git#16a05caf60ecb242305d5f20cf02797e2f3521a4"
 
 react-native-fs@^2.14.1:
   version "2.14.1"

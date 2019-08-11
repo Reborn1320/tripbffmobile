@@ -1,12 +1,7 @@
 import * as React from "react";
 import { View, Text, Button, H2 } from "native-base";
 import { StyleSheet, ViewStyle } from "react-native";
-import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
-const mbxClient = require('@mapbox/mapbox-sdk');
-const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
-const baseClient = mbxClient({ accessToken: 'pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g' });
-const geoCodingService = mbxGeocoding(baseClient);
 import MapboxGL from '@react-native-mapbox-gl/maps';
 MapboxGL.setAccessToken('pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g');
 import { getLabel } from "../../../i18n";
@@ -69,11 +64,14 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
         </View>
         <View style={styles.mapContainer}>
           <MapboxGL.MapView
-            styleURL={MapboxGL.StyleURL.Street}
-            zoomLevel={15}
-            centerCoordinate={[this.state.long, this.state.lat]}
-            style={{ flex: 1 }}
+            style={{flex: 1}}
           >
+            <MapboxGL.Camera
+                  styleURL={MapboxGL.StyleURL.Street}
+                  zoomLevel={15}
+                  centerCoordinate={[this.state.long, this.state.lat]}
+                >
+              </MapboxGL.Camera>
           </MapboxGL.MapView>
         </View>
       </View>
