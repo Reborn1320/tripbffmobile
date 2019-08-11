@@ -45,7 +45,8 @@ export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   images: Array<StoreData.ImportImageVM>,
   isExistedCurrentTrip: boolean,
   userId: string,
-  numberOfLocations: number
+  numberOfLocations: number,
+  locale: string
 }
 
 interface IMapDispatchToProps {    
@@ -168,7 +169,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
 
   private _createInfographic = (tripId) => {
       tripApi
-      .post('/trips/' + tripId + '/infographics', null)
+      .post('/trips/' + tripId + '/infographics', { locale: this.props.locale })
       .then(res => {
           var infographicId = res.data;
           console.log('infographic id: ' + infographicId);    
@@ -487,7 +488,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
     numberOfLocations: numberOfLocations,
     infographicId: trip ? trip.infographicId : "",
     images: images,
-    isExistedCurrentTrip: isExistedCurrentTrip
+    isExistedCurrentTrip: isExistedCurrentTrip,
+    locale: storeState.user.locale
   };
 };
 
