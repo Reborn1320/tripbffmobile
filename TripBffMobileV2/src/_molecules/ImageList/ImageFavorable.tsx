@@ -4,6 +4,7 @@ import { Image, StyleSheet, ViewStyle, TextStyle, TouchableHighlight, TouchableO
 import NBTheme from "../../theme/variables/material.js";
 import { mixins } from "../../_utils";
 // import { mixins } from "../../_utils.js";
+import FastImage from 'react-native-fast-image';
 
 export interface Props {
   imageUrl: string
@@ -59,7 +60,7 @@ export class ImageFavorable extends React.Component<Props, State> {
         <View style={{
           position: "relative"
         }}>
-          <Image
+          <FastImage
             style={Object.assign({ width, height: width }, isChecked ? styles.checkImage : styles.image)}
             source={{ uri: this.props.imageUrl }}
           />

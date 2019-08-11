@@ -25,7 +25,7 @@ class Login extends Component<Props & IMapDispatchToProps, any>{
   private _loginFacebook = () => {
     var tmp =  this;
 
-    LoginManager.logInWithReadPermissions(["public_profile", "user_photos", "user_posts"]).then(
+    LoginManager.logInWithPermissions(["public_profile", "user_photos", "user_posts"]).then(
       function(result) {
         if (result.isCancelled) {
           console.log("Login cancelled");
