@@ -3,7 +3,8 @@
 
 import * as React from "react";
 import { View, Text, Icon } from "native-base";
-import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator, TextStyle, Dimensions } from "react-native";
+import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, 
+          ActivityIndicator, TextStyle, Dimensions, Image, ImageStyle } from "react-native";
 import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
 import { getAllActivities } from "../../../store/DataSource/operations";
@@ -21,12 +22,20 @@ class SelectedActivityItem extends React.PureComponent<any> {
   };
 
   render() {
+    var imageElement = this.props.item.icon ?
+                            <Image style={styles.activityIcon}
+                                source={{uri: this.props.item.icon}}
+                              />  :
+                              <Image style={styles.activityIcon} 
+                                  source={require("../../../../assets/default_activity_icon.png")}>
+                              </Image>
+
     return (
       <TouchableOpacity onPress={this._onPress}       
           style={[styles.activityItemContainer, styles.selectedActivityItemContainer]}>
           <View style={styles.activityItem}>
             <View style={styles.activityIconContainer}>
-              <Icon style={styles.activityIcon} type="FontAwesome5" name={this.props.item.icon} />
+                {imageElement}
             </View>
             <View style={styles.activityNameSelectedContainer}>
               <Text numberOfLines={1}>{this.props.item["label_" + this.props.locale]}</Text>   
@@ -44,11 +53,19 @@ class ActivityItem extends React.PureComponent<any> {
   };
 
   render() {
+    var imageElement = this.props.item.icon ?
+    <Image style={styles.activityIcon}
+        source={{uri: this.props.item.icon}}
+      />  :
+      <Image style={styles.activityIcon} 
+          source={require("../../../../assets/default_activity_icon.png")}>
+      </Image>
+
     return (
       <TouchableOpacity onPress={this._onPress} style={[styles.activityItemContainer, this.props.styles]}>
         <View style={styles.activityItem}>
           <View style={styles.activityIconContainer}>
-            <Icon style={styles.activityIcon} type="FontAwesome5" name={this.props.item.icon} /> 
+              {imageElement}
           </View>
           <View style={styles.activityNameContainer}>
             <Text numberOfLines={1}>{this.props.item["label_" + this.props.locale]}</Text>
@@ -139,13 +156,13 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
     if (this.state.newDefinedItem)
           selectedItem.activityId = uuid4();
 
-      this.setState({
-        preDefinedItems: this.props.items,
-        selectedItem: null,
-        newDefinedItem: null,
-        search: ''
-      });
     this.props.onConfirmHandler(selectedItem);
+    // this.setState({
+    //     preDefinedItems: this.props.items,
+    //     selectedItem: null,
+    //     newDefinedItem: null,
+    //     search: ''
+    //   });
   }
 
   _endReached = () => {
@@ -317,7 +334,7 @@ interface Style {
   activityNameContainer: ViewStyle;
   activityNameSelectedContainer: ViewStyle;
   activityIconContainer: ViewStyle;
-  activityIcon: TextStyle;
+  activityIcon: ImageStyle;
   iconRemoved: TextStyle;
 }
 
@@ -360,7 +377,10 @@ const styles = StyleSheet.create<Style>({
     width: "15%"
   },
   activityIcon: {
-
+    marginRight: 10,
+    marginLeft: 20,
+    width: 24,
+    height: 24
   },
   activityNameContainer: {
     maxWidth: "85%"

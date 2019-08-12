@@ -3,7 +3,8 @@
 
 import * as React from "react";
 import { View, Text, Button, Toast, Icon } from "native-base";
-import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator, Dimensions, TextStyle } from "react-native";
+import { StyleSheet, ViewStyle, FlatList, TouchableOpacity,
+         ActivityIndicator, Dimensions, TextStyle, Image, ImageStyle } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
@@ -22,12 +23,19 @@ class SelectedFeelingItem extends React.PureComponent<any> {
   };
 
   render() {
+    var imageElement = this.props.item.icon ?
+                            <Image style={styles.feelingIcon}
+                                source={{uri: this.props.item.icon}}
+                              />  :
+                              <Image style={styles.feelingIcon} 
+                                  source={require("../../../../assets/default_feeling_icon.png")}>
+                              </Image>
     return (
       <TouchableOpacity onPress={this._onPress}       
           style={[styles.selectedFeelingItemContainer]}>
           <View style={styles.feelingItem}>  
             <View style={styles.feelingIconSelectedIconContainer}>
-              <Icon type="FontAwesome5" name={this.props.item.icon} /> 
+               {imageElement}
             </View>                
             <View style={styles.feelingNameSelectedContainer}>
               <Text numberOfLines={1}>{this.props.item["label_" + this.props.locale]}</Text>   
@@ -45,11 +53,19 @@ class FeelingItem extends React.PureComponent<any> {
   };
 
   render() {
+    var imageElement = this.props.item.icon ?
+                            <Image style={styles.feelingIcon}
+                                source={{uri: this.props.item.icon}}
+                              />  :
+                              <Image style={styles.feelingIcon} 
+                                  source={require("../../../../assets/default_feeling_icon.png")}>
+                              </Image>
+
     return (
       <TouchableOpacity onPress={this._onPress} style={[styles.feelingItemContainer, this.props.styles]}>
         <View style={styles.feelingItem}>
           <View style={styles.feelingIconContainer}>
-            <Icon style={styles.feelingIcon} type="FontAwesome5" name={this.props.item.icon} />
+            {imageElement}
           </View>
           <View style={styles.feelingNameContainer}>
             <Text numberOfLines={2}>{this.props.item["label_" + this.props.locale]}</Text>
@@ -140,12 +156,12 @@ class FeelingContainerComponent extends React.Component<any, any> {
     if (this.state.newDefinedItem)
       selectedItem.feelingId = uuid4();
 
-    this.setState({
-      preDefinedItems: this.props.items,
-      selectedItem: null,
-      newDefinedItem: null,
-      search: ''
-    });
+    // this.setState({
+    //   preDefinedItems: this.props.items,
+    //   selectedItem: null,
+    //   newDefinedItem: null,
+    //   search: ''
+    // });
     this.props.onConfirmHandler(selectedItem); 
   }
 
@@ -286,6 +302,7 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
 
   render() {
     const { isVisible, preDefinedFeelings, locale, t } = this.props;
+    console.log('feelings: ' + JSON.stringify(preDefinedFeelings));
     var contentElement = preDefinedFeelings && this.state.isLoadedData
           ? <FeelingContainerComponent
                items={preDefinedFeelings}
@@ -322,7 +339,7 @@ interface Style {
   feelingIconSelectedIconContainer: ViewStyle;
   feelingNameSelectedContainer: ViewStyle;
   feelingItem: ViewStyle;
-  feelingIcon: TextStyle;
+  feelingIcon: ImageStyle;
   iconRemoved: TextStyle;
 }
 
@@ -369,7 +386,7 @@ const styles = StyleSheet.create<Style>({
     marginBottom: 10
   },
   feelingIconSelectedIconContainer: {
-    width: "13%"
+    width: "15%"
   },
   feelingNameSelectedContainer: {
     maxWidth: "75%"
@@ -382,7 +399,9 @@ const styles = StyleSheet.create<Style>({
   },
   feelingIcon: {
     marginRight: 10,
-    marginLeft: 25
+    marginLeft: 20,
+    width: 24,
+    height: 24
   },
   iconRemoved: {
     fontSize: 18,
