@@ -42,7 +42,8 @@ class TripCreation extends Component<Props, State> {
           <TripCreationForm createTrip={this.props.createTripAsync} 
                             updateTrip={this.props.updateTrip}
                             onTripCreatedUpdatedHandler={this._onCreatedOrUpdatedHandler}
-                            titleButton={"action:next"} />
+                            titleButton={"action:next"} 
+                            navigation={this.props.navigation} />
         </Content>        
       </Container>
     );

@@ -48,7 +48,8 @@ class TripEditBasic extends Component<Props, State> {
                 tripToDate={this.props.tripToDate}
                 updateTrip={this.props.updateTrip}
                 onTripCreatedUpdatedHandler={this._onCreatedOrUpdatedHandler}
-                titleButton={"action:save"} />
+                titleButton={"action:save"}
+                navigation={this.props.navigation} />
         </Content>        
       </Container>
     );
