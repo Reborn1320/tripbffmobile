@@ -7,6 +7,7 @@ import {
   Text,
   View,
   Toast,
+  Root,
   Icon
 } from "native-base";
 import { ThunkDispatch } from "redux-thunk";
@@ -33,9 +34,9 @@ import PreviewImages from "./PreviewImage";
 import NBTheme from "../../../theme/variables/commonColor.js";
 import { fetchTrip } from "../../../store/Trip/operations";
 import { loginUsingFacebookAccessToken } from "../../../store/User/operations";
-import { getLabel } from "../../../../i18n";
 import { mixins } from "../../../_utils";
 import TabBarComponent from "../../../_atoms/TabBar";
+import { withNamespaces } from "react-i18next";
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
@@ -65,7 +66,7 @@ interface State {
   isLoggedSocial: boolean
 } 
 
-class InfographicPreview extends React.PureComponent<Props, State> {
+class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
 
   _backHardwareHandler;
   _didFocusSubscription;
@@ -77,8 +78,8 @@ class InfographicPreview extends React.PureComponent<Props, State> {
     this.state = {
       index: 0,
       routes: [
-        { key: 'first', title: getLabel("export.infographic_tab_label") },
-        { key: 'second', title: getLabel("export.images_tab_label") },
+        { key: 'first', title: this.props.t("export:infographic_tab_label") },
+        { key: 'second', title: this.props.t("export:images_tab_label") },
       ],
       infographicUrl: "",
       selectedImages: [],
@@ -88,9 +89,9 @@ class InfographicPreview extends React.PureComponent<Props, State> {
     }
   } 
 
-  static navigationOptions = ({ navigation, navigationOptions }) => {
+  static navigationOptions = ({ navigation, screenProps }) => {
     return {
-      title: getLabel("export.title"),
+      title: screenProps.t("export:title"),
       headerLeft:  (
         <RNa.HeaderBackButton   
            onPress={navigation.getParam('_handleBackPress')}
@@ -102,7 +103,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
           onPress={navigation.getParam('_cancel')}>
           <Text style={{ color: "#FF647C", ...mixins.themes.fontNormal, 
                         fontSize: 16, lineHeight: 18 }}>
-              {getLabel("action.cancel")}</Text>
+              {screenProps.t("action:cancel")}</Text>
         </Button>
       ),
     };
@@ -232,7 +233,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
       if (this.props.infographicId) {
         if (this.state.selectedImages.length > 5) {
           Toast.show({
-            text: getLabel("export.images_selection_warning"),
+            text: this.props.t("export:images_selection_warning"),
             buttonText: "Okay",
             textStyle: {
               ...mixins.themes.fontNormal
@@ -307,7 +308,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
                 }
                 else {
                     console.log('need to log-in');
-                    LoginManager.logInWithReadPermissions(["public_profile", "user_photos", "user_posts"]).then(
+                    LoginManager.logInWithPermissions(["public_profile", "user_photos", "user_posts"]).then(
                       function(result) {
                         if (result.isCancelled) {
                           console.log("Login cancelled");
@@ -334,7 +335,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
       }
       else {
         Toast.show({
-          text: getLabel("export.nothing_to_share_message"),
+          text: this.props.t("export:nothing_to_share_message"),
           buttonText: "Okay",
           textStyle: {
             ...mixins.themes.fontNormal
@@ -370,7 +371,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
   }
 
   render() {
-    let { numberOfLocations, isExistedCurrentTrip } = this.props;
+    let { numberOfLocations, isExistedCurrentTrip, t } = this.props;
     let isDisplayEmptyMessage = numberOfLocations == 0 && isExistedCurrentTrip;
 
     var previewInfographicElement = 
@@ -379,7 +380,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
             <View style={styles.emptyMsgcontainer}>
               <View style={styles.emptyMsgContainer}>
                   <Text numberOfLines={2} style={styles.emptyMsg}>
-                      {getLabel("export.no_infographic")}
+                      {t("export:no_infographic")}
                   </Text>
               </View>
             </View>
@@ -391,7 +392,8 @@ class InfographicPreview extends React.PureComponent<Props, State> {
 
       return (
         <View style={styles.container}>
-            <View style={styles.tabViewContainer}>             
+            <View style={styles.tabViewContainer}>
+                <Root>             
                   <TabView
                     navigationState={this.state}
                     renderTabBar={this._renderTabBar}
@@ -413,7 +415,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
 
                       if (index == 1 && this.state.firstRendered && this.props.images.length > 0) {
                         Toast.show({
-                          text: getLabel("export.images_selection_warning"),
+                          text: t("export:images_selection_warning"),
                           buttonText: "Okay",
                           textStyle: {
                             ...mixins.themes.fontNormal
@@ -434,11 +436,12 @@ class InfographicPreview extends React.PureComponent<Props, State> {
                     }}
                     initialLayout={{ width: Dimensions.get('window').width }}
                   />
+              </Root>
             </View> 
             {
               this.state.displayLoading && 
                 <View style={styles.loading}>
-                  <Loading message={getLabel("action.loading")}/> 
+                  <Loading message={t("action:loading")}/> 
                 </View>
             }           
   
@@ -458,7 +461,7 @@ class InfographicPreview extends React.PureComponent<Props, State> {
     }
 }  
 
-const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   const { tripId } = ownProps.navigation.state.params;    
   var trip = storeState.currentTrip;
   var images = [];
@@ -505,7 +508,7 @@ const InfographicPreviewScreen = connect(
   mapStateToProps,
   mapDispatchToProps
 )(InfographicPreview);
-export default InfographicPreviewScreen;
+export default withNamespaces(['export', 'action'])(InfographicPreviewScreen);
 
 const styles = StyleSheet.create({
   container: {

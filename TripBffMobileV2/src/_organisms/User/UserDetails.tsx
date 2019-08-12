@@ -1,22 +1,16 @@
-import React, { Component, PureComponent } from "react";
-import { View, H1, H2, H3, Button, Text } from "native-base";
+import React, { PureComponent } from "react";
+import { View, Text } from "native-base";
 import _ from "lodash";
 import { StyleSheet, ViewStyle, TextStyle } from "react-native";
 import { Avatar } from "react-native-elements";
 import { StoreData } from "../../store/Interfaces";
 import { connect } from "react-redux";
-import { getLabel } from "../../../i18n";
 import { mixins } from "../../_utils";
 import NBColor from "../../theme/variables/commonColor.js";
-import { GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
+import { withNamespaces } from 'react-i18next';
+import { PropsBase } from "../../screens/_shared/LayoutContainer";
 
-export interface IStateProps {
-}
-
-interface IMapDispatchToProps {
-}
-
-export interface Props extends IMapDispatchToProps {
+interface Props extends PropsBase {
   userName: string;
   fullName: string;
 
@@ -27,13 +21,11 @@ export interface Props extends IMapDispatchToProps {
 interface State {
 }
 
-export class UserDetailsComponent extends PureComponent<Props & IStateProps, State> {
-  constructor(props: Props) {
-    super(props);
-  }
+class UserDetailsComponent extends PureComponent<Props, State> {
 
   render() {
-    const { userName, fullName, nTrips } = this.props;
+    const { fullName, nTrips } = this.props;
+    const { t } = this.props;
 
     return (
       <View style={styles.container}>
@@ -49,7 +41,7 @@ export class UserDetailsComponent extends PureComponent<Props & IStateProps, Sta
               <Text 
                 style={styles.username}>{fullName}</Text>
               <View style={styles.factContainer}>
-                <Text style={styles.numberOfTrips}>{nTrips} {getLabel("profile.trips_label")}</Text>
+                <Text style={styles.numberOfTrips}>{nTrips} {t('profile:trips_label')} </Text>
               </View>
           </View>
       </View>
@@ -71,7 +63,7 @@ const UserDetails = connect(
   null
 )(UserDetailsComponent);
 
-export default UserDetails;
+export default withNamespaces(['profile'])(UserDetails);
 
 interface Style {
   container: ViewStyle;

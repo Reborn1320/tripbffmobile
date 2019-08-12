@@ -4,9 +4,9 @@ import { StoreData } from "../../../store/Interfaces";
 import { connect } from "react-redux";
 import moment, { Moment } from "moment";
 import { PropsBase } from "../../_shared/LayoutContainer";
-import { TripCreationForm } from "./TripCreationForm";
+import TripCreationForm  from "./TripCreationForm";
 import { updateTrip } from "../../../store/Trip/operations";
-import { getLabel } from "../../../../i18n";
+import { withNamespaces } from "react-i18next";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
   user: StoreData.UserVM,
@@ -25,9 +25,9 @@ interface State {
 
 class TripEditBasic extends Component<Props, State> {
 
-  static navigationOptions = ({ navigation, navigationOptions }) => {
+  static navigationOptions = ({ navigation, screenProps }) => {
     return {
-      title:  getLabel('create.screen_header_edit_title'),
+      title:  screenProps.t('create:screen_header_edit_title'),
       headerRight: (<View></View>)
     };
   };    
@@ -48,14 +48,14 @@ class TripEditBasic extends Component<Props, State> {
                 tripToDate={this.props.tripToDate}
                 updateTrip={this.props.updateTrip}
                 onTripCreatedUpdatedHandler={this._onCreatedOrUpdatedHandler}
-                titleButton={"action.save"} />
+                titleButton={"action:save"} />
         </Content>        
       </Container>
     );
   }
 }
 
-const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
     var trip = storeState.currentTrip;
     
     return {
@@ -74,4 +74,4 @@ const mapDispatchToProps = dispatch => {
 
 const TripEditBasicScreen = connect(mapStateToProps, mapDispatchToProps)(TripEditBasic);
 
-export default TripEditBasicScreen;
+export default withNamespaces(['action', 'create'])(TripEditBasicScreen);

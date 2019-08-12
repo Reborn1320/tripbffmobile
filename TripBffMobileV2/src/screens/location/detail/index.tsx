@@ -14,7 +14,6 @@ import { NavigationConstants } from '../../_shared/ScreenConstants';
 import moment, { Moment } from 'moment';
 import { checkAndRequestPhotoPermissionAsync, runPromiseSeries, getCancelToken } from "../../../_function/commonFunc";
 import { AnyAction } from 'redux';
-import { getLabel } from "../../../../i18n";
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM, cancelToken: any) => Promise<void>

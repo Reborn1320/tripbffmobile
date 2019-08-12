@@ -98,6 +98,7 @@
         "header_title": "Settings",
         "language_setting_label": "Language",
         "feedback_setting_label": "App Feedback",
-        "logout_setting_label": "Log Out"
+        "logout_setting_label": "Log Out",
+        "change_language_success": "Update language successfully"
     }      
 }

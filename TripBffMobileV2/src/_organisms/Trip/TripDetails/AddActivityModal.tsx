@@ -8,11 +8,12 @@ import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
 import { getAllActivities } from "../../../store/DataSource/operations";
 import { StoreData } from "../../../store/Interfaces";
-import { getLabel } from "../../../../i18n";
 import uuid4 from 'uuid/v4';
 import SearchBarComponent from "../../../_atoms/SearchBarComponent";
 import ActionModal from "../../../_molecules/ActionModal";
 import { createLabelLocales } from "../../../_function/commonFunc";
+import { PropsBase } from "../../../screens/_shared/LayoutContainer";
+import { withNamespaces } from "react-i18next";
 
 class SelectedActivityItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -203,8 +204,8 @@ interface State {
   selectedItem: StoreData.ActivityVM
 }
 
-class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatchToProps, State> {
-  constructor(props: Props & IMapDispatchToProps) {
+class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatchToProps & PropsBase, State> {
+  constructor(props: Props & IMapDispatchToProps & PropsBase) {
     super(props);  
   }
 
@@ -238,8 +239,8 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
   }
 
   render() {
-    const { isVisible, preDefinedActivities, selectedActivity, locale } = this.props;
-    console.log('selected acvitiy: ' + JSON.stringify(selectedActivity));
+    const { isVisible, preDefinedActivities, selectedActivity, locale, t } = this.props;
+
     var contentElement = preDefinedActivities
           ? <ActivityContainerComponent
               items={preDefinedActivities}
@@ -252,7 +253,7 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
           
     return (
         <ActionModal
-          title={getLabel("trip_detail.activity_modal_title")}
+          title={t("trip_detail:activity_modal_title")}
           isVisible={isVisible}
           onModalShowHandler={this._onModalShow}
           onCancelHandler={this._onCancel}
@@ -335,7 +336,7 @@ const styles = StyleSheet.create<Style>({
   
 const AddActivityModalStyle = connectStyle<typeof AddActivityModalComponent>('NativeBase.Modal', styles)(AddActivityModalComponent);
 
-const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   let dateVm = storeState.currentTrip.dates.find(item => item.dateIdx == ownProps.dateIdx);
   let activity = null;
 
@@ -362,4 +363,4 @@ const AddActivityModal = connect(
   mapDispatchToProps
 )(AddActivityModalStyle);
 
-export default AddActivityModal;
+export default withNamespaces(['trip_detail'])(AddActivityModal);

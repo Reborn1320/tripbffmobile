@@ -8,13 +8,14 @@ import { getAllHighlights } from "../../store/DataSource/operations";
 import { StoreData } from "../../store/Interfaces";
 import { TabView } from 'react-native-tab-view';
 import uuid4 from 'uuid/v4';
-import { getLabel } from "../../../i18n";
 import ActionModal from "../../_molecules/ActionModal";
 import TabBarComponent from "../../_atoms/TabBar";
 import SearchBarComponent from "../../_atoms/SearchBarComponent";
 import { mixins } from "../../_utils";
 import  NBColor from "../../theme/variables/commonColor.js";
 import { createLabelLocales } from "../../_function/commonFunc";
+import { PropsBase } from "../../screens/_shared/LayoutContainer";
+import { withNamespaces } from "react-i18next";
 
 class SelectedHighlightItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -83,7 +84,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
 
       if (numberOfCharacters > 20) {
         Toast.show({
-            text: getLabel("location_detail.user_defined_like_dislike_warning"),
+            text: this.props.t("location_detail:user_defined_like_dislike_warning"),
             buttonText: "Okay",
             textStyle: {
               ...mixins.themes.fontNormal
@@ -122,7 +123,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
 
     if (numberOfCharacters > 20) {
       Toast.show({
-          text: getLabel("location_detail.user_defined_like_dislike_warning"),
+          text: this.props.t("location_detail:user_defined_like_dislike_warning"),
           buttonText: "Okay",
           textStyle: {
             ...mixins.themes.fontNormal
@@ -232,13 +233,13 @@ interface ModalState {
 
 class AddHighlightModalContentComponent extends React.PureComponent<any, ModalState> {
 
-  constructor(props: Props & IMapDispatchToProps) {
+  constructor(props) {
     super(props);  
     this.state = {
       index: 0,
       routes: [
-        { key: 'first', title: getLabel("location_detail.like_label") },
-        { key: 'second', title: getLabel("location_detail.dislike_label")  },
+        { key: 'first', title: this.props.t("location_detail:like_label") },
+        { key: 'second', title: this.props.t("location_detail:dislike_label")  },
       ]
     }
   }
@@ -281,14 +282,16 @@ class AddHighlightModalContentComponent extends React.PureComponent<any, ModalSt
                                             addSelectedHighlights={this._addSelectedHighlights} 
                                             removeSelectedHighlights={this._removeSelectedHighlights}
                                             styles={styles.tabScene} 
-                                            locale={this.props.locale}/>;
+                                            locale={this.props.locale}
+                                            t={this.props.t}/>;
             case 'second':
               return <TabHighlightComponent items={dislikePreDefinedItems}
                                             selectedItems={selectedDisLikeItems}
                                             addSelectedHighlights={this._addSelectedHighlights} 
                                             removeSelectedHighlights={this._removeSelectedHighlights}
                                             styles={styles.tabScene}
-                                            locale={this.props.locale} />;
+                                            locale={this.props.locale} 
+                                            t={this.props.t}/>;
             default:
               return null;
           }
@@ -305,7 +308,7 @@ interface IMapDispatchToProps {
   getAllHighlights: () => Promise<StoreData.PreDefinedHighlightVM>
 }
 
-export interface Props {
+export interface Props extends PropsBase {
   isVisible: boolean;
   preDefinedHighlights?: Array<StoreData.PreDefinedHighlightVM>,
   likeItems: Array<StoreData.LocationLikeItemVM>,
@@ -361,10 +364,11 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
   }
 
   render() {
-    const { isVisible } = this.props;
+    const { isVisible, t } = this.props;
     
     var contentElement = this.props.preDefinedHighlights
           ? <AddHighlightModalContentComponent
+              t={this.props.t}
               preDefinedHighlights={this.props.preDefinedHighlights}
               selectedHighlightItems={this.props.likeItems}
               addSelectedHighlights={this._addSelectedHighlights}
@@ -375,7 +379,7 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
           
     return (
         <ActionModal
-          title={getLabel("location_detail.update_highlight_title")}
+          title={t("location_detail:update_highlight_title")}
           isVisible={isVisible}
           onModalShowHandler={this._onModalWillShow}
           onCancelHandler={this._onCancel}
@@ -437,7 +441,7 @@ const styles = StyleSheet.create<Style>({
   
 const AddHighlightModalStyle = connectStyle<typeof AddHighlightModalComponent>('NativeBase.Modal', styles)(AddHighlightModalComponent);
 
-const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   return {
       preDefinedHighlights: storeState.dataSource.highlights,
       locale: storeState.user.locale
@@ -455,4 +459,4 @@ const AddHighlightModal = connect(
   mapDispatchToProps
 )(AddHighlightModalStyle);
 
-export default AddHighlightModal;
+export default withNamespaces(['location_detail'])(AddHighlightModal);

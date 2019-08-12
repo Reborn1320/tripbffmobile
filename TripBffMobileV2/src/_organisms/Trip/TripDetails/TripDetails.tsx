@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import TripName from "../../../_molecules/Trip/TripName";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import { NavigationConstants } from "../../../screens/_shared/ScreenConstants";
+import { withNamespaces } from "react-i18next";
 
 interface IMapDispatchToProps {
     openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
@@ -36,7 +37,7 @@ export interface DayVM {
 
 export class TripDetailsComponent extends Component<Props, State> {
 
-    constructor(props: Props) {
+    constructor(props) {
         super(props)
 
         this.state = {
@@ -110,4 +111,4 @@ const TripDetails = connect(
     null
 )(TripDetailsComponent);
 
-export default TripDetails;
+export default withNamespaces()(TripDetails);

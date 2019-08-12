@@ -4,7 +4,7 @@ import { StyleSheet, ViewStyle, TextStyle } from "react-native";
 import { connectStyle, Button } from 'native-base';
 import CalendarPicker from 'react-native-calendar-picker';
 import moment, { Moment } from "moment";
-import { getLabel } from "../../../i18n";import Modal from 'react-native-modal';
+import Modal from 'react-native-modal';
 
 import NBColor from "../../theme/variables/commonColor.js";
 import { LIST_MONTHS_EN,
@@ -15,8 +15,10 @@ import { LIST_MONTHS_EN,
 import { mixins } from "../../_utils";
 import { connect } from "react-redux";
 import { StoreData } from "../../store/Interfaces";
+import { withNamespaces } from "react-i18next";
+import { PropsBase } from "../../screens/_shared/LayoutContainer.js";
 
-export interface Props {
+export interface Props extends PropsBase {
   isVisible: boolean;
   fromDate: Moment;
   toDate: Moment;
@@ -70,7 +72,7 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
   }
 
   render() {
-    const { isVisible, locale } = this.props;
+    const { isVisible, locale, t } = this.props;
     let fromDate = this.state.fromDate;
     const toDate = this.state.toDate;
 
@@ -112,8 +114,8 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
                     selectedDayTextColor="#FFFFFF"
                     months={mlist}
                     weekdays={weekdays}
-                    previousTitle={getLabel("create.prev_month_label")}
-                    nextTitle={getLabel("create.next_month_label")}
+                    previousTitle={t("create:prev_month_label")}
+                    nextTitle={t("create:next_month_label")}
                     onDateChange={this.onDateChange}                    
                 />
               </View>                
@@ -121,13 +123,13 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
                 <Button
                     style={styles.buttonCancel}
                     onPress={this._onCancel}>
-                    <Text style={[styles.buttonTitle, styles.buttonCancelTitle]}>{getLabel("action.cancel")}</Text>
+                    <Text style={[styles.buttonTitle, styles.buttonCancelTitle]}>{t("action:cancel")}</Text>
                 </Button>
                 <Button
                     style={[styles.buttonDone, buttonDoneStyle]}
                     disabled={isDisabled}
                     onPress={this._onSave}>
-                    <Text style={[styles.buttonTitle, buttonDoneTitleStyle]}>{getLabel("action.done")}</Text>         
+                    <Text style={[styles.buttonTitle, buttonDoneTitleStyle]}>{t("action:done")}</Text>         
                 </Button>
             </View>
           </View>         
@@ -209,7 +211,7 @@ const styles = StyleSheet.create<Style>({
 const DateRangePickerStyle = 
     connectStyle<typeof DateRangePickerModalComponent>('NativeBase.Modal', styles)(DateRangePickerModalComponent);
 
-const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => { 
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => { 
   
   return {
       locale: storeState.user.locale
@@ -217,4 +219,4 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 };
 const DateRangePicker = connect(mapStateToProps, null)(DateRangePickerStyle);
   
-export default DateRangePicker;
+export default withNamespaces(['action', 'create'])(DateRangePicker);

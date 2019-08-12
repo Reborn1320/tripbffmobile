@@ -1,21 +1,20 @@
 import * as React from "react";
 import { StyleSheet, TextStyle } from "react-native";
-import { Container, Content, List, ListItem, Text, Left, Right, Icon, Button } from "native-base";
+import { Container, Content, List, ListItem, Text, Left, Right, Icon, Button, Toast, Root } from "native-base";
 import { StoreData } from "../../store/Interfaces";
-import { getLabel } from "../../../i18n";
 import NBColor from "../../theme/variables/material.js";
 import { mixins } from "../../_utils";
 import { LOCALES } from "../../screens/_services/SystemConstants";
-import RNRestart from 'react-native-restart';
 import { connect } from "react-redux";
 import { updateLocaleFacebookUser } from "../../store/User/operations";
 import { PropsBase } from "../../screens/_shared/LayoutContainer";
+import { withNamespaces } from "react-i18next";
 
 interface IMapDispatchToProps extends PropsBase {
   updateLocale: (userId: string, locale: string) => Promise<void>;
 }
 
-export interface Props {
+export interface Props extends IMapDispatchToProps {
   locale: string;
   userId: string;
 }
@@ -24,7 +23,7 @@ interface State {
   locale: string;
 }
 
-class LanguageSelectionComponent extends React.Component<Props & IMapDispatchToProps, State> {
+class LanguageSelectionComponent extends React.Component<Props, State> {
 
    constructor(props) {
     super(props);
@@ -34,13 +33,13 @@ class LanguageSelectionComponent extends React.Component<Props & IMapDispatchToP
     }
   }  
   
-  static navigationOptions = ({ navigation }) => ({
+  static navigationOptions = ({ navigation, screenProps }) => ({
     headerRight: (<Button transparent style={{
                     alignSelf: "center"
                         }}
                     onPress={navigation.getParam('_onConfirm')}>
                     <Text style={styles.button}>
-                        {getLabel("action.save")}</Text>
+                        {screenProps.t("action:save")}</Text>
                   </Button>)
   });
 
@@ -51,9 +50,25 @@ class LanguageSelectionComponent extends React.Component<Props & IMapDispatchToP
   private _onConfirm = () => { 
     var { userId } = this.props;
     var { locale } = this.state;
+    var tmp  = this;
+
     this.props.updateLocale(userId, locale).then(() => {
-      RNRestart.Restart();
-  });  
+      tmp.props.i18n.changeLanguage(locale);
+      
+      Toast.show({
+        text: this.props.t("setting:change_language_success"),
+        buttonText: this.props.t("action:okay"),
+        textStyle: {
+            ...mixins.themes.fontNormal
+          },
+          buttonTextStyle: {
+            ...mixins.themes.fontNormal
+          },
+        position: "top",
+        type: "success",
+        duration: 3000
+    });
+    });  
   }  
 
   private _getLocales = (locale) => {
@@ -77,37 +92,39 @@ class LanguageSelectionComponent extends React.Component<Props & IMapDispatchToP
     let locales = this._getLocales(locale);
 
     return (
-      <Container>
-          <Content>
-              <List>
-                  {
-                      locales.map(lo => {
-                          var locale = lo.locale;
+      <Root>
+          <Container>
+              <Content>
+                  <List>
+                      {
+                          locales.map(lo => {
+                              var locale = lo.locale;
 
-                          if (lo.isSelected)                                
+                              if (lo.isSelected)                                
+                                  return (
+                                      <ListItem selected key={locale}> 
+                                          <Left>
+                                              <Text>{lo.label}</Text>
+                                          </Left>
+                                          <Right>
+                                              <Icon name="md-checkmark" type="Ionicons"></Icon>
+                                          </Right>
+                                      </ListItem>   
+                                  )
+
                               return (
-                                  <ListItem selected key={locale}> 
+                                  <ListItem key={locale} onPress={() => this._onLanguagePress(locale)}>
                                       <Left>
                                           <Text>{lo.label}</Text>
                                       </Left>
-                                      <Right>
-                                          <Icon name="md-checkmark" type="Ionicons"></Icon>
-                                      </Right>
                                   </ListItem>   
-                              )
-
-                          return (
-                              <ListItem key={locale} onPress={() => this._onLanguagePress(locale)}>
-                                  <Left>
-                                      <Text>{lo.label}</Text>
-                                  </Left>
-                              </ListItem>   
-                          ) 
-                      })
-                  }
-              </List>
-          </Content>
-      </Container>       
+                              ) 
+                          })
+                      }
+                  </List>
+              </Content>
+          </Container>
+      </Root>             
     );
   }
 }
@@ -126,7 +143,7 @@ const styles = StyleSheet.create<Style>({
     }
 });
 
-const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {        
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {        
   return {
       locale: storeState.user.locale,
       userId: storeState.user.id
@@ -139,8 +156,8 @@ const mapDispatchToProps = dispatch => {
   }
 };
 
-var LanguageSelection = connect(mapStateToProps, mapDispatchToProps)(LanguageSelectionComponent);
+const LanguageSelection = connect(mapStateToProps, mapDispatchToProps)(LanguageSelectionComponent);
 
-export default LanguageSelection;
+export default withNamespaces(['action'])(LanguageSelection);
 
 

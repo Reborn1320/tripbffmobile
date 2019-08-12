@@ -98,6 +98,7 @@
         "header_title": "Cài đặt",
         "language_setting_label": "Ngôn ngữ",
         "feedback_setting_label": "Phản hồi",
-        "logout_setting_label": "Đăng xuất"
+        "logout_setting_label": "Đăng xuất",
+        "change_language_success": "Cập nhật ngôn ngữ thành công"
     }            
 }

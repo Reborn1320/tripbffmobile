@@ -5,12 +5,12 @@ import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import { NavigationConstants } from "../../../screens/_shared/ScreenConstants";
-import { getLabel } from "../../../../i18n";
 import { StyledCarousel, IEntry } from "../../../_atoms/Carousel/StyledCarousel";
 import moment from "moment";
 import { mixins } from "../../../_utils";
 import NBColor from "../../../theme/variables/material.js";
 import EmptyLocationItem from "../../Trip/DayItem/EmptyLocation";
+import { withNamespaces } from "react-i18next";
 
 interface IMapDispatchToProps {
     removeLocationHandler?: (dateIdx: number, locationId: string) => void
@@ -30,7 +30,7 @@ export interface State {
     isAddActivityModalVisible: boolean
 }
 
-export default class LocationItem extends Component<Props, State> {
+class LocationItem extends Component<Props, State> {
     constructor(props) {
         super(props)
 
@@ -60,7 +60,7 @@ export default class LocationItem extends Component<Props, State> {
     render() {
 
         var location: StoreData.LocationVM = this.props.location;
-        var { locale } = this.props;
+        var { locale, t } = this.props;
 
         var feelingLabel = "",
             feelingIcon = "smile";
@@ -71,10 +71,10 @@ export default class LocationItem extends Component<Props, State> {
             feelingIcon = location.feeling.icon ? location.feeling.icon : "smile";
         }
 
-        var activityLabel = getLabel("trip_detail.activity_label"),
+        var activityLabel = t("trip_detail:activity_label"),
             activityIcon = "running";
 
-        if (location.activity) {
+        if (location.activity && location.activity.activityId) {
             activityLabel = location.activity["label_" + locale]
                  ? location.activity["label_" + locale] : location.activity["label_en"];
             activityIcon = location.activity.icon ? location.activity.icon : "running";
@@ -120,7 +120,7 @@ export default class LocationItem extends Component<Props, State> {
                     locationImageEntries.length == 0 &&
                     <EmptyLocationItem
                         viewContainerStyle={styles.emptyImageContainer}
-                        subTitle={getLabel("message.add_image")}
+                        subTitle={t("message:add_image")}
                         openAddLocationModalHandler={this._toLocationDetail}
                         >
                     </EmptyLocationItem>
@@ -131,8 +131,8 @@ export default class LocationItem extends Component<Props, State> {
                         onPress={this._openUpdateFeelingModal}>
                         <Icon name={feelingIcon} type="FontAwesome5" style={styles.activityIcon}/>
                         {
-                            feelingLabel && <Text style={styles.activityContent} numberOfLines={2}>{getLabel("trip_detail.feeling_adjective")} {feelingLabel}</Text> ||
-                            <Text numberOfLines={2} style={styles.activityContent}>{getLabel("trip_detail.feeling_label")}</Text>
+                            feelingLabel && <Text style={styles.activityContent} numberOfLines={2}>{t("trip_detail:feeling_adjective")} {feelingLabel}</Text> ||
+                            <Text numberOfLines={2} style={styles.activityContent}>{t("trip_detail:feeling_label")}</Text>
                         }
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -146,6 +146,8 @@ export default class LocationItem extends Component<Props, State> {
         );
     }
 }
+
+export default withNamespaces(['trip_detail'])(LocationItem);
 
 interface Style {
     locationContainer: ViewStyle;

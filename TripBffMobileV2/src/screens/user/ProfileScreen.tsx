@@ -10,15 +10,14 @@ import { NavigationScreenProp } from "react-navigation";
 import UserDetails from "../../_organisms/User/UserDetails";
 import { getCancelToken } from "../../_function/commonFunc";
 import ConfirmationModal from "../../_molecules/ConfirmationModal";
-import { getLabel } from "../../../i18n";
 import TripsEmptyComponent from "../../_organisms/Trips/TripsList/TripsEmptyComponent";
+import { withNamespaces } from 'react-i18next';
+import { PropsBase } from "../_shared/LayoutContainer";
 
-export interface IStateProps { }
-
-interface IMapDispatchToProps {
+interface IMapDispatchToProps extends PropsBase {
     fetchTrips: (cancelToken: any) => Promise<any>;
     addTrips: (trips: Array<StoreData.TripVM>) => void;
-    deleteTrip: (tripId: string) => void;
+    deleteTrip: (tripId: string) => Promise<boolean>;
     getCurrentMinimizedTrip: (tripId: string) => void;
 }
 
@@ -29,6 +28,7 @@ export interface Props extends IMapDispatchToProps {
     fullName: string;
 
     trips: StoreData.MinimizedTripVM[];
+    isEmptyTrips: boolean;
 }
 
 interface State {
@@ -42,19 +42,19 @@ interface State {
 
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
 
-export class ProfileScreen extends Component<Props & IStateProps, State> {
+class ProfileScreen extends Component<Props, State> {
 
     _cancelRequest;
     _cancelToken;
 
-    constructor(props: Props) {
+    constructor(props) {
         super(props);
 
         this.state = {
             isLoaded: true,
-            loadingMessage: getLabel("profile.loading_trips_message"),
+            loadingMessage: this.props.t("profile:loading_trips_message"),
             UIState: "LOADING_TRIP",
-            isEmptyTrips: false,
+            isEmptyTrips: this.props.isEmptyTrips,
             isOpenDeleteConfirmModal: false,
             deletedTripId: ""
         };
@@ -76,7 +76,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
 
         this._refreshTrips();
         this.props.navigation.setParams({ _editUserSettings: this._editUserSettings });
-    } 
+    }    
 
     componentWillUnmount() {        
         this._cancelRequest('Operation canceled by the user.');
@@ -132,12 +132,15 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     }
 
     private _confirmDeleteTrip = () => {
-        this.props.deleteTrip(this.state.deletedTripId);
-        this.setState({
-            isOpenDeleteConfirmModal: false,
-            deletedTripId: ""
+        this.props.deleteTrip(this.state.deletedTripId).then((isLastTripDeleted) => {
+            this.setState({
+                isOpenDeleteConfirmModal: false,
+                deletedTripId: "",
+                isEmptyTrips: isLastTripDeleted,
+                isLoaded: false
+            });
         });
-    }
+      }
 
     private _cancelDeleteModal = () => {
         this.setState({
@@ -148,6 +151,7 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
 
     render() {
         const { isLoaded, isEmptyTrips } = this.state;
+        const { t } = this.props;
 
         return (
             <Container>
@@ -167,8 +171,8 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                                 handleDeleteTrip={this._handleDeleteTrip}
                             />
                         }
-                        <ConfirmationModal title={getLabel("profile.delete_trip_modal_header")}
-                            content={getLabel("profile.delete_trip_modal_content")}
+                        <ConfirmationModal title={t("profile:delete_trip_modal_header")}
+                            content={t("profile:delete_trip_modal_content")}
                             confirmHandler={this._confirmDeleteTrip}
                             cancelHandler={this._cancelDeleteModal}
                             isVisible={this.state.isOpenDeleteConfirmModal} />
@@ -178,6 +182,8 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         );
     }
 }
+
+export default withNamespaces(['profile'])(ProfileScreen)
 
 const styles = StyleSheet.create({
     actionButtonIcon: {

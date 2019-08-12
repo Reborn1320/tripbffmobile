@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { FlatList, View, BackHandler, StyleSheet, ViewStyle } from "react-native";
-import { Container, Content, Button, Text, Footer, Toast } from 'native-base';
+import { Container, Content, Button, Text, Footer, Toast, Root } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import _ from "lodash";
 import { connect } from "react-redux";
@@ -17,10 +17,10 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import { uploadLocationImage, addLocations, IImportLocation } from "../../../store/Trip/operations";
 import { getAddressFromLocation, checkAndRequestPhotoPermissionAsync } from "../../../_function/commonFunc";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
-import { getLabel } from "../../../../i18n";
 import { toDateUtc as toDateUtcFunc } from "../../../_function/dateFuncs";
 import Footer2Buttons from "../../../_atoms/Footer2Buttons";
 import { mixins } from "../../../_utils";
+import { withNamespaces } from "react-i18next";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -57,7 +57,7 @@ class TripImportation extends Component<Props, State> {
             toDate: props.trip.toDate,
             locations: [],
             isLoading: true,
-            loadingMessage: getLabel("import.loading_image_from_gallery_message"),
+            loadingMessage: this.props.t("import:loading_image_from_gallery_message"),
             UIState: "select image",
             isHideFooter: true
         }
@@ -137,8 +137,8 @@ class TripImportation extends Component<Props, State> {
 
         // console.log(adapterResult)
         Toast.show({
-            text: getLabel("import.location_information_text"),
-            buttonText: getLabel("action.okay"),
+            text: this.props.t("import:location_information_text"),
+            buttonText: this.props.t("action:okay"),
             textStyle: {
                 ...mixins.themes.fontNormal
               },
@@ -293,7 +293,7 @@ class TripImportation extends Component<Props, State> {
     
             if (isStartUploadImage) {
                 console.log(`uploading image: trip id = ${this.state.tripId}, location id = ${locId}, imageId = ${imageIdToUpload}, url = ${imageUrlToUpload}`)
-                this.setState({ UIState: "uploading image", isLoading: true, loadingMessage: `${getLabel("import.image_uploading_message")} ${uploadedImages}/${totalImages}`});
+                this.setState({ UIState: "uploading image", isLoading: true, loadingMessage: `${this.props.t("import:image_uploading_message")} ${uploadedImages}/${totalImages}`});
                 console.log("component will update with uploading image");
 
 
@@ -312,34 +312,41 @@ class TripImportation extends Component<Props, State> {
 
     }
 
+    private _onCancelImport = () => {
+        this.props.navigation.navigate(NavigationConstants.Screens.TripDetail, { tripId: this.state.tripId });
+    }
+    
     render() {
         console.log('trip import screen render');
         const { tripId, locations, isLoading, loadingMessage, isHideFooter } = this.state
         return (
+            <Root>
             <Container> 
                 <Content>
-                    {isLoading && <Loading message={loadingMessage} />}
-                    {!isLoading &&
-                        <FlatList style={{ borderBottomWidth: 0 }}
-                            data={locations}
-                            renderItem={this._renderItem}
-                            keyExtractor={(item, index) => String(index)}
-                            removeClippedSubviews={false}
-                        />
-                    }    
+
+                        {isLoading && <Loading message={loadingMessage} />}
+                        {!isLoading &&
+                            <FlatList style={{ borderBottomWidth: 0 }}
+                                data={locations}
+                                renderItem={this._renderItem}
+                                keyExtractor={(item, index) => String(index)}
+                                removeClippedSubviews={false}
+                            />
+                        }    
                 </Content>
                 {
                     isHideFooter || 
                     <Footer2Buttons 
-                        onCancel={() => this.props.navigation.navigate(NavigationConstants.Screens.TripDetail, { tripId: tripId })}
+                        onCancel={this._onCancelImport }
                         onAction={this._import}
-                        cancelText="import.skip_button"
-                        actionText="import.import_button"
+                        cancelText="import:skip_button"
+                        actionText="import:import_button"
                         primary
                     />
                 }             
                       
             </Container>
+            </Root>
         );
     }
 }
@@ -379,4 +386,4 @@ const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
 
 const TripImportationScreen = connect(mapStateToProps, mapDispatchToProps)(TripImportation);
 
-export default TripImportationScreen;
+export default withNamespaces(['import', 'action'])(TripImportationScreen);

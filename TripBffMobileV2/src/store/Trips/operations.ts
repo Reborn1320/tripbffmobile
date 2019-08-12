@@ -36,7 +36,9 @@ export function deleteTrip(tripId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     return extraArguments.tripApiService.delete(`trips/${tripId}`)
     .then((res) => {
-        dispatch(deleteTripAction(tripId));
+      let isLastTripDeleted = getState().trips && getState().trips.length == 1; 
+      dispatch(deleteTripAction(tripId));
+      return isLastTripDeleted;
     })
     .catch((err) => {
       console.log('error delete trip api: ', err);

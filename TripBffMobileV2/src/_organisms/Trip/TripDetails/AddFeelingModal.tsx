@@ -9,11 +9,12 @@ import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
 import { getAllFeelings } from "../../../store/DataSource/operations";
 import { StoreData } from "../../../store/Interfaces";
-import { getLabel } from "../../../../i18n";
 import uuid4 from 'uuid/v4';
 import { createLabelLocales } from "../../../_function/commonFunc";
 import SearchBarComponent from "../../../_atoms/SearchBarComponent";
 import ActionModal from "../../../_molecules/ActionModal";
+import { PropsBase } from "../../../screens/_shared/LayoutContainer";
+import { withNamespaces } from "react-i18next";
 
 class SelectedFeelingItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -183,7 +184,7 @@ class FeelingContainerComponent extends React.Component<any, any> {
   }
 }
 
-interface IMapDispatchToProps {
+interface IMapDispatchToProps extends PropsBase {
   getAllFeelings: () => Promise<StoreData.FeelingVM>
 }
 
@@ -239,7 +240,7 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
   }
 
   render() {
-    const { isVisible, preDefinedFeelings, locale } = this.props;
+    const { isVisible, preDefinedFeelings, locale, t } = this.props;
     var contentElement = preDefinedFeelings
           ? <FeelingContainerComponent
                items={preDefinedFeelings}
@@ -252,7 +253,7 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
           
     return (
       <ActionModal
-         title={getLabel("trip_detail.feeling_modal_title")}
+         title={t("trip_detail:feeling_modal_title")}
          isVisible={isVisible}
          onModalShowHandler={this._onModalShow}
          onCancelHandler={this._onCancel}
@@ -347,7 +348,7 @@ const styles = StyleSheet.create<Style>({
   
 const AddFeelingModalStyle = connectStyle<typeof AddFeelingModalComponent>('NativeBase.Modal', styles)(AddFeelingModalComponent);
 
-const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   let dateVm = storeState.currentTrip.dates.find(item => item.dateIdx == ownProps.dateIdx);
   let feeling = null;
 
@@ -363,7 +364,7 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
   };
 };
 
-const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
+const mapDispatchToProps = (dispatch) => {
   return {
     getAllFeelings: () => dispatch(getAllFeelings())
   };
@@ -374,4 +375,4 @@ const AddFeelingModal = connect(
   mapDispatchToProps
 )(AddFeelingModalStyle);
 
-export default AddFeelingModal;
+export default withNamespaces(['trip_detail'])(AddFeelingModal);

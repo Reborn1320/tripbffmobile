@@ -10,10 +10,10 @@ import * as RNa from "react-navigation";
 import { loginUsingFacebookAccessToken, loginUsingDeviceId } from "../../store/User/operations";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import { mixins } from "../../_utils";
-import { getLabel } from "../../../i18n";
+import { withNamespaces } from 'react-i18next';
+import { PropsBase } from "../_shared/LayoutContainer";
 
-export interface Props {
-  navigation: RNa.NavigationScreenProp<any, any>;
+export interface Props extends PropsBase {
 }
 
 interface IMapDispatchToProps {
@@ -63,6 +63,8 @@ class Login extends Component<Props & IMapDispatchToProps, any>{
   }
 
   render() {
+    const { t, i18n } = this.props;
+
     return (
       <View>
           <ImageBackground source={require('../../../assets/03.jpg')} style={styles.imageBackground}>              
@@ -72,7 +74,7 @@ class Login extends Component<Props & IMapDispatchToProps, any>{
           
           <View style={styles.loginContainer}>
             <View style={styles.welcomeContainer}>
-              <Text style={styles.welcomeTitle}>{getLabel("login.welcome_title")}</Text>
+              <Text style={styles.welcomeTitle}>{t("login:welcome_title")}</Text>
             </View>
             <View style={styles.buttonsContainer}>
               <Button
@@ -81,12 +83,12 @@ class Login extends Component<Props & IMapDispatchToProps, any>{
                 style={styles.facebookButton}              
               >
                 <Icon name='facebook-f' type="FontAwesome5" style={styles.facebookIcon}/> 
-                <Text style={styles.buttonTitle}>{getLabel("login.facebook_button_title")}</Text>
+                <Text style={styles.buttonTitle}>{t("login:facebook_button_title")}</Text>
               </Button>             
 
               <Button style={styles.noLoginButton}
                 dark onPress={this._loginUniqueDevice}>
-                <Text style={styles.buttonTitle}>{getLabel("login.no_login_button_title")}</Text>
+                <Text style={styles.buttonTitle}>{t("login:no_login_button_title")}</Text>
               </Button>
             </View>
         </View>
@@ -177,4 +179,4 @@ const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
 
 const LoginScreen = connect(null, mapDispatchToProps)(Login);
 
-export default LoginScreen;
+export default withNamespaces(['login'])(LoginScreen);

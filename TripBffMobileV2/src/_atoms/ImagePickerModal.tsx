@@ -3,14 +3,14 @@ import { View, Text } from "native-base";
 import { StyleSheet, ViewStyle, Dimensions } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
-// import CameraRollPicker from 'react-native-camera-roll-picker';
 import Loading from "./Loading/Loading";
-import { getLabel } from "../../i18n";
 import StyledCameraRollPicker from "./CameraRollPicker/StyledCameraRollPicker";
 import Footer2Buttons from "./Footer2Buttons";
 import { mixins } from "../_utils";
+import { PropsBase } from "../screens/_shared/LayoutContainer";
+import { withNamespaces } from "react-i18next";
 
-export interface Props {
+export interface Props extends PropsBase {
   isVisible: boolean;
   confirmHandler: (selectedImages: Array<any>) => Promise<any>;
   cancelHandler?: () => void;
@@ -26,7 +26,7 @@ interface State {
 }
 
 class ImagePickerModalComponent extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
+  constructor(props) {
     super(props);
 
     let { width } = Dimensions.get('window');
@@ -88,7 +88,7 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isVisible } = this.props;
+    const { isVisible, t } = this.props;
     const { num, numUploaded } = this.state;
 
     return (
@@ -96,7 +96,7 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
         isVisible={isVisible} hideModalContentWhileAnimating>
         {this.state.isUploadingImages ? (
           <View style={[styles.modalInnerContainer, styles.loading]}>
-            <Loading message={getLabel("location_detail.image_uploading_message")} />
+            <Loading message={t("location_detail:image_uploading_message")} />
             <Text>{numUploaded + "/" + num}</Text>
           </View>
         ) : (
@@ -110,8 +110,8 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
               <Footer2Buttons
                 onCancel={this._onCancel}
                 onAction={this._onSave}
-                cancelText="action.cancel"
-                actionText="action.add"
+                cancelText="action:cancel"
+                actionText="action:add"
                 primary
               />
             </View>
@@ -164,4 +164,4 @@ const styles = StyleSheet.create<Style>({
 const ImagePickerModal =
   connectStyle<typeof ImagePickerModalComponent>('NativeBase.Modal', styles)(ImagePickerModalComponent);
 
-export default ImagePickerModal;
+export default withNamespaces(['location_detail'])(ImagePickerModal);

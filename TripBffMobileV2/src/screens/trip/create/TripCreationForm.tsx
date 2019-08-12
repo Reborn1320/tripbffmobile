@@ -3,13 +3,14 @@ import { View, Button, Text } from 'native-base';
 import moment, { Moment } from "moment";
 import DateRangePicker from "../../../_atoms/DatePicker/DateRangePicker";
 import NBColor from "../../../theme/variables/commonColor.js";
-import { getLabel } from "../../../../i18n";
 import { Input } from 'react-native-elements';
 import { TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from "react-native";
 import { mixins } from "../../../_utils";
 import { DATE_FORMAT } from "../../_services/SystemConstants";
+import { withNamespaces } from "react-i18next";
+import { PropsBase } from "../../_shared/LayoutContainer";
 
-export interface Props {
+export interface Props extends PropsBase {
     createTrip?: (name: string, fromDate: Moment, toDate: Moment) => Promise<string>;
     onTripCreatedUpdatedHandler?: (tripId: string, name: string) => void;
     updateTrip: (tripId: string, name: string, fromDate: Moment, toDate: Moment) => Promise<any>;
@@ -20,7 +21,7 @@ export interface Props {
     titleButton: string
 }
 
-export class TripCreationForm extends PureComponent<Props, any> {
+class TripCreationForm extends PureComponent<Props, any> {
 
   constructor(props) {
     super(props);
@@ -107,12 +108,14 @@ export class TripCreationForm extends PureComponent<Props, any> {
         style={[styles.button, buttonStyle]}
         disabled={isDisabled}
         onPress={this._onClickCreateTrip}> 
-        <Text style={[styles.buttonTitle, buttonTitleStyle]}>{getLabel(this.props.titleButton)}</Text>       
+        <Text style={[styles.buttonTitle, buttonTitleStyle]}>{this.props.t(this.props.titleButton)}</Text>       
       </Button>
     );
   }
 
   render() {
+    const { t } = this.props;
+
     var date = this.state.fromDate.format(DATE_FORMAT) + " - " + this.state.toDate.format(DATE_FORMAT);
     let nameInputContainerStyle = this.state.isNameFieldFocused ?
                                    styles.formInputFocusedContainer : styles.formInputUnFocusedContainer;
@@ -123,7 +126,7 @@ export class TripCreationForm extends PureComponent<Props, any> {
       <View>
           <View style={styles.formContainer}>            
             <Input
-              label={getLabel("create.trip_name")}  
+              label={t("create:trip_name")}  
               labelStyle={styles.formLabel}            
               leftIcon={{ type: 'font-awesome', name: 'globe', size: 20 }}
               value={this.state.tripName}
@@ -138,7 +141,7 @@ export class TripCreationForm extends PureComponent<Props, any> {
                   activeOpacity={1}
                   style={styles.formDateContainer}>
               <Input
-                label={getLabel("create.date")}  
+                label={t("create:date")}  
                 labelStyle={styles.formLabel}              
                 leftIcon={{ type: 'font-awesome', name: 'calendar', size: 20 }}
                 value={date}  
@@ -164,6 +167,8 @@ export class TripCreationForm extends PureComponent<Props, any> {
     );
   }
 }
+
+export default withNamespaces(['create', 'action'])(TripCreationForm);
 
 interface Style {
   formContainer: ViewStyle;

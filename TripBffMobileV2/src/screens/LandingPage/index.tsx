@@ -9,7 +9,6 @@ import NBColor from "../../theme/variables/commonColor.js";
 import { mixins } from "../../_utils";
 import SplashScreen from 'react-native-splash-screen';
 import { StoreData } from "../../store/Interfaces";
-import I18n from 'react-native-i18n';
 
 export interface Props {
   navigation: RNa.NavigationScreenProp<any, any>;
@@ -25,11 +24,11 @@ class LandingPageComponent extends Component<any, any> {
   _displayLandingPageTimer;
 
   componentDidMount() {
+    var tmp = this;
     this._displayLandingPageTimer = setTimeout(() => {
         this.props.isLoggedIn()
         .then(isLoggedIn => {
-            I18n.locale = this.props.locale;
-            this.props.screenProps.setLocale(this.props.locale);
+            tmp.props.screenProps.changeLanguage(tmp.props.locale);
 
             if (isLoggedIn) {
                 this.props.navigation.navigate(NavigationConstants.Screens.Profile);

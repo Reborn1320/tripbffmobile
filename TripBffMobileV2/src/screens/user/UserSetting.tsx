@@ -2,25 +2,25 @@ import React, { Component } from "react";
 import { Container, Content, List, ListItem, Text, View, Left, Right, Icon } from "native-base";
 import _ from "lodash";
 import { NavigationConstants } from "../_shared/ScreenConstants";
-import { NavigationScreenProp } from "react-navigation";
-import { getLabel } from "../../../i18n";
 import { logOut } from "../../store/User/operations";
+import { withNamespaces } from "react-i18next";
+import { PropsBase } from "../_shared/LayoutContainer";
 
-interface IMapDispatchToProps {
+export interface Props extends PropsBase {
     updateLocale: (locale: string) => Promise<void>;
-}
-
-export interface Props extends IMapDispatchToProps {
-    navigation: NavigationScreenProp<any, any>;
 }
 
 interface State { 
 }
 
-export default class UserSettingsScreen extends Component<Props & IMapDispatchToProps, State> {
+class UserSettingsScreen extends Component<Props, State> {
 
-    static navigationOptions = ({ navigation }) => ({
-        title: getLabel("setting.header_title"),
+    constructor(props) {
+        super(props);
+    }
+
+    static navigationOptions = ({ navigation, screenProps }) => ({
+        title: screenProps.t("setting:header_title"),
         headerRight: <View></View>
     });
    
@@ -36,13 +36,15 @@ export default class UserSettingsScreen extends Component<Props & IMapDispatchTo
     }
 
     render() {
+        const { t } = this.props;
+
         return (
             <Container>
                 <Content>
                     <List>
                         <ListItem onPress={this._changeLanguage}>
                              <Left>
-                                <Text>{getLabel("setting.language_setting_label")}</Text>
+                                <Text>{t("setting:language_setting_label")}</Text>
                              </Left>
                             <Right>  
                                 <Icon name="arrow-forward" />
@@ -51,7 +53,7 @@ export default class UserSettingsScreen extends Component<Props & IMapDispatchTo
                                             
                         <ListItem>
                             <Left>
-                                <Text>{getLabel("setting.feedback_setting_label")}</Text>
+                                <Text>{t("setting:feedback_setting_label")}</Text>
                             </Left>
                             <Right>
                                 <Icon name="arrow-forward" />
@@ -60,7 +62,7 @@ export default class UserSettingsScreen extends Component<Props & IMapDispatchTo
 
                         <ListItem onPress={this._handleEditBtnClick}>
                             <Left>
-                                <Text>{getLabel("setting.logout_setting_label")}</Text>
+                                <Text>{t("setting:logout_setting_label")}</Text>
                             </Left>                            
                         </ListItem> 
                     </List>  
@@ -69,3 +71,5 @@ export default class UserSettingsScreen extends Component<Props & IMapDispatchTo
         );
     }
 }
+
+export default withNamespaces(['setting'])(UserSettingsScreen);

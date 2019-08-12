@@ -3,13 +3,14 @@
 
 import * as React from "react";
 import { Modal } from "../_atoms";
-import { View, Text, Button, H2, H3 } from "native-base";
+import { View, Text, Button, H3 } from "native-base";
 import { StyleSheet, ViewStyle, TextStyle } from "react-native";
 import NBTheme from "../theme/variables/material";
-import { getLabel } from "../../i18n";
 import { mixins } from "../_utils";
+import { withNamespaces } from "react-i18next";
+import { PropsBase } from "../screens/_shared/LayoutContainer";
 
-export interface Props {
+export interface Props extends PropsBase {
   isVisible: boolean;
   title?: string;
   content: string;
@@ -21,7 +22,7 @@ interface State {
 }
 
 class ConfirmationModal extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
+  constructor(props) {
     super(props);
   }
 
@@ -33,7 +34,7 @@ class ConfirmationModal extends React.PureComponent<Props, State> {
   _onConfirm = () => this.props.confirmHandler();
 
   render() {
-    const { isVisible, title, content } = this.props;
+    const { isVisible, title, content, t } = this.props;
 
     return (
       <Modal isVisible={isVisible}>
@@ -43,8 +44,8 @@ class ConfirmationModal extends React.PureComponent<Props, State> {
           </View>
           <Text style={styles.contentText}>{content}</Text>
           <View style={styles.buttons}>
-            <Button transparent info style={styles.button} onPress={this._onCancel}><Text>{getLabel("action.cancel")}</Text></Button>
-            <Button danger style={styles.button} onPress={this._onConfirm}><Text>{getLabel("action.yes")}</Text></Button>
+            <Button transparent info style={styles.button} onPress={this._onCancel}><Text>{t("action:cancel")}</Text></Button>
+            <Button danger style={styles.button} onPress={this._onConfirm}><Text>{t("action:yes")}</Text></Button>
           </View>
         </View>
       </Modal>
@@ -100,4 +101,4 @@ const styles = StyleSheet.create<Style>({
   }
 })
 
-export default ConfirmationModal;
+export default withNamespaces(['action', 'trip_detail'])(ConfirmationModal);

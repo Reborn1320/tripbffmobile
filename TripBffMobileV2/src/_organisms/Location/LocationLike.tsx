@@ -2,12 +2,13 @@ import React from "react";
 import { Text, View, Icon, Badge } from "native-base";
 import _ from "lodash";
 import { StoreData } from "../../store/Interfaces";
-import { getLabel } from "../../../i18n";
 import { ViewStyle, TextStyle, StyleSheet, TouchableOpacity } from "react-native";
 import NBTheme from "../../theme/variables/material.js";
 import { mixins } from "../../_utils";
+import { PropsBase } from "../../screens/_shared/LayoutContainer";
+import { withNamespaces } from "react-i18next";
 
-export interface Props {
+export interface Props extends PropsBase {
     locale: string,
     likeItems: Array<StoreData.LocationLikeItemVM>,
     openUpdateLocationHighlightModalHanlder: () => void
@@ -16,20 +17,26 @@ export interface Props {
 export interface State {
 }
 
-export default class LocationLike extends React.PureComponent<Props, State> {
+class LocationLike extends React.PureComponent<Props, State> {
+
+    constructor(props) {
+        super(props);
+    }
 
     _openUpdateHighlightModal = () => {
         this.props.openUpdateLocationHighlightModalHanlder();
     }
 
     render() {
+        const { t } = this.props;
+
         return (
             <View style={styles.container}>
                 <TouchableOpacity
                     onPress={this._openUpdateHighlightModal}
                 >
                     <View style={styles.header}>
-                        <Text style={styles.nameText}>{getLabel("location_detail.like_dislike_section_label")}</Text>
+                        <Text style={styles.nameText}>{t("location_detail:like_dislike_section_label")}</Text>
                         <Icon style={styles.editIcon} name="pencil-alt" type="FontAwesome5" />
                     </View>
                 </TouchableOpacity>
@@ -60,6 +67,8 @@ export default class LocationLike extends React.PureComponent<Props, State> {
         );
     }
 }
+
+export default withNamespaces(['location_detail'])(LocationLike)
 
 interface Style {
     container: ViewStyle;

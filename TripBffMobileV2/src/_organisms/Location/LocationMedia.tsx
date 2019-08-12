@@ -6,9 +6,10 @@ import ImageList, { calculateImageListWidth, N_ITEMS_PER_ROW } from "../../_mole
 import NBTheme from "../../theme/variables/material.js";
 import { ImageSelection } from "../../_molecules/ImageList/ImageSelection";
 import { ImageFavorable } from "../../_molecules/ImageList/ImageFavorable";
-import { getLabel } from "../../../i18n";
 import { mixins } from "../../_utils";
 import { AddLocationImageTile } from "./AddLocationImageTile";
+import { PropsBase } from "../../screens/_shared/LayoutContainer";
+import { withNamespaces } from "react-i18next";
 
 export interface Props {
   images: Array<ILocationMediaImage>
@@ -31,7 +32,11 @@ interface ILocationMediaImage {
   isFavorite: boolean;
 }
 
-export default class LocationMedia extends React.PureComponent<Props, State> {
+class LocationMedia extends React.PureComponent<Props & PropsBase, State> {
+
+  constructor(props) {
+    super(props);
+  }
 
   itemWidth: number;
   componentWillMount() {
@@ -85,7 +90,7 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
       : [{}, ...this.props.images];
     return (
       <View style={styles.locationMediaContainer}>
-        <Text style={styles.headerText}>{getLabel("location_detail.media_section_label")}</Text>
+        <Text style={styles.headerText}>{this.props.t("location_detail:media_section_label")}</Text>
         <ImageList
           items={items}
           renderItem={this.renderItem2}
@@ -94,6 +99,8 @@ export default class LocationMedia extends React.PureComponent<Props, State> {
     );
   }
 }
+
+export default withNamespaces(['location_detail'])(LocationMedia);
 
 interface Style {
   locationMediaContainer: ViewStyle;

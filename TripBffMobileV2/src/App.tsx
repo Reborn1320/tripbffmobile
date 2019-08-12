@@ -21,16 +21,15 @@ import ReduxThunk from "redux-thunk";
 import { ThunkExtraArgumentsBase } from "./store";
 import { mockLoginApiService, mockTripApiService } from "./store/MockApiService";
 import LocationImageDetailScreen from "./screens/location/LocationImageDetail/LocationImageDetailScreen";
-import { TripCarouselDoc } from "./_molecules/TripCarousel/TripCarousel.doc";
 import ImageUploadDoc from "./screens/trip/import/ImageUpload.doc";
 import LandingPageScreen from "./screens/LandingPage";
 import NBTheme from "./theme/variables/material.js";
-import { getLabel } from "../i18n";
 import TripEditBasicScreen from "./screens/trip/create/TripEditBasic";
 import { mixins } from "./_utils";
 import UserSettingsScreen from "./screens/user/UserSetting";
 import LanguageSelection from "./_organisms/User/LanguageSelection";
-import { DEFAULT_LOCALE } from "./screens/_services/SystemConstants";
+import { withNamespaces } from 'react-i18next';
+import i18n from '../i18n';
 
 var mockLoginApi = mockLoginApiService;
 var mockTripApi = mockTripApiService;
@@ -204,28 +203,28 @@ const AppNavigator = createSwitchNavigator(
 
 let Navigation = createAppContainer(AppNavigator);
 
-export default class App extends React.Component {
-  state = {
-    locale: DEFAULT_LOCALE,
+class App extends React.Component<any, any> {
+  
+  changeLanguage = locale => {
+    this.props.i18n.changeLanguage(locale);
   };
-
-  setLocale = locale => {
-    console.log('set locale: ' + locale);
-    this.setState({ locale });
-  };
-
 
   render() {
+    const { t } = this.props;
+
     return (
       <Provider store={store}>
         <Root>
           <Navigation screenProps={{
-              setLocale: this.setLocale,
+              changeLanguage: this.changeLanguage,
+              t: t
             }}/>
         </Root>
       </Provider>
     );
   }
 }
+
+export default withNamespaces()(App);
 
 console.disableYellowBox = true;

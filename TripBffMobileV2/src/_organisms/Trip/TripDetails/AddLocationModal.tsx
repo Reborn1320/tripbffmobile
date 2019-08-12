@@ -2,25 +2,19 @@
 //input: isVisible, title, content, button confirm handler.
 
 import * as React from "react";
-import { View, Text, Button, H2, Icon } from "native-base";
+import { View, Text } from "native-base";
 import { StyleSheet, ViewStyle, TextStyle, TouchableOpacity, Image, ImageStyle } from "react-native";
-import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
-import  Autocomplete  from "react-native-autocomplete-input";
-// const mbxClient = require('@mapbox/mapbox-sdk');
-// const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
-// const baseClient = mbxClient({ accessToken: 'pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g' });
-// const geoCodingService = mbxGeocoding(baseClient);
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from "moment";
 import SearchLocation from '../../../_molecules/Trip/SearchLocationComponent';
-import { getLabel } from "../../../../i18n";
 import { mixins } from "../../../_utils";
-import NBColor from "../../../theme/variables/material.js";
 import { DATE_FORMAT } from "../../../screens/_services/SystemConstants";
 import ActionModal from "../../../_molecules/ActionModal";
+import { PropsBase } from "../../../screens/_shared/LayoutContainer";
+import { withNamespaces } from "react-i18next";
 
-export interface Props {
+export interface Props extends PropsBase {
   isVisible: boolean;
   date: moment.Moment;
   confirmHandler: (name, address, long, lat, fromTime) => void;
@@ -39,7 +33,7 @@ interface State {
 }
 
 class AddLocationModalComponent extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -108,7 +102,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isVisible, date } = this.props;
+    const { isVisible, date, t } = this.props;
     let displayDate = date ? date.format(DATE_FORMAT) + " - " : "";
 
     var contentElement = (
@@ -119,7 +113,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
                 style={styles.clockIcon}                  
                 source={require('../../../../assets/ClockIcon.png')}
               />
-              <Text style={styles.timeLabel}>{getLabel("trip_detail.add_location_from_time_label")}:
+              <Text style={styles.timeLabel}>{t("trip_detail:add_location_from_time_label")}:
               </Text>
               <Text style={styles.time}>
                   {this.state.displayTime}
@@ -143,7 +137,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
 
     return (
         <ActionModal
-          title={displayDate + getLabel("trip_detail.add_location_modal_title")}
+          title={displayDate + t("trip_detail:add_location_modal_title")}
           isVisible={isVisible}
           onModalHideHandler={this._onModalHide}
           onCancelHandler={this._onCancel}
@@ -231,5 +225,6 @@ const styles = StyleSheet.create<Style>({
   }
 })
   
-const AddLocationModal = connectStyle<typeof AddLocationModalComponent>('NativeBase.Modal', styles)(AddLocationModalComponent);
-export default AddLocationModal;
+const AddLocationModal = 
+  connectStyle<typeof AddLocationModalComponent>('NativeBase.Modal', styles)(AddLocationModalComponent);
+export default withNamespaces([''])(AddLocationModal);

@@ -1,21 +1,29 @@
-import I18n from 'react-native-i18n';
-
 // Import all locales
 import en from './locales/en.json';
 import vi from './locales/vi.json';
+  
+import i18n from 'i18next';
+import { reactI18nextModule } from 'react-i18next';
 
-// Should the app fallback to English if user locale doesn't exists
-I18n.fallbacks = true;
+i18n
+  .use(reactI18nextModule)
+  .init({
+    fallbackLng: 'en',
 
-// Define the supported translations
-I18n.translations = {
-  en,
-  vi
-};
+    resources: {
+      en: en,
+      vi: vi
+    },
 
-// The method we'll use instead of a regular string
+    debug: true,
+
+    interpolation: {
+      escapeValue: false, // not needed for react as it does escape per default to prevent xss!
+    },
+  });
+
 export function getLabel(name, params = {}) {
-  return I18n.t(name, params);
+  return i18n.t(name, params);
 };
 
-export default I18n;
+export default i18n;
