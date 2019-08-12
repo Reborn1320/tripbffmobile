@@ -68,28 +68,34 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
       preDefinedItems: [],
       newDefinedItem: null,
       selectedItem: null,
-      numberOfItems: 0
+      numberOfItems: 0,
+      isStopReached: false
     }
   }
 
   componentDidMount() {
     let { height } = Dimensions.get('window');
     let numberOfItems = Math.ceil((height - 40) / 44);
+    let filterItems = this._filterItems(this.props.items, this.props.selectedItem);
 
     this.setState({
-      preDefinedItems:  this.props.items.slice(0, numberOfItems).filter(item => !this.props.selectedItem || this.props.selectedItem.activityId != item.activityId),
+      preDefinedItems: filterItems.slice(0, numberOfItems),
       selectedItem: this.props.selectedItem,
       numberOfItems: numberOfItems
     });
   }
 
+  private _filterItems = (items, removedItem) => {
+    return items.filter(item => !removedItem || removedItem.activityId != item.activityId);
+  }
+
   _updateSearch = search => {
-    var filterItems = this.props.items.filter(item => !this.state.selectedItem || this.state.selectedItem.activityId != item.activityId);
+    var filterItems = this._filterItems(this.props.items, this.state.selectedItem);
     var newItem = null;
+    var isStopReached = false;
 
     if (search) {
-      let numberOfCharacters = search.length;
-
+      isStopReached = true;
       var searchLower = search.toLowerCase();
       filterItems = filterItems.filter(item => item["label_" + this.props.locale].toLowerCase().includes(searchLower));
 
@@ -104,14 +110,14 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
       }        
     }
     
-    this.setState({ preDefinedItems: filterItems, search: search, newDefinedItem: newItem });
+    this.setState({ preDefinedItems: filterItems, search: search, newDefinedItem: newItem, isStopReached: isStopReached });
   };
 
   _onDeselectConfirm = (deSelectedItem) => {
     var selectedItem = null;
     var existedPreDefinedItem = this.props.items.find(item => item.activityId == deSelectedItem.activityId);
     var preDefinedItems = existedPreDefinedItem 
-                    ? [...this.state.preDefinedItems, deSelectedItem]
+                    ? [deSelectedItem, ...this.state.preDefinedItems]
                     : this.state.preDefinedItems;
     var search = this.state.search;
 
@@ -143,13 +149,23 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
   }
 
   _endReached = () => {
-    let currentNumberOfItems = this.state.preDefinedItems.length,
-        numberOfItems = currentNumberOfItems + this.state.numberOfItems;
-    
-    numberOfItems = numberOfItems > this.props.items.length ? this.props.items.length : numberOfItems;  
-    this.setState({
-      preDefinedItems: this.props.items.slice(0, numberOfItems)
-    });
+    if (!this.state.isStopReached) {
+      let currentNumberOfItems = this.state.preDefinedItems.length,
+          numberOfItems = currentNumberOfItems + this.state.numberOfItems,
+          isStopReached = false; 
+      
+      if(numberOfItems > this.props.items.length) 
+      {
+        numberOfItems = this.props.items.length;
+        isStopReached = true;
+      }
+
+      let filterItems = this._filterItems(this.props.items, this.props.selectedItem);  
+      this.setState({
+        preDefinedItems: filterItems.slice(0, numberOfItems),
+        isStopReached: isStopReached
+      });
+    }    
   }
 
   _keyExtractor = (item, index) => item.label_en;
