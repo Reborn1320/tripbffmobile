@@ -68,14 +68,19 @@ class FeelingContainerComponent extends React.Component<any, any> {
       search: '',
       preDefinedItems: [],
       newDefinedItem: null,
-      selectedItem: null
+      selectedItem: null,
+      numberOfItems: 0
     }
   }
 
   componentDidMount() {
+    let { height } = Dimensions.get('window');
+    let numberOfItems = Math.ceil((height - 40) / 44);
+
     this.setState({
-      preDefinedItems:  this.props.items.filter(item => !this.props.selectedItem || this.props.selectedItem.feelingId != item.feelingId),
-      selectedItem: this.props.selectedItem
+      preDefinedItems:  this.props.items.slice(0, numberOfItems).filter(item => !this.props.selectedItem || this.props.selectedItem.feelingId != item.feelingId),
+      selectedItem: this.props.selectedItem,
+      numberOfItems: numberOfItems
     });
   }
 
@@ -136,6 +141,16 @@ class FeelingContainerComponent extends React.Component<any, any> {
     this.props.onConfirmHandler(selectedItem); 
   }
 
+  _endReached = () => {
+    let currentNumberOfItems = this.state.preDefinedItems.length,
+        numberOfItems = currentNumberOfItems + this.state.numberOfItems;
+    
+    numberOfItems = numberOfItems > this.props.items.length ? this.props.items.length : numberOfItems;  
+    this.setState({
+      preDefinedItems: this.props.items.slice(0, numberOfItems)
+    });
+  }
+  
   _keyExtractor = (item, index) => item.label_en;
 
   _renderItem = ({item, index}) => {
@@ -150,11 +165,13 @@ class FeelingContainerComponent extends React.Component<any, any> {
         item={item}
         onPressItem={this._onConfirm}
         locale={this.props.locale}
+        styles={firstItemStyle}
       />
     )
   };
 
   render() {
+
     return (
       <View style={styles.feelingContainer}>
           <View>
@@ -177,6 +194,8 @@ class FeelingContainerComponent extends React.Component<any, any> {
              keyExtractor={this._keyExtractor}
              renderItem={this._renderItem}
              numColumns={1}
+             onEndReached={this._endReached}
+             onEndReachedThreshold={.7}
            />
          </View>
       </View>
@@ -200,7 +219,8 @@ export interface Props {
 }
 
 interface State {
-  selectedItem: StoreData.FeelingVM
+  selectedItem: StoreData.FeelingVM,
+  isLoadedData: boolean
 }
 
 class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToProps, State> {
@@ -208,7 +228,8 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
     super(props);  
 
     this.state = {
-      selectedItem: this.props.selectedFeeling
+      selectedItem: this.props.selectedFeeling,
+      isLoadedData: false
     }
   }
 
@@ -217,7 +238,14 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
       this.props.getAllFeelings();
     }
     this.setState({
-      selectedItem: this.props.selectedFeeling
+      selectedItem: this.props.selectedFeeling,
+      isLoadedData: true
+    })
+  }
+
+  _onModalHide = () => {
+    this.setState({
+      isLoadedData: false
     })
   }
 
@@ -241,7 +269,7 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
 
   render() {
     const { isVisible, preDefinedFeelings, locale, t } = this.props;
-    var contentElement = preDefinedFeelings
+    var contentElement = preDefinedFeelings && this.state.isLoadedData
           ? <FeelingContainerComponent
                items={preDefinedFeelings}
                selectedItem={this.props.selectedFeeling}
@@ -256,6 +284,7 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
          title={t("trip_detail:feeling_modal_title")}
          isVisible={isVisible}
          onModalShowHandler={this._onModalShow}
+         onModalHideHandler={this._onModalHide}
          onCancelHandler={this._onCancel}
          onConfirmHandler={this._onSave}>
         {contentElement}

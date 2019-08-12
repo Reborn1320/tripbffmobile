@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { View, Text, Icon } from "native-base";
-import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator, TextStyle } from "react-native";
+import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator, TextStyle, Dimensions } from "react-native";
 import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
 import { getAllActivities } from "../../../store/DataSource/operations";
@@ -67,14 +67,19 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
       search: '',
       preDefinedItems: [],
       newDefinedItem: null,
-      selectedItem: null
+      selectedItem: null,
+      numberOfItems: 0
     }
   }
 
   componentDidMount() {
+    let { height } = Dimensions.get('window');
+    let numberOfItems = Math.ceil((height - 40) / 44);
+
     this.setState({
-      preDefinedItems:  this.props.items.filter(item => !this.props.selectedItem || this.props.selectedItem.activityId != item.activityId),
-      selectedItem: this.props.selectedItem
+      preDefinedItems:  this.props.items.slice(0, numberOfItems).filter(item => !this.props.selectedItem || this.props.selectedItem.activityId != item.activityId),
+      selectedItem: this.props.selectedItem,
+      numberOfItems: numberOfItems
     });
   }
 
@@ -137,6 +142,16 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
     this.props.onConfirmHandler(selectedItem);
   }
 
+  _endReached = () => {
+    let currentNumberOfItems = this.state.preDefinedItems.length,
+        numberOfItems = currentNumberOfItems + this.state.numberOfItems;
+    
+    numberOfItems = numberOfItems > this.props.items.length ? this.props.items.length : numberOfItems;  
+    this.setState({
+      preDefinedItems: this.props.items.slice(0, numberOfItems)
+    });
+  }
+
   _keyExtractor = (item, index) => item.label_en;
 
   _renderItem = ({item, index}) => {
@@ -178,6 +193,8 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
              keyExtractor={this._keyExtractor}
              renderItem={this._renderItem}
              numColumns={1}
+             onEndReached={this._endReached}
+             onEndReachedThreshold={.7}
            />
          </View>
       </View>
@@ -201,7 +218,8 @@ export interface Props {
 }
 
 interface State {
-  selectedItem: StoreData.ActivityVM
+  selectedItem: StoreData.ActivityVM,
+  isLoadedData: boolean
 }
 
 class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatchToProps & PropsBase, State> {
@@ -214,7 +232,14 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
       this.props.getAllActivities();
     }
     this.setState({  
-      selectedItem: this.props.selectedActivity
+      selectedItem: this.props.selectedActivity,
+      isLoadedData: true
+    })
+  }
+
+  _onModalHide = () => {
+    this.setState({
+      isLoadedData: false
     })
   }
 
@@ -241,7 +266,7 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
   render() {
     const { isVisible, preDefinedActivities, selectedActivity, locale, t } = this.props;
 
-    var contentElement = preDefinedActivities
+    var contentElement = preDefinedActivities && this.state.isLoadedData
           ? <ActivityContainerComponent
               items={preDefinedActivities}
               selectedItem={selectedActivity}
@@ -256,6 +281,7 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
           title={t("trip_detail:activity_modal_title")}
           isVisible={isVisible}
           onModalShowHandler={this._onModalShow}
+          onModalHideHandler={this._onModalHide}
           onCancelHandler={this._onCancel}
           onConfirmHandler={this._onSave}>
             {contentElement}
