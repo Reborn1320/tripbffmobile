@@ -396,7 +396,7 @@ const styles = StyleSheet.create<Style>({
   }
 })
   
-const AddActivityModalStyle = connectStyle<typeof AddActivityModalComponent>('NativeBase.Modal', styles)(AddActivityModalComponent);
+// const AddActivityModalStyle = connectStyle<typeof AddActivityModalComponent>('NativeBase.Modal', styles)(AddActivityModalComponent);
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   let dateVm = storeState.currentTrip.dates.find(item => item.dateIdx == ownProps.dateIdx);
@@ -423,6 +423,6 @@ const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
 const AddActivityModal = connect(
   mapStateToProps,
   mapDispatchToProps
-)(AddActivityModalStyle);
+)(AddActivityModalComponent);
 
 export default withNamespaces(['trip_detail'])(AddActivityModal);

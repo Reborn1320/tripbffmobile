@@ -411,7 +411,7 @@ const styles = StyleSheet.create<Style>({
   }
 })
   
-const AddFeelingModalStyle = connectStyle<typeof AddFeelingModalComponent>('NativeBase.Modal', styles)(AddFeelingModalComponent);
+//const AddFeelingModalStyle = connectStyle<typeof AddFeelingModalComponent>('NativeBase.Modal', styles)(AddFeelingModalComponent);
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   let dateVm = storeState.currentTrip.dates.find(item => item.dateIdx == ownProps.dateIdx);
@@ -438,6 +438,6 @@ const mapDispatchToProps = (dispatch) => {
 const AddFeelingModal = connect(
   mapStateToProps,
   mapDispatchToProps
-)(AddFeelingModalStyle);
+)(AddFeelingModalComponent);
 
 export default withNamespaces(['trip_detail'])(AddFeelingModal);
