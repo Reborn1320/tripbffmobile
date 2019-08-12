@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import FastImage from 'react-native-fast-image';
 
 const checkIcon = require('./circle-check.png');
 
@@ -50,7 +51,7 @@ class ImageItem extends Component {
         style={{ marginBottom: imageMargin, marginRight: imageMargin }}
         onPress={() => this.handleClick(image)}
       >
-        <Image
+        <FastImage
           source={{ uri: image.uri }}
           style={{ height: this.imageSize, width: this.imageSize }}
         />

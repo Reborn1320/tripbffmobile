@@ -1,7 +1,6 @@
 import React from "react";
 import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
-import axiosMiddleware from "redux-axios-middleware";
 import { Root, Icon } from "native-base";
 import { createStackNavigator, createAppContainer, createSwitchNavigator, createBottomTabNavigator } from "react-navigation";
 import HomeScreen from "./screens/home/index";
@@ -11,7 +10,7 @@ import TripCreation from "./screens/trip/create";
 import TripImportationScreen from "./screens/trip/import";
 import LocationDetailScreen from "./screens/location/detail";
 import InfographicPreviewScreen from "./screens/trip/preview/index";
-import { tripApi, loginApi, uploadFileApi } from "./screens/_services/apis";
+import { uploadFileApi } from "./screens/_services/apis";
 import { loginApiService, tripApiService } from "./store/ApisAsAService";
 import LoginScreen from "./screens/login/index";
 import ProfileScreenContainer from "./screens/user/ProfileScreenContainer";
@@ -31,15 +30,9 @@ import LanguageSelection from "./_organisms/User/LanguageSelection";
 import { withNamespaces } from 'react-i18next';
 import i18n from '../i18n';
 
-var mockLoginApi = mockLoginApiService;
-var mockTripApi = mockTripApiService;
 var extraThunk: ThunkExtraArgumentsBase = {
-  loginApi: loginApi,
-  api: tripApi,
   uploadApi: uploadFileApi,
   
-  // loginApiService: mockLoginApi,
-  // tripApiService: mockTripApi,
   loginApiService: loginApiService,
   tripApiService: tripApiService,
 };
@@ -47,8 +40,6 @@ var extraThunk: ThunkExtraArgumentsBase = {
 const store = createStore(
   bffApp,
   applyMiddleware(
-    axiosMiddleware(loginApi),
-    axiosMiddleware(tripApi),
     ReduxThunk.withExtraArgument(extraThunk)
   )
 );
