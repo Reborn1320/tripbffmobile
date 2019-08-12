@@ -4,22 +4,25 @@ import { StyleSheet, ViewStyle, TextStyle } from "react-native";
 import { connectStyle, Button } from 'native-base';
 import CalendarPicker from 'react-native-calendar-picker';
 import moment, { Moment } from "moment";
-import { getLabel } from "../../../i18n";import Modal from 'react-native-modal';
+import Modal from 'react-native-modal';
 
 import NBColor from "../../theme/variables/commonColor.js";
-import DeviceInfo from 'react-native-device-info';
 import { LIST_MONTHS_EN,
           LIST_MONTHS_VI,
           LIST_WEEKDAYS_EN,
           LIST_WEEKDAYS_VI,
-          LOCALE_VI_VN,
           LOCALE_VI } from "../../screens/_services/SystemConstants";
 import { mixins } from "../../_utils";
+import { connect } from "react-redux";
+import { StoreData } from "../../store/Interfaces";
+import { withNamespaces } from "react-i18next";
+import { PropsBase } from "../../screens/_shared/LayoutContainer.js";
 
-export interface Props {
+export interface Props extends PropsBase {
   isVisible: boolean;
   fromDate: Moment;
   toDate: Moment;
+  locale?: string;
   confirmHandler: (fromDate: Moment, toDate: Moment) => void;
   cancelHandler?: () => void;
 }
@@ -69,17 +72,14 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
   }
 
   render() {
-    const { isVisible } = this.props;
+    const { isVisible, locale, t } = this.props;
     let fromDate = this.state.fromDate;
     const toDate = this.state.toDate;
-    let deviceLocale = DeviceInfo.getDeviceLocale();
 
     let mlist = LIST_MONTHS_EN;
     let weekdays = LIST_WEEKDAYS_EN;
 
-    if(deviceLocale &&
-       (deviceLocale.toLowerCase() == LOCALE_VI_VN.toLowerCase() ||
-        deviceLocale.toLowerCase() == LOCALE_VI.toLowerCase())) {
+    if(locale && locale == LOCALE_VI) {
       mlist = LIST_MONTHS_VI;
       weekdays = LIST_WEEKDAYS_VI;
     } 
@@ -114,8 +114,8 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
                     selectedDayTextColor="#FFFFFF"
                     months={mlist}
                     weekdays={weekdays}
-                    previousTitle={getLabel("create.prev_month_label")}
-                    nextTitle={getLabel("create.next_month_label")}
+                    previousTitle={t("create:prev_month_label")}
+                    nextTitle={t("create:next_month_label")}
                     onDateChange={this.onDateChange}                    
                 />
               </View>                
@@ -123,13 +123,13 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
                 <Button
                     style={styles.buttonCancel}
                     onPress={this._onCancel}>
-                    <Text style={[styles.buttonTitle, styles.buttonCancelTitle]}>{getLabel("action.cancel")}</Text>
+                    <Text style={[styles.buttonTitle, styles.buttonCancelTitle]}>{t("action:cancel")}</Text>
                 </Button>
                 <Button
                     style={[styles.buttonDone, buttonDoneStyle]}
                     disabled={isDisabled}
                     onPress={this._onSave}>
-                    <Text style={[styles.buttonTitle, buttonDoneTitleStyle]}>{getLabel("action.done")}</Text>         
+                    <Text style={[styles.buttonTitle, buttonDoneTitleStyle]}>{t("action:done")}</Text>         
                 </Button>
             </View>
           </View>         
@@ -191,7 +191,7 @@ const styles = StyleSheet.create<Style>({
     color: NBColor.brandPrimary
   },
   buttonDone: {    
-    width: 96,
+    width: 160,
     justifyContent: "center"
   },
   buttonDoneDisabled: {
@@ -208,7 +208,15 @@ const styles = StyleSheet.create<Style>({
   }
 })
   
-const DateRangePicker = 
+const DateRangePickerStyle = 
     connectStyle<typeof DateRangePickerModalComponent>('NativeBase.Modal', styles)(DateRangePickerModalComponent);
 
-export default DateRangePicker;
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => { 
+  
+  return {
+      locale: storeState.user.locale
+  };
+};
+const DateRangePicker = connect(mapStateToProps, null)(DateRangePickerStyle);
+  
+export default withNamespaces(['action', 'create'])(DateRangePicker);

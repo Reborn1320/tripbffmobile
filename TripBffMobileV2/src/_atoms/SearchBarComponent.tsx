@@ -1,9 +1,8 @@
 import * as React from "react";
 import { StyleSheet, ViewStyle, TextStyle, Image, ImageStyle } from "react-native";
-import { getLabel } from "../../i18n";
 import { SearchBar } from 'react-native-elements';
-import NBColor from "../theme/variables/material.js";
 import { mixins } from "../_utils";
+import { withNamespaces } from "react-i18next";
 
 
 class SearchBarComponent extends React.PureComponent<any, any> {
@@ -23,9 +22,11 @@ class SearchBarComponent extends React.PureComponent<any, any> {
     }
 
     render() {
+        const { t } = this.props;
+
         return (
             <SearchBar
-                placeholder={getLabel("action.search")}
+                placeholder={t("action:search")}
                 placeholderTextColor={"#DADADA"}
                 onChangeText={this._updateSearch}
                 value={this.state.search}
@@ -79,4 +80,4 @@ const styles = StyleSheet.create<Style>({
 });
 
 
-export default SearchBarComponent;
+export default withNamespaces(['action'])(SearchBarComponent);

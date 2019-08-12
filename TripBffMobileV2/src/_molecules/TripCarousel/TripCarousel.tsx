@@ -14,9 +14,10 @@ import menuOptionStyles from "../../theme/variables/menuOptions.style.js";
 import { StoreData } from "../../store/Interfaces";
 import moment from "moment";
 import { connect } from "react-redux";
-import { getLabel } from "../../../i18n";
 import { mixins } from "../../_utils";
 import { DATE_FORMAT } from "../../screens/_services/SystemConstants";
+import { withNamespaces } from "react-i18next";
+import { PropsBase } from "../../screens/_shared/LayoutContainer.js";
 
 export type ITripEntry = {
   tripId: string,
@@ -25,7 +26,7 @@ export type ITripEntry = {
   entries: IEntry[]
 }
 
-export interface Props {
+export interface Props extends PropsBase {
   trip: StoreData.MinimizedTripVM,
   handleClick: (tripId: string) => void;
   handleShareClick: (tripId: string) => void;
@@ -39,20 +40,6 @@ export interface State {
   updatedTripId: string
 }
 
-const EMPTY_TRIP_ENTRIES: IEntry[] = [
-  {
-    title: "No Location",
-    subtitle: getLabel("message.add_location"),
-    illustration: ""
-  }
-];
-
-const EMPTY_LOCATION_ENTRY: IEntry = {
-  title: "No Image",
-  subtitle: getLabel("message.add_image"),
-  illustration: ""
-}
-
 export class TripCarouselComponent extends React.Component<Props, State> {
 
   constructor(props) {
@@ -63,6 +50,20 @@ export class TripCarouselComponent extends React.Component<Props, State> {
       tripEntry: null,
       updatedTripId: null
     }
+  }
+
+  EMPTY_TRIP_ENTRIES: IEntry[] = [
+    {
+      title: "No Location",
+      subtitle: this.props.t("message:add_location"),
+      illustration: ""
+    }
+  ];
+  
+  EMPTY_LOCATION_ENTRY: IEntry = {
+    title: "No Image",
+    subtitle: this.props.t("message:add_image"),
+    illustration: ""
   }
 
   shouldComponentUpdate(nextProps: Props, nextState) {
@@ -87,7 +88,7 @@ export class TripCarouselComponent extends React.Component<Props, State> {
 
     if (!newTripEntry.entries
       || (newTripEntry.entries && newTripEntry.entries.length == 0)) {
-      newTripEntry.entries = EMPTY_TRIP_ENTRIES;
+      newTripEntry.entries = this.EMPTY_TRIP_ENTRIES;
 
       return newTripEntry;
     }
@@ -95,7 +96,7 @@ export class TripCarouselComponent extends React.Component<Props, State> {
     if (newTripEntry.entries) {
       _.each(newTripEntry.entries, (entry, idx) => {
         if (entry.illustration == "") {
-          newTripEntry.entries[idx].subtitle = EMPTY_LOCATION_ENTRY.subtitle;
+          newTripEntry.entries[idx].subtitle = this.EMPTY_LOCATION_ENTRY.subtitle;
         }
       })
     }
@@ -116,7 +117,7 @@ export class TripCarouselComponent extends React.Component<Props, State> {
   }
 
   render() {
-    const { currentMinimizedTrip, trip } = this.props;
+    const { currentMinimizedTrip, trip, t } = this.props;
     let tripEntry = currentMinimizedTrip ? this._normalizeTripEntry(currentMinimizedTrip) :this._normalizeTripEntry(trip);
     const { title, subtitle } = tripEntry;
     
@@ -150,7 +151,7 @@ export class TripCarouselComponent extends React.Component<Props, State> {
                             }
                           }>
                         <MenuOption onSelect={this._handleDeleteTrip} >
-                          <Text style={styles.deleteLabel}>{getLabel("profile.delete_trip_menu")}</Text>
+                          <Text style={styles.deleteLabel}>{t("profile:delete_trip_menu")}</Text>
                         </MenuOption>
                       </MenuOptions>
                     </Menu>
@@ -183,7 +184,7 @@ const TripCarousel = connect(
   null
 )(TripCarouselComponent);
 
-export default TripCarousel;
+export default withNamespaces(['profile', 'message'])(TripCarousel);
 
 interface Style {
   container: ViewStyle;

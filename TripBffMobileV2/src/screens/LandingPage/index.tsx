@@ -8,23 +8,28 @@ import { NavigationConstants } from "../_shared/ScreenConstants";
 import NBColor from "../../theme/variables/commonColor.js";
 import { mixins } from "../../_utils";
 import SplashScreen from 'react-native-splash-screen';
+import { StoreData } from "../../store/Interfaces";
 
 export interface Props {
   navigation: RNa.NavigationScreenProp<any, any>;
+  locale: string
 }
 
 interface IMapDispatchToProps {
     isLoggedIn: () => Promise<boolean>
 }
 
-class LandingPageComponent extends Component<Props & IMapDispatchToProps, any> {
+class LandingPageComponent extends Component<any, any> {
 
   _displayLandingPageTimer;
 
   componentDidMount() {
+    var tmp = this;
     this._displayLandingPageTimer = setTimeout(() => {
         this.props.isLoggedIn()
         .then(isLoggedIn => {
+            tmp.props.screenProps.changeLanguage(tmp.props.locale);
+
             if (isLoggedIn) {
                 this.props.navigation.navigate(NavigationConstants.Screens.Profile);
             }
@@ -80,12 +85,19 @@ interface Style {
     }
   })
   
+
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {        
+  return {
+      locale: storeState.user.locale
+  };
+};
+
 const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
   return {
     isLoggedIn: () => dispatch(isLoggedIn())
   };
 };
 
-const LandingPageScreen = connect(null, mapDispatchToProps)(LandingPageComponent);
+const LandingPageScreen = connect(mapStateToProps, mapDispatchToProps)(LandingPageComponent);
 
 export default LandingPageScreen;

@@ -8,7 +8,8 @@ import ConfirmationModal from "../../../_molecules/ConfirmationModal";
 import AddLocationModal from "../../../_organisms/Trip/TripDetails/AddLocationModal"
 import moment, { Moment } from 'moment';
 import { connect } from "react-redux";
-import { getLabel } from "../../../../i18n";
+import { PropsBase } from "../../../screens/_shared/LayoutContainer";
+import { withNamespaces } from "react-i18next";
 
 interface IMapDispatchToProps {
     confirmUpdateLocationFeelingHandler: (dateIdx: number, locationId: string, feeling: StoreData.FeelingVM) => void
@@ -21,7 +22,7 @@ interface IMapDispatchToProps {
     cancelAddLocationModalHandler: () => void
 }
 
-export interface Props extends IMapDispatchToProps {
+export interface Props extends IMapDispatchToProps, PropsBase {
     tripId: string,
     tripName?: string,
     fromDate?: Moment,
@@ -90,10 +91,12 @@ class TripDetailsModalComponent extends PureComponent<Props, State> {
     }    
 
     render() {
+        const { t } = this.props;
+
         return (
             <View>
-                <ConfirmationModal title={getLabel("trip_detail.delete_location_modal_header")} 
-                    content={getLabel("trip_detail.delete_location_modal_content")}
+                <ConfirmationModal title={t("trip_detail:delete_location_modal_header")} 
+                    content={t("trip_detail:delete_location_modal_content")}
                     confirmHandler={this._removeLocationConfirmed}
                     cancelHandler={this._cancelModal}
                     isVisible={this.props.isConfirmationModalVisible} />
@@ -119,7 +122,7 @@ class TripDetailsModalComponent extends PureComponent<Props, State> {
     }
 }
 
-const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
     var tripId  = ownProps.tripId;
     var trip = storeState.currentTrip;
   
@@ -135,6 +138,6 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
     null
   )(TripDetailsModalComponent);
 
-export default TripDetailsModal;
+export default withNamespaces(['trip_detail'])(TripDetailsModal);
 
 

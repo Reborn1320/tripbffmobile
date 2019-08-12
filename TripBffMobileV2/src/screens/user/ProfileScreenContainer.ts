@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import _ from "lodash";
 import { fetchTrips, deleteTrip, getCurrentMinimizedTrip } from "../../store/Trips/operations";
 import { addTrips } from "../../store/Trips/actions";
-import { ProfileScreen } from "./ProfileScreen";
+import  ProfileScreen  from "./ProfileScreen";
 import { StoreData } from "../../store/Interfaces";
 
 const mapDispatchToProps = dispatch => {

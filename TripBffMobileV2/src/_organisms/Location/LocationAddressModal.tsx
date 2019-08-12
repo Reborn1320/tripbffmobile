@@ -4,11 +4,12 @@ import { StyleSheet, ViewStyle } from "react-native";
 import { connectStyle } from 'native-base';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 MapboxGL.setAccessToken('pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g');
-import { getLabel } from "../../../i18n";
 import SearchLocation from '../../_molecules/Trip/SearchLocationComponent';
 import ActionModal from "../../_molecules/ActionModal";
+import { PropsBase } from "../../screens/_shared/LayoutContainer";
+import { withNamespaces } from "react-i18next";
 
-export interface Props {
+export interface Props extends PropsBase {
   isVisible: boolean;
   long: number,
   lat: number
@@ -24,7 +25,7 @@ interface State {
 }
 
 class LocationAddressModalComponent extends React.Component<Props, State> {
-  constructor(props: Props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -53,7 +54,7 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
   }
 
   render() {
-    const { isVisible } = this.props;
+    const { isVisible, t } = this.props;
 
     var contentElement = (
       <View style={styles.container}>
@@ -79,7 +80,7 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
 
     return (
       <ActionModal
-        title={getLabel("location_detail.update_address_title")}
+        title={t("location_detail:update_address_title")}
         isVisible={isVisible}
         onCancelHandler={this._onCancel}
         onConfirmHandler={this._onConfirm}
@@ -113,4 +114,4 @@ const styles = StyleSheet.create<Style>({
 })
 
 const LocationAddressModal = connectStyle<typeof LocationAddressModalComponent>('NativeBase.Modal', styles)(LocationAddressModalComponent);
-export default LocationAddressModal;
+export default withNamespaces(['location_detail'])(LocationAddressModal);

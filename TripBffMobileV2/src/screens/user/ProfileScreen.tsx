@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { TouchableOpacity, Image, StyleSheet } from "react-native";
 import { Container, Content, Footer, View } from "native-base";
 import _ from "lodash";
 import Loading from "../../_atoms/Loading/Loading";
@@ -7,18 +8,16 @@ import { NavigationConstants } from "../_shared/ScreenConstants";
 import { StoreData } from "../../store/Interfaces";
 import { NavigationScreenProp } from "react-navigation";
 import UserDetails from "../../_organisms/User/UserDetails";
-import { logOut } from "../../store/User/operations";
 import { getCancelToken } from "../../_function/commonFunc";
 import ConfirmationModal from "../../_molecules/ConfirmationModal";
-import { getLabel } from "../../../i18n";
 import TripsEmptyComponent from "../../_organisms/Trips/TripsList/TripsEmptyComponent";
+import { withNamespaces } from 'react-i18next';
+import { PropsBase } from "../_shared/LayoutContainer";
 
-export interface IStateProps { }
-
-interface IMapDispatchToProps {
+interface IMapDispatchToProps extends PropsBase {
     fetchTrips: (cancelToken: any) => Promise<any>;
     addTrips: (trips: Array<StoreData.TripVM>) => void;
-    deleteTrip: (tripId: string) => void;
+    deleteTrip: (tripId: string) => Promise<boolean>;
     getCurrentMinimizedTrip: (tripId: string) => void;
 }
 
@@ -29,6 +28,7 @@ export interface Props extends IMapDispatchToProps {
     fullName: string;
 
     trips: StoreData.MinimizedTripVM[];
+    isEmptyTrips: boolean;
 }
 
 interface State {
@@ -42,27 +42,32 @@ interface State {
 
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
 
-export class ProfileScreen extends Component<Props & IStateProps, State> {
+class ProfileScreen extends Component<Props, State> {
 
     _cancelRequest;
     _cancelToken;
 
-    constructor(props: Props) {
+    constructor(props) {
         super(props);
 
         this.state = {
             isLoaded: true,
-            loadingMessage: getLabel("profile.loading_trips_message"),
+            loadingMessage: this.props.t("profile:loading_trips_message"),
             UIState: "LOADING_TRIP",
-            isEmptyTrips: false,
+            isEmptyTrips: this.props.isEmptyTrips,
             isOpenDeleteConfirmModal: false,
             deletedTripId: ""
         };
     }
 
-    static navigationOptions = {
-        header: null
-    };
+    static navigationOptions = ({ navigation }) => ({
+        headerRight: (<TouchableOpacity style={styles.settingButtonContainer}
+                                onPress={navigation.getParam('_editUserSettings')}>
+                            <Image                               
+                                source={require('../../../assets/Setting.png')}
+                            />
+                    </TouchableOpacity>)
+    });
 
     componentDidMount() {
         let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
@@ -70,10 +75,15 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         this._cancelRequest = cancelRequest;
 
         this._refreshTrips();
-    } 
+        this.props.navigation.setParams({ _editUserSettings: this._editUserSettings });
+    }    
 
     componentWillUnmount() {        
         this._cancelRequest('Operation canceled by the user.');
+    }
+
+    private _editUserSettings = () => {
+        this.props.navigation.navigate(NavigationConstants.Screens.UserSettingsScreen);
     }
 
     private _refreshTrips = () => {
@@ -122,37 +132,32 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
     }
 
     private _confirmDeleteTrip = () => {
-        this.props.deleteTrip(this.state.deletedTripId);
-        this.setState({
-            isOpenDeleteConfirmModal: false,
-            deletedTripId: ""
+        this.props.deleteTrip(this.state.deletedTripId).then((isLastTripDeleted) => {
+            this.setState({
+                isOpenDeleteConfirmModal: false,
+                deletedTripId: "",
+                isEmptyTrips: isLastTripDeleted,
+                isLoaded: false
+            });
         });
-    }
+      }
 
     private _cancelDeleteModal = () => {
         this.setState({
             isOpenDeleteConfirmModal: false,
             deletedTripId: ""
         });
-    }
-
-    private handleEditBtnClick = () => {
-        logOut()
-        .then(() => {
-            this.props.navigation.navigate(NavigationConstants.Screens.Login)
-        })
-    }
+    }   
 
     render() {
         const { isLoaded, isEmptyTrips } = this.state;
+        const { t } = this.props;
 
         return (
             <Container>
                 <Content>
                     <View style={{flex: 1}}>
-                        <UserDetails 
-                            onClickEdit={this.handleEditBtnClick}
-                        />
+                        <UserDetails />
                         {isLoaded && <Loading message={this.state.loadingMessage} />}
                         {
                             !isLoaded && isEmptyTrips &&
@@ -166,8 +171,8 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
                                 handleDeleteTrip={this._handleDeleteTrip}
                             />
                         }
-                        <ConfirmationModal title={getLabel("profile.delete_trip_modal_header")}
-                            content={getLabel("profile.delete_trip_modal_content")}
+                        <ConfirmationModal title={t("profile:delete_trip_modal_header")}
+                            content={t("profile:delete_trip_modal_content")}
                             confirmHandler={this._confirmDeleteTrip}
                             cancelHandler={this._cancelDeleteModal}
                             isVisible={this.state.isOpenDeleteConfirmModal} />
@@ -177,3 +182,19 @@ export class ProfileScreen extends Component<Props & IStateProps, State> {
         );
     }
 }
+
+export default withNamespaces(['profile'])(ProfileScreen)
+
+const styles = StyleSheet.create({
+    actionButtonIcon: {
+      fontSize: 20,
+      height: 22,
+      color: 'white',
+    },
+    settingButtonContainer: {
+        marginRight: 15
+    },
+    settingIcon: {
+        fontSize: 24
+    }
+  });

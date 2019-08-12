@@ -4,9 +4,11 @@ import { Text, View, Icon } from "native-base";
 import _, { } from "lodash";
 import { connectStyle } from 'native-base';
 import ViewMoreText from 'react-native-view-more-text';
-import { getLabel } from "../../../i18n";
 import { mixins } from "../../_utils";
 import NBTheme from "../../theme/variables/material.js";
+import { PropsBase } from "../../screens/_shared/LayoutContainer";
+import { withNamespaces } from "react-i18next";
+import { getLabel } from "../../../i18n";
 
 export interface Props {
     description: string,
@@ -16,31 +18,36 @@ export interface Props {
 export interface State {
 }
 
-class LocationDescriptionComponent1 extends React.PureComponent<Props, State> {
+class LocationDescriptionComponent1 extends React.PureComponent<Props & PropsBase, State> {
 
+    constructor(props) {
+        super(props);
+    }
     _openUpdateLocationDescriptionModal = () => {
         this.props.openUpdateLocationDescriptionModalHandler();
     }
 
     renderViewMore(onPress) {
         return (
-            <Text style={styles.showMoreLessBtn} onPress={onPress}>{getLabel("location_detail.description_view_more")}</Text>
+            <Text style={styles.showMoreLessBtn} onPress={onPress}>{getLabel("location_detail:description_view_more")}</Text>
         )
     }
 
     renderViewLess(onPress) {
         return (
-            <Text style={styles.showMoreLessBtn} onPress={onPress}>{getLabel("location_detail.description_view_less")}</Text>
+            <Text style={styles.showMoreLessBtn} onPress={onPress}>{getLabel("location_detail:description_view_less")}</Text>
         )
     }
 
     render() {
+        const { t } = this.props;
+
         return (
             <View style={styles.container}>
                 <TouchableOpacity
                     onPress={this._openUpdateLocationDescriptionModal}>
                     <View style={styles.header}>
-                        <Text style={styles.nameText}>{getLabel("location_detail.description_section_label")}</Text>
+                        <Text style={styles.nameText}>{t("location_detail:description_section_label")}</Text>
                         <Icon style={styles.editIcon} name='pencil-alt' type="FontAwesome5" />
                     </View>
                 </TouchableOpacity>
@@ -49,7 +56,7 @@ class LocationDescriptionComponent1 extends React.PureComponent<Props, State> {
                         this.props.description
                             ?
                             (
-                                <ViewMoreText
+                                <ViewMoreText                                   
                                     numberOfLines={3}
                                     renderViewMore={this.renderViewMore}
                                     renderViewLess={this.renderViewLess}
@@ -114,4 +121,4 @@ const styles = StyleSheet.create<Style>({
 const LocationDescription =
     connectStyle<typeof LocationDescriptionComponent1>('NativeBase.Modal', styles)(LocationDescriptionComponent1);
 
-export default LocationDescription;
+export default withNamespaces(['location_detail'])(LocationDescription);

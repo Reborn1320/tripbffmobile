@@ -5,10 +5,11 @@ import { connectStyle } from 'native-base';
 import  Autocomplete  from "react-native-autocomplete-input";
 import { getAddressFromLocation } from "../../_function/commonFunc";
 import { TextInput } from "react-native-gesture-handler";
-import { getLabel } from "../../../i18n";
 import { mixins } from "../../_utils";
+import { PropsBase } from "../../screens/_shared/LayoutContainer";
+import { withNamespaces } from "react-i18next";
 
-export interface Props {
+export interface Props extends PropsBase {
   confirmHandler: (name, address, long, lat) => void;
 }
 
@@ -21,7 +22,7 @@ interface State {
 }
 
 class SearchLocationComponent extends React.Component<Props, State> {
-  constructor(props: Props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -122,12 +123,13 @@ class SearchLocationComponent extends React.Component<Props, State> {
 
   render() {
     let listContainerBorder= this.state.places.length > 0 ? styles.listContainerHasBorder : "";
+    const { t } = this.props;
 
     return (
       <View>        
         <Autocomplete
             autoCapitalize="none"
-            placeholder={getLabel("action.search")}
+            placeholder={t("action:search")}
             autoCorrect={false}
             value={this.state.query}      
             onChangeText={this._searchPlaces}               
@@ -235,5 +237,6 @@ const styles = StyleSheet.create<Style>({
   },
 })
   
-const SearchLocation = connectStyle<typeof SearchLocationComponent>('NativeBase.Modal', styles)(SearchLocationComponent);
-export default SearchLocation;
+const SearchLocation = 
+  connectStyle<typeof SearchLocationComponent>('NativeBase.Modal', styles)(SearchLocationComponent);
+export default withNamespaces(['action'])(SearchLocation);

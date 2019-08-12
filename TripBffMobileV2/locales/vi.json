@@ -13,7 +13,8 @@
         "done": "Hoàn thành",
         "delete": "Xóa",
         "okay": "Đồng ý",
-        "next": "Tiếp theo"
+        "next": "Tiếp theo",
+        "loading": "Đang tải"
     },
     "message": {
         "add_location": "Nhấp để thêm địa điểm",
@@ -51,7 +52,7 @@
         "add_location_search_place_label": "Địa điểm",
         "feeling_label": "Cảm nhận",
         "feeling_adjective": "Cảm thấy",
-        "activity_label": "Họat động",
+        "activity_label": "Hoạt động",
         "delete_location_modal_header": "Xóa địa điểm",
         "delete_location_modal_content": "Bạn có chắc là bạn muốn xóa địa điểm này không ?",
         "day_label": "Ngày",
@@ -77,7 +78,10 @@
     "export": {
         "infographic_tab_label": "infographic",
         "images_tab_label": "Hình ảnh",
-        "images_selection_warning": "Xin vui lòng chọn tối đa 5 hình ảnh bạn yêu thích nhất để chia sẻ!"
+        "images_selection_warning": "Xin vui lòng chọn tối đa 5 hình ảnh bạn yêu thích nhất để chia sẻ!",
+        "no_infographic": "Xin vui lòng thêm địa điểm và hình ảnh để xuất ra infographic!",
+        "nothing_to_share_message": "Xin vui lòng thêm địa điểm và hình ảnh để chia sẻ qua Facebook!",
+        "title": "Xem trước và chia sẻ"
     },
     "profile": {
         "trip_label": "Chuyến đi",
@@ -89,5 +93,12 @@
         "empty_trips_second_title": "Hãy lưu trữ và chia sẻ chúng nào",
         "emptry_trips_button_title": "Bắt đầu",
         "loading_trips_message": "Đang tải các chuyến đi"
-    }       
+    },
+    "setting": {
+        "header_title": "Cài đặt",
+        "language_setting_label": "Ngôn ngữ",
+        "feedback_setting_label": "Phản hồi",
+        "logout_setting_label": "Đăng xuất",
+        "change_language_success": "Cập nhật ngôn ngữ thành công"
+    }            
 }

@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import { StyleSheet, ViewStyle } from "react-native";
 import { Button, Text, Footer } from 'native-base';
 import _ from "lodash";
-import { getLabel } from "../../i18n";
+import { withNamespaces } from "react-i18next";
+import { PropsBase } from "../screens/_shared/LayoutContainer";
 
-export interface Props {
+export interface Props extends PropsBase {
   onCancel: () => void;
   onAction: () => void;
   cancelText: string;
@@ -18,9 +19,9 @@ interface State {
   danger: boolean;
 }
 
-export default class Footer2Buttons extends Component<Props, State> {
+class Footer2Buttons extends Component<Props, State> {
 
-  constructor(props: Props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -31,7 +32,7 @@ export default class Footer2Buttons extends Component<Props, State> {
   }
 
   render() {
-    const { cancelText, actionText } = this.props;
+    const { cancelText, actionText, t } = this.props;
     const { primary, danger } = this.state;
     return (
       <Footer style={styles.container}>
@@ -39,7 +40,7 @@ export default class Footer2Buttons extends Component<Props, State> {
           onPress={this.props.onCancel}
           style={styles.footerButton}
         >
-          <Text>{getLabel(cancelText)}</Text>
+          <Text>{t(cancelText)}</Text>
         </Button>
 
         <Button
@@ -47,13 +48,14 @@ export default class Footer2Buttons extends Component<Props, State> {
           onPress={this.props.onAction}
           style={styles.footerButton}
         >
-          <Text>{getLabel(actionText)}</Text>
+          <Text>{t(actionText)}</Text>
         </Button>
       </Footer>
     );
   }
 }
 
+export default withNamespaces(['import'])(Footer2Buttons);
 
 interface Style {
   container: ViewStyle;

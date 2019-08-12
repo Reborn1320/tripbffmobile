@@ -9,12 +9,12 @@ import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
 import { getAllFeelings } from "../../../store/DataSource/operations";
 import { StoreData } from "../../../store/Interfaces";
-import { getLabel } from "../../../../i18n";
 import uuid4 from 'uuid/v4';
-import NBColor from "../../../theme/variables/material.js";
-import { mixins } from "../../../_utils";
+import { createLabelLocales } from "../../../_function/commonFunc";
 import SearchBarComponent from "../../../_atoms/SearchBarComponent";
 import ActionModal from "../../../_molecules/ActionModal";
+import { PropsBase } from "../../../screens/_shared/LayoutContainer";
+import { withNamespaces } from "react-i18next";
 
 class SelectedFeelingItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -30,7 +30,7 @@ class SelectedFeelingItem extends React.PureComponent<any> {
               <Icon type="FontAwesome5" name={this.props.item.icon} /> 
             </View>                
             <View style={styles.feelingNameSelectedContainer}>
-              <Text numberOfLines={1}>{this.props.item.label}</Text>   
+              <Text numberOfLines={1}>{this.props.item["label_" + this.props.locale]}</Text>   
             </View> 
             <Icon name="md-close" type="Ionicons" style={styles.iconRemoved}/>           
           </View>
@@ -41,20 +41,18 @@ class SelectedFeelingItem extends React.PureComponent<any> {
 
 class FeelingItem extends React.PureComponent<any> {
   _onPress = () => {
-    this.props.onPressItem({
-      feelingId: this.props.id,
-      label: this.props.label,
-      icon: this.props.icon
-    });
+    this.props.onPressItem(this.props.item);
   };
 
   render() {
     return (
-      <TouchableOpacity onPress={this._onPress} style={styles.feelingItemContainer}>
+      <TouchableOpacity onPress={this._onPress} style={[styles.feelingItemContainer, this.props.styles]}>
         <View style={styles.feelingItem}>
-          <Icon style={styles.feelingIcon} type="FontAwesome5" name={this.props.icon} />
+          <View style={styles.feelingIconContainer}>
+            <Icon style={styles.feelingIcon} type="FontAwesome5" name={this.props.item.icon} />
+          </View>
           <View style={styles.feelingNameContainer}>
-            <Text numberOfLines={1}>{this.props.label}</Text>
+            <Text numberOfLines={2}>{this.props.item["label_" + this.props.locale]}</Text>
           </View> 
         </View>
       </TouchableOpacity>
@@ -87,17 +85,15 @@ class FeelingContainerComponent extends React.Component<any, any> {
 
     if (search) {
       var searchLower = search.toLowerCase();
-      filterItems = filterItems.filter(item => item.label.toLowerCase().includes(searchLower));
+      filterItems = filterItems.filter(item => item["label_" + this.props.locale].toLowerCase().includes(searchLower));
 
       if (this.state.newDefinedItem)
         filterItems = filterItems.filter(item => item.feelingId != this.state.newDefinedItem.feelingId);
 
-      var exactItem = filterItems.find(item => item.label.toLowerCase() == searchLower);
+      var exactItem = filterItems.find(item => item["label_" + this.props.locale].toLowerCase() == searchLower);
 
       if (!exactItem) {
-        newItem = { 
-          label: search
-        };
+        newItem = createLabelLocales(search);
         filterItems.push(newItem);         
       }          
     }
@@ -115,7 +111,7 @@ class FeelingContainerComponent extends React.Component<any, any> {
 
     if (search) {
       var searchLower = search.toLowerCase();
-      preDefinedItems = preDefinedItems.filter(item => item.label.toLowerCase().includes(searchLower));
+      preDefinedItems = preDefinedItems.filter(item => item["label_" + this.props.locale].toLowerCase().includes(searchLower));
     }
 
     this.setState({
@@ -140,16 +136,23 @@ class FeelingContainerComponent extends React.Component<any, any> {
     this.props.onConfirmHandler(selectedItem); 
   }
 
-  _keyExtractor = (item, index) => item.feelingId;
+  _keyExtractor = (item, index) => item.label_en;
 
-  _renderItem = ({item}) => (
-    <FeelingItem
-      id={item.feelingId}
-      label={item.label}
-      icon={item.icon}
-      onPressItem={this._onConfirm}
-    />
-  );
+  _renderItem = ({item, index}) => {
+    let firstItemStyle;
+
+    if (index == 0) {
+      firstItemStyle = styles.firstFeelingItemContainer;
+    }
+
+    return (
+      <FeelingItem
+        item={item}
+        onPressItem={this._onConfirm}
+        locale={this.props.locale}
+      />
+    )
+  };
 
   render() {
     return (
@@ -159,6 +162,7 @@ class FeelingContainerComponent extends React.Component<any, any> {
               this.state.selectedItem && this.state.selectedItem.feelingId &&
               <SelectedFeelingItem
                 item={this.state.selectedItem}
+                locale={this.props.locale}
                 onPressItem={this._onDeselectConfirm}
               />
             }
@@ -172,7 +176,7 @@ class FeelingContainerComponent extends React.Component<any, any> {
              data={this.state.preDefinedItems}
              keyExtractor={this._keyExtractor}
              renderItem={this._renderItem}
-             numColumns={2}
+             numColumns={1}
            />
          </View>
       </View>
@@ -180,7 +184,7 @@ class FeelingContainerComponent extends React.Component<any, any> {
   }
 }
 
-interface IMapDispatchToProps {
+interface IMapDispatchToProps extends PropsBase {
   getAllFeelings: () => Promise<StoreData.FeelingVM>
 }
 
@@ -190,6 +194,7 @@ export interface Props {
   dateIdx: number;
   preDefinedFeelings?: Array<StoreData.PreDefinedFeelingVM>;
   selectedFeeling?: StoreData.FeelingVM;
+  locale?: string;
   confirmHandler: (locationId, feeling) => void;
   cancelHandler?: () => void;
 }
@@ -235,19 +240,20 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
   }
 
   render() {
-    const { isVisible, preDefinedFeelings } = this.props;
+    const { isVisible, preDefinedFeelings, locale, t } = this.props;
     var contentElement = preDefinedFeelings
           ? <FeelingContainerComponent
                items={preDefinedFeelings}
                selectedItem={this.props.selectedFeeling}
                onConfirmHandler={this._onConfirm}
-               removeSelectedFeelingHandler={this._removeSelectedFeeling}>
+               removeSelectedFeelingHandler={this._removeSelectedFeeling}
+               locale={locale}>
             </FeelingContainerComponent>
           : <ActivityIndicator size="small" color="#00ff00" />
           
     return (
       <ActionModal
-         title={getLabel("trip_detail.feeling_modal_title")}
+         title={t("trip_detail:feeling_modal_title")}
          isVisible={isVisible}
          onModalShowHandler={this._onModalShow}
          onCancelHandler={this._onCancel}
@@ -263,7 +269,9 @@ interface Style {
   feelingPreDefinedContainer: ViewStyle;
   feeelingPreDefinedFlatList: ViewStyle;
   feelingItemContainer: ViewStyle;
+  firstFeelingItemContainer: ViewStyle;
   feelingNameContainer: ViewStyle;
+  feelingIconContainer: ViewStyle;
   selectedFeelingItemContainer: ViewStyle;
   feelingIconSelectedIconContainer: ViewStyle;
   feelingNameSelectedContainer: ViewStyle;
@@ -285,14 +293,22 @@ const styles = StyleSheet.create<Style>({
     marginTop: 12
   },
   feelingItemContainer: {
-    width: Dimensions.get('window').width / 2,
-    height: 40,    
-    borderWidth: 0.5,
+    width: "94%",
+    height: 44,
+    marginLeft: "3%",
+    marginRight: "3%",
+    borderBottomWidth: 0.5,
     borderStyle: "solid",
     borderColor: '#DADADA'
   },
+  firstFeelingItemContainer: {
+    borderTopWidth: 0.5
+  },
   feelingNameContainer: {
-    maxWidth: "80%"
+    maxWidth: "85%"
+  },
+  feelingIconContainer: {
+    width: "15%"
   },
   selectedFeelingItemContainer: {
     width: "94%",
@@ -332,7 +348,7 @@ const styles = StyleSheet.create<Style>({
   
 const AddFeelingModalStyle = connectStyle<typeof AddFeelingModalComponent>('NativeBase.Modal', styles)(AddFeelingModalComponent);
 
-const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   let dateVm = storeState.currentTrip.dates.find(item => item.dateIdx == ownProps.dateIdx);
   let feeling = null;
 
@@ -343,11 +359,12 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 
   return {
       preDefinedFeelings: storeState.dataSource.feelings,
-      selectedFeeling: feeling
+      selectedFeeling: feeling,
+      locale: storeState.user.locale
   };
 };
 
-const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
+const mapDispatchToProps = (dispatch) => {
   return {
     getAllFeelings: () => dispatch(getAllFeelings())
   };
@@ -358,4 +375,4 @@ const AddFeelingModal = connect(
   mapDispatchToProps
 )(AddFeelingModalStyle);
 
-export default AddFeelingModal;
+export default withNamespaces(['trip_detail'])(AddFeelingModal);

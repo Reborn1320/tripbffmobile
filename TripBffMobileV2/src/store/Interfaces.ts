@@ -19,19 +19,22 @@ export module StoreData {
 
     export interface LocationLikeItemVM {
         highlightId: string,
-        label: string,
+        label_en: string,
+        label_vi: string,
         highlightType: LikeTypeVM
     }
 
     export interface FeelingVM {
         feelingId: string,
-        label: string,
+        label_en: string,
+        label_vi: string,
         icon: string
     }
 
     export interface ActivityVM {
         activityId: number,
-        label: string,
+        label_en: string,
+        label_vi: string,
         icon: string
     }
 
@@ -97,7 +100,8 @@ export module StoreData {
         facebook?: {
             accessToken,
             id: string
-        }
+        },
+        locale: string
         //TODO: expired time...
     }
 
@@ -109,19 +113,22 @@ export module StoreData {
 
     export interface PreDefinedHighlightVM {
         highlightId: string,
-        label: string,
+        label_en: string,
+        label_vi: string,
         highlightType: LikeTypeVM
     }
 
     export interface PreDefinedFeelingVM {
         feelingId: string,
-        label: string,
+        label_en: string,
+        label_vi: string,
         icon: string
     }
 
     export interface PreDefinedActivityVM {
         activityId: number,
-        label: string,
+        label_en: string,
+        label_vi: string,
         icon: string
     }
 

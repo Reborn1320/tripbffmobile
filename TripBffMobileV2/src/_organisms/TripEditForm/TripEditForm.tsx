@@ -6,9 +6,10 @@ import DatePicker from "../../_atoms/DatePicker/DatePicker";
 import { mixins } from "../../_utils";
 import { StyleSheet, ViewStyle, TextStyle } from "react-native";
 import _ from "lodash";
-import { getLabel } from "../../../i18n";
+import { PropsBase } from "../../screens/_shared/LayoutContainer";
+import { withNamespaces } from "react-i18next";
 
-export interface Props {
+export interface Props extends PropsBase {
   onClickEdit: (name: string) => void;
   onCancel?: () => void;
   tripName?: string;
@@ -54,19 +55,19 @@ class TripEditForm extends PureComponent<Props, State> {
       <Button
         style={{ alignSelf: 'center' }}
         onPress={this._confirmEdit}>
-        <Text>{getLabel("action.edit")}</Text>
+        <Text>{this.props.t("action:edit")}</Text>
       </Button>
     );
   }
 
   render() {
-
+    const { t } = this.props;
     const { tripName } = this.state;
     return (
       <Form style={styles.formContainer}>
         {this.displayField(TripEditFormEnum.Name) &&
           <Item regular inlineLabel style={styles.item}>
-            <Label>{getLabel("trip_detail.edit_trip_name_label")}</Label>
+            <Label>{t("trip_detail:edit_trip_name_label")}</Label>
             <Input
               value={tripName}
               onChangeText={(newName) => this.setState({ tripName: newName })} />
@@ -76,7 +77,7 @@ class TripEditForm extends PureComponent<Props, State> {
           <Button transparent light
             style={{ alignSelf: 'center' }}
             onPress={() => { if (this.props.onCancel) this.props.onCancel() }}>
-            <Text>{getLabel("action.cancel")}</Text>
+            <Text>{t("action:cancel")}</Text>
           </Button>
           {this.formValid() && this.renderEditBtn()}
         </View>
@@ -85,6 +86,9 @@ class TripEditForm extends PureComponent<Props, State> {
     );
   }
 }
+
+
+export default withNamespaces(['action', 'trip_detail'])(TripEditForm);
 
 interface Style {
   formContainer: ViewStyle;
@@ -123,5 +127,3 @@ const styles = StyleSheet.create<Style>({
   }
 })
 
-
-export default TripEditForm;

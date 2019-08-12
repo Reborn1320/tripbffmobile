@@ -7,12 +7,12 @@ import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from '../../../screens/_shared/LayoutContainer';
 import { StyleSheet, TextStyle, ViewStyle, ImageStyle } from 'react-native';
-import { getLabel } from "../../../../i18n";
 import NBColor from "../../../theme/variables/commonColor.js";
 import EmptyLocationItem from "./EmptyLocation";
 import { DATE_FORMAT } from "../../../screens/_services/SystemConstants";
 import { TouchableOpacity, Image } from 'react-native';
 import { mixins } from '../../../_utils';
+import { withNamespaces } from 'react-i18next';
 
 interface IMapDispatchToProps {
     openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
@@ -26,7 +26,8 @@ export interface Props extends IMapDispatchToProps, PropsBase {
     locationIds?: Array<string>
     dateIdx: number
     date?: moment.Moment
-    dateVm?: StoreData.DateVM
+    dateVm?: StoreData.DateVM,
+    locale?: string
 }
 
 export interface State {
@@ -39,14 +40,14 @@ export class DayItemComponent extends Component<Props, State> {
     }
 
     render() {
-        const { dateIdx, dateVm } = this.props
+        const { dateIdx, dateVm, t } = this.props
         let currentDate = moment(this.props.date).format(DATE_FORMAT);
 
         return (
             <View style={styles.dayItemContainer}>
                 <View style={styles.dayItemHeader}>
                     <Text style={styles.dayLabel}>
-                        {getLabel("trip_detail.day_label")} {dateIdx} - {currentDate}
+                        {t("trip_detail:day_label")} {dateIdx} - {currentDate}
                     </Text>
                     {
                         this.props.locationIds.length > 0 &&
@@ -63,6 +64,7 @@ export class DayItemComponent extends Component<Props, State> {
                     <LocationItem tripId={this.props.tripId} dateIdx={dateIdx} key={e}
                         location={_.find(dateVm.locations, (item) => item.locationId == e)}
                         navigation={this.props.navigation}
+                        locale={this.props.locale}
                         removeLocationHandler={this.props.openRemoveLocationModalHandler}
                         openUpdateFeelingModalHandler={this.props.openUpdateFeelingModalHandler}
                         openUpdateActivityModalHandler={this.props.openUpdateActivityModalHandler}>
@@ -74,7 +76,7 @@ export class DayItemComponent extends Component<Props, State> {
                     (
                         <EmptyLocationItem
                             viewContainerStyle={styles.emptyContainer}
-                            subTitle={getLabel("message.add_location")}
+                            subTitle={t("message:add_location")}
                             openAddLocationModalHandler={this._openAddLocationModal}
                             >
                         </EmptyLocationItem>
@@ -94,7 +96,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
         tripId: tripId,
         locationIds: dateVm.locationIds,
         date: dateVm.date,
-        dateVm
+        dateVm,
+        locale: storeState.user.locale
     };
 };
 
@@ -103,7 +106,7 @@ const DayItem = connect(
     null
 )(DayItemComponent);
 
-export default DayItem;
+export default withNamespaces(['message', 'trip_detail'])(DayItem);
 
 interface Style {
     dayItemContainer: ViewStyle;
