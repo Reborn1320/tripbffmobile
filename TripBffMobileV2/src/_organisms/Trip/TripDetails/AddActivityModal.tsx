@@ -258,6 +258,11 @@ interface State {
 class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatchToProps & PropsBase, State> {
   constructor(props: Props & IMapDispatchToProps & PropsBase) {
     super(props);  
+
+    this.state = {
+      selectedItem: this.props.selectedActivity,
+      isLoadedData: false
+    }
   }
 
   _onModalShow = () => {
