@@ -50,8 +50,8 @@ export default class CameraRollPickerDoc extends Component<Props, State> {
         <Footer2Buttons
           onCancel={() => {}}
           onAction={() => {}}
-          cancelText="action.cancel"
-          actionText="action.delete"
+          cancelText="action:cancel"
+          actionText="action:delete"
           primary
         />
       </Container>

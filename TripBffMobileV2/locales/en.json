@@ -81,7 +81,8 @@
         "images_selection_warning": "Please select maximum 5 most favorite images to share!",
         "no_infographic": "Please add locations and upload images to export infographic!",
         "nothing_to_share_message": "Please add locations and upload images to share on Facebook!",
-        "title": "Preview & Share"
+        "title": "Preview & Share",
+        "loading_infographic": "Generating infographic. Please wait!"
     },
     "profile": {
         "trip_label": "Trip",

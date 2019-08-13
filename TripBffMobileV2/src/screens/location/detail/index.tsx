@@ -295,8 +295,8 @@ class LocationDetail extends React.Component<Props, State> {
                     <Footer2Buttons 
                         onCancel={() => this.setState({ isMassSelection: false, selectedImageIds: [] })}
                         onAction={this.onDeleteLocationImages}
-                        cancelText="action.cancel"
-                        actionText="action.delete"
+                        cancelText="action:cancel"
+                        actionText="action:delete"
                         danger
                     />
                     )
