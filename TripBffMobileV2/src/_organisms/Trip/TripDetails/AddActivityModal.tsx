@@ -3,7 +3,8 @@
 
 import * as React from "react";
 import { View, Text, Icon } from "native-base";
-import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator, TextStyle } from "react-native";
+import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, 
+          ActivityIndicator, TextStyle, Dimensions, Image, ImageStyle } from "react-native";
 import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
 import { getAllActivities } from "../../../store/DataSource/operations";
@@ -21,12 +22,20 @@ class SelectedActivityItem extends React.PureComponent<any> {
   };
 
   render() {
+    var imageElement = this.props.item.icon ?
+                            <Image style={styles.activityIcon}
+                                source={{uri: this.props.item.icon}}
+                              />  :
+                              <Image style={styles.activityIcon} 
+                                  source={require("../../../../assets/default_activity_icon.png")}>
+                              </Image>
+
     return (
       <TouchableOpacity onPress={this._onPress}       
           style={[styles.activityItemContainer, styles.selectedActivityItemContainer]}>
           <View style={styles.activityItem}>
             <View style={styles.activityIconContainer}>
-              <Icon style={styles.activityIcon} type="FontAwesome5" name={this.props.item.icon} />
+                {imageElement}
             </View>
             <View style={styles.activityNameSelectedContainer}>
               <Text numberOfLines={1}>{this.props.item["label_" + this.props.locale]}</Text>   
@@ -44,11 +53,19 @@ class ActivityItem extends React.PureComponent<any> {
   };
 
   render() {
+    var imageElement = this.props.item.icon ?
+    <Image style={styles.activityIcon}
+        source={{uri: this.props.item.icon}}
+      />  :
+      <Image style={styles.activityIcon} 
+          source={require("../../../../assets/default_activity_icon.png")}>
+      </Image>
+
     return (
       <TouchableOpacity onPress={this._onPress} style={[styles.activityItemContainer, this.props.styles]}>
         <View style={styles.activityItem}>
           <View style={styles.activityIconContainer}>
-            <Icon style={styles.activityIcon} type="FontAwesome5" name={this.props.item.icon} /> 
+              {imageElement}
           </View>
           <View style={styles.activityNameContainer}>
             <Text numberOfLines={1}>{this.props.item["label_" + this.props.locale]}</Text>
@@ -67,24 +84,35 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
       search: '',
       preDefinedItems: [],
       newDefinedItem: null,
-      selectedItem: null
+      selectedItem: null,
+      numberOfItems: 0,
+      isStopReached: false
     }
   }
 
   componentDidMount() {
+    let { height } = Dimensions.get('window');
+    let numberOfItems = Math.ceil((height - 40) / 44);
+    let filterItems = this._filterItems(this.props.items, this.props.selectedItem);
+
     this.setState({
-      preDefinedItems:  this.props.items.filter(item => !this.props.selectedItem || this.props.selectedItem.activityId != item.activityId),
-      selectedItem: this.props.selectedItem
+      preDefinedItems: filterItems.slice(0, numberOfItems),
+      selectedItem: this.props.selectedItem,
+      numberOfItems: numberOfItems
     });
   }
 
+  private _filterItems = (items, removedItem) => {
+    return items.filter(item => !removedItem || removedItem.activityId != item.activityId);
+  }
+
   _updateSearch = search => {
-    var filterItems = this.props.items.filter(item => !this.state.selectedItem || this.state.selectedItem.activityId != item.activityId);
+    var filterItems = this._filterItems(this.props.items, this.state.selectedItem);
     var newItem = null;
+    var isStopReached = false;
 
     if (search) {
-      let numberOfCharacters = search.length;
-
+      isStopReached = true;
       var searchLower = search.toLowerCase();
       filterItems = filterItems.filter(item => item["label_" + this.props.locale].toLowerCase().includes(searchLower));
 
@@ -99,14 +127,14 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
       }        
     }
     
-    this.setState({ preDefinedItems: filterItems, search: search, newDefinedItem: newItem });
+    this.setState({ preDefinedItems: filterItems, search: search, newDefinedItem: newItem, isStopReached: isStopReached });
   };
 
   _onDeselectConfirm = (deSelectedItem) => {
     var selectedItem = null;
     var existedPreDefinedItem = this.props.items.find(item => item.activityId == deSelectedItem.activityId);
     var preDefinedItems = existedPreDefinedItem 
-                    ? [...this.state.preDefinedItems, deSelectedItem]
+                    ? [deSelectedItem, ...this.state.preDefinedItems]
                     : this.state.preDefinedItems;
     var search = this.state.search;
 
@@ -128,13 +156,33 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
     if (this.state.newDefinedItem)
           selectedItem.activityId = uuid4();
 
-      this.setState({
-        preDefinedItems: this.props.items,
-        selectedItem: null,
-        newDefinedItem: null,
-        search: ''
-      });
     this.props.onConfirmHandler(selectedItem);
+    // this.setState({
+    //     preDefinedItems: this.props.items,
+    //     selectedItem: null,
+    //     newDefinedItem: null,
+    //     search: ''
+    //   });
+  }
+
+  _endReached = () => {
+    if (!this.state.isStopReached) {
+      let currentNumberOfItems = this.state.preDefinedItems.length,
+          numberOfItems = currentNumberOfItems + this.state.numberOfItems,
+          isStopReached = false; 
+      
+      if(numberOfItems > this.props.items.length) 
+      {
+        numberOfItems = this.props.items.length;
+        isStopReached = true;
+      }
+
+      let filterItems = this._filterItems(this.props.items, this.props.selectedItem);  
+      this.setState({
+        preDefinedItems: filterItems.slice(0, numberOfItems),
+        isStopReached: isStopReached
+      });
+    }    
   }
 
   _keyExtractor = (item, index) => item.label_en;
@@ -178,6 +226,8 @@ class ActivityContainerComponent extends React.PureComponent<any, any> {
              keyExtractor={this._keyExtractor}
              renderItem={this._renderItem}
              numColumns={1}
+             onEndReached={this._endReached}
+             onEndReachedThreshold={.7}
            />
          </View>
       </View>
@@ -201,12 +251,18 @@ export interface Props {
 }
 
 interface State {
-  selectedItem: StoreData.ActivityVM
+  selectedItem: StoreData.ActivityVM,
+  isLoadedData: boolean
 }
 
 class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatchToProps & PropsBase, State> {
   constructor(props: Props & IMapDispatchToProps & PropsBase) {
     super(props);  
+
+    this.state = {
+      selectedItem: this.props.selectedActivity,
+      isLoadedData: false
+    }
   }
 
   _onModalShow = () => {
@@ -214,7 +270,14 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
       this.props.getAllActivities();
     }
     this.setState({  
-      selectedItem: this.props.selectedActivity
+      selectedItem: this.props.selectedActivity,
+      isLoadedData: true
+    })
+  }
+
+  _onModalHide = () => {
+    this.setState({
+      isLoadedData: false
     })
   }
 
@@ -241,7 +304,7 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
   render() {
     const { isVisible, preDefinedActivities, selectedActivity, locale, t } = this.props;
 
-    var contentElement = preDefinedActivities
+    var contentElement = preDefinedActivities && this.state.isLoadedData
           ? <ActivityContainerComponent
               items={preDefinedActivities}
               selectedItem={selectedActivity}
@@ -256,6 +319,7 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
           title={t("trip_detail:activity_modal_title")}
           isVisible={isVisible}
           onModalShowHandler={this._onModalShow}
+          onModalHideHandler={this._onModalHide}
           onCancelHandler={this._onCancel}
           onConfirmHandler={this._onSave}>
             {contentElement}
@@ -275,7 +339,7 @@ interface Style {
   activityNameContainer: ViewStyle;
   activityNameSelectedContainer: ViewStyle;
   activityIconContainer: ViewStyle;
-  activityIcon: TextStyle;
+  activityIcon: ImageStyle;
   iconRemoved: TextStyle;
 }
 
@@ -318,7 +382,10 @@ const styles = StyleSheet.create<Style>({
     width: "15%"
   },
   activityIcon: {
-
+    marginRight: 10,
+    marginLeft: 20,
+    width: 24,
+    height: 24
   },
   activityNameContainer: {
     maxWidth: "85%"
@@ -334,7 +401,7 @@ const styles = StyleSheet.create<Style>({
   }
 })
   
-const AddActivityModalStyle = connectStyle<typeof AddActivityModalComponent>('NativeBase.Modal', styles)(AddActivityModalComponent);
+// const AddActivityModalStyle = connectStyle<typeof AddActivityModalComponent>('NativeBase.Modal', styles)(AddActivityModalComponent);
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   let dateVm = storeState.currentTrip.dates.find(item => item.dateIdx == ownProps.dateIdx);
@@ -361,6 +428,6 @@ const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
 const AddActivityModal = connect(
   mapStateToProps,
   mapDispatchToProps
-)(AddActivityModalStyle);
+)(AddActivityModalComponent);
 
 export default withNamespaces(['trip_detail'])(AddActivityModal);

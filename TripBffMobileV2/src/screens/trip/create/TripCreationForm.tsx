@@ -23,6 +23,9 @@ export interface Props extends PropsBase {
 
 class TripCreationForm extends PureComponent<Props, any> {
 
+  _textInput;
+  _didFocusListener;
+
   constructor(props) {
     super(props);
 
@@ -36,6 +39,21 @@ class TripCreationForm extends PureComponent<Props, any> {
       isDateFieldFocused: false
     };
   }  
+
+  componentDidMount() {
+    this._didFocusListener = this.props.navigation.addListener(
+      'didFocus', () => {        
+        this._textInput.blur();
+
+        setTimeout(() => {
+          this._textInput.focus();
+        }, 100);
+      })
+  }
+
+  componentWillMount() {
+    if (this._didFocusListener) this._didFocusListener.remove();
+  }
 
   private _onClickCreateTrip = () => {
 
@@ -135,6 +153,7 @@ class TripCreationForm extends PureComponent<Props, any> {
               inputContainerStyle={[styles.formInputContainer, nameInputContainerStyle]}
               onFocus={this._onNameFieldFocus}
               onBlur={this._onNameFieldFocus}
+              ref={(input) => { this._textInput = input; }}
             />
             <TouchableOpacity 
                   onPress={this._openDateRangePickerModal}

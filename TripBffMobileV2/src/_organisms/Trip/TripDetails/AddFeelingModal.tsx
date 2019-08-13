@@ -3,7 +3,8 @@
 
 import * as React from "react";
 import { View, Text, Button, Toast, Icon } from "native-base";
-import { StyleSheet, ViewStyle, FlatList, TouchableOpacity, ActivityIndicator, Dimensions, TextStyle } from "react-native";
+import { StyleSheet, ViewStyle, FlatList, TouchableOpacity,
+         ActivityIndicator, Dimensions, TextStyle, Image, ImageStyle } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
 import { connect } from "react-redux";
@@ -22,12 +23,19 @@ class SelectedFeelingItem extends React.PureComponent<any> {
   };
 
   render() {
+    var imageElement = this.props.item.icon ?
+                            <Image style={styles.feelingIcon}
+                                source={{uri: this.props.item.icon}}
+                              />  :
+                              <Image style={styles.feelingIcon} 
+                                  source={require("../../../../assets/default_feeling_icon.png")}>
+                              </Image>
     return (
       <TouchableOpacity onPress={this._onPress}       
           style={[styles.selectedFeelingItemContainer]}>
           <View style={styles.feelingItem}>  
             <View style={styles.feelingIconSelectedIconContainer}>
-              <Icon type="FontAwesome5" name={this.props.item.icon} /> 
+               {imageElement}
             </View>                
             <View style={styles.feelingNameSelectedContainer}>
               <Text numberOfLines={1}>{this.props.item["label_" + this.props.locale]}</Text>   
@@ -45,11 +53,19 @@ class FeelingItem extends React.PureComponent<any> {
   };
 
   render() {
+    var imageElement = this.props.item.icon ?
+                            <Image style={styles.feelingIcon}
+                                source={{uri: this.props.item.icon}}
+                              />  :
+                              <Image style={styles.feelingIcon} 
+                                  source={require("../../../../assets/default_feeling_icon.png")}>
+                              </Image>
+
     return (
       <TouchableOpacity onPress={this._onPress} style={[styles.feelingItemContainer, this.props.styles]}>
         <View style={styles.feelingItem}>
           <View style={styles.feelingIconContainer}>
-            <Icon style={styles.feelingIcon} type="FontAwesome5" name={this.props.item.icon} />
+            {imageElement}
           </View>
           <View style={styles.feelingNameContainer}>
             <Text numberOfLines={2}>{this.props.item["label_" + this.props.locale]}</Text>
@@ -68,22 +84,35 @@ class FeelingContainerComponent extends React.Component<any, any> {
       search: '',
       preDefinedItems: [],
       newDefinedItem: null,
-      selectedItem: null
+      selectedItem: null,
+      numberOfItems: 0,
+      isStopReached: false
     }
   }
 
   componentDidMount() {
+    let { height } = Dimensions.get('window');
+    let numberOfItems = Math.ceil((height - 40) / 44);
+    let filterItems = this._filterItems(this.props.items, this.props.selectedItem);
+
     this.setState({
-      preDefinedItems:  this.props.items.filter(item => !this.props.selectedItem || this.props.selectedItem.feelingId != item.feelingId),
-      selectedItem: this.props.selectedItem
+      preDefinedItems: filterItems.slice(0, numberOfItems),
+      selectedItem: this.props.selectedItem,
+      numberOfItems: numberOfItems
     });
   }
 
+  private _filterItems = (items, removedItem) => {
+    return items.filter(item => !removedItem || removedItem.feelingId != item.feelingId);
+  }
+
   _updateSearch = search => {
-    var filterItems = this.props.items.filter(item => !this.state.selectedItem || this.state.selectedItem.feelingId != item.feelingId);
+    var filterItems = this._filterItems(this.props.items, this.state.selectedItem);
     var newItem = null;
+    var isStopReached = false;
 
     if (search) {
+      isStopReached = true;
       var searchLower = search.toLowerCase();
       filterItems = filterItems.filter(item => item["label_" + this.props.locale].toLowerCase().includes(searchLower));
 
@@ -98,14 +127,14 @@ class FeelingContainerComponent extends React.Component<any, any> {
       }          
     }
     
-    this.setState({ preDefinedItems: filterItems, search: search, newDefinedItem: newItem });
+    this.setState({ preDefinedItems: filterItems, search: search, newDefinedItem: newItem, isStopReached: isStopReached });
   };
 
   _onDeselectConfirm = (deSelectedItem) => {
     var selectedItem = null;
     var existedPreDefinedItem = this.props.items.find(item => item.feelingId == deSelectedItem.feelingId);
     var preDefinedItems = existedPreDefinedItem 
-                    ? [...this.state.preDefinedItems, deSelectedItem]
+                    ? [deSelectedItem, ...this.state.preDefinedItems]
                     : this.state.preDefinedItems;
     var search = this.state.search;
 
@@ -127,15 +156,34 @@ class FeelingContainerComponent extends React.Component<any, any> {
     if (this.state.newDefinedItem)
       selectedItem.feelingId = uuid4();
 
-    this.setState({
-      preDefinedItems: this.props.items,
-      selectedItem: null,
-      newDefinedItem: null,
-      search: ''
-    });
+    // this.setState({
+    //   preDefinedItems: this.props.items,
+    //   selectedItem: null,
+    //   newDefinedItem: null,
+    //   search: ''
+    // });
     this.props.onConfirmHandler(selectedItem); 
   }
 
+  _endReached = () => {
+    if (!this.state.isStopReached) {
+      let currentNumberOfItems = this.state.preDefinedItems.length,
+          numberOfItems = currentNumberOfItems + this.state.numberOfItems,
+          isStopReached = false;
+  
+      if (numberOfItems > this.props.items.length) {
+          numberOfItems = this.props.items.length;
+          isStopReached = true;
+      } 
+
+      let filterItems = this._filterItems(this.props.items, this.props.selectedItem);
+      this.setState({
+        preDefinedItems: filterItems.slice(0, numberOfItems),
+        isStopReached: isStopReached
+      });
+    }   
+  }
+  
   _keyExtractor = (item, index) => item.label_en;
 
   _renderItem = ({item, index}) => {
@@ -150,11 +198,13 @@ class FeelingContainerComponent extends React.Component<any, any> {
         item={item}
         onPressItem={this._onConfirm}
         locale={this.props.locale}
+        styles={firstItemStyle}
       />
     )
   };
 
   render() {
+
     return (
       <View style={styles.feelingContainer}>
           <View>
@@ -177,6 +227,8 @@ class FeelingContainerComponent extends React.Component<any, any> {
              keyExtractor={this._keyExtractor}
              renderItem={this._renderItem}
              numColumns={1}
+             onEndReached={this._endReached}
+             onEndReachedThreshold={.7}
            />
          </View>
       </View>
@@ -200,7 +252,8 @@ export interface Props {
 }
 
 interface State {
-  selectedItem: StoreData.FeelingVM
+  selectedItem: StoreData.FeelingVM,
+  isLoadedData: boolean
 }
 
 class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToProps, State> {
@@ -208,7 +261,8 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
     super(props);  
 
     this.state = {
-      selectedItem: this.props.selectedFeeling
+      selectedItem: this.props.selectedFeeling,
+      isLoadedData: false
     }
   }
 
@@ -217,7 +271,14 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
       this.props.getAllFeelings();
     }
     this.setState({
-      selectedItem: this.props.selectedFeeling
+      selectedItem: this.props.selectedFeeling,
+      isLoadedData: true
+    })
+  }
+
+  _onModalHide = () => {
+    this.setState({
+      isLoadedData: false
     })
   }
 
@@ -241,7 +302,8 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
 
   render() {
     const { isVisible, preDefinedFeelings, locale, t } = this.props;
-    var contentElement = preDefinedFeelings
+    console.log('feelings: ' + JSON.stringify(preDefinedFeelings));
+    var contentElement = preDefinedFeelings && this.state.isLoadedData
           ? <FeelingContainerComponent
                items={preDefinedFeelings}
                selectedItem={this.props.selectedFeeling}
@@ -256,6 +318,7 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
          title={t("trip_detail:feeling_modal_title")}
          isVisible={isVisible}
          onModalShowHandler={this._onModalShow}
+         onModalHideHandler={this._onModalHide}
          onCancelHandler={this._onCancel}
          onConfirmHandler={this._onSave}>
         {contentElement}
@@ -276,7 +339,7 @@ interface Style {
   feelingIconSelectedIconContainer: ViewStyle;
   feelingNameSelectedContainer: ViewStyle;
   feelingItem: ViewStyle;
-  feelingIcon: TextStyle;
+  feelingIcon: ImageStyle;
   iconRemoved: TextStyle;
 }
 
@@ -323,7 +386,7 @@ const styles = StyleSheet.create<Style>({
     marginBottom: 10
   },
   feelingIconSelectedIconContainer: {
-    width: "13%"
+    width: "15%"
   },
   feelingNameSelectedContainer: {
     maxWidth: "75%"
@@ -336,7 +399,9 @@ const styles = StyleSheet.create<Style>({
   },
   feelingIcon: {
     marginRight: 10,
-    marginLeft: 25
+    marginLeft: 20,
+    width: 24,
+    height: 24
   },
   iconRemoved: {
     fontSize: 18,
@@ -346,7 +411,7 @@ const styles = StyleSheet.create<Style>({
   }
 })
   
-const AddFeelingModalStyle = connectStyle<typeof AddFeelingModalComponent>('NativeBase.Modal', styles)(AddFeelingModalComponent);
+//const AddFeelingModalStyle = connectStyle<typeof AddFeelingModalComponent>('NativeBase.Modal', styles)(AddFeelingModalComponent);
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   let dateVm = storeState.currentTrip.dates.find(item => item.dateIdx == ownProps.dateIdx);
@@ -373,6 +438,6 @@ const mapDispatchToProps = (dispatch) => {
 const AddFeelingModal = connect(
   mapStateToProps,
   mapDispatchToProps
-)(AddFeelingModalStyle);
+)(AddFeelingModalComponent);
 
 export default withNamespaces(['trip_detail'])(AddFeelingModal);

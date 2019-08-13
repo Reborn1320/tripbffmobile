@@ -318,14 +318,16 @@ export interface Props extends PropsBase {
 }
 
 interface State {
-  selectedHighlights: Array<StoreData.LocationLikeItemVM>
+  selectedHighlights: Array<StoreData.LocationLikeItemVM>,
+  isLoadedData: boolean
 }
 
 class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatchToProps, State> {
   constructor(props: Props & IMapDispatchToProps) {
     super(props);  
     this.state = {
-      selectedHighlights: []
+      selectedHighlights: [],
+      isLoadedData: false
     }
   }
 
@@ -341,7 +343,18 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
     if (!this.props.preDefinedHighlights) {
       this.props.getAllHighlights();
     }
+
+    this.setState({
+      isLoadedData: true
+    })
   }
+
+  _onModalHide = () => {
+    this.setState({
+      isLoadedData: false
+    })
+  }
+
 
   _onCancel = () => {
     this.props.cancelHandler();
@@ -366,7 +379,7 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
   render() {
     const { isVisible, t } = this.props;
     
-    var contentElement = this.props.preDefinedHighlights
+    var contentElement = this.props.preDefinedHighlights && this.state.isLoadedData
           ? <AddHighlightModalContentComponent
               t={this.props.t}
               preDefinedHighlights={this.props.preDefinedHighlights}
@@ -382,6 +395,7 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
           title={t("location_detail:update_highlight_title")}
           isVisible={isVisible}
           onModalShowHandler={this._onModalWillShow}
+          onModalHideHandler={this._onModalHide}
           onCancelHandler={this._onCancel}
           onConfirmHandler={this._onSave}>
           {contentElement}

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Text, Button, Icon } from "native-base";
-import { TouchableOpacity, View, StyleSheet, ViewStyle, TextStyle, Dimensions } from "react-native";
+import { TouchableOpacity, View, StyleSheet, ViewStyle, TextStyle, Dimensions, Image, ImageStyle } from "react-native";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
@@ -63,21 +63,29 @@ class LocationItem extends Component<Props, State> {
         var { locale, t } = this.props;
 
         var feelingLabel = "",
-            feelingIcon = "smile";
+            feelingElement = <Image style={styles.activityIcon} 
+                                source={require("../../../../assets/default_feeling_icon.png")}>
+                            </Image>;
 
         if (location.feeling) {
             feelingLabel = location.feeling["label_" + locale]
                      ? location.feeling["label_" + locale] : location.feeling["label_en"]; //default is en if locale not found
-            feelingIcon = location.feeling.icon ? location.feeling.icon : "smile";
+            feelingElement  = location.feeling.icon
+                            ? <Image style={styles.activityIcon} source={{uri: location.feeling.icon}} />
+                            : feelingElement;
         }
 
         var activityLabel = t("trip_detail:activity_label"),
-            activityIcon = "running";
+            activityElement = <Image style={styles.activityIcon} 
+                                source={require("../../../../assets/default_activity_icon.png")}>
+                            </Image>
 
         if (location.activity && location.activity.activityId) {
             activityLabel = location.activity["label_" + locale]
                  ? location.activity["label_" + locale] : location.activity["label_en"];
-            activityIcon = location.activity.icon ? location.activity.icon : "running";
+            activityElement = location.activity.icon 
+                ? <Image style={styles.activityIcon} source={{uri: location.activity.icon}} />
+                : activityElement;
         }
 
         let locationImages: StoreData.ImportImageVM[] = [];
@@ -129,7 +137,7 @@ class LocationItem extends Component<Props, State> {
                     <TouchableOpacity
                         style={styles.feelingBtn}
                         onPress={this._openUpdateFeelingModal}>
-                        <Icon name={feelingIcon} type="FontAwesome5" style={styles.activityIcon}/>
+                        {feelingElement}
                         {
                             feelingLabel && <Text style={styles.activityContent} numberOfLines={2}>{t("trip_detail:feeling_adjective")} {feelingLabel}</Text> ||
                             <Text numberOfLines={2} style={styles.activityContent}>{t("trip_detail:feeling_label")}</Text>
@@ -138,7 +146,7 @@ class LocationItem extends Component<Props, State> {
                     <TouchableOpacity
                         style={styles.activityBtn}
                         onPress={this._openUpdateActivityModal}>
-                        <Icon name={activityIcon} type="FontAwesome5" style={styles.activityIcon}/>
+                        {activityElement}
                         <Text numberOfLines={2} style={styles.activityContent}>{activityLabel}</Text>
                     </TouchableOpacity>
                 </View>
@@ -159,7 +167,7 @@ interface Style {
     activityContainer: ViewStyle;
     activityBtn: ViewStyle;
     feelingBtn: ViewStyle;
-    activityIcon: TextStyle;
+    activityIcon: ImageStyle;
     activityContent: TextStyle;
 
     emptyImageContainer: ViewStyle;
@@ -217,7 +225,9 @@ const styles = StyleSheet.create<Style>({
     activityIcon: {
         marginLeft: 5,
         fontSize: 22,
-        paddingTop: 1
+        paddingTop: 1,
+        width: 24,
+        height: 24
     },
     activityContent: {
         ...mixins.themes.fontBold,
