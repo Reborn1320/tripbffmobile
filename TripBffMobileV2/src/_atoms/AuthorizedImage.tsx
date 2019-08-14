@@ -1,7 +1,9 @@
-import React, { Component } from "react";
-import { StyleSheet } from "react-native";
+import React from "react";
 import _ from "lodash";
-import FastImage, { FastImageSource, ImageStyle } from "react-native-fast-image";
+import FastImage, {
+  FastImageSource,
+  ImageStyle,
+} from "react-native-fast-image";
 import { getAuthorizationHeader } from "../store/ApisAsAService";
 
 export interface Props {
@@ -15,17 +17,10 @@ export default function AuthorizedImage(props: Props) {
       source={{
         ...props.source,
         headers: {
-          Authorization: getAuthorizationHeader()
-        }
+          Authorization: getAuthorizationHeader(),
+        },
       }}
       style={props.style}
     />
   );
 }
-
-
-interface Style {
-}
-
-const styles = StyleSheet.create<Style>({
-})
