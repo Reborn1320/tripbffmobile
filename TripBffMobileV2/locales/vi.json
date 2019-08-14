@@ -76,7 +76,7 @@
         "update_description_title": "Mô tả địa điểm"
     },
     "export": {
-        "infographic_tab_label": "infographic",
+        "infographic_tab_label": "Infographic",
         "images_tab_label": "Hình ảnh",
         "images_selection_warning": "Xin vui lòng chọn tối đa 5 hình ảnh bạn yêu thích nhất để chia sẻ!",
         "no_infographic": "Xin vui lòng thêm địa điểm và hình ảnh để xuất ra infographic!",
@@ -98,7 +98,7 @@
     "setting": {
         "header_title": "Cài đặt",
         "language_setting_label": "Ngôn ngữ",
-        "feedback_setting_label": "Phản hồi",
+        "feedback_setting_label": "Góp ý",
         "logout_setting_label": "Đăng xuất",
         "change_language_success": "Cập nhật ngôn ngữ thành công"
     }            
