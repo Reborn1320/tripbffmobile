@@ -3,6 +3,7 @@ import { View, Icon } from "native-base";
 import { Image, StyleSheet, ViewStyle, TextStyle, TouchableHighlight } from "react-native";
 import NBTheme from "../../theme/variables/material.js";
 import { mixins } from "../../_utils";
+import FastImage from "react-native-fast-image";
 
 export interface Props {
   imageUrl: string
@@ -50,7 +51,7 @@ export class ImageSelection extends React.Component<Props, State> {
             position: "relative",
           }}
         >
-          <Image
+          <FastImage
             style={Object.assign({ width, height: width }, isChecked ? styles.checkImage : styles.image)}
             source={{ uri: this.props.imageUrl }}
           />

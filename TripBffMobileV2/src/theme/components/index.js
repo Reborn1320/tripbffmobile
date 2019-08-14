@@ -40,7 +40,7 @@ import cardItemTheme from "./CardItem";
 import listItemTheme from "./ListItem";
 import formTheme from "./Form";
 import separatorTheme from "./Separator";
-import pickerTheme from "./Picker"
+import pickerTheme from "./Picker";
 import variable from "./../variables/platform";
 
 import customizedComponents from "../customizeComponents";
