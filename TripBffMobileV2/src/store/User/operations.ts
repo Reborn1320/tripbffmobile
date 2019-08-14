@@ -140,7 +140,7 @@ export function updateLocaleFacebookUser(userId: string, locale: string): ThunkR
       locale
     }
 
-    return extraArguments.loginApiService.patch("/setting/locale",  { data })
+    return extraArguments.tripApiService.patch("/setting/locale",  { data })
       .then(async (res) => { 
         const user: StoreData.UserVM = JSON.parse(await getDataFromStorage(STORAGE_KEYS.USER));
         if (user == null) return false;
@@ -152,6 +152,23 @@ export function updateLocaleFacebookUser(userId: string, locale: string): ThunkR
       })
       .catch(error => {
         console.log("error update locale", error);
+      });
+  };
+}
+
+export function createUserFeedback(feedback: string, email: string): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> { 
+    var data = {
+      feedback,
+      email
+    }
+
+    return extraArguments.tripApiService.post("/setting/feedback",  { data })
+      .then(async (res) => {  
+        return true;
+      })
+      .catch(error => {
+        console.log("error submit feedback", error);
       });
   };
 }

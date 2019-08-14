@@ -30,6 +30,7 @@ import UserSettingsScreen from "./screens/user/UserSetting";
 import LanguageSelection from "./_organisms/User/LanguageSelection";
 import { withNamespaces } from 'react-i18next';
 import i18n from '../i18n';
+import UserFeedback from "./_organisms/User/UserFeedback";
 
 var mockLoginApi = mockLoginApiService;
 var mockTripApi = mockTripApiService;
@@ -112,7 +113,8 @@ const ProfileNavigator = createStackNavigator(
     LocationImageDetail: { screen: LocationImageDetailScreen },
     InfographicPreview: { screen: InfographicPreviewScreen },
     TripEditBasic: { screen: TripEditBasicScreen },
-    LanguageSelection: { screen: LanguageSelection }
+    LanguageSelection: { screen: LanguageSelection },
+    UserFeedback: { screen: UserFeedback }
   },
   stackConfigs
 );

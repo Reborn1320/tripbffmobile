@@ -14,7 +14,8 @@
         "delete": "Delete",
         "okay": "Okay",
         "next": "Next",
-        "loading": "Loading"
+        "loading": "Loading",
+        "submit": "Submit"
     },
     "message": {
         "add_location": "Click to add location(s)",
@@ -81,7 +82,8 @@
         "images_selection_warning": "Please select maximum 5 most favorite images to share!",
         "no_infographic": "Please add locations and upload images to export infographic!",
         "nothing_to_share_message": "Please add locations and upload images to share on Facebook!",
-        "title": "Preview & Share"
+        "title": "Preview & Share",
+        "loading_infographic": "Generating infographic. Please wait!"
     },
     "profile": {
         "trip_label": "Trip",
@@ -97,8 +99,13 @@
     "setting": {
         "header_title": "Settings",
         "language_setting_label": "Language",
-        "feedback_setting_label": "App Feedback",
+        "feedback_setting_label": "Give us Feedback",
         "logout_setting_label": "Log Out",
-        "change_language_success": "Update language successfully"
+        "change_language_success": "Update language successfully",
+        "feedback_title": "Feedback",
+        "feedback_message": "We're always working to improve the TripBFF experience, so we'd love to hear what you love and what you think we can do better.",
+        "feedback_email_label": "Email",
+        "feedback_content_label": "Content",
+        "feedback_submit_message": "Submited successfully. Thank you for your feedback!"
     }      
 }

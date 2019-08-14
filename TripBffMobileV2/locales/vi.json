@@ -14,7 +14,8 @@
         "delete": "Xóa",
         "okay": "Đồng ý",
         "next": "Tiếp theo",
-        "loading": "Đang tải"
+        "loading": "Đang tải",
+        "submit": "Gửi"
     },
     "message": {
         "add_location": "Nhấp để thêm địa điểm",
@@ -76,12 +77,13 @@
         "update_description_title": "Mô tả địa điểm"
     },
     "export": {
-        "infographic_tab_label": "infographic",
+        "infographic_tab_label": "Infographic",
         "images_tab_label": "Hình ảnh",
         "images_selection_warning": "Xin vui lòng chọn tối đa 5 hình ảnh bạn yêu thích nhất để chia sẻ!",
         "no_infographic": "Xin vui lòng thêm địa điểm và hình ảnh để xuất ra infographic!",
         "nothing_to_share_message": "Xin vui lòng thêm địa điểm và hình ảnh để chia sẻ qua Facebook!",
-        "title": "Xem trước và chia sẻ"
+        "title": "Xem trước và chia sẻ",
+        "loading_infographic": "Đang tạo infographic. Xin vui lòng chờ!"
     },
     "profile": {
         "trip_label": "Chuyến đi",
@@ -97,8 +99,13 @@
     "setting": {
         "header_title": "Cài đặt",
         "language_setting_label": "Ngôn ngữ",
-        "feedback_setting_label": "Phản hồi",
+        "feedback_setting_label": "Góp ý",
         "logout_setting_label": "Đăng xuất",
-        "change_language_success": "Cập nhật ngôn ngữ thành công"
+        "change_language_success": "Cập nhật ngôn ngữ thành công",
+        "feedback_title": "Góp ý",
+        "feedback_message": "Chúng tôi luôn làm việc để cải thiện trải nghiệm của TripBFF, vì vậy chúng tôi rất thích nghe những điều bạn yêu thích và những điều bạn nghĩ rằng chúng tôi sẽ làm tốt hơn.",
+        "feedback_email_label": "Email",
+        "feedback_content_label": "Nội dung góp ý",
+        "feedback_submit_message": "Đã gửi thành công. Cảm ơn bạn đã góp ý!"
     }            
 }
