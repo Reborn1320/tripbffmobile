@@ -28,6 +28,10 @@ class UserSettingsScreen extends Component<Props, State> {
        this.props.navigation.navigate(NavigationConstants.Screens.LanguageSelection);
     }  
 
+    private _giveFeedback = () => {
+        this.props.navigation.navigate(NavigationConstants.Screens.UserFeedback);
+    }
+
     private _handleEditBtnClick = () => {
         logOut()
         .then(() => {
@@ -51,7 +55,7 @@ class UserSettingsScreen extends Component<Props, State> {
                             </Right>
                           </ListItem>
                                             
-                        <ListItem>
+                        <ListItem onPress={this._giveFeedback}>
                             <Left>
                                 <Text>{t("setting:feedback_setting_label")}</Text>
                             </Left>
