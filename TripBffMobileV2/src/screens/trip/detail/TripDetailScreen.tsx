@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Header, Content, Button, Text, View } from 'native-base';
-import { Alert, BackHandler, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { Alert, BackHandler, StyleSheet, TouchableOpacity, Image, RefreshControl } from "react-native";
 import _, { } from "lodash";
 import { tripApi } from "../../_services/apis";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
@@ -9,9 +9,11 @@ import TripDetailScreenContent from "./TripDetailScreenContent";
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NBTheme from "../../../theme/variables/commonColor.js";
+import Loading from "../../../_atoms/Loading/Loading";
 
 export interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void;
+    fetchTrip: (tripId: string) => Promise<void>
 }
 
 export interface Props {
@@ -20,7 +22,8 @@ export interface Props {
 }
 
 interface State {
-    isDisplayLoading: boolean
+    isDisplayLoading: boolean,
+    refreshing: boolean
 }
 
 export class TripDetailScreen extends Component<Props & IMapDispatchToProps, State> {
@@ -33,7 +36,8 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
         super(props)
 
         this.state = {
-            isDisplayLoading: true
+            isDisplayLoading: false,
+            refreshing: false
         }
     }
 
@@ -90,13 +94,32 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
         this.props.navigation.navigate(NavigationConstants.Screens.TripsInfographicPreivew, { tripId: tripId });       
     }
 
+    private _refreshTrip = () => {
+        this.props.fetchTrip(this.props.tripId)
+            .then(() => this.setState({
+                isDisplayLoading: false,
+                refreshing: false
+            }));
+    }
+
+    private _onRefresh = () => {
+        this.setState({
+            refreshing: true,
+            isDisplayLoading: true
+        });
+        this._refreshTrip();
+    }
+
     render() {
         const tripId = this.props.tripId;
         const navigation = this.props.navigation;
+        const { isDisplayLoading } = this.state;
 
         return (
             <Container>
-                <Content>
+                <Content refreshControl={<RefreshControl refreshing={this.state.refreshing}
+                                        onRefresh={this._onRefresh} />}>
+                    {isDisplayLoading &&  <Loading message={''}/> }
                     <TripDetailScreenContent tripId={tripId} navigation={navigation}/>                    
                 </Content>
                 <ActionButton

@@ -6,7 +6,7 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
 import { mixins } from "../../../_utils";
 import TripDetailScreenContent from "../detail/TripDetailScreenContent";
-import { StyleSheet, BackHandler, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, BackHandler, TouchableOpacity, Image, RefreshControl } from "react-native";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -25,7 +25,8 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 }
 
 interface State {
-    isDisplayLoading: boolean
+    isDisplayLoading: boolean,
+    refreshing: boolean
 }
 
 export class TripEditScreen extends Component<Props, State> {
@@ -38,6 +39,7 @@ export class TripEditScreen extends Component<Props, State> {
         super(props)
         this.state = {
             isDisplayLoading: !this.props.trip,
+            refreshing: false
         }
     }
 
@@ -74,10 +76,7 @@ export class TripEditScreen extends Component<Props, State> {
         this.props.navigation.setParams({ _goEditBasicTrip: this._onPopupMenuSelect });
         
         if (!this.props.trip) {
-            this.props.fetchTrip(this.props.tripId)
-            .then(() => this.setState({
-                isDisplayLoading: false
-            }));
+            this._refreshTrip();
         } 
     }z
 
@@ -85,6 +84,14 @@ export class TripEditScreen extends Component<Props, State> {
         if (this._didFocusSubscription) this._didFocusSubscription.remove();
         if (this._willBlurSubscription) this._willBlurSubscription.remove();
         if (this._backHardwareHandler) this._backHardwareHandler.remove();
+    }
+
+    private _refreshTrip = () => {
+        this.props.fetchTrip(this.props.tripId)
+            .then(() => this.setState({
+                isDisplayLoading: false,
+                refreshing: false
+            }));
     }
 
     private _onPopupMenuSelect = () => {
@@ -109,12 +116,21 @@ export class TripEditScreen extends Component<Props, State> {
         });       
     }
 
+    private _onRefresh = () => {
+        this.setState({
+            refreshing: true,
+            isDisplayLoading: true
+        });
+        this._refreshTrip();
+    }
+
     render() {
         const { trip, navigation } = this.props;
         const { isDisplayLoading } = this.state;
         return (
             <Container>
-                <Content>
+                <Content refreshControl={<RefreshControl refreshing={this.state.refreshing}
+                                        onRefresh={this._onRefresh} />}>
                     {isDisplayLoading &&  <Loading message={''}/> }
                     {trip &&
                         <TripDetailScreenContent tripId={trip.tripId} navigation={navigation} />}                   

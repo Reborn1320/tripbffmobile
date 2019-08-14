@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TouchableOpacity, Image, StyleSheet } from "react-native";
+import { TouchableOpacity, Image, StyleSheet, RefreshControl } from "react-native";
 import { Container, Content, Footer, View } from "native-base";
 import _ from "lodash";
 import Loading from "../../_atoms/Loading/Loading";
@@ -37,7 +37,8 @@ interface State {
     UIState: UIState;
     isEmptyTrips: boolean;
     isOpenDeleteConfirmModal: boolean,
-    deletedTripId: string
+    deletedTripId: string;
+    refreshing: boolean
 }
 
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
@@ -56,7 +57,8 @@ class ProfileScreen extends Component<Props, State> {
             UIState: "LOADING_TRIP",
             isEmptyTrips: this.props.isEmptyTrips,
             isOpenDeleteConfirmModal: false,
-            deletedTripId: ""
+            deletedTripId: "",
+            refreshing: false
         };
     }
 
@@ -94,6 +96,7 @@ class ProfileScreen extends Component<Props, State> {
                 isEmptyTrips: !trips || trips.length == 0,
                 loadingMessage: "",
                 UIState: "NORMAL",
+                refreshing: false
             });
         });
     }
@@ -149,13 +152,22 @@ class ProfileScreen extends Component<Props, State> {
         });
     }   
 
+    private _onRefresh = () => {
+        this.setState({
+            refreshing: true,
+            isLoaded: true
+        });
+        this._refreshTrips();
+    }
+
     render() {
         const { isLoaded, isEmptyTrips } = this.state;
         const { t } = this.props;
 
         return (
             <Container>
-                <Content>
+                <Content refreshControl={<RefreshControl refreshing={this.state.refreshing}
+                                        onRefresh={this._onRefresh} />}>
                     <View style={{flex: 1}}>
                         <UserDetails />
                         {isLoaded && <Loading message={this.state.loadingMessage} />}
