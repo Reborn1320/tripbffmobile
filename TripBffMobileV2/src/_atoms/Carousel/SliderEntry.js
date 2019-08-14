@@ -54,7 +54,19 @@ export default class SliderEntry extends Component {
         {...parallaxProps}
       />
     ) : (
-      <AuthorizedImage
+      // <AuthorizedImage
+      //   source={{ uri: illustration }}
+      //   style={Object.assign(
+      //     title
+      //       ? {}
+      //       : {
+      //           borderBottomLeftRadius: 8,
+      //           borderBottomRightRadius: 8,
+      //         },
+      //     styles.image
+      //   )}
+      // />
+      <Image
         source={{ uri: illustration }}
         style={Object.assign(
           title
@@ -66,13 +78,6 @@ export default class SliderEntry extends Component {
           styles.image
         )}
       />
-      // <Image
-      //   source={{ uri: illustration }}
-      //   style={ Object.assign(title ? {} : {
-      //     borderBottomLeftRadius: 8,
-      //     borderBottomRightRadius: 8,
-      // }, styles.image) }
-      // />
     );
   }
 

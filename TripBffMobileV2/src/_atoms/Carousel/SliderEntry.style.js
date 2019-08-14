@@ -1,12 +1,12 @@
-import { StyleSheet, Dimensions, Platform } from 'react-native';
-import { colors } from './index.style';
+import { StyleSheet, Dimensions, Platform } from "react-native";
+import { colors } from "./index.style";
 import { mixins } from "../../_utils";
 import NBTheme from "../../theme/variables/material";
 import NBColor from "../../theme/variables/commonColor.js";
 
-const IS_IOS = Platform.OS === 'ios';
+const IS_IOS = Platform.OS === "ios";
 const { width: viewportWidth, height: viewportHeight } = Dimensions.get(
-  'window'
+  "window"
 );
 
 function wp(percentage) {
@@ -26,10 +26,10 @@ const entryBorderRadius = 6;
 export default StyleSheet.create({
   slideInnerContainer: {
     width: "100%",
-    height: slideHeight
+    height: slideHeight,
   },
   shadow: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: itemHorizontalMargin,
     right: itemHorizontalMargin,
@@ -44,10 +44,10 @@ export default StyleSheet.create({
   imageContainer: {
     flex: 1,
     marginBottom: IS_IOS ? 0 : -1, // Prevent a random Android rendering issue
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderTopLeftRadius: entryBorderRadius,
     borderTopRightRadius: entryBorderRadius,
-    marginRight: 24
+    marginRight: 24,
   },
   imageContainerEven: {
     backgroundColor: NBTheme.brandPrimary,
@@ -55,29 +55,29 @@ export default StyleSheet.create({
   },
   image: {
     ...StyleSheet.absoluteFillObject,
-    resizeMode: 'cover',
+    resizeMode: "cover",
     // borderRadius: IS_IOS ? entryBorderRadius : 0,
     borderTopLeftRadius: entryBorderRadius,
     borderTopRightRadius: entryBorderRadius,
   },
   imageEmptyContainer: {
-    backgroundColor: '#F9F9F9',
+    backgroundColor: "#F9F9F9",
     borderRadius: 6,
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   // image's border radius is buggy on iOS; let's hack it!
   radiusMask: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     height: entryBorderRadius,
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
   radiusMaskEven: {
-    backgroundColor: colors.black
+    backgroundColor: colors.black,
   },
   radiusMaskBorder: {
     borderColor: "lightgrey",
@@ -87,14 +87,14 @@ export default StyleSheet.create({
     // borderStyle: "dashed",
   },
   textContainer: {
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingTop: 13,
     paddingBottom: 13,
     paddingHorizontal: 16,
     marginRight: 24,
     backgroundColor: NBColor.brandPrimary,
     borderBottomLeftRadius: entryBorderRadius,
-    borderBottomRightRadius: entryBorderRadius
+    borderBottomRightRadius: entryBorderRadius,
   },
   textContainerEven: {
     backgroundColor: NBTheme.brandPrimary,
@@ -108,19 +108,19 @@ export default StyleSheet.create({
     fontSize: 14,
     ...mixins.themes.fontNormal,
     lineHeight: 18,
-    letterSpacing: 0.5
+    letterSpacing: 0.5,
   },
   titleEven: {
-    color: 'white'
+    color: "white",
   },
   subtitle: {
     marginTop: 6,
-    color: '#DADADA',
+    color: "#DADADA",
     fontSize: 12,
     ...mixins.themes.fontBold,
-    lineHeight: 16
+    lineHeight: 16,
   },
   subtitleEven: {
-    color: 'rgba(255, 255, 255, 0.7)'
-  }
+    color: "rgba(255, 255, 255, 0.7)",
+  },
 });
