@@ -6177,6 +6177,11 @@ react-native-fast-image@^7.0.2:
   version "1.0.1"
   resolved "https://github.com/HelloCore/react-native-fbsdk.git#16a05caf60ecb242305d5f20cf02797e2f3521a4"
 
+react-native-flurry-sdk@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-flurry-sdk/-/react-native-flurry-sdk-4.1.0.tgz#09d2e8ed64d776a43ab22743b21edb3e24aa6d73"
+  integrity sha512-xfAkmElH+UhfRfs1AV53N2zLbpjF7qIV9GIrhaXlu8UxSnFWvqNJwYt5VmZJqY3EpGjzIA2HWhL7RdyAvy2HBg==
+
 react-native-fs@^2.14.1:
   version "2.14.1"
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.14.1.tgz#61c70a865b5b5bcb020dd4e4befd60a2c20c836f"
