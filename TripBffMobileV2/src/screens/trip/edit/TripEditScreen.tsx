@@ -12,10 +12,11 @@ import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Loading from "../../../_atoms/Loading/Loading";
 import NBTheme from "../../../theme/variables/material.js";
+import { getCancelToken } from "../../../_function/commonFunc";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
-    fetchTrip: (tripId: string) => Promise<void>
+    fetchTrip: (tripId: string, cancelToken: any) => Promise<void>
 }
 
 export interface Props extends IMapDispatchToProps, PropsBase {
@@ -34,6 +35,9 @@ export class TripEditScreen extends Component<Props, State> {
     _didFocusSubscription;
     _willBlurSubscription;
     _backHardwareHandler;
+
+    _cancelToken;
+    _cancelRequest;
 
     constructor(props: Props) {
         super(props)
@@ -75,6 +79,10 @@ export class TripEditScreen extends Component<Props, State> {
         this.props.navigation.setParams({ _goBack: this._goBackAndRefreshTripLists });
         this.props.navigation.setParams({ _goEditBasicTrip: this._onPopupMenuSelect });
         
+        let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
+        this._cancelToken = cancelToken;
+        this._cancelRequest = cancelRequest;
+
         if (!this.props.trip) {
             this._refreshTrip();
         } 
@@ -84,10 +92,12 @@ export class TripEditScreen extends Component<Props, State> {
         if (this._didFocusSubscription) this._didFocusSubscription.remove();
         if (this._willBlurSubscription) this._willBlurSubscription.remove();
         if (this._backHardwareHandler) this._backHardwareHandler.remove();
+
+        this._cancelRequest('Operation canceled by the user.');
     }
 
     private _refreshTrip = () => {
-        this.props.fetchTrip(this.props.tripId)
+        this.props.fetchTrip(this.props.tripId, this._cancelToken)
             .then(() => this.setState({
                 isDisplayLoading: false,
                 refreshing: false

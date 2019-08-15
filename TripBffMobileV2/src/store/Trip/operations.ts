@@ -22,9 +22,15 @@ import moment from "moment";
 import { uploadImageXmlHttpRequestAsync } from "../../screens/_services/Uploader/BlobUploader";
 import { toDateUtc as toDateUtcFunc } from "../../_function/dateFuncs";
 
-export function fetchTrip(tripId: string): ThunkResultBase {
+export function fetchTrip(tripId: string, cancelToken: any): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
-    return extraArguments.tripApiService.get(`trips/${tripId}`)
+    var args = {
+      data: {
+        cancelToken: cancelToken
+      }
+    }
+
+    return extraArguments.tripApiService.get(`trips/${tripId}`, args)
       .then(res => {
         var rawTrip: RawJsonData.TripVM = res.data;
         var trip: StoreData.TripVM = {

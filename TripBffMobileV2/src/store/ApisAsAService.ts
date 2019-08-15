@@ -4,10 +4,6 @@ import { SSO_URL, TRIP_URL } from "../screens/_services/ServiceConstants";
 import { NavigationConstants } from "../screens/_shared/ScreenConstants";
 import NavigationService from './NavigationService';
 
-function expirationHandler() {
-  NavigationService.navigate(NavigationConstants.Screens.Login, null);
-}
-
 var loginApiInternal = axios.create({
   baseURL: SSO_URL,
   headers: {
@@ -77,36 +73,20 @@ export var loginApiService: IApiService = {
 }
 
 export var tripApiService: IApiService = {
-  get: (url: string, args?: ApiServiceArguments) => tripApiInternal.get(url, args ? args.config : undefined)
-  .catch(error => {
-    console.log("error catch", error);
-    if (error.response && error.response.status == 401) 
-      expirationHandler();
-   else    
-     throw new Error('Uncaught Exception!');
-  }),
-  post: (url: string, args?: ApiServiceArguments) => tripApiInternal.post(url, args ? args.data : undefined, args ? args.config : undefined)
-  .catch(error => {
-    console.log("error catch", error);
-    if (error.response && error.response.status == 401) 
-      expirationHandler();
-   else    
-     throw new Error('Uncaught Exception!');
-  }),
-  delete: (url: string, args?: ApiServiceArguments) => tripApiInternal.delete(url, args ? args.config : undefined)
-  .catch(error => {
-    console.log("error catch", error);
-    if (error.response && error.response.status == 401) 
-      expirationHandler();
-   else    
-     throw new Error('Uncaught Exception!');
-  }),
-  patch: (url: string, args?: ApiServiceArguments) => tripApiInternal.patch(url, args ? args.data : undefined, args ? args.config : undefined)
-  .catch(error => {
-    console.log("error catch", error);
-    if (error.response && error.response.status == 401) 
-      expirationHandler();
-   else    
-     throw new Error('Uncaught Exception!');
-  }),
+  get: (url: string, args?: ApiServiceArguments) => tripApiInternal.get(url, args ? args.config : undefined).catch(error => handleError(error)),
+  post: (url: string, args?: ApiServiceArguments) => tripApiInternal.post(url, args ? args.data : undefined, args ? args.config : undefined).catch(error => handleError(error)),
+  delete: (url: string, args?: ApiServiceArguments) => tripApiInternal.delete(url, args ? args.config : undefined).catch(error => handleError(error)),
+  patch: (url: string, args?: ApiServiceArguments) => tripApiInternal.patch(url, args ? args.data : undefined, args ? args.config : undefined).catch(error => handleError(error))
+}
+
+function expirationHandler() {
+  NavigationService.navigate(NavigationConstants.Screens.Login, null);
+}
+
+function handleError(error) {
+  console.log("error catch", error);
+  if (error.response && error.response.status == 401) 
+    expirationHandler();
+      
+  throw new Error('Uncaught Exception!');
 }

@@ -10,10 +10,11 @@ import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NBTheme from "../../../theme/variables/commonColor.js";
 import Loading from "../../../_atoms/Loading/Loading";
+import { getCancelToken } from "../../../_function/commonFunc";
 
 export interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void;
-    fetchTrip: (tripId: string) => Promise<void>
+    fetchTrip: (tripId: string, cancelToken: any) => Promise<void>
 }
 
 export interface Props {
@@ -31,6 +32,8 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
     _didFocusSubscription;
     _willBlurSubscription;
     _backHardwareHandler;
+    _cancelToken;
+    _cancelRequest;
 
     constructor(props) {
         super(props)
@@ -55,6 +58,8 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
         if (this._didFocusSubscription) this._didFocusSubscription.remove();
         if (this._willBlurSubscription) this._willBlurSubscription.remove();
         if (this._backHardwareHandler) this._backHardwareHandler.remove();
+
+        this._cancelRequest('Operation canceled by the user.');
     }
 
     componentDidMount() {
@@ -78,6 +83,10 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
 
         this.props.navigation.setParams({ _goProfile: this._handleBackPress });
         this.props.navigation.setParams({ _goEditBasicTrip: this._onPopupMenuSelect });
+
+        let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
+        this._cancelToken = cancelToken;
+        this._cancelRequest = cancelRequest;
     }
 
     private _onPopupMenuSelect = () => {
@@ -95,7 +104,7 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
     }
 
     private _refreshTrip = () => {
-        this.props.fetchTrip(this.props.tripId)
+        this.props.fetchTrip(this.props.tripId, this._cancelToken)
             .then(() => this.setState({
                 isDisplayLoading: false,
                 refreshing: false
