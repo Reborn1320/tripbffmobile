@@ -15,7 +15,7 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchTrip: (tripId) => dispatch(fetchTrip(tripId)),
+    fetchTrip: (tripId, cancelToken) => dispatch(fetchTrip(tripId, cancelToken)),
     addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
   };
 };

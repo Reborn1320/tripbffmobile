@@ -6,16 +6,17 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
 import { mixins } from "../../../_utils";
 import TripDetailScreenContent from "../detail/TripDetailScreenContent";
-import { StyleSheet, BackHandler, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, BackHandler, TouchableOpacity, Image, RefreshControl } from "react-native";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Loading from "../../../_atoms/Loading/Loading";
 import NBTheme from "../../../theme/variables/material.js";
+import { getCancelToken } from "../../../_function/commonFunc";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
-    fetchTrip: (tripId: string) => Promise<void>
+    fetchTrip: (tripId: string, cancelToken: any) => Promise<void>
 }
 
 export interface Props extends IMapDispatchToProps, PropsBase {
@@ -25,7 +26,8 @@ export interface Props extends IMapDispatchToProps, PropsBase {
 }
 
 interface State {
-    isDisplayLoading: boolean
+    isDisplayLoading: boolean,
+    refreshing: boolean
 }
 
 export class TripEditScreen extends Component<Props, State> {
@@ -34,10 +36,14 @@ export class TripEditScreen extends Component<Props, State> {
     _willBlurSubscription;
     _backHardwareHandler;
 
+    _cancelToken;
+    _cancelRequest;
+
     constructor(props: Props) {
         super(props)
         this.state = {
             isDisplayLoading: !this.props.trip,
+            refreshing: false
         }
     }
 
@@ -73,11 +79,12 @@ export class TripEditScreen extends Component<Props, State> {
         this.props.navigation.setParams({ _goBack: this._goBackAndRefreshTripLists });
         this.props.navigation.setParams({ _goEditBasicTrip: this._onPopupMenuSelect });
         
+        let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
+        this._cancelToken = cancelToken;
+        this._cancelRequest = cancelRequest;
+
         if (!this.props.trip) {
-            this.props.fetchTrip(this.props.tripId)
-            .then(() => this.setState({
-                isDisplayLoading: false
-            }));
+            this._refreshTrip();
         } 
     }z
 
@@ -85,6 +92,16 @@ export class TripEditScreen extends Component<Props, State> {
         if (this._didFocusSubscription) this._didFocusSubscription.remove();
         if (this._willBlurSubscription) this._willBlurSubscription.remove();
         if (this._backHardwareHandler) this._backHardwareHandler.remove();
+
+        this._cancelRequest('Operation canceled by the user.');
+    }
+
+    private _refreshTrip = () => {
+        this.props.fetchTrip(this.props.tripId, this._cancelToken)
+            .then(() => this.setState({
+                isDisplayLoading: false,
+                refreshing: false
+            }));
     }
 
     private _onPopupMenuSelect = () => {
@@ -109,12 +126,21 @@ export class TripEditScreen extends Component<Props, State> {
         });       
     }
 
+    private _onRefresh = () => {
+        this.setState({
+            refreshing: true,
+            isDisplayLoading: true
+        });
+        this._refreshTrip();
+    }
+
     render() {
         const { trip, navigation } = this.props;
         const { isDisplayLoading } = this.state;
         return (
             <Container>
-                <Content>
+                <Content refreshControl={<RefreshControl refreshing={this.state.refreshing}
+                                        onRefresh={this._onRefresh} />}>
                     {isDisplayLoading &&  <Loading message={''}/> }
                     {trip &&
                         <TripDetailScreenContent tripId={trip.tripId} navigation={navigation} />}                   

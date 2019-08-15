@@ -30,6 +30,7 @@ import LanguageSelection from "./_organisms/User/LanguageSelection";
 import { withNamespaces } from 'react-i18next';
 import i18n from '../i18n';
 import UserFeedback from "./_organisms/User/UserFeedback";
+import NavigationService from './store/NavigationService';
 
 var extraThunk: ThunkExtraArgumentsBase = {
   uploadApi: uploadFileApi,
@@ -211,6 +212,9 @@ class App extends React.Component<any, any> {
           <Navigation screenProps={{
               changeLanguage: this.changeLanguage,
               t: t
+            }} 
+            ref={navigatorRef => {
+              NavigationService.setTopLevelNavigator(navigatorRef);
             }}/>
         </Root>
       </Provider>

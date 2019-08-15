@@ -224,7 +224,6 @@ const styles = StyleSheet.create<Style>({
     },
     activityIcon: {
         marginLeft: 5,
-        fontSize: 22,
         paddingTop: 1,
         width: 24,
         height: 24

@@ -19,16 +19,18 @@ import { ThunkResultBase } from "..";
 import { Moment } from "moment";
 import { StoreData, RawJsonData } from "../Interfaces";
 import moment from "moment";
-import { uploadFileApi } from "../../screens/_services/apis";
-import { Store } from "redux";
 import { uploadImageXmlHttpRequestAsync } from "../../screens/_services/Uploader/BlobUploader";
 import { toDateUtc as toDateUtcFunc } from "../../_function/dateFuncs";
-import { Item } from "native-base";
 
-export function fetchTrip(tripId: string): ThunkResultBase {
+export function fetchTrip(tripId: string, cancelToken: any): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
+    var args = {
+      data: {
+        cancelToken: cancelToken
+      }
+    }
 
-    return extraArguments.tripApiService.get(`trips/${tripId}`)
+    return extraArguments.tripApiService.get(`trips/${tripId}`, args)
       .then(res => {
         var rawTrip: RawJsonData.TripVM = res.data;
         var trip: StoreData.TripVM = {

@@ -28,6 +28,7 @@ class ActionModalComponent extends React.PureComponent<Props, State> {
         <RNModal style={styles.modal} 
             onModalShow={this.props.onModalShowHandler}
             onModalHide={this.props.onModalHideHandler}
+            onBackButtonPress={this.props.onCancelHandler}
             isVisible={this.props.isVisible} hideModalContentWhileAnimating>
             <View style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
