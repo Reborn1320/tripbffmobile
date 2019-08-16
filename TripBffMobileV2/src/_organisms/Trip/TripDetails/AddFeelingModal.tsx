@@ -302,7 +302,7 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
 
   render() {
     const { isVisible, preDefinedFeelings, locale, t } = this.props;
-    console.log('feelings: ' + JSON.stringify(preDefinedFeelings));
+
     var contentElement = preDefinedFeelings && this.state.isLoadedData
           ? <FeelingContainerComponent
                items={preDefinedFeelings}

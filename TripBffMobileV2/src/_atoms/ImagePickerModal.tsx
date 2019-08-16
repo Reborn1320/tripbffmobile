@@ -1,6 +1,6 @@
 import * as React from "react";
 import { View, Text } from "native-base";
-import { StyleSheet, ViewStyle, Dimensions } from "react-native";
+import { StyleSheet, ViewStyle, Dimensions, ActivityIndicator } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
 import Loading from "./Loading/Loading";
@@ -23,6 +23,7 @@ interface State {
   selectedImages: Array<any>,
   isUploadingImages: boolean,
   containerWidth: number;
+  isLoading: boolean
 }
 
 class ImagePickerModalComponent extends React.PureComponent<Props, State> {
@@ -36,7 +37,8 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
       numCount: 0,
       selectedImages: [],
       isUploadingImages: false,
-      containerWidth: width - 10 * 2
+      containerWidth: width - 10 * 2,
+      isLoading: true
     }
   }
 
@@ -87,36 +89,53 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
     });
   }
 
+  _onModalShow = () => {
+    this.setState({
+      isLoading: false
+    })
+  }
+
+  _onModalHide = () => {
+    this.setState({
+      isLoading: true
+    })
+  }
+
   render() {
     const { isVisible, t } = this.props;
-    const { num, numUploaded } = this.state;
+    const { num, numUploaded, isLoading, isUploadingImages } = this.state;
+
+    var loadingElement = isLoading 
+          ? <ActivityIndicator size="small" color="#00ff00" />
+          :   <View style={styles.modalInnerContainer}>
+                <View style={styles.modalContentContainer}>
+                  <StyledCameraRollPicker
+                    containerWidth={this.state.containerWidth}
+                    selected={this.state.selectedImages}
+                    callback={this._pickImage} />
+                </View>
+                <Footer2Buttons
+                  onCancel={this._onCancel}
+                  onAction={this._onSave}
+                  cancelText="action:cancel"
+                  actionText="action:add"
+                  primary
+                />
+              </View>;
+    var contentElement = isUploadingImages ? (
+                <View style={[styles.modalInnerContainer, styles.loading]}>
+                  <Loading message={t("location_detail:image_uploading_message")} />
+                  <Text>{numUploaded + "/" + num}</Text>
+                </View>
+              ) : loadingElement;
 
     return (
       <RNModal style={styles.modal}
         onBackButtonPress={this._onCancel}
+        onModalShow={this._onModalShow}
+        onModalHide={this._onModalHide}
         isVisible={isVisible} hideModalContentWhileAnimating>
-        {this.state.isUploadingImages ? (
-          <View style={[styles.modalInnerContainer, styles.loading]}>
-            <Loading message={t("location_detail:image_uploading_message")} />
-            <Text>{numUploaded + "/" + num}</Text>
-          </View>
-        ) : (
-            <View style={styles.modalInnerContainer}>
-              <View style={styles.modalContentContainer}>
-                <StyledCameraRollPicker
-                  containerWidth={this.state.containerWidth}
-                  selected={this.state.selectedImages}
-                  callback={this._pickImage} />
-              </View>
-              <Footer2Buttons
-                onCancel={this._onCancel}
-                onAction={this._onSave}
-                cancelText="action:cancel"
-                actionText="action:add"
-                primary
-              />
-            </View>
-          )}
+        {contentElement}
       </RNModal>
     );
   }

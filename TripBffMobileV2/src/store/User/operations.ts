@@ -5,6 +5,7 @@ import { setAuthorizationHeader as setAuthorizationHeader2 } from "../../store/A
 import { ThunkResultBase } from "..";
 import uuidv4 from "uuid/v4";
 import AsyncStorage from "@react-native-community/async-storage";
+import { clearAllDatasource } from "../DataSource/actions";
 
 export function loginUsingUserPass(email: string, password: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
@@ -72,7 +73,7 @@ export function loginUsingFacebookAccessToken(facebookUserId: string, accessToke
         setAuthorizationHeader(user.token);
         setAuthorizationHeader2(user.token);
         storeDataIntoStorage(STORAGE_KEYS.USER, JSON.stringify(user));
-
+        dispatch(clearAllDatasource());
       })
       .catch(error => {
         console.log("error login", error);
@@ -115,6 +116,7 @@ export function loginUsingDeviceId(): ThunkResultBase {
         setAuthorizationHeader(user.token);
         setAuthorizationHeader2(user.token);
         await storeDataIntoStorage(STORAGE_KEYS.USER, JSON.stringify(user));
+        dispatch(clearAllDatasource());
       })
       .catch(error => {
         console.log("error login", error);
