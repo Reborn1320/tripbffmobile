@@ -26,7 +26,7 @@ import _, { } from "lodash";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import { TabView, TabBar } from 'react-native-tab-view';
 import ActionButton from 'react-native-action-button';
-import { runPromiseSeries, deleteFilesInFolder } from "../../../_function/commonFunc";
+import { runPromiseSeries, deleteFilesInFolder, getCancelToken } from "../../../_function/commonFunc";
 import Loading from "../../../_atoms/Loading/Loading";
 import { addInfographicId } from "../../../store/Trip/actions";
 import PreviewInfographicComponent from "./PreviewInfographic";
@@ -52,7 +52,7 @@ export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
 
 interface IMapDispatchToProps {    
   addInfographicId: (tripId: string, infographicId: string) => void;
-  fetchTrip: (tripId: string) => Promise<StoreData.TripVM>;
+  fetchTrip: (tripId: string, cancelToken: any) => Promise<StoreData.TripVM>;
   loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId) => Promise<void>
 }
 
@@ -71,6 +71,8 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
   _backHardwareHandler;
   _didFocusSubscription;
   _willBlurSubscription;
+
+  _cancelRequest;
 
   constructor(props) {
     super(props);
@@ -131,10 +133,13 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
     this.props.navigation.setParams({ _cancel: this._cancel });
     this.props.navigation.setParams({ _handleBackPress: this._handleBackPress });
 
+    let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
+    this._cancelRequest = cancelRequest;
+    
     let tripId = this.props.tripId;
 
     if(!this.props.isExistedCurrentTrip) {
-      this.props.fetchTrip(tripId).then((trip: StoreData.TripVM) => {
+      this.props.fetchTrip(tripId, cancelToken).then((trip: StoreData.TripVM) => {
           var numberOfLocations = trip.rawLocations ? trip.rawLocations.length : 0;
 
           if(numberOfLocations > 0) 
@@ -154,6 +159,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
     if (this._didFocusSubscription) this._didFocusSubscription.remove();
     if (this._willBlurSubscription) this._willBlurSubscription.remove();
 
+    this._cancelRequest('Operation canceled by the user.');
     deleteFilesInFolder(`${this.props.tripId}`);
   }
 
@@ -308,7 +314,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
                 }
                 else {
                     console.log('need to log-in');
-                    LoginManager.logInWithPermissions(["public_profile", "user_photos", "user_posts"]).then(
+                    LoginManager.logInWithPermissions(["public_profile", "email"]).then(
                       function(result) {
                         if (result.isCancelled) {
                           console.log("Login cancelled");
@@ -441,7 +447,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
             {
               this.state.displayLoading && 
                 <View style={styles.loading}>
-                  <Loading message={t("action:loading")}/> 
+                  <Loading message={t("export:loading_infographic")}/> 
                 </View>
             }           
   
@@ -499,7 +505,7 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
 const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
   return {
     addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
-    fetchTrip: (tripId) => dispatch(fetchTrip(tripId)),
+    fetchTrip: (tripId, cancelToken) => dispatch(fetchTrip(tripId, cancelToken)),
     loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId) => dispatch(loginUsingFacebookAccessToken(userId, accessToken, loggedUserId)),
   };
 };

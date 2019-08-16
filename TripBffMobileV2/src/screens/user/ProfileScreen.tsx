@@ -19,6 +19,7 @@ interface IMapDispatchToProps extends PropsBase {
     addTrips: (trips: Array<StoreData.TripVM>) => void;
     deleteTrip: (tripId: string) => Promise<boolean>;
     getCurrentMinimizedTrip: (tripId: string) => void;
+    clearDatasource: () => void;
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -91,6 +92,9 @@ class ProfileScreen extends Component<Props, State> {
     private _refreshTrips = () => {
         this.props.fetchTrips(this._cancelToken).then(trips => {
             this.props.addTrips(trips);
+
+            if (this.state.refreshing) this.props.clearDatasource();
+            
             this.setState({
                 isLoaded: false,
                 isEmptyTrips: !trips || trips.length == 0,

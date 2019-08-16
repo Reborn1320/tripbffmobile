@@ -3,6 +3,7 @@ import { StoreData } from "../Interfaces"
 export const DataSource_GetAllFeeling = "DataSource_GetAllFeeling"
 export const DataSource_GetAllActivity = "DataSource_GetAllActivity"
 export const DataSource_GetAllHighlight = "DataSource_GetAllHighlight"
+export const DataSource_ClearAll = "DataSource_ClearAll"
 
 export function getAllFeelings(feelings: Array<StoreData.PreDefinedFeelingVM>) {
     return {
@@ -21,6 +22,13 @@ export function getAllHighlights(highlights: Array<StoreData.PreDefinedHighlight
         type: DataSource_GetAllHighlight, highlights
     }
 }
+
+export function clearAllDatasource() {
+    return {
+        type: DataSource_ClearAll
+    }
+}
+
 
 
  

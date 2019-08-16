@@ -1,6 +1,6 @@
 import * as React from "react";
 import { View, Text, Button, H2 } from "native-base";
-import { StyleSheet, ViewStyle } from "react-native";
+import { StyleSheet, ViewStyle, ActivityIndicator } from "react-native";
 import { connectStyle } from 'native-base';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 MapboxGL.setAccessToken('pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g');
@@ -21,7 +21,8 @@ interface State {
   name: string,
   address: string,
   long: number,
-  lat: number
+  lat: number,
+  isLoading: boolean
 }
 
 class LocationAddressModalComponent extends React.Component<Props, State> {
@@ -32,7 +33,8 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
       name: "",
       address: "",
       long: this.props.long,
-      lat: this.props.lat
+      lat: this.props.lat,
+      isLoading: true
     }
   }
 
@@ -43,6 +45,18 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
       long: long,
       lat: lat
     });
+  }
+
+  private _onModalShow = () => {
+    this.setState({
+      isLoading: false
+    })
+  }
+
+  _onModalHide = () => {
+    this.setState({
+      isLoading: true
+    })
   }
 
   private _onCancel = () => {
@@ -58,23 +72,31 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
 
     var contentElement = (
       <View style={styles.container}>
-        <View style={styles.searchContainer}>
-          <SearchLocation
-            confirmHandler={this._selectedLocationHandler}>
-          </SearchLocation>
-        </View>
-        <View style={styles.mapContainer}>
-          <MapboxGL.MapView
-            style={{flex: 1}}
-          >
-            <MapboxGL.Camera
-                  styleURL={MapboxGL.StyleURL.Street}
-                  zoomLevel={15}
-                  centerCoordinate={[this.state.long, this.state.lat]}
+        {
+          this.state.isLoading && <ActivityIndicator size="small" color="#00ff00" />
+        }
+        {
+          !this.state.isLoading && 
+          <View style={styles.container}>
+              <View style={styles.searchContainer}>
+                <SearchLocation
+                  confirmHandler={this._selectedLocationHandler}>
+                </SearchLocation>
+              </View>
+              <View style={styles.mapContainer}>
+                <MapboxGL.MapView
+                  style={{flex: 1}}
                 >
-              </MapboxGL.Camera>
-          </MapboxGL.MapView>
-        </View>
+                  <MapboxGL.Camera
+                        styleURL={MapboxGL.StyleURL.Street}
+                        zoomLevel={15}
+                        centerCoordinate={[this.state.long, this.state.lat]}
+                      >
+                    </MapboxGL.Camera>
+                </MapboxGL.MapView>
+              </View>
+          </View>            
+        }        
       </View>
     );
 
@@ -84,6 +106,8 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
         isVisible={isVisible}
         onCancelHandler={this._onCancel}
         onConfirmHandler={this._onConfirm}
+        onModalShowHandler={this._onModalShow}
+        onModalHideHandler={this._onModalHide}
       >
         {contentElement}
       </ActionModal>

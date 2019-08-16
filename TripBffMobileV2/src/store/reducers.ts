@@ -18,7 +18,7 @@ import {
     ImageActions,
     TRIP_UPDATE
 } from './Trip/actions';
-import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight } from './DataSource/actions';
+import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight, DataSource_ClearAll } from './DataSource/actions';
 import { TRIPS_GET_CURRENT_MINIMIZED } from "./Trips/actions";
 import { DEFAULT_LOCALE } from "../screens/_services/SystemConstants";
 
@@ -314,6 +314,12 @@ function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
             return {
                 ...state,
                 highlights: action.highlights
+            }
+        case DataSource_ClearAll: 
+            return {
+                feelings: null,
+                activities: null,
+                highlights: null
             }
         default:
             return state;
