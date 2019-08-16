@@ -18,8 +18,6 @@ export type ThunkDispatchBase<S = any> = ThunkDispatch<
 >;
 
 export interface ThunkExtraArgumentsBase {
-  loginApi: AxiosInstance;
-  api: AxiosInstance;
   uploadApi: typeof uploadFileApi;
 
   loginApiService: IApiService;

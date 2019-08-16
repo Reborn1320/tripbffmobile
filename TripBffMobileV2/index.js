@@ -2,7 +2,7 @@
  * @format
  */
 
-import {AppRegistry} from 'react-native';
+import { AppRegistry } from 'react-native';
 import './i18n';
 import App from './App';
 import Flurry from 'react-native-flurry-sdk';

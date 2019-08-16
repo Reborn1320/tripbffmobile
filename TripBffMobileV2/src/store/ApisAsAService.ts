@@ -22,13 +22,6 @@ var tripApiInternal = axios.create({
   }
 });
 
-//todo
-var uploadFileApi = {
-  upload: (uploadUrl: string, uri: string, data?: any) => {
-    return uploadImageAsync(uploadUrl, _bearer, uri, data);
-  }
-};
-
 var _bearer = "";
 export function setAuthorizationHeader(token) {
   if (!token) throw "token should have value";
@@ -51,6 +44,10 @@ export function setAuthorizationHeader(token) {
     }
   });
 
+}
+
+export function getAuthorizationHeader() {
+  return _bearer;
 }
 
 export interface ApiServiceArguments {
