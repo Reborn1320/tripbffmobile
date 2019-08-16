@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Button, Text, View } from 'native-base';
+import { Container, Header, Content, Button, Text, View, Icon } from 'native-base';
 import { Alert, BackHandler, StyleSheet, TouchableOpacity, Image, RefreshControl } from "react-native";
 import _, { } from "lodash";
 import { tripApi } from "../../_services/apis";
@@ -7,7 +7,6 @@ import { NavigationConstants } from "../../_shared/ScreenConstants";
 import * as RNa from "react-navigation";
 import TripDetailScreenContent from "./TripDetailScreenContent";
 import ActionButton from 'react-native-action-button';
-import Icon from 'react-native-vector-icons/Ionicons';
 import NBTheme from "../../../theme/variables/commonColor.js";
 import Loading from "../../../_atoms/Loading/Loading";
 import { getCancelToken } from "../../../_function/commonFunc";
@@ -48,9 +47,7 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
         headerLeft:  <RNa.HeaderBackButton onPress={navigation.getParam('_goProfile')}/>,
         headerRight:  (<TouchableOpacity style={styles.settingButtonContainer}
                                 onPress={navigation.getParam('_goEditBasicTrip')}>
-                            <Image                               
-                                source={require('../../../../assets/Setting.png')}
-                            />
+                            <Icon style={styles.editIcon} name='pencil-alt' type="FontAwesome5" />
                     </TouchableOpacity>)
       });
 
@@ -156,5 +153,8 @@ const styles = StyleSheet.create({
     },
     settingIcon: {
         fontSize: 24
+    },
+    editIcon: {
+        fontSize: 18
     }
   });
