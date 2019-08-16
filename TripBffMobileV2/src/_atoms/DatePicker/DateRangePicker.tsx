@@ -99,6 +99,7 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
           isVisible={isVisible}
           style={styles.bottomModal}
           swipeDirection="down"
+          onBackButtonPress={this._onCancel}
           onSwipeComplete={this._onCancel}
         >
           <View style={styles.content}>

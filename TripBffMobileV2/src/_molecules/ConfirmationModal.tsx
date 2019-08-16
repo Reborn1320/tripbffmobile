@@ -37,7 +37,7 @@ class ConfirmationModal extends React.PureComponent<Props, State> {
     const { isVisible, title, content, t } = this.props;
 
     return (
-      <Modal isVisible={isVisible}>
+      <Modal isVisible={isVisible} onBackButtonPressHanlder={this._onCancel}>
         <View style={styles.modalInnerContainer}>
           <View style={styles.titleContainer}>
             <H3 style={styles.titleText}>{title}</H3>
