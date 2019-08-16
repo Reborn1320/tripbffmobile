@@ -26,6 +26,7 @@ class UserDetailsComponent extends PureComponent<Props, State> {
   render() {
     const { fullName, nTrips } = this.props;
     const { t } = this.props;
+    let tripLabel = nTrips > 1 ? 'profile:trips_label' : 'profile:trip_label';
 
     return (
       <View style={styles.container}>
@@ -41,7 +42,7 @@ class UserDetailsComponent extends PureComponent<Props, State> {
               <Text 
                 style={styles.username}>{fullName}</Text>
               <View style={styles.factContainer}>
-                <Text style={styles.numberOfTrips}>{nTrips} {t('profile:trips_label')} </Text>
+                <Text style={styles.numberOfTrips}>{nTrips} {t(tripLabel)} </Text>
               </View>
           </View>
       </View>
