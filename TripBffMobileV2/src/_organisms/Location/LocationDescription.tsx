@@ -67,12 +67,8 @@ class LocationDescriptionComponent1 extends React.PureComponent<Props & PropsBas
                                     </Text>
                                 </ViewMoreText>
                             )
-                            : (
-                                <Text style={styles.textInput}>
-                                </Text>
-                            )
+                            : <View></View>
                     }
-
 
                 </View>
             </View>
@@ -94,7 +90,7 @@ interface Style {
 
 const styles = StyleSheet.create<Style>({
     container: {
-        marginBottom: 15,
+        marginBottom: 20,
     },
     header: {
         flexDirection: "row",

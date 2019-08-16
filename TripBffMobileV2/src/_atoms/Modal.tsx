@@ -13,6 +13,7 @@ export interface Props {
   isVisible: boolean;
   children?: ReactNode;
   style?: Style; //for native base to override
+  onBackButtonPressHanlder: () => void;
 }
 
 const MODAL_HEIGHT = 200;
@@ -31,6 +32,7 @@ class ModalComponent extends React.Component<Props> {
 
     return (
       <RNModal
+        onBackButtonPress={this.props.onBackButtonPressHanlder}
         isVisible={isVisible} hideModalContentWhileAnimating style={{height: null}}>
         <View style={{
           ...modalStyle,

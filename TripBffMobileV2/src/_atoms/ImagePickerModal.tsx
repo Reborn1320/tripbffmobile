@@ -93,6 +93,7 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
 
     return (
       <RNModal style={styles.modal}
+        onBackButtonPress={this._onCancel}
         isVisible={isVisible} hideModalContentWhileAnimating>
         {this.state.isUploadingImages ? (
           <View style={[styles.modalInnerContainer, styles.loading]}>
