@@ -62,6 +62,7 @@ interface State {
   infographicUrl: string
   selectedImages: Array<any>,
   displayLoading: boolean,
+  loadingMessage: string,
   firstRendered: boolean,
   isLoggedSocial: boolean
 } 
@@ -87,7 +88,8 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
       selectedImages: [],
       displayLoading: !this.props.isExistedCurrentTrip || this.props.numberOfLocations > 0,
       firstRendered: true,
-      isLoggedSocial: false
+      isLoggedSocial: false,
+      loadingMessage: this.props.t("export:loading_infographic")
     }
   } 
 
@@ -253,7 +255,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
           });
         }
         else {
-          this.setState({displayLoading: true});        
+          this.setState({displayLoading: true, loadingMessage: ""});        
   
           let localImageUris = await this._storeExternalImageIntoLocalStorage(this.state.selectedImages); 
           let imageUrls = [this.state.infographicUrl].concat(localImageUris);        
@@ -447,7 +449,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
             {
               this.state.displayLoading && 
                 <View style={styles.loading}>
-                  <Loading message={t("export:loading_infographic")}/> 
+                  <Loading message={this.state.loadingMessage}/> 
                 </View>
             }           
   

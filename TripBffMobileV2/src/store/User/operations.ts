@@ -106,7 +106,7 @@ export function loginUsingDeviceId(): ThunkResultBase {
         const user: StoreData.UserVM = {
           id: id,
           username: userName,
-          fullName: "Quest",
+          fullName: "Guest",
           email: userName,
           token: token,
           locale: locale
