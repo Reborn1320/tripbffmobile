@@ -101,14 +101,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
            onPress={navigation.getParam('_handleBackPress')}
          />),
       headerRight: (
-        <Button transparent style={{
-          alignSelf: "center"
-              }}
-          onPress={navigation.getParam('_cancel')}>
-          <Text style={{ color: "#FF647C", ...mixins.themes.fontNormal, 
-                        fontSize: 16, lineHeight: 18 }}>
-              {screenProps.t("action:cancel")}</Text>
-        </Button>
+       <View></View>
       ),
     };
   };
@@ -132,7 +125,6 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
         }
     );
 
-    this.props.navigation.setParams({ _cancel: this._cancel });
     this.props.navigation.setParams({ _handleBackPress: this._handleBackPress });
 
     let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
@@ -361,10 +353,6 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
     return (
       <TabBarComponent tabProps={props}></TabBarComponent>
     )
-  }
-
-  private _cancel = () => {
-    this._navigateToProfile();
   }
 
   private _navigateToProfile = () => {

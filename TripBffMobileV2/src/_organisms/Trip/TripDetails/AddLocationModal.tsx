@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { View, Text } from "native-base";
-import { StyleSheet, ViewStyle, TextStyle, TouchableOpacity, Image, ImageStyle } from "react-native";
+import { StyleSheet, ViewStyle, TextStyle, TouchableOpacity, Image, ImageStyle, KeyboardAvoidingView, ActivityIndicator } from "react-native";
 import { connectStyle } from 'native-base';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from "moment";
@@ -13,6 +13,9 @@ import { DATE_FORMAT } from "../../../screens/_services/SystemConstants";
 import ActionModal from "../../../_molecules/ActionModal";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import { withNamespaces } from "react-i18next";
+import MapboxGL from '@react-native-mapbox-gl/maps';
+MapboxGL.setAccessToken('pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g');
+
 
 export interface Props extends PropsBase {
   isVisible: boolean;
@@ -29,7 +32,8 @@ interface State {
   places: Array<string>,
   isDateTimePickerVisible: boolean,
   displayTime: string,
-  selectedTime: moment.Moment
+  selectedTime: moment.Moment,
+  isLoading: boolean
 }
 
 class AddLocationModalComponent extends React.PureComponent<Props, State> {
@@ -44,7 +48,8 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
       lat: 0,
       isDateTimePickerVisible: false,
       displayTime: moment().format('hh:mm A'),
-      selectedTime: null
+      selectedTime: null,
+      isLoading: true
     };    
   }
 
@@ -55,16 +60,21 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
   };
 
   _onConfirm = () => {
-    var selectedTime = this.state.selectedTime;
+    if (this.state.query) {
+      var selectedTime = this.state.selectedTime;
 
-    if (selectedTime == null) {
-      var startDate = this.props.date.startOf('day');
-      var addedHours = moment().hour();
-      var addedMinutes = moment().minute();
-      selectedTime = startDate.add(addedHours, 'h').add(addedMinutes, 'm');
+      if (selectedTime == null) {
+        var startDate = this.props.date.startOf('day');
+        var addedHours = moment().hour();
+        var addedMinutes = moment().minute();
+        selectedTime = startDate.add(addedHours, 'h').add(addedMinutes, 'm');
+      }
+
+      this.props.confirmHandler(this.state.query, this.state.address, this.state.long, this.state.lat, selectedTime);
     }
-
-     this.props.confirmHandler(this.state.query, this.state.address, this.state.long, this.state.lat, selectedTime);
+    else if (this.props.cancelHandler) {
+      this.props.cancelHandler();
+    }
   }
 
   _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
@@ -86,10 +96,17 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
     this._hideDateTimePicker();
   };
 
+  private _onModalShow = () => {
+    this.setState({
+      isLoading: false
+    })
+  }
+
   private _onModalHide = () => {
     this.setState({
       places: [],
-      query: ''
+      query: '',
+      isLoading: true
     });
   }
 
@@ -107,31 +124,53 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
 
     var contentElement = (
       <View style={styles.container}>
-        <View style={styles.timeContainer}>
-            <TouchableOpacity onPress={this._showDateTimePicker} style={styles.timeLabelContainer}>
-              <Image    
-                style={styles.clockIcon}                  
-                source={require('../../../../assets/ClockIcon.png')}
-              />
-              <Text style={styles.timeLabel}>{t("trip_detail:add_location_from_time_label")}:
-              </Text>
-              <Text style={styles.time}>
-                  {this.state.displayTime}
-              </Text>
-            </TouchableOpacity>
-            <DateTimePicker
-              mode="time"
-              is24Hour={false}
-              isVisible={this.state.isDateTimePickerVisible}
-              onConfirm={this._handleDatePicked}
-              onCancel={this._hideDateTimePicker}
-            />
-        </View>
-        <View style={styles.placesContainer}>
-            <SearchLocation 
-              confirmHandler={this._selectedLocationHandler}>
-            </SearchLocation>
-        </View>
+       {
+          this.state.isLoading && <ActivityIndicator size="small" color="#00ff00" />
+        }
+        {
+          !this.state.isLoading && 
+            <View style={styles.contentContainer}>
+                  <View style={styles.timeContainer}>
+                    <TouchableOpacity onPress={this._showDateTimePicker} style={styles.timeLabelContainer}>
+                      <Image    
+                        style={styles.clockIcon}                  
+                        source={require('../../../../assets/ClockIcon.png')}
+                      />
+                      <Text style={styles.timeLabel}>{t("trip_detail:add_location_from_time_label")}:
+                      </Text>
+                      <Text style={styles.time}>
+                          {this.state.displayTime}
+                      </Text>
+                    </TouchableOpacity>
+                    <DateTimePicker
+                      mode="time"
+                      is24Hour={false}
+                      isVisible={this.state.isDateTimePickerVisible}
+                      onConfirm={this._handleDatePicked}
+                      onCancel={this._hideDateTimePicker}
+                    />
+                </View>
+                <View style={{flex: 1}}>
+                  <View style={styles.searchContainer}>
+                      <SearchLocation 
+                        confirmHandler={this._selectedLocationHandler}>
+                      </SearchLocation>
+                  </View>
+                  <View style={styles.placesContainer}>
+                      <MapboxGL.MapView
+                            style={{flex: 1}}
+                          >
+                            <MapboxGL.Camera
+                                  styleURL={MapboxGL.StyleURL.Street}
+                                  zoomLevel={15}
+                                  centerCoordinate={[this.state.long, this.state.lat]}
+                                >
+                              </MapboxGL.Camera>
+                          </MapboxGL.MapView>
+                  </View>
+                </View>
+          </View>
+        }                
       </View>
     );
 
@@ -140,6 +179,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
           title={displayDate + t("trip_detail:add_location_modal_title")}
           isVisible={isVisible}
           onModalHideHandler={this._onModalHide}
+          onModalShowHandler={this._onModalShow}
           onCancelHandler={this._onCancel}
           onConfirmHandler={this._onConfirm}
           >
@@ -151,7 +191,9 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
 
 interface Style { 
   container: ViewStyle; 
+  contentContainer: ViewStyle;
   timeContainer: ViewStyle;
+  searchContainer: ViewStyle;
   timeLabelContainer: ViewStyle;
   timeLabel: TextStyle;
   time: TextStyle;
@@ -167,7 +209,11 @@ interface Style {
 
 const styles = StyleSheet.create<Style>({  
   container: {
-    marginTop: 16
+    marginTop: 16,
+    flex: 1
+  },
+  contentContainer: {
+    flex: 1
   },
   listViewContainer: {
     flexDirection: 'column',
@@ -179,6 +225,12 @@ const styles = StyleSheet.create<Style>({
   placesContainer: {
     flex: 1,
     margin: 5
+  },
+  searchContainer: {
+    position: "absolute",
+    top: "3%",
+    left: "1%",
+    right: "1%"
   },
   timeContainer: {
     margin: "3%"
