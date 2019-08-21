@@ -76,7 +76,7 @@ export function loginUsingFacebookAccessToken(facebookUserId: string, accessToke
         dispatch(clearAllDatasource());
       })
       .catch(error => {
-        console.log("error login", error);
+        console.log("error login", JSON.stringify(error));
       });
   };
 }
@@ -119,7 +119,7 @@ export function loginUsingDeviceId(): ThunkResultBase {
         dispatch(clearAllDatasource());
       })
       .catch(error => {
-        console.log("error login", error);
+        console.log("error login", JSON.stringify(error));
       });
   };
 }
@@ -153,7 +153,7 @@ export function updateLocaleFacebookUser(userId: string, locale: string): ThunkR
         return true;
       })
       .catch(error => {
-        console.log("error update locale", error);
+        console.log("error update locale", JSON.stringify(error));
       });
   };
 }
@@ -170,7 +170,7 @@ export function createUserFeedback(feedback: string, email: string): ThunkResult
         return true;
       })
       .catch(error => {
-        console.log("error submit feedback", error);
+        console.log("error submit feedback", JSON.stringify(error));
       });
   };
 }
@@ -190,7 +190,7 @@ async function storeDataIntoStorage(key, value) {
     await AsyncStorage.setItem(key, value)
   } catch (e) {
     // saving error
-    console.error("store data failed", e)
+    console.log("store data failed", JSON.stringify(e))
   }
 }
 
@@ -199,7 +199,7 @@ async function getDataFromStorage(key) {
     return AsyncStorage.getItem(key)
   } catch (e) {
     // error reading value
-    console.log("error reading value", e);
+    console.log("error reading value", JSON.stringify(e));
   }
 }
 
