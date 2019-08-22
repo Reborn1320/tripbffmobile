@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Icon, Text, Button } from "native-base";
-import { Image, StyleSheet, ViewStyle, TextStyle, TouchableHighlight, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, ViewStyle, TextStyle, Platform, TouchableOpacity } from "react-native";
 import NBColor from "../../theme/variables/commonColor.js";
 import { IEntry, StyledCarousel } from "../../_atoms/Carousel/StyledCarousel";
 import _ from "lodash";
@@ -120,9 +120,10 @@ export class TripCarouselComponent extends React.Component<Props, State> {
     const { currentMinimizedTrip, trip, t } = this.props;
     let tripEntry = currentMinimizedTrip ? this._normalizeTripEntry(currentMinimizedTrip) :this._normalizeTripEntry(trip);
     const { title, subtitle } = tripEntry;
-    
+    let android9Style = Platform.OS === 'android' && Platform.Version === 28 ? styles.containerAndroid9 : {};
+
     return (      
-      <View style={styles.container}>
+      <View style={[styles.container, android9Style]}>
           <View style={{marginLeft: 12}}>
             <View style={styles.headerContainer}>              
                 <View style={styles.titleContainer}>
@@ -188,6 +189,7 @@ export default withNamespaces(['profile', 'message'])(TripCarousel);
 
 interface Style {
   container: ViewStyle;
+  containerAndroid9: ViewStyle;
   headerContainer: ViewStyle;
   titleContainer: ViewStyle;  
   title: TextStyle;
@@ -214,6 +216,9 @@ const styles = StyleSheet.create<Style>({
     shadowRadius: 1,
     elevation: 0.7,
     borderRadius: 4
+  },
+  containerAndroid9: {
+    backgroundColor: "#fff"
   },
   headerContainer: {
     display: "flex",
