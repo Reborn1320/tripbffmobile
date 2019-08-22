@@ -67,10 +67,12 @@ export default class PreviewInfographicComponent extends PureComponent<any, any>
           })
           .catch((err) => {
             console.log(err.message, err.code);
+            throw err;
           });;          
 
         })
         .catch(error => {
+            this.props.updateShareInfographicUrl(""); 
             console.log("error: " + JSON.stringify(error));
         });
     }

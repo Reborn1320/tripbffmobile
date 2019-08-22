@@ -64,7 +64,8 @@ interface State {
   displayLoading: boolean,
   loadingMessage: string,
   firstRendered: boolean,
-  isLoggedSocial: boolean
+  isLoggedSocial: boolean,
+  isLoadedInfographic: boolean
 } 
 
 class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
@@ -89,7 +90,8 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
       displayLoading: !this.props.isExistedCurrentTrip || this.props.numberOfLocations > 0,
       firstRendered: true,
       isLoggedSocial: false,
-      loadingMessage: this.props.t("export:loading_infographic")
+      loadingMessage: this.props.t("export:loading_infographic"),
+      isLoadedInfographic: false
     }
   } 
 
@@ -182,7 +184,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
   }
 
   private _updateShareInfographicUrl = (imageUrl) => {
-    this.setState({infographicUrl: imageUrl, displayLoading: false});
+    this.setState({infographicUrl: imageUrl, displayLoading: false, isLoadedInfographic: true});
   }
 
   private _updateSelectedImagesUrl = (selectedImages) => {     
@@ -381,10 +383,22 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
               </View>
             </View>
           ) :  
-          <PreviewInfographicComponent tripId={this.props.tripId}
-              infographicId={this.props.infographicId}
-              updateShareInfographicUrl={this._updateShareInfographicUrl}>
-          </PreviewInfographicComponent>  
+          (
+            this.state.isLoadedInfographic && !this.state.infographicUrl
+            ?
+              <View style={styles.emptyMsgcontainer}>
+                <View style={styles.emptyMsgContainer}>
+                    <Text numberOfLines={2} style={styles.emptyMsg}>
+                        {t("export:error_message_infographic")}
+                    </Text>
+                </View>
+              </View>
+            :
+              <PreviewInfographicComponent tripId={this.props.tripId}
+                  infographicId={this.props.infographicId}
+                  updateShareInfographicUrl={this._updateShareInfographicUrl}>
+              </PreviewInfographicComponent> 
+          ) 
 
       return (
         <View style={styles.container}>
@@ -424,7 +438,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
                           duration: 1500
                         });
                       }
-                      else if (index == 0 && !this.state.infographicUrl && !isDisplayEmptyMessage) {
+                      else if (index == 0 && !this.state.isLoadedInfographic && !isDisplayEmptyMessage) {
                         displayLoading = true;
                       }
 
