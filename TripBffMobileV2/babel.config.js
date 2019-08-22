@@ -11,6 +11,9 @@ module.exports = {
         "@babel/plugin-transform-react-jsx-source",
         '@babel/plugin-transform-runtime'
       ]
+    },
+    "production": {
+      "plugins": ["transform-remove-console"]
     }
   }
 };
