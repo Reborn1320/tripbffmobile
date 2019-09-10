@@ -72,7 +72,7 @@ const styles = StyleSheet.create<Style>({
     },
     firstTitleContainer: {
         maxWidth: "60%",
-        marginTop: "20%"
+        marginTop: "10%"
     },
     title: {
         ...mixins.themes.fontNormal,

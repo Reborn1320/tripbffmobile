@@ -62,8 +62,10 @@ interface State {
   infographicUrl: string
   selectedImages: Array<any>,
   displayLoading: boolean,
+  loadingMessage: string,
   firstRendered: boolean,
-  isLoggedSocial: boolean
+  isLoggedSocial: boolean,
+  isLoadedInfographic: boolean
 } 
 
 class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
@@ -87,7 +89,9 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
       selectedImages: [],
       displayLoading: !this.props.isExistedCurrentTrip || this.props.numberOfLocations > 0,
       firstRendered: true,
-      isLoggedSocial: false
+      isLoggedSocial: false,
+      loadingMessage: this.props.t("export:loading_infographic"),
+      isLoadedInfographic: false
     }
   } 
 
@@ -99,14 +103,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
            onPress={navigation.getParam('_handleBackPress')}
          />),
       headerRight: (
-        <Button transparent style={{
-          alignSelf: "center"
-              }}
-          onPress={navigation.getParam('_cancel')}>
-          <Text style={{ color: "#FF647C", ...mixins.themes.fontNormal, 
-                        fontSize: 16, lineHeight: 18 }}>
-              {screenProps.t("action:cancel")}</Text>
-        </Button>
+       <View></View>
       ),
     };
   };
@@ -130,7 +127,6 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
         }
     );
 
-    this.props.navigation.setParams({ _cancel: this._cancel });
     this.props.navigation.setParams({ _handleBackPress: this._handleBackPress });
 
     let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
@@ -188,7 +184,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
   }
 
   private _updateShareInfographicUrl = (imageUrl) => {
-    this.setState({infographicUrl: imageUrl, displayLoading: false});
+    this.setState({infographicUrl: imageUrl, displayLoading: false, isLoadedInfographic: true});
   }
 
   private _updateSelectedImagesUrl = (selectedImages) => {     
@@ -253,7 +249,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
           });
         }
         else {
-          this.setState({displayLoading: true});        
+          this.setState({displayLoading: true, loadingMessage: ""});        
   
           let localImageUris = await this._storeExternalImageIntoLocalStorage(this.state.selectedImages); 
           let imageUrls = [this.state.infographicUrl].concat(localImageUris);        
@@ -361,10 +357,6 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
     )
   }
 
-  private _cancel = () => {
-    this._navigateToProfile();
-  }
-
   private _navigateToProfile = () => {
     let onGoBackCallBack = this.props.navigation.getParam("onGoBackProfile");
     let isFromProfile = this.props.navigation.getParam("isFromProfile");
@@ -391,10 +383,22 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
               </View>
             </View>
           ) :  
-          <PreviewInfographicComponent tripId={this.props.tripId}
-              infographicId={this.props.infographicId}
-              updateShareInfographicUrl={this._updateShareInfographicUrl}>
-          </PreviewInfographicComponent>  
+          (
+            this.state.isLoadedInfographic && !this.state.infographicUrl
+            ?
+              <View style={styles.emptyMsgcontainer}>
+                <View style={styles.emptyMsgContainer}>
+                    <Text numberOfLines={2} style={styles.emptyMsg}>
+                        {t("export:error_message_infographic")}
+                    </Text>
+                </View>
+              </View>
+            :
+              <PreviewInfographicComponent tripId={this.props.tripId}
+                  infographicId={this.props.infographicId}
+                  updateShareInfographicUrl={this._updateShareInfographicUrl}>
+              </PreviewInfographicComponent> 
+          ) 
 
       return (
         <View style={styles.container}>
@@ -434,7 +438,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
                           duration: 1500
                         });
                       }
-                      else if (index == 0 && !this.state.infographicUrl && !isDisplayEmptyMessage) {
+                      else if (index == 0 && !this.state.isLoadedInfographic && !isDisplayEmptyMessage) {
                         displayLoading = true;
                       }
 
@@ -447,7 +451,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
             {
               this.state.displayLoading && 
                 <View style={styles.loading}>
-                  <Loading message={t("export:loading_infographic")}/> 
+                  <Loading message={this.state.loadingMessage}/> 
                 </View>
             }           
   

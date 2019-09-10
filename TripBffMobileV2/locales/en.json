@@ -83,7 +83,8 @@
         "no_infographic": "Please add locations and upload images to export infographic!",
         "nothing_to_share_message": "Please add locations and upload images to share on Facebook!",
         "title": "Preview & Share",
-        "loading_infographic": "Generating infographic. Please wait!"
+        "loading_infographic": "Generating infographic. Please wait!",
+        "error_message_infographic": "Something wrong when generate infographic. Please try again later!"
     },
     "profile": {
         "trip_label": "Trip",

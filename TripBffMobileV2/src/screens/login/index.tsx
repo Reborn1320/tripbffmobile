@@ -67,7 +67,7 @@ class Login extends Component<Props & IMapDispatchToProps, any>{
 
     return (
       <View>
-          <ImageBackground source={require('../../../assets/03.jpg')} style={styles.imageBackground}>              
+          <ImageBackground source={require('../../../assets/04_background.jpg')} style={styles.imageBackground}>              
           </ImageBackground>
 
           <View style={[styles.overlay]} />

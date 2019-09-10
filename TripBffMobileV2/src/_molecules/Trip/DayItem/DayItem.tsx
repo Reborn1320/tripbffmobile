@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import _, { } from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from '../../../screens/_shared/LayoutContainer';
-import { StyleSheet, TextStyle, ViewStyle, ImageStyle } from 'react-native';
+import { StyleSheet, TextStyle, ViewStyle, ImageStyle, Platform } from 'react-native';
 import NBColor from "../../../theme/variables/commonColor.js";
 import EmptyLocationItem from "./EmptyLocation";
 import { DATE_FORMAT } from "../../../screens/_services/SystemConstants";
@@ -42,9 +42,10 @@ export class DayItemComponent extends Component<Props, State> {
     render() {
         const { dateIdx, dateVm, t } = this.props
         let currentDate = moment(this.props.date).format(DATE_FORMAT);
+        let android9Style = Platform.OS === 'android' && Platform.Version === 28 ? styles.dayItemContainerAndroid9 : {};
 
         return (
-            <View style={styles.dayItemContainer}>
+            <View style={[styles.dayItemContainer, android9Style]}>
                 <View style={styles.dayItemHeader}>
                     <Text style={styles.dayLabel}>
                         {t("trip_detail:day_label")} {dateIdx} - {currentDate}
@@ -110,6 +111,7 @@ export default withNamespaces(['message', 'trip_detail'])(DayItem);
 
 interface Style {
     dayItemContainer: ViewStyle;
+    dayItemContainerAndroid9: ViewStyle;
     dayItemHeader: TextStyle;
     dayLabel: TextStyle;
     addLocationIcon: ImageStyle;
@@ -124,7 +126,10 @@ const styles = StyleSheet.create<Style>({
         shadowOpacity: 0.03,
         shadowRadius: 1,
         elevation: 0.7,
-        borderRadius: 4
+        borderRadius: 4       
+    },
+    dayItemContainerAndroid9: {
+        backgroundColor: "#fff"
     },
     dayItemHeader: {
         display: "flex",

@@ -83,7 +83,8 @@
         "no_infographic": "Xin vui lòng thêm địa điểm và hình ảnh để xuất ra infographic!",
         "nothing_to_share_message": "Xin vui lòng thêm địa điểm và hình ảnh để chia sẻ qua Facebook!",
         "title": "Xem trước và chia sẻ",
-        "loading_infographic": "Đang tạo infographic. Xin vui lòng chờ!"
+        "loading_infographic": "Đang tạo infographic. Xin vui lòng chờ!",
+        "error_message_infographic": "Có lỗi xảy ra khi tạo infographic. Xin vui lòng thử lại sau!"
     },
     "profile": {
         "trip_label": "Chuyến đi",
