@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TripBFF</string>
+    <string name="facebook_app_id">2341289862566899</string>
+    <string name="fb_login_protocol_scheme">fb2341289862566899</string>
+</resources>

@@ -1,0 +1,112 @@
+{
+    "menu": {
+        "create": "Tạo",
+        "profile": "Tài Khoản"
+    },
+    "action": {
+        "cancel": "Hủy",
+        "save": "Lưu",
+        "yes": "Đồng ý",
+        "edit": "Chỉnh sửa",
+        "add": "Thêm",
+        "search": "Tìm kiếm",
+        "done": "Hoàn thành",
+        "delete": "Xóa",
+        "okay": "Đồng ý",
+        "next": "Tiếp theo",
+        "loading": "Đang tải",
+        "submit": "Gửi"
+    },
+    "message": {
+        "add_location": "Nhấp để thêm địa điểm",
+        "add_image": "Nhấp để thêm hình"
+    },
+    "login": {
+        "welcome_title": "Chào mừng bạn đến với TripBFF",
+        "facebook_button_title": "Tiếp tục với Facebook",
+        "no_login_button_title": "Tiếp tục không cần đăng nhập"
+    },
+    "create": {
+        "screen_header_title": "Tạo chuyến đi",
+        "screen_header_edit_title": "Chỉnh sửa chuyến đi",
+        "trip_name": "Tên chuyến đi",
+        "from_date": "Ngày khởi hành",
+        "end_date": "Ngày kết thúc",
+        "date": "Ngày",
+        "create_button": "Tạo",
+        "next_month_label": "Kế tiếp",
+        "prev_month_label": "Trước"
+    },
+    "import": {
+        "skip_button": "Bỏ qua",
+        "import_button": "Nhập",
+        "location_information_text": "Địa điểm có thể không chính xác. Bạn có thể chỉnh sửa ở trang sau!",        
+        "image_uploading_message": "Đang tải lên hình ảnh",
+        "loading_image_from_gallery_message": "Đang tải hình từ máy của bạn"
+    },
+    "trip_detail": {
+        "edit_trip_name_menu_label": "Chỉnh sửa tên chuyến đi",
+        "edit_trip_date_range_menu_label": "Chỉnh sửa ngày",        
+        "edit_trip_name_modal_header": "Chỉnh sửa tên chuyến đi",
+        "edit_trip_name_label": "Tên chuyến đi",
+        "add_location_from_time_label": "Thời gian bắt đầu",
+        "add_location_search_place_label": "Địa điểm",
+        "feeling_label": "Cảm nhận",
+        "feeling_adjective": "Cảm thấy",
+        "activity_label": "Hoạt động",
+        "delete_location_modal_header": "Xóa địa điểm",
+        "delete_location_modal_content": "Bạn có chắc là bạn muốn xóa địa điểm này không ?",
+        "day_label": "Ngày",
+        "feeling_modal_title": "Cảm giác của bạn ?",
+        "activity_modal_title": "Bạn đã làm gì ?",
+        "add_location_modal_title": "Thêm địa điểm"
+    },
+    "location_detail": {
+        "like_dislike_section_label": "Những thứ bạn thích/không thích",
+        "like_label": "Thích",
+        "dislike_label": "Không thích",
+        "user_defined_like_dislike_warning": "Bạn vui lòng mô tả ngắn gọn thì sẽ tốt hơn!",
+        "description_section_label": "Mô tả",
+        "description_placeholder": "Xin vui lòng mô tả kĩ hơn về địa điểm.",
+        "description_view_more": "Xem thêm",
+        "description_view_less": "Thu gọn",
+        "media_section_label": "Hình ảnh",
+        "image_uploading_message": "Đang tải lên hình ảnh. Xin vui lòng chờ!",
+        "update_address_title": "Chỉnh sửa địa điểm",
+        "update_highlight_title": "Thích/Không thích",
+        "update_description_title": "Mô tả địa điểm"
+    },
+    "export": {
+        "infographic_tab_label": "Infographic",
+        "images_tab_label": "Hình ảnh",
+        "images_selection_warning": "Xin vui lòng chọn tối đa 5 hình ảnh bạn yêu thích nhất để chia sẻ!",
+        "no_infographic": "Xin vui lòng thêm địa điểm và hình ảnh để xuất ra infographic!",
+        "nothing_to_share_message": "Xin vui lòng thêm địa điểm và hình ảnh để chia sẻ qua Facebook!",
+        "title": "Xem trước và chia sẻ",
+        "loading_infographic": "Đang tạo infographic. Xin vui lòng chờ!",
+        "error_message_infographic": "Có lỗi xảy ra khi tạo infographic. Xin vui lòng thử lại sau!"
+    },
+    "profile": {
+        "trip_label": "Chuyến đi",
+        "trips_label": "Chuyến đi",
+        "delete_trip_menu": "Xóa chuyến đi",
+        "delete_trip_modal_header": "Xóa chuyến đi",
+        "delete_trip_modal_content": "Bạn có chắc là bạn muốn xóa chuyến đi này ? Xóa chuyến đi sẽ xóa tất cả những dữ liệu mà bạn đã thêm vào. Chuyến đi sẽ không thể truy cập nếu nó bị xóa.",
+        "empty_trips_first_title": "Bạn đã trải qua những chuyến đi tuyệt vời nào ?",
+        "empty_trips_second_title": "Hãy lưu trữ và chia sẻ chúng nào",
+        "emptry_trips_button_title": "Bắt đầu",
+        "loading_trips_message": "Đang tải các chuyến đi"
+    },
+    "setting": {
+        "header_title": "Cài đặt",
+        "language_setting_label": "Ngôn ngữ",
+        "feedback_setting_label": "Góp ý",
+        "logout_setting_label": "Đăng xuất",
+        "change_language_success": "Cập nhật ngôn ngữ thành công",
+        "feedback_title": "Góp ý",
+        "feedback_message": "Chúng tôi luôn làm việc để cải thiện trải nghiệm của TripBFF, vì vậy chúng tôi rất thích nghe những điều bạn yêu thích và những điều bạn nghĩ rằng chúng tôi sẽ làm tốt hơn.",
+        "feedback_email_label": "Email",
+        "feedback_content_label": "Nội dung góp ý",
+        "feedback_submit_message": "Đã gửi thành công. Cảm ơn bạn đã góp ý!"
+    }            
+}

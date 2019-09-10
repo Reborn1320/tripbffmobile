@@ -1,0 +1,174 @@
+import React from "react";
+import { CheckBox, View, ListItem, Text, Icon } from "native-base";
+import { TripImportLocationVM, TripImportImageVM } from "../TripImportViewModels";
+import ImageList, { calculateImageListWidth, N_ITEMS_PER_ROW } from "../../../../_molecules/ImageList/ImageList";
+import { ImageSelection } from "../../../../_molecules/ImageList/ImageSelection";
+import { Image, ViewStyle, TextStyle, StyleSheet, Dimensions } from "react-native";
+import moment, { Moment } from "moment";
+import { mixins } from "../../../../_utils";
+import NBTheme from "../../../../theme/variables/material.js";
+
+export interface Props {
+    locationIdx: number,
+    location: TripImportLocationVM
+    handleSelectAll: (locationIdx: number) => void
+    handleSelect: (locationIdx: number, imageIdx: number) => void
+
+    isForceUpdate?: boolean
+}
+
+export interface State {
+}
+
+export default class ImportImageLocationItem extends React.Component<Props, State> {
+
+    constructor(props: Props) {
+        super(props)
+        this.state = {
+        }
+    }
+
+    shouldComponentUpdate(nextProps: Props) {
+        return nextProps.isForceUpdate;
+    }
+
+    private renderItem = (itemInfo: { item: any, index: number }) => {
+        const img = itemInfo.item;
+        const { itemWidth } = calculateImageListWidth(10, 10);
+
+        return (
+            <ImageSelection
+                key={itemInfo.index}
+                imageUrl={img.url}
+                width={itemWidth}
+                isChecked={img.data.isSelected}
+
+                isFirstItemInRow={itemInfo.index % N_ITEMS_PER_ROW == 0}
+                isFirstRow={itemInfo.index < N_ITEMS_PER_ROW}
+
+                onPress={() => this.props.handleSelect(this.props.locationIdx, itemInfo.index)}
+
+            />
+        );
+    }
+
+    render() {
+
+        var location: TripImportLocationVM = this.props.location;
+        var locationIdx: number = this.props.locationIdx;
+        var dateOfLocation: string = moment(location.fromTime).startOf("day").format('DD/MM/YYYY')
+        let isLocationChecked = location.images.find((item) => item.isSelected) != null;
+
+        return (
+            <View style={styles.container}>
+                <View style={styles.locationContainer} >
+                    <View style={styles.checkbox}>
+                        {/* <CheckBox checked={isLocationChecked}
+                            onPress={() => this.props.handleSelectAll(locationIdx)}
+                        ></CheckBox> */}
+                        {isLocationChecked == false &&
+                        <Icon style={styles.uncheckIcon} active type="FontAwesome5" name="circle" />
+                        }
+                        {isLocationChecked == true &&
+                        <Icon style={styles.checkIcon} active solid type="FontAwesome5" name="check-circle" />
+                        }
+
+                    </View>
+                    <Text
+                        numberOfLines={2}
+                        style={Object.assign({ maxWidth: Dimensions.get("window").width - 135}, styles.locationName)}
+                        onPress={() => this.props.handleSelectAll(locationIdx)}
+                    >
+                        {location.name}
+                    </Text>
+                    <Text
+                        style={styles.date}
+                        onPress={() => this.props.handleSelectAll(locationIdx)}
+                    >
+                        {dateOfLocation}
+                    </Text>
+                </View>
+                <View style={styles.locationAddressContainer}>
+                    <Text
+                        style={styles.locationAddress}
+                        onPress={() => this.props.handleSelectAll(locationIdx)}
+                    >
+                        {location.location.address}
+                    </Text>
+                </View>
+                <ImageList
+                    items={location.images.map(img => ({ ...img, data: img }))}
+                    renderItem={this.renderItem}
+                    paddingLeftRight={10}
+                />
+            </View>
+        );
+    }
+
+}
+
+
+interface Style {
+    container: ViewStyle;
+    locationContainer: ViewStyle;
+    locationAddressContainer: ViewStyle;
+    checkbox: ViewStyle;
+    uncheckIcon: TextStyle;
+    checkIcon: TextStyle;
+    locationName: TextStyle;
+    date: TextStyle;
+    locationAddress: TextStyle;
+}
+
+const styles = StyleSheet.create<Style>({
+    container: {
+        marginTop: 10,
+    },
+    locationContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        flexWrap: "nowrap",
+        marginLeft: 10,
+        marginRight: 10,
+        // ...mixins.themes.debug1,
+    },
+    locationAddressContainer: {
+        marginLeft: 10,
+        marginRight: 10,
+        marginTop: 3,
+        marginBottom: 7,
+    },
+    checkbox: {
+        // ...mixins.themes.debug,
+    },
+    uncheckIcon: {
+        color: NBTheme.brandPrimary,
+        width: 25,
+        height: 25,
+        fontSize: 23,
+        flexGrow: 1,
+    },
+    checkIcon: {
+        color: NBTheme.brandPrimary,
+        width: 25,
+        height: 25,
+        fontSize: 23,
+        // flexGrow: 1,
+    },
+    locationName: {
+        color: NBTheme.brandPrimary,
+        flexGrow: 1,
+        marginLeft: 5,
+        fontSize: 18,
+
+        // ...mixins.themes.debug,
+    },
+    date: {
+        fontSize: 14,
+        paddingTop: 3,
+        alignSelf: "flex-start",
+    },
+    locationAddress: {
+        fontSize: 13,
+    }
+})
