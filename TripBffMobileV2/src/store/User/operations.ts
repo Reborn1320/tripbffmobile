@@ -37,7 +37,7 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
         storeDataIntoStorage(STORAGE_KEYS.USER, JSON.stringify(user));
       })
       .catch(error => {
-        console.log("error login", error);
+        console.log("error local login", error);
       });
   };
 }
@@ -76,7 +76,7 @@ export function loginUsingFacebookAccessToken(facebookUserId: string, accessToke
         dispatch(clearAllDatasource());
       })
       .catch(error => {
-        console.log("error login", JSON.stringify(error));
+        console.log("error facebook verify login", JSON.stringify(error));
       });
   };
 }
@@ -119,7 +119,8 @@ export function loginUsingDeviceId(): ThunkResultBase {
         dispatch(clearAllDatasource());
       })
       .catch(error => {
-        console.log("error login", JSON.stringify(error));
+        console.log("error device login", error);
+        throw error;
       });
   };
 }
