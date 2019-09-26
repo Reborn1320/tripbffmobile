@@ -1,5 +1,5 @@
 import React, { PureComponent, Component } from "react";
-import { View, Button, Text } from "native-base";
+import { Button, Text } from "native-base";
 import moment, { Moment } from "moment";
 import DateRangePicker from "../../../_atoms/DatePicker/DateRangePicker";
 import NBColor from "../../../theme/variables/commonColor.js";
@@ -9,6 +9,7 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  View
 } from "react-native";
 import { mixins } from "../../../_utils";
 import { DATE_FORMAT } from "../../_services/SystemConstants";
@@ -89,6 +90,7 @@ class TripCreationForm extends PureComponent<Props, any> {
   };
 
   private _openDateRangePickerModal = () => {
+    console.log("come here open date range picker modal");
     this.setState({
       isOpenDateRangePickerModal: true,
       isNameFieldFocused: false,
@@ -183,18 +185,20 @@ class TripCreationForm extends PureComponent<Props, any> {
             activeOpacity={1}
             style={styles.formDateContainer}
           >
-            <Input
-              label={t("create:date")}
-              labelStyle={styles.formLabel}
-              leftIcon={{ type: "font-awesome", name: "calendar", size: 20 }}
-              value={date}
-              editable={false}
-              inputStyle={[styles.formInput, styles.formInputDateRange]}
-              inputContainerStyle={[
-                styles.formInputContainer,
-                dateInputContainerStyle,
-              ]}
-            />
+            <View pointerEvents="box-only">
+              <Input
+                label={t("create:date")}
+                labelStyle={styles.formLabel}
+                leftIcon={{ type: "font-awesome", name: "calendar", size: 20 }}
+                value={date}
+                editable={false}
+                inputStyle={[styles.formInput, styles.formInputDateRange]}
+                inputContainerStyle={[
+                  styles.formInputContainer,
+                  dateInputContainerStyle,
+                ]}
+              />
+            </View>            
           </TouchableOpacity>
         </View>
 
@@ -260,7 +264,7 @@ const styles = StyleSheet.create<Style>({
     borderWidth: 1,
     borderStyle: "solid",
     borderRadius: 4,
-    marginTop: 8,
+    marginTop: 8
   },
   formInputFocusedContainer: {
     borderColor: NBColor.brandPrimary,
@@ -269,7 +273,7 @@ const styles = StyleSheet.create<Style>({
     borderColor: "#A1A1A1",
   },
   formDateContainer: {
-    marginTop: 24,
+    marginTop: 24
   },
   buttonContainer: {
     marginTop: 40,
