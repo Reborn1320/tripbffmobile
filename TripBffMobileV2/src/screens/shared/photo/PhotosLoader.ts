@@ -23,6 +23,7 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
                 first: PHOTOS_PER_BATCH,
                 assetType: 'Photos',
                 after: afterCursor,
+                groupTypes: "All"
             });
 
             console.log(`get ${result.edges.length} photo(s)`);
@@ -52,8 +53,8 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
                             },
                             timestamp: element.node.timestamp,
                             location: {
-                                latitude: element.node.location ? element.node.location.latitude : 0,
-                                longitude: element.node.location ? element.node.location.longitude : 0
+                                latitude: element.node.location && element.node.location.latitude ? element.node.location.latitude : 0,
+                                longitude: element.node.location && element.node.location.longitude ? element.node.location.longitude : 0
                             }
                         });
 
