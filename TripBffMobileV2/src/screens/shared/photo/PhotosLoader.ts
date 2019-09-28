@@ -22,8 +22,7 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
             result = await CameraRoll.getPhotos({
                 first: PHOTOS_PER_BATCH,
                 assetType: 'Photos',
-                after: afterCursor,
-                groupTypes: "All"
+                after: afterCursor
             });
 
             console.log(`get ${result.edges.length} photo(s)`);
