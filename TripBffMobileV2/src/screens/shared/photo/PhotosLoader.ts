@@ -1,6 +1,7 @@
 import { PhotoMetaData } from './PhotoInterface';
 import _ from "lodash";
-import { CameraRoll, GetPhotosReturnType } from "react-native";
+import { GetPhotosReturnType } from "react-native";
+import CameraRoll from "@react-native-community/cameraroll";
 import moment from "moment";
 
 const PHOTOS_PER_BATCH = 20
