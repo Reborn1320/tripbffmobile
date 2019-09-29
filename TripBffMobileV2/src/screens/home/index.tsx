@@ -1,5 +1,6 @@
 import React from "react";
-import { CameraRoll, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, TouchableOpacity } from "react-native";
+import CameraRoll from "@react-native-community/cameraroll";
 import {
   Container,
   Header,

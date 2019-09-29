@@ -150,13 +150,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
                       onCancel={this._hideDateTimePicker}
                     />
                 </View>
-                <View style={{flex: 1}}>
-                  <View style={styles.searchContainer}>
-                      <SearchLocation 
-                        confirmHandler={this._selectedLocationHandler}>
-                      </SearchLocation>
-                  </View>
-                  <View style={styles.placesContainer}>
+                <View style={styles.placesContainer}>
                       <MapboxGL.MapView
                             style={{flex: 1}}
                           >
@@ -167,7 +161,11 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
                                 >
                               </MapboxGL.Camera>
                           </MapboxGL.MapView>
-                  </View>
+                    <View style={styles.searchContainer}>
+                        <SearchLocation 
+                          confirmHandler={this._selectedLocationHandler}>
+                        </SearchLocation>
+                    </View>
                 </View>
           </View>
         }                
