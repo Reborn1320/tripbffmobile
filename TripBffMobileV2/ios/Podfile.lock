@@ -85,19 +85,19 @@ PODS:
   - React-jsinspector (0.60.4)
   - react-native-cameraroll (1.2.1):
     - React
-  - react-native-fbsdk (1.0.1):
+  - react-native-fbsdk (1.0.4):
     - React
-    - react-native-fbsdk/Core (= 1.0.1)
-    - react-native-fbsdk/Login (= 1.0.1)
-    - react-native-fbsdk/Share (= 1.0.1)
-  - react-native-fbsdk/Core (1.0.1):
-    - FBSDKCoreKit (~> 5.0)
+    - react-native-fbsdk/Core (= 1.0.4)
+    - react-native-fbsdk/Login (= 1.0.4)
+    - react-native-fbsdk/Share (= 1.0.4)
+  - react-native-fbsdk/Core (1.0.4):
+    - FBSDKCoreKit (~> 5.5)
     - React
-  - react-native-fbsdk/Login (1.0.1):
-    - FBSDKLoginKit (~> 5.0)
+  - react-native-fbsdk/Login (1.0.4):
+    - FBSDKLoginKit (~> 5.5)
     - React
-  - react-native-fbsdk/Share (1.0.1):
-    - FBSDKShareKit (~> 5.0)
+  - react-native-fbsdk/Share (1.0.4):
+    - FBSDKShareKit (~> 5.5)
     - React
   - react-native-flurry-sdk (4.1.0):
     - react-native-flurry-sdk/FlurrySDK (= 4.1.0)
@@ -289,7 +289,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 7549641e48bafae7bfee3f3ea19bf4901639c5de
   React-jsinspector: 73f24a02fa684ed6a2b828ba116874a2191ded88
   react-native-cameraroll: 3e5e34d36d93548ae7770ee8ab7b2ae9e778f571
-  react-native-fbsdk: 080f3bb23513c5b59b6528543206fe0d1436bb7e
+  react-native-fbsdk: 45e28bbab3e905cbc635c0bdd3444b372e933ae9
   react-native-flurry-sdk: c5961bf8a789360c7f4c67d203d3608c9b70adb4
   react-native-mapbox-gl: eda3e4176b31915dde30121e20d442de82701bc5
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
