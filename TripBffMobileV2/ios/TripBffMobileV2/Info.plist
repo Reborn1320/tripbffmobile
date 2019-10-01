@@ -9,7 +9,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>TripBffMobileV2</string>
+	<string>TripBFF</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -72,25 +72,25 @@
 		<string>Nunito-Bold.ttf</string>
 		<string>rubicon-icon-font.ttf</string>
 	</array>
-  <key>CFBundleURLTypes</key>
-  <array>
-    <dict>
-      <key>CFBundleURLSchemes</key>
-      <array>
-        <string>fb2341289862566899</string>
-      </array>
-    </dict>
-  </array>
-  <key>FacebookAppID</key>
-  <string>2341289862566899</string>
-  <key>FacebookDisplayName</key>
-  <string>TripBFF</string>
-  <key>LSApplicationQueriesSchemes</key>
-  <array>
-    <string>fbapi</string>
-    <string>fb-messenger-share-api</string>
-    <string>fbauth2</string>
-    <string>fbshareextension</string>
-  </array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb2341289862566899</string>
+			</array>
+		</dict>
+	</array>
+	<key>FacebookAppID</key>
+	<string>2341289862566899</string>
+	<key>FacebookDisplayName</key>
+	<string>TripBFF</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+	</array>
 </dict>
 </plist>
