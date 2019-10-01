@@ -70,8 +70,7 @@ class UserFeedbackComponent extends React.Component<Props, State> {
 
   render() {
     const { t } = this.props;
-    const numberOfLines = 12;
-    let formInputIos = Platform.OS === 'ios' ? styles.formInputIos : null
+    const numberOfLines = 12;    
 
     return (
       <Root>
@@ -91,7 +90,7 @@ class UserFeedbackComponent extends React.Component<Props, State> {
                           labelStyle={styles.formLabel}            
                           value={this.state.feedback}
                           onChangeText={(feedback) => this.setState({ feedback })} 
-                          inputStyle={[styles.formInput, styles.formInputTripName, formInputIos]}
+                          inputStyle={[styles.formInput, styles.formInputTripName, styles.formInputIos]}
                           inputContainerStyle={styles.formInputContainer}   
                           multiline = {true}
                           textAlignVertical = "top"
