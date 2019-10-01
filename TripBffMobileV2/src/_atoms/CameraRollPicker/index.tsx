@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  CameraRoll,
   Platform,
   StyleSheet,
   View,
@@ -8,6 +7,7 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
+import CameraRoll from "@react-native-community/cameraroll";
 import PropTypes from 'prop-types';
 import Row from './Row';
 
@@ -286,7 +286,7 @@ CameraRollPicker.propTypes = {
 
 CameraRollPicker.defaultProps = {
   initialNumToRender: 5,
-  groupTypes: 'SavedPhotos',
+  groupTypes: 'All',
   maximum: 15,
   imagesPerRow: 3,
   imageMargin: 5,
