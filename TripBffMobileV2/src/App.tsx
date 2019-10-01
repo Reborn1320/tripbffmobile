@@ -2,7 +2,12 @@ import React from "react";
 import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import { Root, Icon } from "native-base";
-import { createStackNavigator, createAppContainer, createSwitchNavigator, createBottomTabNavigator } from "react-navigation";
+import {
+  createStackNavigator,
+  createAppContainer,
+  createSwitchNavigator,
+  createBottomTabNavigator,
+} from "react-navigation";
 import HomeScreen from "./screens/home/index";
 import TripDetailScreenContainer from "./screens/trip/detail/TripDetailScreenContainer";
 import TripEditScreenContainer from "./screens/trip/edit/TripEditScreenContainer";
@@ -14,11 +19,9 @@ import { uploadFileApi } from "./screens/_services/apis";
 import { loginApiService, tripApiService } from "./store/ApisAsAService";
 import LoginScreen from "./screens/login/index";
 import ProfileScreenContainer from "./screens/user/ProfileScreenContainer";
-import TestComponentScreen from "./_organisms/TripEditForm/__doc__/TripEditForm.doc";
 import bffApp from "./store/reducers";
 import ReduxThunk from "redux-thunk";
 import { ThunkExtraArgumentsBase } from "./store";
-import { mockLoginApiService, mockTripApiService } from "./store/MockApiService";
 import LocationImageDetailScreen from "./screens/location/LocationImageDetail/LocationImageDetailScreen";
 import ImageUploadDoc from "./screens/trip/import/ImageUpload.doc";
 import LandingPageScreen from "./screens/LandingPage";
@@ -27,31 +30,27 @@ import TripEditBasicScreen from "./screens/trip/create/TripEditBasic";
 import { mixins } from "./_utils";
 import UserSettingsScreen from "./screens/user/UserSetting";
 import LanguageSelection from "./_organisms/User/LanguageSelection";
-import { withNamespaces } from 'react-i18next';
-import i18n from '../i18n';
+import { withNamespaces } from "react-i18next";
 import UserFeedback from "./_organisms/User/UserFeedback";
-import NavigationService from './store/NavigationService';
+import NavigationService from "./store/NavigationService";
 
 var extraThunk: ThunkExtraArgumentsBase = {
   uploadApi: uploadFileApi,
-  
+
   loginApiService: loginApiService,
   tripApiService: tripApiService,
 };
 
 const store = createStore(
   bffApp,
-  applyMiddleware(
-    ReduxThunk.withExtraArgument(extraThunk)
-  )
+  applyMiddleware(ReduxThunk.withExtraArgument(extraThunk))
 );
 
-const stackConfigs =  {
+const stackConfigs = {
   headerMode: "screen",
   defaultNavigationOptions: {
-    headerStyle: {
-    },
-    headerLayoutPreset: 'center',
+    headerStyle: {},
+    headerLayoutPreset: "center",
     headerTintColor: "#1A051D",
     headerTitleStyle: {
       ...mixins.themes.fontBold,
@@ -61,15 +60,15 @@ const stackConfigs =  {
       flex: 1,
       fontSize: 20,
       fontStyle: "normal",
-      textTransform: 'capitalize'
-    }
+      textTransform: "capitalize",
+    },
   },
 } as any;
 
 const TripCreationNavigator = createStackNavigator(
   {
     TripCreation: { screen: TripCreation },
-    TripImportation: { screen: TripImportationScreen }, 
+    TripImportation: { screen: TripImportationScreen },
   },
   stackConfigs
 );
@@ -91,22 +90,22 @@ const TripDetailsNavigator = createStackNavigator(
     LocationDetail: { screen: LocationDetailScreen },
     LocationImageDetail: { screen: LocationImageDetailScreen },
     InfographicPreview: { screen: InfographicPreviewScreen },
-    TripEditBasic: { screen: TripEditBasicScreen }
+    TripEditBasic: { screen: TripEditBasicScreen },
   },
   stackConfigs
 );
 
 const ProfileNavigator = createStackNavigator(
   {
-    Profile: {screen: ProfileScreenContainer },
+    Profile: { screen: ProfileScreenContainer },
     UserSettings: { screen: UserSettingsScreen },
-    TripEdition: { screen: TripEditScreenContainer }, 
+    TripEdition: { screen: TripEditScreenContainer },
     LocationDetail: { screen: LocationDetailScreen },
     LocationImageDetail: { screen: LocationImageDetailScreen },
     InfographicPreview: { screen: InfographicPreviewScreen },
     TripEditBasic: { screen: TripEditBasicScreen },
     LanguageSelection: { screen: LanguageSelection },
-    UserFeedback: { screen: UserFeedback }
+    UserFeedback: { screen: UserFeedback },
   },
   stackConfigs
 );
@@ -124,7 +123,7 @@ ProfileNavigator.navigationOptions = ({ navigation }) => {
 
 const TestComponentNavigator = createStackNavigator(
   {
-    Test: {screen: ImageUploadDoc },
+    Test: { screen: ImageUploadDoc },
   },
   {
     headerMode: "none",
@@ -143,62 +142,71 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
   const { routeName } = navigation.state;
   let iconName;
 
-  if (routeName === 'Create') {
-    iconName = 'md-add';
-  } else if (routeName === 'Me') {
-    iconName = 'md-contact';
+  if (routeName === "Create") {
+    iconName = "md-add";
+  } else if (routeName === "Me") {
+    iconName = "md-contact";
   }
 
-  return <Icon name={iconName}  style={{ fontSize: 30, color: tintColor, paddingHorizontal: 5 }} type="Ionicons" />;
+  return (
+    <Icon
+      name={iconName}
+      style={{ fontSize: 30, color: tintColor, paddingHorizontal: 5 }}
+      type="Ionicons"
+    />
+  );
 };
 
-const TabNavigator = createBottomTabNavigator({
-  "Create": {
-    screen: TripCreationNavigator
+const TabNavigator = createBottomTabNavigator(
+  {
+    Create: {
+      screen: TripCreationNavigator,
+    },
+    Me: {
+      screen: ProfileNavigator,
+    },
   },
-  "Me": {
-    screen: ProfileNavigator
+  {
+    initialRouteName: "Me",
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, tintColor }) =>
+        getTabBarIcon(navigation, focused, tintColor),
+    }),
+    tabBarOptions: {
+      activeTintColor: NBTheme.brandPrimary,
+      inactiveTintColor: "gray",
+      showLabel: false,
+      // labelStyle: {
+      //   fontSize: 10,
+      //   ...mixins.themes.fontSemiBold,
+      //   lineHeight: 13,
+      //   fontStyle: "normal",
+      //   marginBottom: 12
+      // },
+      // tabStyle: {
+      //   height: 57
+      // }
+    },
   }
-},
-{
-  defaultNavigationOptions: ({ navigation }) => ({
-    tabBarIcon: ({ focused, tintColor }) =>
-      getTabBarIcon(navigation, focused, tintColor),
-  }),
-  tabBarOptions: {
-    activeTintColor: NBTheme.brandPrimary,
-    inactiveTintColor: 'gray',
-    showLabel:false,
-    // labelStyle: {
-    //   fontSize: 10,
-    //   ...mixins.themes.fontSemiBold,
-    //   lineHeight: 13,
-    //   fontStyle: "normal",
-    //   marginBottom: 12
-    // },
-    // tabStyle: {
-    //   height: 57
-    // }
-  },
-});
+);
 
 const AppNavigator = createSwitchNavigator(
   {
     LandingPage: { screen: LandingPageScreen },
     Login: { screen: LoginScreen },
-    TripDetails: TripDetailsNavigator,    
+    TripDetails: TripDetailsNavigator,
     TabMenu: TabNavigator,
-    Test: {screen: TestComponentNavigator },
-    Home: { screen: HomeScreen },   
+    Test: { screen: TestComponentNavigator },
+    Home: { screen: HomeScreen },
   },
   {
-    initialRouteName: "LandingPage"
-  });
+    initialRouteName: "LandingPage",
+  }
+);
 
 let Navigation = createAppContainer(AppNavigator);
 
 class App extends React.Component<any, any> {
-  
   changeLanguage = locale => {
     this.props.i18n.changeLanguage(locale);
   };
@@ -209,13 +217,15 @@ class App extends React.Component<any, any> {
     return (
       <Provider store={store}>
         <Root>
-          <Navigation screenProps={{
+          <Navigation
+            screenProps={{
               changeLanguage: this.changeLanguage,
-              t: t
-            }} 
+              t: t,
+            }}
             ref={navigatorRef => {
               NavigationService.setTopLevelNavigator(navigatorRef);
-            }}/>
+            }}
+          />
         </Root>
       </Provider>
     );
