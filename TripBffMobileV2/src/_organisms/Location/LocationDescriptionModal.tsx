@@ -112,7 +112,9 @@ const styles = StyleSheet.create<Style>({
     ...mixins.themes.fontNormal,
     fontSize: 16,
     lineHeight: 18,
-    color: "#383838"
+    color: "#383838",
+    minHeight: 200,
+    maxHeight: "80%"
   }
 })
   
