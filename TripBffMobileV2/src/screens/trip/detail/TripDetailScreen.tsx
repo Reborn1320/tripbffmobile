@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Header, Content, Button, Text, View, Icon } from 'native-base';
-import { Alert, BackHandler, StyleSheet, TouchableOpacity, Image, RefreshControl } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, Image, RefreshControl } from "react-native";
 import { AndroidBackHandler } from "react-navigation-backhandler";
 import _, { } from "lodash";
 import { tripApi } from "../../_services/apis";
