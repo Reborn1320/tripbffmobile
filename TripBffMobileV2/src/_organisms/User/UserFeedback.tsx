@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, TextStyle, ViewStyle } from "react-native";
+import { StyleSheet, TextStyle, ViewStyle, Platform, TextInput } from "react-native";
 import { Container, Content, Text, H1, Button, Toast, Root, View } from "native-base";
 import { StoreData } from "../../store/Interfaces";
 import NBColor from "../../theme/variables/material.js";
@@ -70,7 +70,9 @@ class UserFeedbackComponent extends React.Component<Props, State> {
 
   render() {
     const { t } = this.props;
-    
+    const numberOfLines = 12;
+    let formInputIos = Platform.OS === 'ios' ? styles.formInputIos : null
+
     return (
       <Root>
           <Container>
@@ -83,18 +85,19 @@ class UserFeedbackComponent extends React.Component<Props, State> {
                             </Text>
                         </View>                        
                   </View>
-                  <View style={styles.formContainer}>            
-                    <Input
-                        label={t("setting:feedback_content_label")}
-                        labelStyle={styles.formLabel}            
-                        value={this.state.feedback}
-                        onChangeText={(feedback) => this.setState({ feedback })} 
-                        inputStyle={[styles.formInput, styles.formInputTripName]}
-                        inputContainerStyle={styles.formInputContainer}   
-                        multiline = {true}
-                        textAlignVertical = "top"
-                        numberOfLines = {12}                     
-                        />
+                  <View style={styles.formContainer}>    
+                        <Input
+                          label={t("setting:feedback_content_label")}
+                          labelStyle={styles.formLabel}            
+                          value={this.state.feedback}
+                          onChangeText={(feedback) => this.setState({ feedback })} 
+                          inputStyle={[styles.formInput, styles.formInputTripName, formInputIos]}
+                          inputContainerStyle={styles.formInputContainer}   
+                          multiline = {true}
+                          textAlignVertical = "top"
+                          numberOfLines={Platform.OS === 'ios' ? null : numberOfLines}             
+                          />     
+   
                     <Input
                         label={t("setting:feedback_email_label")} 
                         labelStyle={styles.formLabel}            
@@ -121,6 +124,7 @@ interface Style {
   formContainer: ViewStyle;
   formLabel: TextStyle;
   formInput: TextStyle;
+  formInputIos: TextStyle;
   formInputTripName: TextStyle;
   formInputContainer: ViewStyle;
 }
@@ -166,6 +170,9 @@ const styles = StyleSheet.create<Style>({
     },
     formInputTripName: {
         color: "#383838"
+    },
+    formInputIos: {
+      height: 200
     },
     formInputContainer: {
         borderWidth: 1,
