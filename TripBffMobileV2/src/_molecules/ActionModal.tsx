@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { View, Text, Icon} from "native-base";
-import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle } from "react-native";
+import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle, SafeAreaView } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
 import NBColor from "../theme/variables/material.js";
@@ -25,12 +25,15 @@ class ActionModalComponent extends React.PureComponent<Props, State> {
   render() {
       
     return (
+      
         <RNModal style={styles.modal} 
+        presentationStyle={'fullScreen'}
             onModalShow={this.props.onModalShowHandler}
             onModalHide={this.props.onModalHideHandler}
             onBackButtonPress={this.props.onCancelHandler}
             isVisible={this.props.isVisible} hideModalContentWhileAnimating>
-            <View style={styles.modalInnerContainer}>
+              
+            <SafeAreaView style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
                   <TouchableOpacity onPress={this.props.onCancelHandler} style={styles.cancelButtonContainer}>
                       <Icon name="md-close" type="Ionicons" style={styles.cancelButtonIcon}></Icon>
@@ -45,7 +48,7 @@ class ActionModalComponent extends React.PureComponent<Props, State> {
                 <View style={styles.contentContainer}>
                   {this.props.children}
                 </View>                
-            </View>
+            </SafeAreaView>
         </RNModal>
     );
   }

@@ -32,7 +32,8 @@ import UserSettingsScreen from "./screens/user/UserSetting";
 import LanguageSelection from "./_organisms/User/LanguageSelection";
 import { withNamespaces } from "react-i18next";
 import UserFeedback from "./_organisms/User/UserFeedback";
-import NavigationService from "./store/NavigationService";
+import NavigationService from './store/NavigationService';
+import NBColor from "./theme/variables/commonColor.js";
 
 var extraThunk: ThunkExtraArgumentsBase = {
   uploadApi: uploadFileApi,
@@ -50,8 +51,8 @@ const stackConfigs = {
   headerMode: "screen",
   defaultNavigationOptions: {
     headerStyle: {},
-    headerLayoutPreset: "center",
-    headerTintColor: "#1A051D",
+    headerLayoutPreset: 'center',
+    headerTintColor: NBColor.colorBackBlack,
     headerTitleStyle: {
       ...mixins.themes.fontBold,
       color: NBTheme.brandPrimary,
@@ -60,8 +61,9 @@ const stackConfigs = {
       flex: 1,
       fontSize: 20,
       fontStyle: "normal",
-      textTransform: "capitalize",
+      textTransform: 'capitalize'
     },
+    headerBackTitle: null
   },
 } as any;
 

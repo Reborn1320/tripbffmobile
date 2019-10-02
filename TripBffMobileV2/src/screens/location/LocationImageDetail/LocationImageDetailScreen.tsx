@@ -4,9 +4,10 @@ import { StoreData } from '../../../store/Interfaces';
 import { connect } from 'react-redux';
 import { NavigationScreenProp } from 'react-navigation';
 import _ from "lodash";
-import { View, TouchableOpacity, ViewStyle, StyleSheet, TextStyle } from 'react-native';
+import { View, TouchableOpacity, ViewStyle, StyleSheet, TextStyle, SafeAreaView } from 'react-native';
 import { favorLocationImage } from '../../../store/Trip/operations';
 import Gallery from 'react-native-image-gallery';
+import DeviceInfo from "react-native-device-info";
 
 interface IMapDispatchToProps {
     favoriteLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, isFavorite: boolean) => Promise<void>
@@ -26,7 +27,8 @@ interface State {
     isToogled: boolean,
     index: number,
     images: Array<any>,
-    currentImage: StoreData.ImportImageVM
+    currentImage: StoreData.ImportImageVM,
+    hasNotch: boolean
 }
 
 class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, State> {
@@ -42,13 +44,20 @@ class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, S
                 return {
                     source: { uri: img.externalUrl }
                 }
-            })
+            }),
+            hasNotch: false
         }
     }
 
     static navigationOptions = {
         header: null
     };
+
+    componentDidMount() {
+        DeviceInfo.hasNotch().then(hasNotch => {
+            this.setState({hasNotch: hasNotch});
+        });
+    }
 
     private _onFavorite = () => {
         var { currentImage } = this.state;
@@ -78,10 +87,11 @@ class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, S
     }
 
     galleryCount() {
-        const { index, images } = this.state;
+        const { index, images, hasNotch } = this.state;
+        let notchStyle = hasNotch ? styles.topNotch : styles.topWithoutNotch;
 
         return (
-            <View style={styles.headerActionContainer}>
+            <View style={[styles.headerActionContainer, notchStyle]}>
                  <TouchableOpacity onPress={this._onCancel} style={styles.backButtonContainer}>
                     <Icon type="Ionicons" name="close" style={styles.iconStyle}></Icon>
                 </TouchableOpacity> 
@@ -91,9 +101,11 @@ class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, S
     }
 
     setFavorite() {
-        var { currentImage } = this.state;
+        var { currentImage, hasNotch } = this.state;
+        let notchStyle = hasNotch ? styles.bottomNotch : styles.bottomWithoutNotch;
+
         return (
-            <View style={styles.footerContainer}>
+            <View style={[styles.footerContainer, notchStyle]}>
                 <View style={styles.footerActionContainer}>
                     <TouchableOpacity onPress={this._onFavorite} style={styles.favoriteButton}>
                         {
@@ -115,7 +127,7 @@ class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, S
         let { isToogled, images, index } = this.state;
 
         return (
-            <View style={styles.imageContainer}>
+            <SafeAreaView style={styles.imageContainer}>
                     <Gallery
                         flatListProps={{showsHorizontalScrollIndicator: false}}
                         style={styles.galleryContainer}
@@ -132,7 +144,7 @@ class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, S
                         isToogled &&
                         this.setFavorite()
                     }
-            </View>
+            </SafeAreaView>
             
         )
     }
@@ -183,6 +195,10 @@ interface Style {
     favoriteIcon: TextStyle;
     activeFavoriteIcon: TextStyle;
     favoriteLabel: TextStyle;
+    topWithoutNotch: ViewStyle;
+    topNotch: ViewStyle;
+    bottomWithoutNotch: ViewStyle;
+    bottomNotch: ViewStyle;
   }
   
   const styles = StyleSheet.create<Style>({
@@ -193,8 +209,7 @@ interface Style {
         flex: 1,
         backgroundColor: 'black'
     },
-    headerActionContainer: {
-        top: 0,
+    headerActionContainer: {    
         height: 40,
         backgroundColor: 'transparent',
         width: '100%',
@@ -218,8 +233,7 @@ interface Style {
         paddingRight: '5%',
         paddingTop: "2%"
     },
-    footerContainer: {
-        bottom: 0,
+    footerContainer: {        
         height: 40,
         position: 'absolute',
         backgroundColor: 'transparent',
@@ -253,5 +267,17 @@ interface Style {
         fontStyle: 'normal',
         paddingLeft: '2%',
         paddingTop: "3%"
+    },
+    topWithoutNotch: {
+        top: 40
+    },
+    topNotch: {
+        top: 40
+    },
+    bottomWithoutNotch: {
+        bottom: 0
+    },
+    bottomNotch: {
+        bottom: 35
     }
   })

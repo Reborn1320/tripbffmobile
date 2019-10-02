@@ -97,6 +97,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
       title: screenProps.t("export:title"),
       headerLeft:  (
         <RNa.HeaderBackButton   
+           tintColor={NBTheme.colorBackBlack}
            onPress={navigation.getParam('_handleBackPress')}
          />),
       headerRight: (
@@ -524,7 +525,8 @@ const styles = StyleSheet.create({
   },
   emptyMsgContainer: {
       maxWidth: "80%",
-      marginTop: "20%"
+      marginTop: "20%",
+      height: 120
   },
   emptyMsg: {
       ...mixins.themes.fontNormal,

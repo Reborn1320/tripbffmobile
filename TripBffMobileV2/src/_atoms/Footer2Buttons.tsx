@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, ViewStyle } from "react-native";
+import { StyleSheet, ViewStyle, SafeAreaView } from "react-native";
 import { Button, Text, Footer } from 'native-base';
 import _ from "lodash";
 import { withNamespaces } from "react-i18next";
@@ -35,22 +35,25 @@ class Footer2Buttons extends Component<Props, State> {
     const { cancelText, actionText, t } = this.props;
     const { primary, danger } = this.state;
     return (
-      <Footer style={styles.container}>
-        <Button transparent
-          onPress={this.props.onCancel}
-          style={styles.footerButton}
-        >
-          <Text>{t(cancelText)}</Text>
-        </Button>
+      <SafeAreaView>
+        <Footer style={styles.container}>       
+          <Button transparent
+            onPress={this.props.onCancel}
+            style={styles.footerButton}
+          >
+            <Text>{t(cancelText)}</Text>
+          </Button>
 
-        <Button
-          primary={primary} danger={danger}
-          onPress={this.props.onAction}
-          style={styles.footerButton}
-        >
-          <Text>{t(actionText)}</Text>
-        </Button>
+          <Button
+            primary={primary} danger={danger}
+            onPress={this.props.onAction}
+            style={styles.footerButton}
+          >
+            <Text>{t(actionText)}</Text>
+          </Button>      
       </Footer>
+      </SafeAreaView>
+      
     );
   }
 }
