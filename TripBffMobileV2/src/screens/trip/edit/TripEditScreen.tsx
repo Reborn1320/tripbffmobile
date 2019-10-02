@@ -6,7 +6,8 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
 import { mixins } from "../../../_utils";
 import TripDetailScreenContent from "../detail/TripDetailScreenContent";
-import { StyleSheet, BackHandler, TouchableOpacity, Image, RefreshControl } from "react-native";
+import { StyleSheet, TouchableOpacity, Image, RefreshControl } from "react-native";
+import { AndroidBackHandler } from "react-navigation-backhandler";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import ActionButton from 'react-native-action-button';
 import Loading from "../../../_atoms/Loading/Loading";
@@ -32,10 +33,6 @@ interface State {
 
 export class TripEditScreen extends Component<Props, State> {
 
-    _didFocusSubscription;
-    _willBlurSubscription;
-    _backHardwareHandler;
-
     _cancelToken;
     _cancelRequest;
 
@@ -56,24 +53,6 @@ export class TripEditScreen extends Component<Props, State> {
      });
 
     componentDidMount() {
-        var tmp = this;
-
-        this._didFocusSubscription = this.props.navigation.addListener(
-            'didFocus',
-            payload => {
-              console.debug('didFocus trip edit');
-              tmp._backHardwareHandler = BackHandler.addEventListener('hardwareBackPress', this._goBackAndRefreshTripLists);
-            }
-          );
-          
-        this._willBlurSubscription = this.props.navigation.addListener(
-            'willBlur',
-            payload => {
-                console.debug('willBlur trip edit');                
-                tmp._backHardwareHandler.remove();
-            }
-        );
-
         this.props.navigation.setParams({ _goBack: this._goBackAndRefreshTripLists });
         this.props.navigation.setParams({ _goEditBasicTrip: this._onPopupMenuSelect });
         
@@ -87,10 +66,6 @@ export class TripEditScreen extends Component<Props, State> {
     }z
 
     componentWillUnmount() {
-        if (this._didFocusSubscription) this._didFocusSubscription.remove();
-        if (this._willBlurSubscription) this._willBlurSubscription.remove();
-        if (this._backHardwareHandler) this._backHardwareHandler.remove();
-
         this._cancelRequest('Operation canceled by the user.');
     }
 
@@ -137,6 +112,7 @@ export class TripEditScreen extends Component<Props, State> {
         const { isDisplayLoading } = this.state;
         return (
             <Container>
+                <AndroidBackHandler onBackPress={this._goBackAndRefreshTripLists} />
                 <Content refreshControl={<RefreshControl refreshing={this.state.refreshing}
                                         onRefresh={this._onRefresh} />}>
                     {isDisplayLoading &&  <Loading message={''}/> }

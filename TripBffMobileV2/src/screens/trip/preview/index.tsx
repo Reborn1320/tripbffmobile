@@ -1,5 +1,6 @@
 import React from "react";
-import { Dimensions, StyleSheet, BackHandler } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
+import { AndroidBackHandler } from "react-navigation-backhandler";
 import {
   Container,
   Content,
@@ -70,10 +71,6 @@ interface State {
 
 class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
 
-  _backHardwareHandler;
-  _didFocusSubscription;
-  _willBlurSubscription;
-
   _cancelRequest;
 
   constructor(props) {
@@ -110,24 +107,6 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
   };
 
   componentDidMount() { 
-    var tmp = this;
-
-    this._didFocusSubscription = this.props.navigation.addListener(
-      'didFocus',
-      payload => {
-        console.debug('didFocus trip preview');
-        tmp._backHardwareHandler = BackHandler.addEventListener('hardwareBackPress', this._handleBackPress);
-      }
-    );
-    
-    this._willBlurSubscription = this.props.navigation.addListener(
-        'willBlur',
-        payload => {
-            console.debug('willBlur trip preview');                
-            tmp._backHardwareHandler.remove();
-        }
-    );
-
     this.props.navigation.setParams({ _handleBackPress: this._handleBackPress });
 
     let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
@@ -152,10 +131,6 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
   }
 
   componentWillUnmount() {
-    if (this._backHardwareHandler) this._backHardwareHandler.remove();    
-    if (this._didFocusSubscription) this._didFocusSubscription.remove();
-    if (this._willBlurSubscription) this._willBlurSubscription.remove();
-
     this._cancelRequest('Operation canceled by the user.');
     deleteFilesInFolder(`${this.props.tripId}`);
   }
@@ -403,6 +378,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
 
       return (
         <View style={styles.container}>
+            <AndroidBackHandler onBackPress={this._handleBackPress} />
             <View style={styles.tabViewContainer}>
                 <Root>             
                   <TabView
