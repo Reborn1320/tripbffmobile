@@ -31,6 +31,7 @@ import { withNamespaces } from 'react-i18next';
 import i18n from '../i18n';
 import UserFeedback from "./_organisms/User/UserFeedback";
 import NavigationService from './store/NavigationService';
+import NBColor from "./theme/variables/commonColor.js";
 
 var extraThunk: ThunkExtraArgumentsBase = {
   uploadApi: uploadFileApi,
@@ -52,7 +53,7 @@ const stackConfigs =  {
     headerStyle: {
     },
     headerLayoutPreset: 'center',
-    headerTintColor: "#1A051D",
+    headerTintColor: NBColor.colorBackBlack,
     headerTitleStyle: {
       ...mixins.themes.fontBold,
       color: NBTheme.brandPrimary,
@@ -62,7 +63,8 @@ const stackConfigs =  {
       fontSize: 20,
       fontStyle: "normal",
       textTransform: 'capitalize'
-    }
+    },
+    headerBackTitle: null
   },
 } as any;
 

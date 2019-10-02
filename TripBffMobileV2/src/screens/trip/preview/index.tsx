@@ -100,6 +100,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
       title: screenProps.t("export:title"),
       headerLeft:  (
         <RNa.HeaderBackButton   
+           tintColor={NBTheme.colorBackBlack}
            onPress={navigation.getParam('_handleBackPress')}
          />),
       headerRight: (

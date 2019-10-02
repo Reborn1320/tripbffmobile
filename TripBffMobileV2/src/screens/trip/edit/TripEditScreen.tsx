@@ -11,6 +11,7 @@ import { NavigationConstants } from "../../_shared/ScreenConstants";
 import ActionButton from 'react-native-action-button';
 import Loading from "../../../_atoms/Loading/Loading";
 import NBTheme from "../../../theme/variables/material.js";
+import NBColor from "../../../theme/variables/commonColor.js";
 import { getCancelToken } from "../../../_function/commonFunc";
 
 interface IMapDispatchToProps {
@@ -47,7 +48,7 @@ export class TripEditScreen extends Component<Props, State> {
     }
 
     static navigationOptions = ({ navigation }) => ({
-        headerLeft:  <RNa.HeaderBackButton onPress={navigation.getParam('_goBack')} />,
+        headerLeft:  <RNa.HeaderBackButton tintColor={NBColor.colorBackBlack} onPress={navigation.getParam('_goBack')} />,
         headerRight:  (<TouchableOpacity style={styles.settingButtonContainer}
                                 onPress={navigation.getParam('_goEditBasicTrip')}>
                             <Icon style={styles.editIcon} name='pencil-alt' type="FontAwesome5" />

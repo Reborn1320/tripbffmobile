@@ -44,7 +44,7 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
     }
 
     static navigationOptions = ({ navigation }) => ({
-        headerLeft:  <RNa.HeaderBackButton onPress={navigation.getParam('_goProfile')}/>,
+        headerLeft:  <RNa.HeaderBackButton tintColor={NBTheme.colorBackBlack} onPress={navigation.getParam('_goProfile')}/>,
         headerRight:  (<TouchableOpacity style={styles.settingButtonContainer}
                                 onPress={navigation.getParam('_goEditBasicTrip')}>
                             <Icon style={styles.editIcon} name='pencil-alt' type="FontAwesome5" />

@@ -112,7 +112,8 @@ export default {
   brandLight: "#f4f4f4",
   colorRed: "#960018",
   colorRosy: "#FF647C",
-
+  colorBackBlack: "#1A051D",
+  
   // brandMainColor: "#2E97A1",
   // brandPrimary: platform === "ios" ? "#007aff" : "#3F51B5",
   // brandInfo: "#62B1F6",
