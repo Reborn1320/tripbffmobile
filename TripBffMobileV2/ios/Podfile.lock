@@ -136,6 +136,8 @@ PODS:
     - React-fishhook (= 0.60.4)
   - RNCAsyncStorage (1.6.1):
     - React
+  - RNDeviceInfo (3.1.4):
+    - React
   - RNFastImage (7.0.2):
     - React
     - SDWebImage (~> 5.0)
@@ -184,6 +186,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-RCTWebSocket (from `../node_modules/react-native/Libraries/WebSocket`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
@@ -257,6 +260,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/WebSocket"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
   RNFastImage:
     :path: "../node_modules/react-native-fast-image"
   RNFS:
@@ -304,6 +309,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: 0bea40cd51bd089bd591a8f74c86e91fdf2666c5
   React-RCTWebSocket: 163873f4cdd5f1058a9483443404fc3801581cb6
   RNCAsyncStorage: 2e2e3feb9bdadc752a026703d8c4065ca912e75a
+  RNDeviceInfo: 88099e84466f053bae3f34c307b506738b2b6946
   RNFastImage: 9b0c22643872bb7494c8d87bbbb66cc4c0d9e7a2
   RNFS: a8fbe7060fa49157d819466404794ad9c58e58cf
   RNGestureHandler: 5329a942fce3d41c68b84c2c2276ce06a696d8b0

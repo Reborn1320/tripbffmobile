@@ -1,6 +1,6 @@
 import * as React from "react";
 import { View, Text } from "native-base";
-import { StyleSheet, ViewStyle, Dimensions, ActivityIndicator } from "react-native";
+import { StyleSheet, ViewStyle, Dimensions, ActivityIndicator, SafeAreaView } from "react-native";
 import RNModal from "react-native-modal";
 import { connectStyle } from 'native-base';
 import Loading from "./Loading/Loading";
@@ -107,7 +107,7 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
 
     var loadingElement = isLoading 
           ? <ActivityIndicator size="small" color="#00ff00" />
-          :   <View style={styles.modalInnerContainer}>
+          :   <SafeAreaView style={styles.modalInnerContainer}>
                 <View style={styles.modalContentContainer}>
                   <StyledCameraRollPicker
                     containerWidth={this.state.containerWidth}
@@ -121,12 +121,12 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
                   actionText="action:add"
                   primary
                 />
-              </View>;
+              </SafeAreaView>;
     var contentElement = isUploadingImages ? (
-                <View style={[styles.modalInnerContainer, styles.loading]}>
+                <SafeAreaView style={[styles.modalInnerContainer, styles.loading]}>
                   <Loading message={t("location_detail:image_uploading_message")} />
                   <Text>{numUploaded + "/" + num}</Text>
-                </View>
+                </SafeAreaView>
               ) : loadingElement;
 
     return (

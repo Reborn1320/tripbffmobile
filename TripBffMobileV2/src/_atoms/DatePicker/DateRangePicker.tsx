@@ -1,6 +1,6 @@
 import * as React from "react";
 import { View, Text } from "native-base";
-import { StyleSheet, ViewStyle, TextStyle } from "react-native";
+import { StyleSheet, ViewStyle, TextStyle, SafeAreaView } from "react-native";
 import { connectStyle, Button } from 'native-base';
 import CalendarPicker from 'react-native-calendar-picker';
 import moment, { Moment } from "moment";
@@ -102,7 +102,7 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
           onBackButtonPress={this._onCancel}
           onSwipeComplete={this._onCancel}
         >
-          <View style={styles.content}>
+          <SafeAreaView style={styles.content}>
               <View>
                 <CalendarPicker
                     startFromMonday={true}
@@ -133,7 +133,7 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
                     <Text style={[styles.buttonTitle, buttonDoneTitleStyle]}>{t("action:done")}</Text>         
                 </Button>
             </View>
-          </View>         
+          </SafeAreaView>         
         </Modal>      
     );
   }
@@ -158,7 +158,8 @@ interface Style {
 const styles = StyleSheet.create<Style>({
   buttons: {
     flexDirection: "row",
-    justifyContent: "space-evenly"
+    justifyContent: "space-evenly",
+    marginBottom: 10
   },
   modalInnerContainer: {
     flex: 1,
