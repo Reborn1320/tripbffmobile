@@ -42,7 +42,8 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
   };
 }
 
-export function loginUsingFacebookAccessToken(facebookUserId: string, accessToken: string, userId: string): ThunkResultBase {
+export function loginUsingFacebookAccessToken(
+  facebookUserId: string, accessToken: string, userId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     var loginUser = {
       access_token: accessToken,
@@ -81,7 +82,7 @@ export function loginUsingFacebookAccessToken(facebookUserId: string, accessToke
   };
 }
 
-export function loginUsingDeviceId(): ThunkResultBase {
+export function loginUsingDeviceId(locale: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     let key = "uniqueDeviceUUID";
     let uniqueDeviceUuid = await getDataFromStorage(key);
@@ -94,7 +95,8 @@ export function loginUsingDeviceId(): ThunkResultBase {
     console.log('uuid: ' + uniqueDeviceUuid);
 
     var loginUser = {
-      uniqueDeviceId: uniqueDeviceUuid
+      uniqueDeviceId: uniqueDeviceUuid,
+      locale: locale
     };
 
     return extraArguments.loginApiService.post("device/login", { data: loginUser })

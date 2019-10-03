@@ -17,12 +17,15 @@ import { NavigationConstants } from "../_shared/ScreenConstants";
 import { mixins } from "../../_utils";
 import { withNamespaces } from "react-i18next";
 import { PropsBase } from "../_shared/LayoutContainer";
+import { StoreData } from "../../store/Interfaces";
 
-export interface Props extends PropsBase {}
+export interface Props extends PropsBase {
+  locale: string
+}
 
 interface IMapDispatchToProps {
   loginUsingFacebookAccessToken: (userId, accessToken) => Promise<void>;
-  loginUsingDeviceId: () => Promise<void>;
+  loginUsingDeviceId: (locale) => Promise<void>;
 }
 
 class Login extends Component<Props & IMapDispatchToProps, any> {
@@ -67,13 +70,11 @@ class Login extends Component<Props & IMapDispatchToProps, any> {
       });
   };
 
-  private _loginUniqueDevice = async (isMoveToCreate = true) => {
+  private _loginUniqueDevice = async () => {
     this.props
-      .loginUsingDeviceId()
+      .loginUsingDeviceId(this.props.locale)
       .then(() => {
-        if (isMoveToCreate) {
-          this.props.navigation.navigate(NavigationConstants.Screens.Profile);
-        }
+        this.props.navigation.navigate(NavigationConstants.Screens.Profile);
       })
       .catch(() => {
         Toast.show({
@@ -203,11 +204,17 @@ const styles = StyleSheet.create<Style>({
   },
 });
 
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {        
+  return {
+      locale: storeState.user.locale
+  };
+};
+
 const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
   return {
     loginUsingFacebookAccessToken: (userId, accessToken) =>
       dispatch(loginUsingFacebookAccessToken(userId, accessToken, "")),
-    loginUsingDeviceId: () => dispatch(loginUsingDeviceId()),
+    loginUsingDeviceId: (locale) => dispatch(loginUsingDeviceId(locale)),
   };
 };
 
