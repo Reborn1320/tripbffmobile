@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { StyleSheet, ViewStyle, TextStyle } from "react-native"
-import { Container, Content, View, Button, Text, Icon } from 'native-base';
+import { Container, Content, View, Button, Text, Icon, Toast } from 'native-base';
 import { connect } from "react-redux";
 import * as RNa from "react-navigation";
-import { isLoggedIn } from "../../store/User/operations";
+import { isLoggedIn, loginUsingDeviceId } from "../../store/User/operations";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import NBColor from "../../theme/variables/commonColor.js";
 import { mixins } from "../../_utils";
@@ -17,6 +17,7 @@ export interface Props {
 
 interface IMapDispatchToProps {
     isLoggedIn: () => Promise<boolean>
+    loginUsingDeviceId: () => Promise<void>;
 }
 
 class LandingPageComponent extends Component<any, any> {
@@ -34,7 +35,7 @@ class LandingPageComponent extends Component<any, any> {
                 this.props.navigation.navigate(NavigationConstants.Screens.Profile);
             }
             else {
-                this.props.navigation.navigate(NavigationConstants.Screens.Login);
+              this._loginUniqueDevice();
             }
 
             SplashScreen.hide();
@@ -45,6 +46,19 @@ class LandingPageComponent extends Component<any, any> {
   componentWillUnmount() {
       clearTimeout(this._displayLandingPageTimer);
   }
+
+  private _loginUniqueDevice = async () => {
+    this.props
+      .loginUsingDeviceId()
+      .then(() => {
+        this.props.navigation.navigate(NavigationConstants.Screens.Profile);
+      })
+      .catch(() => {
+        Toast.show({
+          text: "Cannot continue without login",
+        });
+      });
+  };
 
   render() {    
     return (
@@ -94,7 +108,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 
 const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
   return {
-    isLoggedIn: () => dispatch(isLoggedIn())
+    isLoggedIn: () => dispatch(isLoggedIn()),
+    loginUsingDeviceId: () => dispatch(loginUsingDeviceId()),
   };
 };
 
