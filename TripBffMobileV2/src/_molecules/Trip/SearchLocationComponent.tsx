@@ -11,6 +11,7 @@ import { withNamespaces } from "react-i18next";
 
 export interface Props extends PropsBase {
   confirmHandler: (name, address, long, lat) => void;
+  deselectHandler: () => void;
 }
 
 interface State {
@@ -79,6 +80,7 @@ class SearchLocationComponent extends React.Component<Props, State> {
         long: 0,
         lat: 0,
     });
+    this.props.deselectHandler();
   }
 
   private _renderTextInput = (props) => {

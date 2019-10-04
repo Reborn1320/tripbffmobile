@@ -115,7 +115,15 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
       query: name,
       address: address,
       long: long,
-      lat: lat})
+      lat: lat});
+  }
+
+  _deselectedLocationHandler = () => {
+    this.setState({ 
+      query: "",
+      address: "",
+      long: 0,
+      lat: 0});
   }
 
   render() {
@@ -163,6 +171,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
                           </MapboxGL.MapView>
                     <View style={styles.searchContainer}>
                         <SearchLocation 
+                          deselectHandler={this._deselectedLocationHandler}
                           confirmHandler={this._selectedLocationHandler}>
                         </SearchLocation>
                     </View>
