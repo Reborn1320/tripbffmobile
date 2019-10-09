@@ -3,7 +3,7 @@ import { CheckBox, View, ListItem, Text, Icon } from "native-base";
 import { TripImportLocationVM, TripImportImageVM } from "../TripImportViewModels";
 import ImageList, { calculateImageListWidth, N_ITEMS_PER_ROW } from "../../../../_molecules/ImageList/ImageList";
 import { ImageSelection } from "../../../../_molecules/ImageList/ImageSelection";
-import { Image, ViewStyle, TextStyle, StyleSheet, Dimensions } from "react-native";
+import { Image, ViewStyle, TextStyle, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import moment, { Moment } from "moment";
 import { mixins } from "../../../../_utils";
 import NBTheme from "../../../../theme/variables/material.js";
@@ -62,18 +62,16 @@ export default class ImportImageLocationItem extends React.Component<Props, Stat
         return (
             <View style={styles.container}>
                 <View style={styles.locationContainer} >
-                    <View style={styles.checkbox}>
-                        {/* <CheckBox checked={isLocationChecked}
-                            onPress={() => this.props.handleSelectAll(locationIdx)}
-                        ></CheckBox> */}
-                        {isLocationChecked == false &&
-                        <Icon style={styles.uncheckIcon} active type="FontAwesome5" name="circle" />
-                        }
-                        {isLocationChecked == true &&
-                        <Icon style={styles.checkIcon} active solid type="FontAwesome5" name="check-circle" />
-                        }
-
-                    </View>
+                    <TouchableOpacity onPress={() => this.props.handleSelectAll(locationIdx)}>
+                        <View style={styles.checkbox}>                           
+                            {isLocationChecked == false &&
+                            <Icon style={styles.uncheckIcon} active type="FontAwesome5" name="circle" />
+                            }
+                            {isLocationChecked == true &&
+                            <Icon style={styles.checkIcon} active solid type="FontAwesome5" name="check-circle" />
+                            }
+                        </View>
+                    </TouchableOpacity>                    
                     <Text
                         numberOfLines={2}
                         style={Object.assign({ maxWidth: Dimensions.get("window").width - 135}, styles.locationName)}
