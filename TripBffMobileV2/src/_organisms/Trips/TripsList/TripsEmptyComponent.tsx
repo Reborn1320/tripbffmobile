@@ -37,14 +37,14 @@ export class TripsEmptyComponent extends PureComponent<Props, State> {
             </View>           
 
             <View style={styles.othersItemContainer}>
-                <Text style={styles.title}>
+                <Text numberOfLines={2} style={styles.title}>
                     {t("profile:empty_trips_second_title")}
                 </Text>
             </View>
             
             <View style={styles.othersItemContainer}>
                 <Button bordered style={styles.button} onPress={this.props.handleCreateClick}>
-                    <Text numberOfLines={2} style={{...mixins.themes.fontNormal}}>
+                    <Text style={{...mixins.themes.fontNormal}}>
                         {t("profile:emptry_trips_button_title")}
                     </Text>
                 </Button>
@@ -81,7 +81,8 @@ const styles = StyleSheet.create<Style>({
         color: "#383838"
     },
     othersItemContainer: { 
-        marginTop: "10%"
+        marginTop: "10%",
+        maxWidth: "70%"
     },
     icon: {
         fontSize: 54,
