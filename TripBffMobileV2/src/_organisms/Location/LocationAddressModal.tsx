@@ -77,12 +77,7 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
         }
         {
           !this.state.isLoading && 
-          <View style={styles.container}>
-              <View style={styles.searchContainer}>
-                <SearchLocation
-                  confirmHandler={this._selectedLocationHandler}>
-                </SearchLocation>
-              </View>
+          <View style={styles.container}>              
               <View style={styles.mapContainer}>
                 <MapboxGL.MapView
                   style={{flex: 1}}
@@ -94,6 +89,11 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
                       >
                     </MapboxGL.Camera>
                 </MapboxGL.MapView>
+                <View style={styles.searchContainer}>
+                  <SearchLocation
+                    confirmHandler={this._selectedLocationHandler}>
+                  </SearchLocation>
+                </View>
               </View>
           </View>            
         }        

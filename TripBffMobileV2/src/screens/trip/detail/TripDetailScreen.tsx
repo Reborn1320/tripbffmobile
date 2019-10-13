@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Container, Header, Content, Button, Text, View, Icon } from 'native-base';
-import { Alert, BackHandler, StyleSheet, TouchableOpacity, Image, RefreshControl } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, Image, RefreshControl } from "react-native";
+import { AndroidBackHandler } from "react-navigation-backhandler";
 import _, { } from "lodash";
 import { tripApi } from "../../_services/apis";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
@@ -28,9 +29,6 @@ interface State {
 
 export class TripDetailScreen extends Component<Props & IMapDispatchToProps, State> {
 
-    _didFocusSubscription;
-    _willBlurSubscription;
-    _backHardwareHandler;
     _cancelToken;
     _cancelRequest;
 
@@ -44,7 +42,7 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
     }
 
     static navigationOptions = ({ navigation }) => ({
-        headerLeft:  <RNa.HeaderBackButton onPress={navigation.getParam('_goProfile')}/>,
+        headerLeft:  <RNa.HeaderBackButton tintColor={NBTheme.colorBackBlack} onPress={navigation.getParam('_goProfile')}/>,
         headerRight:  (<TouchableOpacity style={styles.settingButtonContainer}
                                 onPress={navigation.getParam('_goEditBasicTrip')}>
                             <Icon style={styles.editIcon} name='pencil-alt' type="FontAwesome5" />
@@ -52,32 +50,10 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
       });
 
     componentWillUnmount() {
-        if (this._didFocusSubscription) this._didFocusSubscription.remove();
-        if (this._willBlurSubscription) this._willBlurSubscription.remove();
-        if (this._backHardwareHandler) this._backHardwareHandler.remove();
-
         this._cancelRequest('Operation canceled by the user.');
     }
 
     componentDidMount() {
-         var tmp = this;
-
-        this._didFocusSubscription = this.props.navigation.addListener(
-            'didFocus',
-            payload => {
-              console.debug('didFocus');
-              tmp._backHardwareHandler = BackHandler.addEventListener('hardwareBackPress', this._handleBackPress);
-            }
-          );
-          
-        this._willBlurSubscription = this.props.navigation.addListener(
-            'willBlur',
-            payload => {
-                console.debug('willBlur');                
-                tmp._backHardwareHandler.remove();
-            }
-        );
-
         this.props.navigation.setParams({ _goProfile: this._handleBackPress });
         this.props.navigation.setParams({ _goEditBasicTrip: this._onPopupMenuSelect });
 
@@ -123,6 +99,7 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
 
         return (
             <Container>
+                <AndroidBackHandler onBackPress={this._handleBackPress} />
                 <Content refreshControl={<RefreshControl refreshing={this.state.refreshing}
                                         onRefresh={this._onRefresh} />}>
                     {isDisplayLoading &&  <Loading message={''}/> }

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FlatList, View, BackHandler, StyleSheet, ViewStyle } from "react-native";
+import { FlatList, View, StyleSheet, ViewStyle } from "react-native";
 import { Container, Content, Button, Text, Footer, Toast, Root } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import _ from "lodash";

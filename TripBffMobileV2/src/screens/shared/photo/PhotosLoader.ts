@@ -1,6 +1,7 @@
 import { PhotoMetaData } from './PhotoInterface';
 import _ from "lodash";
-import { CameraRoll, GetPhotosReturnType } from "react-native";
+import { GetPhotosReturnType } from "react-native";
+import CameraRoll from "@react-native-community/cameraroll";
 import moment from "moment";
 
 const PHOTOS_PER_BATCH = 20
@@ -22,7 +23,7 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
             result = await CameraRoll.getPhotos({
                 first: PHOTOS_PER_BATCH,
                 assetType: 'Photos',
-                after: afterCursor,
+                after: afterCursor
             });
 
             console.log(`get ${result.edges.length} photo(s)`);
@@ -52,8 +53,8 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
                             },
                             timestamp: element.node.timestamp,
                             location: {
-                                latitude: element.node.location ? element.node.location.latitude : 0,
-                                longitude: element.node.location ? element.node.location.longitude : 0
+                                latitude: element.node.location && element.node.location.latitude ? element.node.location.latitude : 0,
+                                longitude: element.node.location && element.node.location.longitude ? element.node.location.longitude : 0
                             }
                         });
 

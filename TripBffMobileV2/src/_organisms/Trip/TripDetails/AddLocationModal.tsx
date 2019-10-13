@@ -115,7 +115,15 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
       query: name,
       address: address,
       long: long,
-      lat: lat})
+      lat: lat});
+  }
+
+  _deselectedLocationHandler = () => {
+    this.setState({ 
+      query: "",
+      address: "",
+      long: 0,
+      lat: 0});
   }
 
   render() {
@@ -150,13 +158,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
                       onCancel={this._hideDateTimePicker}
                     />
                 </View>
-                <View style={{flex: 1}}>
-                  <View style={styles.searchContainer}>
-                      <SearchLocation 
-                        confirmHandler={this._selectedLocationHandler}>
-                      </SearchLocation>
-                  </View>
-                  <View style={styles.placesContainer}>
+                <View style={styles.placesContainer}>
                       <MapboxGL.MapView
                             style={{flex: 1}}
                           >
@@ -167,7 +169,12 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
                                 >
                               </MapboxGL.Camera>
                           </MapboxGL.MapView>
-                  </View>
+                    <View style={styles.searchContainer}>
+                        <SearchLocation 
+                          deselectHandler={this._deselectedLocationHandler}
+                          confirmHandler={this._selectedLocationHandler}>
+                        </SearchLocation>
+                    </View>
                 </View>
           </View>
         }                

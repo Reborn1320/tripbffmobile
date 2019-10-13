@@ -37,12 +37,13 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
         storeDataIntoStorage(STORAGE_KEYS.USER, JSON.stringify(user));
       })
       .catch(error => {
-        console.log("error login", error);
+        console.log("error local login", error);
       });
   };
 }
 
-export function loginUsingFacebookAccessToken(facebookUserId: string, accessToken: string, userId: string): ThunkResultBase {
+export function loginUsingFacebookAccessToken(
+  facebookUserId: string, accessToken: string, userId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     var loginUser = {
       access_token: accessToken,
@@ -76,12 +77,12 @@ export function loginUsingFacebookAccessToken(facebookUserId: string, accessToke
         dispatch(clearAllDatasource());
       })
       .catch(error => {
-        console.log("error login", JSON.stringify(error));
+        console.log("error facebook verify login", JSON.stringify(error));
       });
   };
 }
 
-export function loginUsingDeviceId(): ThunkResultBase {
+export function loginUsingDeviceId(locale: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     let key = "uniqueDeviceUUID";
     let uniqueDeviceUuid = await getDataFromStorage(key);
@@ -94,7 +95,8 @@ export function loginUsingDeviceId(): ThunkResultBase {
     console.log('uuid: ' + uniqueDeviceUuid);
 
     var loginUser = {
-      uniqueDeviceId: uniqueDeviceUuid
+      uniqueDeviceId: uniqueDeviceUuid,
+      locale: locale
     };
 
     return extraArguments.loginApiService.post("device/login", { data: loginUser })
@@ -119,7 +121,8 @@ export function loginUsingDeviceId(): ThunkResultBase {
         dispatch(clearAllDatasource());
       })
       .catch(error => {
-        console.log("error login", JSON.stringify(error));
+        console.log("error device login", error);
+        throw error;
       });
   };
 }

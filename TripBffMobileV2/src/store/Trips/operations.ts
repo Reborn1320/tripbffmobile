@@ -59,7 +59,7 @@ export function getCurrentMinimizedTrip(tripId: string): ThunkResultBase {
         dispatch(getCurrentMinimizedTripAction(res.data));
       })
       .catch(error => {
-        console.log("fetch trips error", error);
+        console.log("fetch minimized trips error", error);
       });
   };
 }

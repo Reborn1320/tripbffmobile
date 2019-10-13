@@ -47,7 +47,7 @@ export function fetchTrip(tripId: string, cancelToken: any): ThunkResultBase {
         return trip;
       })
       .catch(error => {
-        console.log("fetch trips error", error);
+        console.log("fetch trip error", error);
       });
   };
 }
