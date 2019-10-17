@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  Platform
 } from 'react-native';
 import PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
@@ -51,10 +52,18 @@ class ImageItem extends Component {
         style={{ marginBottom: imageMargin, marginRight: imageMargin }}
         onPress={() => this.handleClick(image)}
       >
-        <FastImage
-          source={{ uri: image.uri }}
-          style={{ height: this.imageSize, width: this.imageSize }}
-        />
+        {
+          Platform.OS === 'ios' && 
+          <Image
+            source={{ uri: image.uri }}
+            style={{ height: this.imageSize, width: this.imageSize }}
+          /> ||
+          <FastImage
+            source={{ uri: image.uri }}
+            style={{ height: this.imageSize, width: this.imageSize }}
+          />
+        }
+        
         {(selected) ? marker : null}
       </TouchableOpacity>
     );
