@@ -78,7 +78,8 @@ const styles = StyleSheet.create<Style>({
         ...mixins.themes.fontNormal,
         fontSize: 18,
         textAlign: "center",
-        color: "#383838"
+        color: "#383838",
+        height: 50
     },
     othersItemContainer: { 
         marginTop: "10%",
