@@ -88,7 +88,7 @@ const styles = StyleSheet.create<Style>({
   },
   title: {
     marginTop: 15,
-    marginLeft: 20,
+    marginLeft: 10,
     color: NBColor.brandPrimary,
     fontSize: 18,
     fontStyle: "normal",
