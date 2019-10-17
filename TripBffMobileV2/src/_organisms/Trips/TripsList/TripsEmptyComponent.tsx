@@ -71,7 +71,7 @@ const styles = StyleSheet.create<Style>({
         alignItems: "center"
     },
     firstTitleContainer: {
-        maxWidth: "60%",
+        maxWidth: "70%",
         marginTop: "10%"
     },
     title: {
