@@ -3,8 +3,7 @@
 
 import * as React from "react";
 import { View, Text, Icon} from "native-base";
-import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle, SafeAreaView } from "react-native";
-import RNModal from "react-native-modal";
+import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle, SafeAreaView,  Modal } from "react-native";
 import { connectStyle } from 'native-base';
 import NBColor from "../theme/variables/material.js";
 import { mixins } from "../_utils";
@@ -26,13 +25,13 @@ class ActionModalComponent extends React.PureComponent<Props, State> {
       
     return (
       
-        <RNModal style={styles.modal} 
-        presentationStyle={'fullScreen'}
-            onModalShow={this.props.onModalShowHandler}
-            onModalHide={this.props.onModalHideHandler}
-            onBackButtonPress={this.props.onCancelHandler}
-            isVisible={this.props.isVisible} hideModalContentWhileAnimating>
-              
+        <Modal 
+            presentationStyle={'fullScreen'}
+            onShow={this.props.onModalShowHandler}
+            onDismiss={this.props.onModalHideHandler}            
+            onRequestClose={this.props.onCancelHandler}
+            visible={this.props.isVisible}
+            >              
             <SafeAreaView style={styles.modalInnerContainer}>
                 <View style={styles.buttons}>
                   <TouchableOpacity onPress={this.props.onCancelHandler} style={styles.cancelButtonContainer}>
@@ -49,7 +48,7 @@ class ActionModalComponent extends React.PureComponent<Props, State> {
                   {this.props.children}
                 </View>                
             </SafeAreaView>
-        </RNModal>
+        </Modal>
     );
   }
 }
@@ -89,7 +88,7 @@ const styles = StyleSheet.create<Style>({
   },
   title: {
     marginTop: 15,
-    marginLeft: 20,
+    marginLeft: 10,
     color: NBColor.brandPrimary,
     fontSize: 18,
     fontStyle: "normal",

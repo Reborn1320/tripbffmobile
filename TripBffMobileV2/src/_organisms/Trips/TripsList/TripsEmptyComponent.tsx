@@ -71,14 +71,15 @@ const styles = StyleSheet.create<Style>({
         alignItems: "center"
     },
     firstTitleContainer: {
-        maxWidth: "60%",
+        maxWidth: "70%",
         marginTop: "10%"
     },
     title: {
         ...mixins.themes.fontNormal,
         fontSize: 18,
         textAlign: "center",
-        color: "#383838"
+        color: "#383838",
+        height: 50
     },
     othersItemContainer: { 
         marginTop: "10%",
