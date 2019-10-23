@@ -1,7 +1,7 @@
 import { PhotoMetaData } from './PhotoInterface';
 import _ from "lodash";
 import { GetPhotosReturnType } from "react-native";
-import CameraRoll from "@react-native-community/cameraroll";
+import CameraRoll, { PhotoIdentifiersPage } from "@react-native-community/cameraroll";
 import moment from "moment";
 
 const PHOTOS_PER_BATCH = 20
@@ -14,7 +14,7 @@ async function loadPhotosWithinAsync(fromTimestamp: number, toTimestamp: number)
     try {
 
         var photos: PhotoMetaData[] = []
-        var result: GetPhotosReturnType;
+        var result: PhotoIdentifiersPage;
 
         getphotos:
         while (fromTimestamp <= toTimestamp) {
