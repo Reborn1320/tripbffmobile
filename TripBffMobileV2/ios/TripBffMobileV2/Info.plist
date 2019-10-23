@@ -52,11 +52,11 @@
 		<dict/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We do not access current location of user. We only use location of user from photos that user taken when went on holiday</string>
+	<string>We do not access your current location</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>View Camera Roll</string>
+	<string>This allow us to use your photos to provide you certain features like display photos, group photos by location and upload your photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>View Camera Roll</string>
+	<string>This allow us to use your photos to provide you certain features like display photos, group photos by location and upload your photos</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Ionicons.ttf</string>
