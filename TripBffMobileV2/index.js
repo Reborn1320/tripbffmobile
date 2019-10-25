@@ -16,7 +16,7 @@ new Flurry.Builder()
   .withCrashReporting(true)
   .withLogEnabled(true)
   .withLogLevel(Flurry.LogLevel.DEBUG)
-  .build("TVNKX5PBS3244R94T3XB"); // used only in development environment. Will be updated prod api key when build relese verion.
+  .build("TVNKX5PBS3244R94T3XB", "GV9CB8N9YRTKGXJ9JQW7"); // used only in development environment. Will be updated prod api key when build relese verion.
 
   // Set users preferences.
 Flurry.setAge(36);
