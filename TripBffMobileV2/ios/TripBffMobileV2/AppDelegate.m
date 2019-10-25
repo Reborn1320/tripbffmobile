@@ -6,7 +6,7 @@
  */
 
 #import "AppDelegate.h"
-
+#import "Flurry.h"
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
@@ -16,6 +16,15 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  FlurrySessionBuilder* builder = [[[[[FlurrySessionBuilder new]
+                 withLogLevel:FlurryLogLevelAll]
+                 withCrashReporting:YES]
+                 withSessionContinueSeconds:10]
+                 withAppVersion:@"1.1.0"];
+  
+  [Flurry startSession:@"GV9CB8N9YRTKGXJ9JQW7" withSessionBuilder:builder];
+  
+  
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"TripBffMobileV2"
