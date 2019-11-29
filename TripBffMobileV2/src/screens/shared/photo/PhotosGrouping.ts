@@ -45,7 +45,7 @@ function isApproximatelyTheSameTime(previousMetaDatas: PhotoMetaData, element: P
 
 function isApproximatelyTheSamePlace(previousMetaDatas: PhotoMetaData, element: PhotoMetaData): boolean {
     return distance(previousMetaDatas.location.latitude, previousMetaDatas.location.longitude,
-        element.location.latitude, element.location.longitude) < 0.5;
+        element.location.latitude, element.location.longitude) < 0.05;
 }
 
 //https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula

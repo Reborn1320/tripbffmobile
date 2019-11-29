@@ -9,7 +9,11 @@ import { LOCALES } from "../screens/_services/SystemConstants";
 export function getAddressFromLocation (locationJson) {
     let address = "";
 
-    if (locationJson.address) {
+    if (locationJson.title) {
+      address = locationJson.address
+    }
+    else {
+      if (locationJson.address) {
         let houseNumber = locationJson.address.house_number,
             road = locationJson.address.road,
             suburb = locationJson.address.suburb,
@@ -26,6 +30,7 @@ export function getAddressFromLocation (locationJson) {
     }
     else
         address = locationJson.display_name;
+    }    
 
     return address;
 }
