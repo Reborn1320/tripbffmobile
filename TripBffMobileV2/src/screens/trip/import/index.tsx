@@ -21,7 +21,7 @@ import { toDateUtc as toDateUtcFunc } from "../../../_function/dateFuncs";
 import Footer2Buttons from "../../../_atoms/Footer2Buttons";
 import { mixins } from "../../../_utils";
 import { withNamespaces } from "react-i18next";
-import { getNearestLocationByCoordinate } from "../../../store/DataSource/operations";
+import { getTopNearerLocationsByCoordinate } from "../../../store/DataSource/operations";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -75,11 +75,11 @@ class TripImportation extends Component<Props, State> {
         };
       };
 
-    async getNearestLocationFromCoordinate(long, lat) {
+    async getTopNearerLocationsByCoordinate(long, lat) {
         if (long == 0 && lat == 0)
             return "";
 
-        var nearestLocation = await getNearestLocationByCoordinate(lat, long);
+        var nearestLocation = await getTopNearerLocationsByCoordinate(lat, long);
         console.log('nearest location: ' + JSON.stringify(nearestLocation));
 
         if (!nearestLocation) {
@@ -117,7 +117,7 @@ class TripImportation extends Component<Props, State> {
             var minTimestamp = _.min(element.map(e => e.timestamp))
 
             // get nearest location
-            var locationJson = await this.getNearestLocationFromCoordinate(element[0].location.longitude, element[0].location.latitude);
+            var locationJson = await this.getTopNearerLocationsByCoordinate(element[0].location.longitude, element[0].location.latitude);
 
             var location: TripImportLocationVM = {
                 id: "",

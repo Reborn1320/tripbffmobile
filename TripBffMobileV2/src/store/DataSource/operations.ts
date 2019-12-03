@@ -59,7 +59,7 @@ export function getAllFeelings(): ThunkResultBase {
       });
   }
 
-  export function getNearestLocationByCoordinate(lat: number, long: number): Promise<any> {
+  export function getTopNearerLocationsByCoordinate(lat: number, long: number): Promise<any> {
     var config = {
       params: {
         lat,
@@ -67,7 +67,7 @@ export function getAllFeelings(): ThunkResultBase {
       }
     };
 
-    return tripApiService.get(`/trips/getNearestLocationByCoordinate`, { config })
+    return tripApiService.get(`/trips/getTopNearerLocationsByCoordinate`, { config })
       .then(res => {    
         return res.data;
       })
