@@ -58,3 +58,20 @@ export function getAllFeelings(): ThunkResultBase {
         console.log("search locations error", JSON.stringify(error));
       });
   }
+
+  export function getTopNearerLocationsByCoordinate(lat: number, long: number): Promise<any> {
+    var config = {
+      params: {
+        lat,
+        long
+      }
+    };
+
+    return tripApiService.get(`/trips/getTopNearerLocationsByCoordinate`, { config })
+      .then(res => {    
+        return res.data;
+      })
+      .catch(error => {
+        console.log("get nearest location error", JSON.stringify(error));
+      });
+  }

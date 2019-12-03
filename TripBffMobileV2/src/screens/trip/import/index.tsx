@@ -21,6 +21,7 @@ import { toDateUtc as toDateUtcFunc } from "../../../_function/dateFuncs";
 import Footer2Buttons from "../../../_atoms/Footer2Buttons";
 import { mixins } from "../../../_utils";
 import { withNamespaces } from "react-i18next";
+import { getTopNearerLocationsByCoordinate } from "../../../store/DataSource/operations";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -74,19 +75,26 @@ class TripImportation extends Component<Props, State> {
         };
       };
 
-    async getLocationFromCoordinate(long, lat) {
+    async getTopNearerLocationsByCoordinate(long, lat) {
         if (long == 0 && lat == 0)
             return "";
 
-        var url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat +'&lon=' + long;
-        return fetch(url)
-                .then((response) => response.json())
-                .then((responseJson) => {
-                    return responseJson;
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
+        var nearestLocation = await getTopNearerLocationsByCoordinate(lat, long);
+        console.log('nearest location: ' + JSON.stringify(nearestLocation));
+
+        if (!nearestLocation) {
+            try {
+                var url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat +'&lon=' + long;
+                var response = await fetch(url);
+                nearestLocation = await response.json();  
+                console.log('nearest location from OSM: ' + JSON.stringify(nearestLocation));
+            }
+            catch(error) {
+                console.log(error);
+            }                              
+        }
+        
+        return nearestLocation;
     }    
 
     async componentDidMount() {       
@@ -108,12 +116,12 @@ class TripImportation extends Component<Props, State> {
             var maxTimestamp = _.max(element.map(e => e.timestamp))
             var minTimestamp = _.min(element.map(e => e.timestamp))
 
-            //call openstreetmap api to get location name and address
-            var locationJson = await this.getLocationFromCoordinate(element[0].location.longitude, element[0].location.latitude);
+            // get nearest location
+            var locationJson = await this.getTopNearerLocationsByCoordinate(element[0].location.longitude, element[0].location.latitude);
 
             var location: TripImportLocationVM = {
                 id: "",
-                name: locationJson ? locationJson.name : "Location Unknown",
+                name: locationJson ? locationJson.title : "Location Unknown",
                 location: {
                     lat: element[0].location.latitude,
                     long: element[0].location.longitude,

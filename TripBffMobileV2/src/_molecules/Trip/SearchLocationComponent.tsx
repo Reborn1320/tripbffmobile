@@ -40,28 +40,27 @@ class SearchLocationComponent extends React.Component<Props, State> {
 
     //call API to get locations from own DB first
     var locations = await searchLocations(query);
-    console.log('search locations: ' + JSON.stringify(locations));
 
     if (locations.length == 0) {
       //if no locations found from own DB, call API to OSM
       var url = 'https://nominatim.openstreetmap.org/search?q=' + query +
-      '&format=jsonv2&addressdetails=1&namedetails=1';      
+      '&format=jsonv2&addressdetails=1&namedetails=1';   
 
-      return fetch(url)
-          .then((response) => response.json())
-          .then((jsonPlaces) => {
-            locations = jsonPlaces.map(place => {
-              return {
-                title: place.namedetails.name,
-                address: getAddressFromLocation(place),              
-                long: parseFloat(place.lon),
-                lat: parseFloat(place.lat)
-              }
-            });            
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+      try {
+        let response = await fetch(url);
+        let jsonPlaces = await response.json();
+        locations = jsonPlaces.map(place => {
+          return {
+            title: place.namedetails.name,
+            address: getAddressFromLocation(place),              
+            long: parseFloat(place.lon),
+            lat: parseFloat(place.lat)
+          }
+        }); 
+      }
+      catch (error) {
+        console.error(error);
+      }
     }    
     
     this.setState({places: locations});
