@@ -32,6 +32,10 @@ export default class ImportImageLocationItem extends React.Component<Props, Stat
         return nextProps.isForceUpdate;
     }
 
+    private _openOtherSuggestionsModal = () => {
+        //TODO: open modal
+    }
+
     private renderItem = (itemInfo: { item: any, index: number }) => {
         const img = itemInfo.item;
         const { itemWidth } = calculateImageListWidth(10, 10);
@@ -50,7 +54,7 @@ export default class ImportImageLocationItem extends React.Component<Props, Stat
 
             />
         );
-    }
+    }    
 
     render() {
 
@@ -94,6 +98,11 @@ export default class ImportImageLocationItem extends React.Component<Props, Stat
                         {location.location.address}
                     </Text>
                 </View>
+                <View style={styles.otherSuggestionsContainer}>
+                    <TouchableOpacity onPress={this._openOtherSuggestionsModal}>
+                        <Text style={styles.otherSuggestionsLabel}>View other suggestions</Text>
+                    </TouchableOpacity>                    
+                </View>
                 <ImageList
                     items={location.images.map(img => ({ ...img, data: img }))}
                     renderItem={this.renderItem}
@@ -116,6 +125,8 @@ interface Style {
     locationName: TextStyle;
     date: TextStyle;
     locationAddress: TextStyle;
+    otherSuggestionsContainer: ViewStyle;
+    otherSuggestionsLabel: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -134,7 +145,6 @@ const styles = StyleSheet.create<Style>({
         marginLeft: 10,
         marginRight: 10,
         marginTop: 3,
-        marginBottom: 7,
     },
     checkbox: {
         // ...mixins.themes.debug,
@@ -167,6 +177,16 @@ const styles = StyleSheet.create<Style>({
         alignSelf: "flex-start",
     },
     locationAddress: {
-        fontSize: 13,
+        fontSize: 14,
+    },
+    otherSuggestionsContainer: {
+        marginLeft: 10,
+        marginRight: 10,
+        marginTop: 3,
+        marginBottom: 7,
+    },
+    otherSuggestionsLabel: {
+        color: NBTheme.brandPrimary,        
+        fontSize: 13
     }
 })

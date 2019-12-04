@@ -79,22 +79,24 @@ class TripImportation extends Component<Props, State> {
         if (long == 0 && lat == 0)
             return "";
 
-        var nearestLocation = await getTopNearerLocationsByCoordinate(lat, long);
-        console.log('nearest location: ' + JSON.stringify(nearestLocation));
+        var nearerLocations = await getTopNearerLocationsByCoordinate(lat, long);
+        console.log('nearer locations: ' + JSON.stringify(nearerLocations));
 
-        if (!nearestLocation) {
+        if (!nearerLocations || nearerLocations.length == 0) {
             try {
                 var url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat +'&lon=' + long;
                 var response = await fetch(url);
-                nearestLocation = await response.json();  
+                let nearestLocation = await response.json();  
+                nearestLocation.title = nearestLocation.name;
                 console.log('nearest location from OSM: ' + JSON.stringify(nearestLocation));
+                nearerLocations.push(nearestLocation);
             }
             catch(error) {
                 console.log(error);
             }                              
         }
         
-        return nearestLocation;
+        return nearerLocations;
     }    
 
     async componentDidMount() {       
@@ -117,16 +119,23 @@ class TripImportation extends Component<Props, State> {
             var minTimestamp = _.min(element.map(e => e.timestamp))
 
             // get nearest location
-            var locationJson = await this.getTopNearerLocationsByCoordinate(element[0].location.longitude, element[0].location.latitude);
-
+            var nearerLocations = await this.getTopNearerLocationsByCoordinate(element[0].location.longitude, element[0].location.latitude);
+            let nearestLocation = nearerLocations[0];
             var location: TripImportLocationVM = {
                 id: "",
-                name: locationJson ? locationJson.title : "Location Unknown",
+                name: nearestLocation ? nearestLocation.title : "Location Unknown",
                 location: {
                     lat: element[0].location.latitude,
                     long: element[0].location.longitude,
-                    address: locationJson ? getAddressFromLocation(locationJson) : "Location Unknown"
+                    address: nearestLocation ? getAddressFromLocation(nearestLocation) : "Location Unknown"
                 },
+                nearerLocations: nearerLocations.map(lo => {
+                    return {
+                        lat: element[0].location.latitude,
+                        long: element[0].location.longitude,
+                        address: nearestLocation ? getAddressFromLocation(nearestLocation) : "Location Unknown"
+                    }
+                }),
                 fromTime: moment(minTimestamp, "X"),
                 toTime: moment(maxTimestamp, "X"),
                 images: []
