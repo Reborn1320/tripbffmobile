@@ -15,6 +15,8 @@ export interface Props {
     handleSelect: (locationIdx: number, imageIdx: number) => void
 
     isForceUpdate?: boolean
+
+    handleOpenOtherSuggestionsModal: (location: TripImportLocationVM) => void
 }
 
 export interface State {
@@ -33,7 +35,7 @@ export default class ImportImageLocationItem extends React.Component<Props, Stat
     }
 
     private _openOtherSuggestionsModal = () => {
-        //TODO: open modal
+        this.props.handleOpenOtherSuggestionsModal(this.props.location);
     }
 
     private renderItem = (itemInfo: { item: any, index: number }) => {

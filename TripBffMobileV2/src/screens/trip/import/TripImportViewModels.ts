@@ -20,6 +20,7 @@ export interface TripImportImageVM {
 }
 
 export interface TripImportLocationDetailVM {
+  name: string,
   long: number
   lat: number
   address: string

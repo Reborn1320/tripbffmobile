@@ -22,6 +22,7 @@ import Footer2Buttons from "../../../_atoms/Footer2Buttons";
 import { mixins } from "../../../_utils";
 import { withNamespaces } from "react-i18next";
 import { getTopNearerLocationsByCoordinate } from "../../../store/DataSource/operations";
+import  LocationSuggestionModal from "./components/ImportImageSuggestionsModal";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -42,7 +43,9 @@ interface State {
     loadingMessage: string
     forceUpdateOnlyItemIdx?: number
     UIState: UIState,
-    isHideFooter: boolean
+    isHideFooter: boolean,
+    isOpenOtherSuggestionsModal: boolean,
+    selectedLocation: TripImportLocationVM
 }
 
 type UIState = "select image" | "import images" | "uploading image" 
@@ -60,7 +63,9 @@ class TripImportation extends Component<Props, State> {
             isLoading: true,
             loadingMessage: this.props.t("import:loading_image_from_gallery_message"),
             UIState: "select image",
-            isHideFooter: true
+            isHideFooter: true,
+            isOpenOtherSuggestionsModal: false,
+            selectedLocation: null
         }
 
         console.log("constructor")
@@ -75,12 +80,12 @@ class TripImportation extends Component<Props, State> {
         };
       };
 
-    async getTopNearerLocationsByCoordinate(long, lat) {
+    async getTopNearerLocationsByCoordinate(long, lat) {``
         if (long == 0 && lat == 0)
             return "";
 
         var nearerLocations = await getTopNearerLocationsByCoordinate(lat, long);
-        console.log('nearer locations: ' + JSON.stringify(nearerLocations));
+        // console.log('nearer locations: ' + JSON.stringify(nearerLocations));
 
         if (!nearerLocations || nearerLocations.length == 0) {
             try {
@@ -88,7 +93,7 @@ class TripImportation extends Component<Props, State> {
                 var response = await fetch(url);
                 let nearestLocation = await response.json();  
                 nearestLocation.title = nearestLocation.name;
-                console.log('nearest location from OSM: ' + JSON.stringify(nearestLocation));
+                // console.log('nearest location from OSM: ' + JSON.stringify(nearestLocation));
                 nearerLocations.push(nearestLocation);
             }
             catch(error) {
@@ -122,15 +127,17 @@ class TripImportation extends Component<Props, State> {
             var nearerLocations = await this.getTopNearerLocationsByCoordinate(element[0].location.longitude, element[0].location.latitude);
             let nearestLocation = nearerLocations[0];
             var location: TripImportLocationVM = {
-                id: "",
+                id: idx.toString(),
                 name: nearestLocation ? nearestLocation.title : "Location Unknown",
                 location: {
+                    name: nearestLocation ? nearestLocation.title : "Location Unknown",
                     lat: element[0].location.latitude,
                     long: element[0].location.longitude,
                     address: nearestLocation ? getAddressFromLocation(nearestLocation) : "Location Unknown"
                 },
                 nearerLocations: nearerLocations.map(lo => {
                     return {
+                        name: lo.title,
                         lat: element[0].location.latitude,
                         long: element[0].location.longitude,
                         address: nearestLocation ? getAddressFromLocation(nearestLocation) : "Location Unknown"
@@ -241,7 +248,33 @@ class TripImportation extends Component<Props, State> {
             this.setState({ UIState: "import images", isHideFooter: true });
         })
     }
+
+    private _handleOpenOtherSuggestionsModal = (location: TripImportLocationVM) => {
+        this.setState({
+            isOpenOtherSuggestionsModal: true, 
+            selectedLocation: location
+        });
+    }
     
+    private _handleCloseOtherSuggestionsModal = () => {
+        this.setState({
+            isOpenOtherSuggestionsModal: false,
+            selectedLocation: null
+        });
+    }
+
+    private _confirmUpdateLocation = (location: TripImportLocationVM) => {
+        let updatedLocations = this.state.locations.map(lo => {
+            return lo.id == location.id ? location : lo;
+        });
+        console.log('updated locations: ' + JSON.stringify(updatedLocations));
+        this.setState({
+            isOpenOtherSuggestionsModal: false,
+            selectedLocation: null,
+            locations: updatedLocations
+        });
+    }
+
     private _renderItem = (itemInfo) => {
         var location: TripImportLocationVM = itemInfo.item;
         var locIdx: number = itemInfo.index;
@@ -253,6 +286,7 @@ class TripImportation extends Component<Props, State> {
                 handleSelectAll={(locationIdx) => this._importImageSelectUnselectAllImages(locationIdx)}
                 handleSelect={(locationIdx, imageIdx) => this._importImageSelectUnselectImage(locationIdx, imageIdx)}
                 isForceUpdate={locIdx == this.state.forceUpdateOnlyItemIdx}
+                handleOpenOtherSuggestionsModal={this._handleOpenOtherSuggestionsModal}
             />
         );
     }
@@ -350,6 +384,13 @@ class TripImportation extends Component<Props, State> {
                                 removeClippedSubviews={false}
                             />
                         }    
+                        <View>
+                            <LocationSuggestionModal 
+                                isVisible={this.state.isOpenOtherSuggestionsModal}
+                                location={this.state.selectedLocation}
+                                confirmHandler={this._confirmUpdateLocation}
+                                cancelHandler={this._handleCloseOtherSuggestionsModal}></LocationSuggestionModal>
+                        </View>
                 </Content>
                 {
                     isHideFooter || 
