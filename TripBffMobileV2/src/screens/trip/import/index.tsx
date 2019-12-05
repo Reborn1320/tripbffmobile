@@ -80,12 +80,12 @@ class TripImportation extends Component<Props, State> {
         };
       };
 
-    async getTopNearerLocationsByCoordinate(long, lat) {``
+    async getTopNearerLocationsByCoordinate(long, lat) {
         if (long == 0 && lat == 0)
             return "";
 
         var nearerLocations = await getTopNearerLocationsByCoordinate(lat, long);
-        // console.log('nearer locations: ' + JSON.stringify(nearerLocations));
+        //console.log('nearer locations: ' + JSON.stringify(nearerLocations));
 
         if (!nearerLocations || nearerLocations.length == 0) {
             try {
@@ -140,7 +140,7 @@ class TripImportation extends Component<Props, State> {
                         name: lo.title,
                         lat: element[0].location.latitude,
                         long: element[0].location.longitude,
-                        address: nearestLocation ? getAddressFromLocation(nearestLocation) : "Location Unknown"
+                        address: getAddressFromLocation(lo)
                     }
                 }),
                 fromTime: moment(minTimestamp, "X"),
@@ -241,8 +241,7 @@ class TripImportation extends Component<Props, State> {
 
     private _import = () => {
 
-        var selectedLocations = this._toLocationVM();
-        console.log('selected locations: ' + JSON.stringify(selectedLocations))
+        var selectedLocations = this._toLocationVM();        
         this.props.addLocations(this.state.tripId, selectedLocations)
         .then(() => {
             this.setState({ UIState: "import images", isHideFooter: true });
@@ -267,17 +266,18 @@ class TripImportation extends Component<Props, State> {
         let updatedLocations = this.state.locations.map(lo => {
             return lo.id == location.id ? location : lo;
         });
-        console.log('updated locations: ' + JSON.stringify(updatedLocations));
+        
         this.setState({
             isOpenOtherSuggestionsModal: false,
             selectedLocation: null,
-            locations: updatedLocations
+            locations: updatedLocations,
+            forceUpdateOnlyItemIdx: parseInt(location.id)
         });
     }
 
     private _renderItem = (itemInfo) => {
         var location: TripImportLocationVM = itemInfo.item;
-        var locIdx: number = itemInfo.index;
+        var locIdx: number = parseInt(location.id);
 
         return (
             <ImportImageLocationItem

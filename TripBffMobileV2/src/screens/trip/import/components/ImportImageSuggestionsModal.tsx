@@ -1,7 +1,6 @@
 import * as React from "react";
-import { View, Text } from "native-base";
+import { View, Text, Button, ListItem,  List,  CheckBox, Icon, Body } from "native-base";
 import { StyleSheet, ViewStyle, TextStyle, SafeAreaView , FlatList} from "react-native";
-import { Button, ListItem, CheckBox, Body } from 'native-base';
 import Modal from 'react-native-modal';
 
 import NBColor from "../../../../theme/variables/commonColor.js";
@@ -30,7 +29,7 @@ class LocationSuggestionModalComponent extends React.PureComponent<Props, State>
     this.state = {
         selectedLocation: null
     }
-  }  
+  }    
 
   private _onCancel = () => {
     this.props.cancelHandler();
@@ -39,48 +38,25 @@ class LocationSuggestionModalComponent extends React.PureComponent<Props, State>
   private _onSave = () => {
     let { selectedLocation } = this.state;
 
-    if (selectedLocation) {
+    if (selectedLocation.name != this.props.location.name) {
         let updatedLocation = Object.assign({}, this.props.location);
         updatedLocation.name = selectedLocation.name;
         updatedLocation.location = selectedLocation;
-        console.log('updated location: ' + JSON.stringify(updatedLocation));
         this.props.confirmHandler(updatedLocation);
     }        
     else 
         this.props.cancelHandler();
   }    
 
-  private _onPressLocation = (data) => {
-    // var seen = [];
-    // JSON.stringify(data, function(key, val) {
-    //     if (val != null && typeof val == "object") {
-    //          if (seen.indexOf(val) >= 0) {
-    //              return;
-    //          }
-    //          seen.push(val);
-    //      }
-    //      return val;
-    //     });
-    // console.log('event press:' + JSON.stringify(seen));
-  }
-
-  private _renderItem = (item) => {
-    let suggestionLocation = item.item;
-    let isChecked = suggestionLocation.name == this.props.location.name;
-    
-    return (
-        <ListItem onPress={this._onPressLocation}>
-            <CheckBox checked={isChecked} />
-            <Body>
-              <Text style={styles.locationName}>{suggestionLocation.name}</Text>
-              <Text style={styles.locationAddress}>{suggestionLocation.address}</Text>
-            </Body>
-        </ListItem>
-    );
-  }
+  private _onPressLocation = (selectedLocation) => {
+    this.setState({
+      selectedLocation: selectedLocation
+    });
+  }  
 
   render() {
     const { isVisible, t, location } = this.props;    
+    let { selectedLocation } = this.state;
     let otherLocationsSuggestion: TripImportLocationDetailVM[] = location ? location.nearerLocations : [];
 
     return (
@@ -93,12 +69,41 @@ class LocationSuggestionModalComponent extends React.PureComponent<Props, State>
         >
           <SafeAreaView style={styles.content}>
               <View style={styles.locationsContainer}>
-                <FlatList style={{ borderBottomWidth: 0 }}
-                            data={otherLocationsSuggestion}
-                            renderItem={this._renderItem}
-                            keyExtractor={(item, index) => String(index)}
-                            removeClippedSubviews={false}
-                    />
+                <List>
+                {
+                    otherLocationsSuggestion.map(lo => {
+                      let isChecked = false;
+
+                      if (selectedLocation) {
+                        isChecked = lo.name == this.state.selectedLocation.name;
+                      }
+                      else {
+                        isChecked = lo.name == location.name;
+                      }
+
+                      if (isChecked)                                
+                          return (
+                              <ListItem selected key={lo.name}>
+                                  <CheckBox checked={true} />
+                                  <Body>
+                                    <Text style={styles.locationName}>{lo.name}</Text>
+                                    <Text style={styles.locationAddress}>{lo.address}</Text>
+                                  </Body>                                 
+                              </ListItem>   
+                          )
+
+                        return (
+                            <ListItem key={lo.name} onPress={() => this._onPressLocation(lo)}>
+                                <CheckBox checked={false}  onPress={() => this._onPressLocation(lo)}/>
+                                <Body>
+                                    <Text style={styles.locationName}>{lo.name}</Text>
+                                    <Text style={styles.locationAddress}>{lo.address}</Text>
+                                </Body>
+                            </ListItem>   
+                        ) 
+                    })
+                }
+                  </List>
               </View>                
               <View style={styles.buttons}>
                 <Button
@@ -184,7 +189,7 @@ const styles = StyleSheet.create<Style>({
     marginBottom: 10
   },
   locationName: {
-    color: NBColor.brandPrimary,
+    // color: NBColor.brandPrimary,
     fontSize: 18,
   },
   locationAddress: {
