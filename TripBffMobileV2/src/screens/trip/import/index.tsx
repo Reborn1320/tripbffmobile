@@ -82,7 +82,7 @@ class TripImportation extends Component<Props, State> {
 
     async getTopNearerLocationsByCoordinate(long, lat) {
         if (long == 0 && lat == 0)
-            return "";
+            return [];
 
         var nearerLocations = await getTopNearerLocationsByCoordinate(lat, long);
         //console.log('nearer locations: ' + JSON.stringify(nearerLocations));
@@ -122,10 +122,11 @@ class TripImportation extends Component<Props, State> {
 
             var maxTimestamp = _.max(element.map(e => e.timestamp))
             var minTimestamp = _.min(element.map(e => e.timestamp))
-
+            
             // get nearest location
             var nearerLocations = await this.getTopNearerLocationsByCoordinate(element[0].location.longitude, element[0].location.latitude);
-            let nearestLocation = nearerLocations[0];
+            
+            let nearestLocation = nearerLocations.length > 0 ? nearerLocations[0] : null;
             var location: TripImportLocationVM = {
                 id: idx.toString(),
                 name: nearestLocation ? nearestLocation.title : "Location Unknown",
@@ -266,7 +267,7 @@ class TripImportation extends Component<Props, State> {
         let updatedLocations = this.state.locations.map(lo => {
             return lo.id == location.id ? location : lo;
         });
-        
+
         this.setState({
             isOpenOtherSuggestionsModal: false,
             selectedLocation: null,
