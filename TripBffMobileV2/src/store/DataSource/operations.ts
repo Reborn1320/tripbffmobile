@@ -68,7 +68,7 @@ export function getAllFeelings(): ThunkResultBase {
     };
 
     return tripApiService.get(`/trips/getTopNearerLocationsByCoordinate`, { config })
-      .then(res => {    
+      .then(res => {
         return res.data;
       })
       .catch(error => {
