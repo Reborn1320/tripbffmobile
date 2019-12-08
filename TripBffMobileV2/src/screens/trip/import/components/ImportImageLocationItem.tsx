@@ -100,11 +100,15 @@ export default class ImportImageLocationItem extends React.Component<Props, Stat
                         {location.location.address}
                     </Text>
                 </View>
-                <View style={styles.otherSuggestionsContainer}>
-                    <TouchableOpacity onPress={this._openOtherSuggestionsModal}>
-                        <Text style={styles.otherSuggestionsLabel}>View other suggestions</Text>
-                    </TouchableOpacity>                    
-                </View>
+                {
+                    location.nearerLocations.length > 0 &&
+                    <View style={styles.otherSuggestionsContainer}>
+                        <TouchableOpacity onPress={this._openOtherSuggestionsModal}>
+                            <Text style={styles.otherSuggestionsLabel}>View other suggestions</Text>
+                        </TouchableOpacity>                    
+                    </View>
+                }
+               
                 <ImageList
                     items={location.images.map(img => ({ ...img, data: img }))}
                     renderItem={this.renderItem}
@@ -147,6 +151,7 @@ const styles = StyleSheet.create<Style>({
         marginLeft: 10,
         marginRight: 10,
         marginTop: 3,
+        marginBottom: 3,
     },
     checkbox: {
         // ...mixins.themes.debug,
@@ -183,8 +188,7 @@ const styles = StyleSheet.create<Style>({
     },
     otherSuggestionsContainer: {
         marginLeft: 10,
-        marginRight: 10,
-        marginTop: 3,
+        marginRight: 10,        
         marginBottom: 7,
     },
     otherSuggestionsLabel: {
