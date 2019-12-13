@@ -2,8 +2,7 @@ import { getAllFeelings as getAllFeelingsAction,
         getAllActivities as getAllActivitiesAction,
         getAllHighlights as getAllHighlightsAction } from "./actions";
 import { ThunkResultBase } from "..";
-import { StoreData } from "../Interfaces";
-import { LOCALE_VI } from "../../screens/_services/SystemConstants";
+import { tripApiService } from "../ApisAsAService";
 
 export function getAllFeelings(): ThunkResultBase {
     return async function (dispatch, getState, extraArguments): Promise<any> {
@@ -42,4 +41,37 @@ export function getAllFeelings(): ThunkResultBase {
           console.log("get list of pre-defined highlights error", JSON.stringify(error));
         });    
     };
+  }
+
+  export function searchLocations(query: string): Promise<any> {
+    var config = {
+      params: {
+        title: query
+      }
+    };
+
+    return tripApiService.get(`/trips/searchLocations`, { config })
+      .then(res => {    
+        return res.data;
+      })
+      .catch(error => {
+        console.log("search locations error", JSON.stringify(error));
+      });
+  }
+
+  export function getTopNearerLocationsByCoordinate(lat: number, long: number): Promise<any> {
+    var config = {
+      params: {
+        lat,
+        long
+      }
+    };
+
+    return tripApiService.get(`/trips/getTopNearerLocationsByCoordinate`, { config })
+      .then(res => {
+        return res.data;
+      })
+      .catch(error => {
+        console.log("get nearest location error", JSON.stringify(error));
+      });
   }

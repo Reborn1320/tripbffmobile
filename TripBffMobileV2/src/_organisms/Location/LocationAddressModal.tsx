@@ -47,6 +47,14 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
     });
   }
 
+  _deselectedLocationHandler = () => {
+    this.setState({ 
+      name: "",
+      address: "",
+      long: this.props.long,
+      lat: this.props.lat});
+  }
+
   private _onModalShow = () => {
     this.setState({
       isLoading: false
@@ -64,7 +72,9 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
   };
 
   private _onConfirm = () => {
-    this.props.confirmHandler(this.state.name, this.state.address, this.state.long, this.state.lat);
+    if (this.state.name) {
+      this.props.confirmHandler(this.state.name, this.state.address, this.state.long, this.state.lat);
+    }   
   }
 
   render() {
@@ -91,6 +101,7 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
                 </MapboxGL.MapView>
                 <View style={styles.searchContainer}>
                   <SearchLocation
+                    deselectHandler={this._deselectedLocationHandler}
                     confirmHandler={this._selectedLocationHandler}>
                   </SearchLocation>
                 </View>

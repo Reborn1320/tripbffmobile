@@ -1,13 +1,13 @@
 import * as React from "react";
 import { View, Text, Icon } from "native-base";
-import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle, Platform, Image, ImageStyle } from "react-native";
+import { StyleSheet, ViewStyle, TouchableOpacity, TextStyle, Platform, Image, ImageStyle, TextInput } from "react-native";
 import { connectStyle } from 'native-base';
 import  Autocomplete  from "react-native-autocomplete-input";
 import { getAddressFromLocation } from "../../_function/commonFunc";
-import { TextInput } from "react-native-gesture-handler";
 import { mixins } from "../../_utils";
 import { PropsBase } from "../../screens/_shared/LayoutContainer";
 import { withNamespaces } from "react-i18next";
+import { searchLocations } from "../../store/DataSource/operations";
 
 export interface Props extends PropsBase {
   confirmHandler: (name, address, long, lat) => void;
@@ -19,7 +19,7 @@ interface State {
   address: string,
   long: number,
   lat: number,
-  places: Array<string>
+  places: Array<object>
 }
 
 class SearchLocationComponent extends React.Component<Props, State> {
@@ -35,41 +35,46 @@ class SearchLocationComponent extends React.Component<Props, State> {
     };    
   }  
 
-  private _searchPlaces = (query) => {
-    var url = 'https://nominatim.openstreetmap.org/search?q=' + query +
-                 '&format=jsonv2&addressdetails=1&namedetails=1';
-
+  private _searchPlaces = async (query) => {
     this.setState({query: query});
 
-    return fetch(url)
-            .then((response) => response.json())
-            .then((jsonPlaces) => {
-                let places = jsonPlaces.map(place => {
-                  return {
-                    placeName: place.namedetails.name,
-                    address: getAddressFromLocation(place),
-                    id: place.place_id,
-                    long: parseFloat(place.lon),
-                    lat: parseFloat(place.lat)
-                  }
-                });
-                
-                this.setState({places: places});
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+    //call API to get locations from own DB first
+    var locations = await searchLocations(query);
+
+    if (locations.length == 0) {
+      //if no locations found from own DB, call API to OSM
+      var url = 'https://nominatim.openstreetmap.org/search?q=' + query +
+      '&format=jsonv2&addressdetails=1&namedetails=1';   
+
+      try {
+        let response = await fetch(url);
+        let jsonPlaces = await response.json();
+        locations = jsonPlaces.map(place => {
+          return {
+            title: place.namedetails.name,
+            address: getAddressFromLocation(place),              
+            long: parseFloat(place.lon),
+            lat: parseFloat(place.lat)
+          }
+        }); 
+      }
+      catch (error) {
+        console.error(error);
+      }
+    }    
+    
+    this.setState({places: locations});
   }
  
   private _onSelectedLocation(item) {
     this.setState({ 
-        query: item.placeName,
+        query: item.title,
         address: item.address,
         long: item.long,
         lat: item.lat,
         places: [] 
     });
-    this.props.confirmHandler(item.placeName, item.address, item.long, item.lat);
+    this.props.confirmHandler(item.title, item.address, item.long, item.lat);
   }
 
   private _clearInputData = () => {
@@ -111,12 +116,12 @@ class SearchLocationComponent extends React.Component<Props, State> {
   }
 
   private _renderItem = ({ item }) => {
-    var placeAddress =  item.address.replace(item.placeName + ',', '');
+    var placeAddress =  item.address.replace(item.title + ',', '');
 
     return (
         <TouchableOpacity onPress={() => this._onSelectedLocation(item)}>
           <View style={styles.listViewContainer}>
-            <Text numberOfLines={1} style={styles.placeNameText}>{item.placeName}</Text>
+            <Text numberOfLines={1} style={styles.placeNameText}>{item.title}</Text>
             <Text numberOfLines={1} style={styles.addressText}>{placeAddress}</Text>
           </View>          
         </TouchableOpacity>
@@ -241,4 +246,5 @@ const styles = StyleSheet.create<Style>({
   
 const SearchLocation = 
   connectStyle<typeof SearchLocationComponent>('NativeBase.Modal', styles)(SearchLocationComponent);
-export default withNamespaces(['action'])(SearchLocation);
+ 
+ export default withNamespaces(['action'])(SearchLocation);

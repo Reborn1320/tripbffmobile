@@ -15,6 +15,8 @@ export interface Props {
     handleSelect: (locationIdx: number, imageIdx: number) => void
 
     isForceUpdate?: boolean
+
+    handleOpenOtherSuggestionsModal: (location: TripImportLocationVM) => void
 }
 
 export interface State {
@@ -30,6 +32,10 @@ export default class ImportImageLocationItem extends React.Component<Props, Stat
 
     shouldComponentUpdate(nextProps: Props) {
         return nextProps.isForceUpdate;
+    }
+
+    private _openOtherSuggestionsModal = () => {
+        this.props.handleOpenOtherSuggestionsModal(this.props.location);
     }
 
     private renderItem = (itemInfo: { item: any, index: number }) => {
@@ -50,7 +56,7 @@ export default class ImportImageLocationItem extends React.Component<Props, Stat
 
             />
         );
-    }
+    }    
 
     render() {
 
@@ -94,6 +100,15 @@ export default class ImportImageLocationItem extends React.Component<Props, Stat
                         {location.location.address}
                     </Text>
                 </View>
+                {
+                    location.nearerLocations.length > 0 &&
+                    <View style={styles.otherSuggestionsContainer}>
+                        <TouchableOpacity onPress={this._openOtherSuggestionsModal}>
+                            <Text style={styles.otherSuggestionsLabel}>View other suggestions</Text>
+                        </TouchableOpacity>                    
+                    </View>
+                }
+               
                 <ImageList
                     items={location.images.map(img => ({ ...img, data: img }))}
                     renderItem={this.renderItem}
@@ -116,6 +131,8 @@ interface Style {
     locationName: TextStyle;
     date: TextStyle;
     locationAddress: TextStyle;
+    otherSuggestionsContainer: ViewStyle;
+    otherSuggestionsLabel: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -134,7 +151,7 @@ const styles = StyleSheet.create<Style>({
         marginLeft: 10,
         marginRight: 10,
         marginTop: 3,
-        marginBottom: 7,
+        marginBottom: 3,
     },
     checkbox: {
         // ...mixins.themes.debug,
@@ -167,6 +184,15 @@ const styles = StyleSheet.create<Style>({
         alignSelf: "flex-start",
     },
     locationAddress: {
-        fontSize: 13,
+        fontSize: 14,
+    },
+    otherSuggestionsContainer: {
+        marginLeft: 10,
+        marginRight: 10,        
+        marginBottom: 7,
+    },
+    otherSuggestionsLabel: {
+        color: NBTheme.brandPrimary,        
+        fontSize: 13
     }
 })

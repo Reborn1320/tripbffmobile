@@ -131,8 +131,9 @@ android {
         applicationId "com.tripbff.android"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 10
-        versionName "1.1.0"
+        versionCode 12
+        versionName "1.1.1"
+        multiDexEnabled true
     }
     splits {
         abi {
@@ -201,6 +202,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
+    implementation 'com.android.support:multidex:1.0.3'
     //implementation 'com.google.android.gms:play-services-base:15.0.1'
     //implementation 'com.google.android.gms:play-services-ads:15.0.1'
 

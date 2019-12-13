@@ -20,11 +20,12 @@ import { PropsBase } from "../_shared/LayoutContainer";
 import { StoreData } from "../../store/Interfaces";
 
 export interface Props extends PropsBase {
-  locale: string
+  locale: string,
+  userId: string
 }
 
 interface IMapDispatchToProps {
-  loginUsingFacebookAccessToken: (userId, accessToken) => Promise<void>;
+  loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId) => Promise<void>;
   loginUsingDeviceId: (locale) => Promise<void>;
 }
 
@@ -57,7 +58,7 @@ class Login extends Component<Props & IMapDispatchToProps, any> {
     isMoveToCreate = true
   ) => {
     return this.props
-      .loginUsingFacebookAccessToken(facebookUserId, accessToken)
+      .loginUsingFacebookAccessToken(facebookUserId, accessToken, this.props.userId)
       .then(() => {
         if (isMoveToCreate) {
           this.props.navigation.navigate(NavigationConstants.Screens.Profile);
@@ -206,20 +207,21 @@ const styles = StyleSheet.create<Style>({
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {        
   return {
-      locale: storeState.user.locale
+      locale: storeState.user.locale,
+      userId: storeState.user.id,
   };
 };
 
 const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
   return {
-    loginUsingFacebookAccessToken: (userId, accessToken) =>
-      dispatch(loginUsingFacebookAccessToken(userId, accessToken, "")),
+    loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId) =>
+      dispatch(loginUsingFacebookAccessToken(userId, accessToken, loggedUserId)),
     loginUsingDeviceId: (locale) => dispatch(loginUsingDeviceId(locale)),
   };
 };
 
 const LoginScreen = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(Login);
 
