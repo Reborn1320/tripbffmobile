@@ -987,7 +987,7 @@
     eslint-plugin-react-native "3.6.0"
     prettier "1.16.4"
 
-"@react-native-mapbox-gl/maps@^7.0.1":
+"@react-native-mapbox-gl/maps@7.0.8":
   version "7.0.8"
   resolved "https://registry.yarnpkg.com/@react-native-mapbox-gl/maps/-/maps-7.0.8.tgz#f2d4ee09a889d1c62217c20ea29743f8ce0f886e"
   integrity sha512-6LCvTx0ZJwaySjxlOtf4zUKHkMXOGCTANDBLtGoxZtrYdcvJNfd/rtSyR7c/0amljZEhxN0u1k0Q8hkNkxOgHg==
@@ -6154,10 +6154,10 @@ react-native-flurry-sdk@^4.1.0:
   resolved "https://registry.yarnpkg.com/react-native-flurry-sdk/-/react-native-flurry-sdk-4.1.0.tgz#09d2e8ed64d776a43ab22743b21edb3e24aa6d73"
   integrity sha512-xfAkmElH+UhfRfs1AV53N2zLbpjF7qIV9GIrhaXlu8UxSnFWvqNJwYt5VmZJqY3EpGjzIA2HWhL7RdyAvy2HBg==
 
-react-native-fs@^2.14.1:
-  version "2.16.2"
-  resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.16.2.tgz#a312ce5f418e6d91d13b51e50ba0c49b1da1ec79"
-  integrity sha512-N9V8cMAOE49+er0/Qnf/xSFzsVWVWPW7Uggr11KVh18uv7FEPLEfLwEsL1Gv9vdkTgAK+6SYT46nqrhKtJClSw==
+react-native-fs@2.15.2:
+  version "2.15.2"
+  resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.15.2.tgz#0bb8ff3c9c4778910677f36551b3494c661453f1"
+  integrity sha512-xZ0WS5nN1IfpPKO8LpbkRPnKzZrhx7us1B2ufDnt0k40pTIJsnoQno76y/2pYQbzhXmbi3330aI4km5+akxssg==
   dependencies:
     base-64 "^0.1.0"
     utf8 "^3.0.0"
