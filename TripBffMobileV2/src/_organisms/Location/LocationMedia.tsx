@@ -53,7 +53,7 @@ class LocationMedia extends React.PureComponent<Props & PropsBase, State> {
     if (massSelection == false) {
       if (itemInfo.index === 0) {
         return (
-          <AddLocationImageTile width={itemWidth} onPress={this.props.onAddingImages} />
+          <AddLocationImageTile key={itemInfo.index} width={itemWidth} onPress={this.props.onAddingImages} />
         );
       }
       return (
