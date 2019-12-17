@@ -70,7 +70,7 @@ class CameraRollPicker extends Component {
     this.renderImage = this.renderImage.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetch();
   }
 

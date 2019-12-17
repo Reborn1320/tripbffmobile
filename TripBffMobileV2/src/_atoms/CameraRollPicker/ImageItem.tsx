@@ -20,15 +20,44 @@ const styles = StyleSheet.create({
   },
 });
 
-class ImageItem extends Component {
-  componentWillMount() {
+interface Props {
+  item: any,
+  selected: boolean,
+  selectedMarker: any,
+  imageMargin: number,
+  imagesPerRow: number,
+  onClick: any,
+  containerWidth: number
+}
+
+interface State {
+  imageSize: number
+}
+
+class ImageItem extends Component<Props, State> {
+  
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      imageSize: 0
+    }
+  }
+
+  componentDidMount() {
+    const imageSize = this._calculateImageSize();    
+    this.setState({ imageSize: imageSize });
+  }
+
+  private _calculateImageSize = () => {
     let { width } = Dimensions.get('window');
     const { imageMargin, imagesPerRow, containerWidth } = this.props;
 
     if (typeof containerWidth !== 'undefined') {
       width = containerWidth;
     }
-    this.imageSize = (width - (imagesPerRow + 1) * imageMargin) / imagesPerRow;
+    let imageSize = (width - (imagesPerRow + 1) * imageMargin) / imagesPerRow;
+    return imageSize;
   }
 
   handleClick(item) {
@@ -46,6 +75,7 @@ class ImageItem extends Component {
     />);
 
     const { image } = item.node;
+    const { imageSize } = this.state;    
 
     return (
       <TouchableOpacity
@@ -56,11 +86,11 @@ class ImageItem extends Component {
           Platform.OS === 'ios' && 
           <Image
             source={{ uri: image.uri }}
-            style={{ height: this.imageSize, width: this.imageSize }}
+            style={{ height: imageSize, width: imageSize }}
           /> ||
           <FastImage
             source={{ uri: image.uri }}
-            style={{ height: this.imageSize, width: this.imageSize }}
+            style={{ height: imageSize, width:imageSize }}
           />
         }
         
@@ -69,19 +99,5 @@ class ImageItem extends Component {
     );
   }
 }
-
-ImageItem.defaultProps = {
-  item: {},
-  selected: false,
-};
-
-ImageItem.propTypes = {
-  item: PropTypes.object,
-  selected: PropTypes.bool,
-  selectedMarker: PropTypes.element,
-  imageMargin: PropTypes.number,
-  imagesPerRow: PropTypes.number,
-  onClick: PropTypes.func,
-};
 
 export default ImageItem;

@@ -24,6 +24,7 @@ export interface Props {
 }
 
 export interface State {
+  itemWidth: number
 }
 
 interface ILocationMediaImage {
@@ -36,18 +37,17 @@ class LocationMedia extends React.PureComponent<Props & PropsBase, State> {
 
   constructor(props) {
     super(props);
-  }
 
-  itemWidth: number;
-  componentWillMount() {
-    const { itemWidth } = calculateImageListWidth(15, 15);
-    this.itemWidth = itemWidth;
-  }
-
+    let { itemWidth } = calculateImageListWidth(15, 15);
+    this.state = {
+      itemWidth: itemWidth
+    }
+  } 
+  
   private renderItem2 = (itemInfo: { item: ILocationMediaImage, index: number, styleContainer: ViewStyle }) => {
     const img = itemInfo.item;
 
-    const itemWidth = this.itemWidth;
+    const itemWidth = this.state.itemWidth;
     const { massSelection } = this.props;
 
     if (massSelection == false) {
