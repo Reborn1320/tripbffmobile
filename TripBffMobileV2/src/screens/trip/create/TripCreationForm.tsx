@@ -67,7 +67,7 @@ class TripCreationForm extends PureComponent<Props, any> {
     );
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
     if (this._didFocusListener) this._didFocusListener.remove();
   }
 
