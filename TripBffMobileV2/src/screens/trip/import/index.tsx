@@ -172,7 +172,7 @@ class TripImportation extends Component<Props, State> {
               },
             position: "top",
             type: "success",
-            duration: 3000
+            duration: 5000
         });
 
         this.setState({ locations: adapterResult, isLoading: false, isHideFooter: false });
