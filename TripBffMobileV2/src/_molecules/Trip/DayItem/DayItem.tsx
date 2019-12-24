@@ -9,10 +9,10 @@ import { PropsBase } from '../../../screens/_shared/LayoutContainer';
 import { StyleSheet, TextStyle, ViewStyle, ImageStyle, Platform } from 'react-native';
 import NBColor from "../../../theme/variables/commonColor.js";
 import EmptyLocationItem from "./EmptyLocation";
-import { DATE_FORMAT } from "../../../screens/_services/SystemConstants";
 import { TouchableOpacity, Image } from 'react-native';
 import { mixins } from '../../../_utils';
 import { withNamespaces } from 'react-i18next';
+import 'moment/locale/vi';
 
 interface IMapDispatchToProps {
     openUpdateFeelingModalHandler?: (dateIdx: number, locationId: string) => void;
@@ -40,15 +40,14 @@ export class DayItemComponent extends Component<Props, State> {
     }
 
     render() {
-        const { dateIdx, dateVm, t } = this.props
-        let currentDate = moment(this.props.date).format(DATE_FORMAT);
+        const { dateIdx, dateVm, t } = this.props;
         let android9Style = Platform.OS === 'android' && Platform.Version === 28 ? styles.dayItemContainerAndroid9 : {};
 
         return (
             <View style={[styles.dayItemContainer, android9Style]}>
                 <View style={styles.dayItemHeader}>
                     <Text style={styles.dayLabel}>
-                        {t("trip_detail:day_label")} {dateIdx} - {currentDate}
+                        {t("trip_detail:day_label")} {dateIdx} - {t("common:dateFormat", { date: this.props.date })}
                     </Text>
                     {
                         this.props.locationIds.length > 0 &&
@@ -107,7 +106,7 @@ const DayItem = connect(
     null
 )(DayItemComponent);
 
-export default withNamespaces(['message', 'trip_detail'])(DayItem);
+export default withNamespaces(['message', 'trip_detail', 'common'])(DayItem);
 
 interface Style {
     dayItemContainer: ViewStyle;

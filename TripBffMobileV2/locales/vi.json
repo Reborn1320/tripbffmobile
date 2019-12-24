@@ -108,5 +108,9 @@
         "feedback_email_label": "Email",
         "feedback_content_label": "Nội dung góp ý",
         "feedback_submit_message": "Đã gửi thành công. Cảm ơn bạn đã góp ý!"
-    }            
+    },
+    "common": {
+        "dateFormat": "{{date, dateFormat, vi}}",
+        "timeFormat": "{{date, timeFormat, vi}}"
+    }          
 }

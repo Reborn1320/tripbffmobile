@@ -1,5 +1,6 @@
 
-export var DATE_FORMAT = "DD/MM/YYYY";
+export var DATE_FORMAT = "DD MMM, YYYY";
+export var TIME_FORMAT = "hh:mm A";
 
 export var LIST_MONTHS_EN = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 export var LIST_MONTHS_VI = [ "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12" ];
