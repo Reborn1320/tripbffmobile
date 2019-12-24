@@ -62,7 +62,7 @@ class UserFeedbackComponent extends React.Component<Props, State> {
               },
             position: "top",
             type: "success",
-            duration: 3000
+            duration: 5000
         });
     });
   }  

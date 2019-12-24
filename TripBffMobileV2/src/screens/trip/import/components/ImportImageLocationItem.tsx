@@ -4,11 +4,12 @@ import { TripImportLocationVM, TripImportImageVM } from "../TripImportViewModels
 import ImageList, { calculateImageListWidth, N_ITEMS_PER_ROW } from "../../../../_molecules/ImageList/ImageList";
 import { ImageSelection } from "../../../../_molecules/ImageList/ImageSelection";
 import { Image, ViewStyle, TextStyle, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
-import moment, { Moment } from "moment";
-import { mixins } from "../../../../_utils";
+import 'moment/locale/vi';
 import NBTheme from "../../../../theme/variables/material.js";
+import { PropsBase } from "../../../_shared/LayoutContainer";
+import { withNamespaces } from "react-i18next";
 
-export interface Props {
+export interface Props extends PropsBase {
     locationIdx: number,
     location: TripImportLocationVM
     handleSelectAll: (locationIdx: number) => void
@@ -22,7 +23,7 @@ export interface Props {
 export interface State {
 }
 
-export default class ImportImageLocationItem extends React.Component<Props, State> {
+class ImportImageLocationItem extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -59,10 +60,10 @@ export default class ImportImageLocationItem extends React.Component<Props, Stat
     }    
 
     render() {
-
+        var { t } = this.props;
         var location: TripImportLocationVM = this.props.location;
         var locationIdx: number = this.props.locationIdx;
-        var dateOfLocation: string = moment(location.fromTime).startOf("day").format('DD/MM/YYYY')
+        var dateOfLocation: string = t("common:dateFormat", { date: location.fromTime.startOf("day") });
         let isLocationChecked = location.images.find((item) => item.isSelected) != null;
 
         return (
@@ -120,6 +121,7 @@ export default class ImportImageLocationItem extends React.Component<Props, Stat
 
 }
 
+export default withNamespaces(["common"])(ImportImageLocationItem);
 
 interface Style {
     container: ViewStyle;

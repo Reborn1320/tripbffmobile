@@ -221,7 +221,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
             },
             type: "warning",
             position: "top",
-            duration: 3000
+            duration: 5000
           });
         }
         else {
@@ -273,7 +273,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
                             ...mixins.themes.fontNormal
                           },
                           type: "danger",
-                          duration: 3000
+                          duration: 5000
                         });
                         console.log("Share fail with error: " + error);
                       }
@@ -322,7 +322,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
             ...mixins.themes.fontNormal
           },
           position: "bottom",
-          duration: 3000
+          duration: 5000
         });
       }
   }
@@ -412,7 +412,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
                           },
                           type: "success",
                           position: "top",
-                          duration: 1500
+                          duration: 5000
                         });
                       }
                       else if (index == 0 && !this.state.isLoadedInfographic && !isDisplayEmptyMessage) {

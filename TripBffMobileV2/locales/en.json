@@ -108,5 +108,9 @@
         "feedback_email_label": "Email",
         "feedback_content_label": "Content",
         "feedback_submit_message": "Submited successfully. Thank you for your feedback!"
+    },
+    "common": {
+        "dateFormat": "{{date, dateFormat, en}}",
+        "timeFormat": "{{date, timeFormat, en}}"
     }      
 }

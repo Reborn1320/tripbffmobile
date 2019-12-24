@@ -12,7 +12,7 @@ import {
   View
 } from "react-native";
 import { mixins } from "../../../_utils";
-import { DATE_FORMAT } from "../../_services/SystemConstants";
+import 'moment/locale/vi';
 import { withNamespaces } from "react-i18next";
 import { PropsBase } from "../../_shared/LayoutContainer";
 
@@ -148,11 +148,12 @@ class TripCreationForm extends PureComponent<Props, any> {
 
   render() {
     const { t } = this.props;
+    const { fromDate, toDate } = this.state;
 
     var date =
-      this.state.fromDate.format(DATE_FORMAT) +
+      t("common:dateFormat", { date: fromDate }) +
       " - " +
-      this.state.toDate.format(DATE_FORMAT);
+      t("common:dateFormat", { date: toDate });
     let nameInputContainerStyle = this.state.isNameFieldFocused
       ? styles.formInputFocusedContainer
       : styles.formInputUnFocusedContainer;
@@ -216,7 +217,7 @@ class TripCreationForm extends PureComponent<Props, any> {
   }
 }
 
-export default withNamespaces(["create", "action"])(TripCreationForm);
+export default withNamespaces(["create", "action", "common"])(TripCreationForm);
 
 interface Style {
   formContainer: ViewStyle;

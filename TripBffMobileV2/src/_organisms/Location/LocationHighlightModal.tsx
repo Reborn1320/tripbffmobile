@@ -94,7 +94,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
             },
             position: "top",
             type: "warning",
-            duration: 3000
+            duration: 5000
         });
       }
       else {
@@ -133,7 +133,7 @@ class TabHighlightComponent extends React.PureComponent<any, any> {
           },
           position: "top",
           type: "warning",
-          duration: 3000
+          duration: 5000
       });
     }
     else {
