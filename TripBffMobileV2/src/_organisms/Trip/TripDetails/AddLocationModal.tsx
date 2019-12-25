@@ -47,7 +47,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
       long: 0,
       lat: 0,
       isDateTimePickerVisible: false,
-      displayTime: this.props.t("common:timeFormat", { date: moment() }),
+      displayTime: this.props.t("common:time_format", { date: moment() }),
       selectedTime: null,
       isLoading: true
     };    
@@ -89,7 +89,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
     var selectedTime = startDate.add(addedHours, 'h').add(addedMinutes, 'm');    
 
     this.setState({
-        displayTime: this.props.t("common:timeFormat", { date: moment(date) }),
+        displayTime: this.props.t("common:time_format", { date: moment(date) }),
         selectedTime: moment(selectedTime, "x")
       });
     this._hideDateTimePicker();
@@ -127,7 +127,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
 
   render() {
     const { isVisible, date, t } = this.props;
-    let displayDate = date ? t("common:dateFormat", { date: moment(date) }) + " - " : "";
+    let displayDate = date ? t("common:date_format", { date: moment(date) }) + " - " : "";
 
     var contentElement = (
       <View style={styles.container}>

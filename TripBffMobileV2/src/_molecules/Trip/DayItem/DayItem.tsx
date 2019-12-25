@@ -47,7 +47,7 @@ export class DayItemComponent extends Component<Props, State> {
             <View style={[styles.dayItemContainer, android9Style]}>
                 <View style={styles.dayItemHeader}>
                     <Text style={styles.dayLabel}>
-                        {t("trip_detail:day_label")} {dateIdx} - {t("common:dateFormat", { date: this.props.date })}
+                        {t("trip_detail:day_label")} {dateIdx} - {t("common:date_format", { date: this.props.date })}
                     </Text>
                     {
                         this.props.locationIds.length > 0 &&

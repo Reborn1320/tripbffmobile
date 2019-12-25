@@ -80,7 +80,7 @@ export class TripCarouselComponent extends React.Component<Props, State> {
     let tripEntry: ITripEntry = {
         tripId: trip.tripId,
         title: trip.name,
-        subtitle: `${this.props.t("common:dateFormat", { date: moment(trip.fromDate) })} - ${this.props.t("common:dateFormat", { date: moment(trip.toDate) })}`,
+        subtitle: `${this.props.t("common:date_format", { date: moment(trip.fromDate) })} - ${this.props.t("common:date_format", { date: moment(trip.toDate) })}`,
         entries
     }
 

@@ -15,6 +15,9 @@ import { mixins } from "../../../_utils";
 import 'moment/locale/vi';
 import { withNamespaces } from "react-i18next";
 import { PropsBase } from "../../_shared/LayoutContainer";
+import { StoreData } from "../../../store/Interfaces";
+import ConfirmationUpdateDateRangeModal from "../../../_molecules/ConfirmationUpdateDateRangeModal";
+import { connect } from "react-redux";
 
 export interface Props extends PropsBase {
   createTrip?: (
@@ -34,9 +37,10 @@ export interface Props extends PropsBase {
   tripFromDate?: moment.Moment;
   tripToDate?: moment.Moment;
   titleButton: string;
+  dates: Array<StoreData.DateVM> 
 }
 
-class TripCreationForm extends PureComponent<Props, any> {
+class TripCreationFormComponent extends PureComponent<Props, any> {
   _textInput;
   _didFocusListener;
 
@@ -51,6 +55,10 @@ class TripCreationForm extends PureComponent<Props, any> {
       toDate: this.props.tripToDate ? this.props.tripToDate : moment(),
       isNameFieldFocused: false,
       isDateFieldFocused: false,
+      isOpenUpdateDateRangeConfirm: false,
+      beforeConfirmFromDate: null,
+      beforeConfirmToDate: null,
+      removedDatesHasLocation: ''
     };
   }
 
@@ -90,7 +98,7 @@ class TripCreationForm extends PureComponent<Props, any> {
   };
 
   private _openDateRangePickerModal = () => {
-    console.log("come here open date range picker modal");
+    //console.log("come here open date range picker modal");
     this.setState({
       isOpenDateRangePickerModal: true,
       isNameFieldFocused: false,
@@ -98,14 +106,49 @@ class TripCreationForm extends PureComponent<Props, any> {
     });
   };
 
-  private _confirmHandler = (fromDate: Moment, toDate: Moment) => {
-    this.setState({
-      isOpenDateRangePickerModal: false,
-      fromDate: fromDate,
-      toDate: toDate,
-      isNameFieldFocused: false,
-      isDateFieldFocused: false,
-    });
+  private _checkTripHasAnyLocations = (date: StoreData.DateVM) => date.locations && date.locations.length > 0;
+
+  private _confirmHandler = (fromDate: Moment, toDate: Moment) => {    
+    const { tripId, dates, t } = this.props;
+    let isExistedLocations = dates != null ? dates.some(this._checkTripHasAnyLocations) : false;
+
+    if (tripId && isExistedLocations) {
+      let removedDates = dates.filter(d => d.date < fromDate || d.date > toDate);
+      let removedDatesHasLocation: string[] = [];
+
+      removedDates.forEach((date, index) => {
+        if (date.locations && date.locations.length > 0) {
+          removedDatesHasLocation.push(t("common:date_format", { date: date.date }));
+        }
+      });      
+
+      if (removedDatesHasLocation.length > 0) {
+        this.setState({
+          isOpenUpdateDateRangeConfirm: true,
+          beforeConfirmFromDate: fromDate,
+          beforeConfirmToDate: toDate,
+          removedDatesHasLocation: removedDatesHasLocation.join(', ')
+        });
+      }
+      else {
+        this.setState({
+          isOpenDateRangePickerModal: false,
+          fromDate: fromDate,
+          toDate: toDate,
+          isNameFieldFocused: false,
+          isDateFieldFocused: false,
+        });
+      }
+    }
+    else {
+      this.setState({
+        isOpenDateRangePickerModal: false,
+        fromDate: fromDate,
+        toDate: toDate,
+        isNameFieldFocused: false,
+        isDateFieldFocused: false,
+      });
+    }    
   };
 
   private _cancelHandler = () => {
@@ -122,6 +165,25 @@ class TripCreationForm extends PureComponent<Props, any> {
       isDateFieldFocused: false,
     });
   };
+
+  private _cancelUpdateDateRangeHandler = () => {
+    this.setState({      
+      isOpenUpdateDateRangeConfirm: false,
+      beforeConfirmFromDate: null,
+      beforeConfirmToDate: null
+    });
+  }
+
+  private _confirmUpdateDateRangeHandler = () => {
+    this.setState({
+      isOpenDateRangePickerModal: false,
+      isOpenUpdateDateRangeConfirm: false,
+      isNameFieldFocused: false,
+      isDateFieldFocused: false,
+      fromDate: this.state.beforeConfirmFromDate,
+      toDate: this.state.beforeConfirmToDate
+    });
+  }
 
   renderImportBtn() {
     let buttonStyle = styles.buttonDisabled,
@@ -148,12 +210,12 @@ class TripCreationForm extends PureComponent<Props, any> {
 
   render() {
     const { t } = this.props;
-    const { fromDate, toDate } = this.state;
+    const { fromDate, toDate, removedDatesHasLocation } = this.state;
 
     var date =
-      t("common:dateFormat", { date: fromDate }) +
+      t("common:date_format", { date: fromDate }) +
       " - " +
-      t("common:dateFormat", { date: toDate });
+      t("common:date_format", { date: toDate });
     let nameInputContainerStyle = this.state.isNameFieldFocused
       ? styles.formInputFocusedContainer
       : styles.formInputUnFocusedContainer;
@@ -212,10 +274,30 @@ class TripCreationForm extends PureComponent<Props, any> {
           cancelHandler={this._cancelHandler}
           confirmHandler={this._confirmHandler}
         />
+        <ConfirmationUpdateDateRangeModal
+          title={t('common:confirm_modal_title')}
+          isVisible={this.state.isOpenUpdateDateRangeConfirm}
+          content={t("create:update_date_range_confirm_message" , { date: removedDatesHasLocation })}
+          confirmHandler={this._confirmUpdateDateRangeHandler}
+          cancelHandler={this._cancelUpdateDateRangeHandler}
+          />
       </View>
     );
   }
 }
+
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
+  var trip = storeState.currentTrip;
+
+  return {
+    dates: trip != null ? trip.dates : null
+  };
+};
+
+const TripCreationForm = connect(
+  mapStateToProps,
+  null
+)(TripCreationFormComponent);
 
 export default withNamespaces(["create", "action", "common"])(TripCreationForm);
 

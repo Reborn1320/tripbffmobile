@@ -63,7 +63,7 @@ class ImportImageLocationItem extends React.Component<Props, State> {
         var { t } = this.props;
         var location: TripImportLocationVM = this.props.location;
         var locationIdx: number = this.props.locationIdx;
-        var dateOfLocation: string = t("common:dateFormat", { date: location.fromTime.startOf("day") });
+        var dateOfLocation: string = t("common:date_format", { date: location.fromTime.startOf("day") });
         let isLocationChecked = location.images.find((item) => item.isSelected) != null;
 
         return (

@@ -1,5 +1,5 @@
-export var TRIP_URL = "http://192.168.2.100:8000";
-export var SSO_URL = "http://192.168.2.100:3000";
+export var TRIP_URL = "http://192.168.42.223:8000";
+export var SSO_URL = "http://192.168.42.223:3000";
 
 // export var TRIP_URL = "http://trip-api.tntuan.tk";
 // export var SSO_URL = "http://sso.tntuan.tk";

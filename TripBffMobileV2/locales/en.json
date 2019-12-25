@@ -35,7 +35,8 @@
         "date": "Date",
         "create_button": "Create",
         "next_month_label": "Next",
-        "prev_month_label": "Previous"
+        "prev_month_label": "Previous",
+        "update_date_range_confirm_message": "Data in {{date}} will be removed. Are you sure you want to update ?"
     },
     "import": {
         "skip_button": "Skip",
@@ -110,7 +111,8 @@
         "feedback_submit_message": "Submited successfully. Thank you for your feedback!"
     },
     "common": {
-        "dateFormat": "{{date, dateFormat, en}}",
-        "timeFormat": "{{date, timeFormat, en}}"
+        "date_format": "{{date, dateFormat, en}}",
+        "time_format": "{{date, timeFormat, en}}",
+        "confirm_modal_title": "Confirm"
     }      
 }

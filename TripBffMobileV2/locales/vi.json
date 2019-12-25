@@ -35,7 +35,8 @@
         "date": "Ngày",
         "create_button": "Tạo",
         "next_month_label": "Kế tiếp",
-        "prev_month_label": "Trước"
+        "prev_month_label": "Trước",
+        "update_date_range_confirm_message": "Dữ liệu ở ngày {{date}} sẽ bị xóa. Bạn có chắc là bạn muốn cập nhật ?"
     },
     "import": {
         "skip_button": "Bỏ qua",
@@ -110,7 +111,8 @@
         "feedback_submit_message": "Đã gửi thành công. Cảm ơn bạn đã góp ý!"
     },
     "common": {
-        "dateFormat": "{{date, dateFormat, vi}}",
-        "timeFormat": "{{date, timeFormat, vi}}"
+        "date_format": "{{date, dateFormat, vi}}",
+        "time_format": "{{date, timeFormat, vi}}",
+        "confirm_modal_title": "Xác nhận"
     }          
 }
