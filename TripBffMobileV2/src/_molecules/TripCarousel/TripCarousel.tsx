@@ -15,9 +15,9 @@ import { StoreData } from "../../store/Interfaces";
 import moment from "moment";
 import { connect } from "react-redux";
 import { mixins } from "../../_utils";
-import { DATE_FORMAT } from "../../screens/_services/SystemConstants";
 import { withNamespaces } from "react-i18next";
 import { PropsBase } from "../../screens/_shared/LayoutContainer.js";
+import 'moment/locale/vi';
 
 export type ITripEntry = {
   tripId: string,
@@ -80,7 +80,7 @@ export class TripCarouselComponent extends React.Component<Props, State> {
     let tripEntry: ITripEntry = {
         tripId: trip.tripId,
         title: trip.name,
-        subtitle: `${moment(trip.fromDate).format(DATE_FORMAT)} - ${moment(trip.toDate).format(DATE_FORMAT)}`,
+        subtitle: `${this.props.t("common:date_format", { date: moment(trip.fromDate) })} - ${this.props.t("common:date_format", { date: moment(trip.toDate) })}`,
         entries
     }
 

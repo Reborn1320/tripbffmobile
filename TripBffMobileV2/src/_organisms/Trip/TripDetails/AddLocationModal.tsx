@@ -9,7 +9,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from "moment";
 import SearchLocation from '../../../_molecules/Trip/SearchLocationComponent';
 import { mixins } from "../../../_utils";
-import { DATE_FORMAT } from "../../../screens/_services/SystemConstants";
+import 'moment/locale/vi';
 import ActionModal from "../../../_molecules/ActionModal";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import { withNamespaces } from "react-i18next";
@@ -21,7 +21,7 @@ export interface Props extends PropsBase {
   isVisible: boolean;
   date: moment.Moment;
   confirmHandler: (name, address, long, lat, fromTime) => void;
-  cancelHandler?: () => void;
+  cancelHandler?: () => void
 }
 
 interface State {
@@ -47,7 +47,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
       long: 0,
       lat: 0,
       isDateTimePickerVisible: false,
-      displayTime: moment().format('hh:mm A'),
+      displayTime: this.props.t("common:time_format", { date: moment() }),
       selectedTime: null,
       isLoading: true
     };    
@@ -86,11 +86,10 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
     var addedHours = moment(date).hour();
     var addedMinutes = moment(date).minute();
 
-    var selectedTime = startDate.add(addedHours, 'h').add(addedMinutes, 'm');
-    console.log('selected time: ' + selectedTime);
+    var selectedTime = startDate.add(addedHours, 'h').add(addedMinutes, 'm');    
 
     this.setState({
-        displayTime: moment(date).format('hh:mm A'),
+        displayTime: this.props.t("common:time_format", { date: moment(date) }),
         selectedTime: moment(selectedTime, "x")
       });
     this._hideDateTimePicker();
@@ -128,7 +127,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
 
   render() {
     const { isVisible, date, t } = this.props;
-    let displayDate = date ? date.format(DATE_FORMAT) + " - " : "";
+    let displayDate = date ? t("common:date_format", { date: moment(date) }) + " - " : "";
 
     var contentElement = (
       <View style={styles.container}>
@@ -286,4 +285,4 @@ const styles = StyleSheet.create<Style>({
   
 const AddLocationModal = 
   connectStyle<typeof AddLocationModalComponent>('NativeBase.Modal', styles)(AddLocationModalComponent);
-export default withNamespaces([''])(AddLocationModal);
+export default withNamespaces(['common'])(AddLocationModal);
