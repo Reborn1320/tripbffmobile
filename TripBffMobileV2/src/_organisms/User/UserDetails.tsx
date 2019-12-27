@@ -34,7 +34,7 @@ class UserDetailsComponent extends PureComponent<Props, State> {
             <Avatar
               size="large"
               rounded
-              source={{ uri: "http://graph.facebook.com/" + this.props.facebookId + "/picture?type=normal" }}
+              source={{ uri: "https://graph.facebook.com/" + this.props.facebookId + "/picture?type=normal" }}
               >
             </Avatar>
           </View>

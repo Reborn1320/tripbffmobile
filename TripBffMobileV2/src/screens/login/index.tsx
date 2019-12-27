@@ -18,6 +18,7 @@ import { mixins } from "../../_utils";
 import { withNamespaces } from "react-i18next";
 import { PropsBase } from "../_shared/LayoutContainer";
 import { StoreData } from "../../store/Interfaces";
+import axios from "axios";
 
 export interface Props extends PropsBase {
   locale: string,
@@ -25,7 +26,7 @@ export interface Props extends PropsBase {
 }
 
 interface IMapDispatchToProps {
-  loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId) => Promise<void>;
+  loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId, facebookUserEmail) => Promise<void>;
   loginUsingDeviceId: (locale) => Promise<void>;
 }
 
@@ -39,10 +40,19 @@ class Login extends Component<Props & IMapDispatchToProps, any> {
           console.log("Login cancelled");
         } else {
           AccessToken.getCurrentAccessToken().then(data => {
-            //console.log(data.accessToken.toString());
-            console.log("getCurrentAccessToken data", data);
-
-            tmp._loginFacebookAccess(data.userID, data.accessToken);
+            //get user info
+            let uri = "https://graph.facebook.com/" + data.userID + "?fields=email&access_token=" + data.accessToken;
+            
+            axios.get(uri)
+                .then(value => {
+                  return value.data.email;
+                },
+                (error) => {
+                  return "";
+                })
+                .then((email) => {
+                  tmp._loginFacebookAccess(data.userID, data.accessToken, email);
+                })
           });
         }
       },
@@ -55,10 +65,11 @@ class Login extends Component<Props & IMapDispatchToProps, any> {
   private _loginFacebookAccess = (
     facebookUserId,
     accessToken,
+    email,
     isMoveToCreate = true
   ) => {
     return this.props
-      .loginUsingFacebookAccessToken(facebookUserId, accessToken, this.props.userId)
+      .loginUsingFacebookAccessToken(facebookUserId, accessToken, this.props.userId, email)
       .then(() => {
         if (isMoveToCreate) {
           this.props.navigation.navigate(NavigationConstants.Screens.Profile);
@@ -214,8 +225,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 
 const mapDispatchToProps = (dispatch): IMapDispatchToProps => {
   return {
-    loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId) =>
-      dispatch(loginUsingFacebookAccessToken(userId, accessToken, loggedUserId)),
+    loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId, facebookUserEmail) =>
+      dispatch(loginUsingFacebookAccessToken(userId, accessToken, loggedUserId, facebookUserEmail)),
     loginUsingDeviceId: (locale) => dispatch(loginUsingDeviceId(locale)),
   };
 };
