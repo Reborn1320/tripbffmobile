@@ -38,6 +38,7 @@ import { loginUsingFacebookAccessToken } from "../../../store/User/operations";
 import { mixins } from "../../../_utils";
 import TabBarComponent from "../../../_atoms/TabBar";
 import { withNamespaces } from "react-i18next";
+import axios from "axios";
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
@@ -54,7 +55,7 @@ export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
 interface IMapDispatchToProps {    
   addInfographicId: (tripId: string, infographicId: string) => void;
   fetchTrip: (tripId: string, cancelToken: any) => Promise<StoreData.TripVM>;
-  loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId) => Promise<void>
+  loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId, facebookUserEmail) => Promise<void>
 }
 
 interface State {
@@ -206,8 +207,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
   }
 
   private _sharePhotoWithShareDialog = async () => {
-      var tmp = this;      
-      
+      var tmp = this;  
       if (this.props.infographicId) {
         if (this.state.selectedImages.length > 5) {
           Toast.show({
@@ -221,7 +221,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
             },
             type: "warning",
             position: "top",
-            duration: 3000
+            duration: 5000
           });
         }
         else {
@@ -273,7 +273,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
                             ...mixins.themes.fontNormal
                           },
                           type: "danger",
-                          duration: 3000
+                          duration: 5000
                         });
                         console.log("Share fail with error: " + error);
                       }
@@ -295,9 +295,22 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
                             "Login success with permissions: " + JSON.stringify(result)
                           );
                           // call api to login with FB
-                          AccessToken.getCurrentAccessToken().then(data => {     
-                            tmp.props.loginUsingFacebookAccessToken(data.userID, data.accessToken, tmp.props.userId);
+                          AccessToken.getCurrentAccessToken().then(data => {  
+                            //get user info
+                            let uri = "https://graph.facebook.com/" + data.userID + "?fields=email&access_token=" + data.accessToken;
+                            
+                            axios.get(uri)
+                                .then(value => {
+                                  return value.data.email;
+                                },
+                                (error) => {
+                                  return "";
+                                })
+                                .then((email) => {
+                                  tmp.props.loginUsingFacebookAccessToken(data.userID, data.accessToken, tmp.props.userId, email);
+                                })                            
                           });
+
                           tmp._sharePhotoWithShareDialog();
                           tmp.setState({ isLoggedSocial: true });
                         }
@@ -322,7 +335,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
             ...mixins.themes.fontNormal
           },
           position: "bottom",
-          duration: 3000
+          duration: 5000
         });
       }
   }
@@ -412,7 +425,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
                           },
                           type: "success",
                           position: "top",
-                          duration: 1500
+                          duration: 5000
                         });
                       }
                       else if (index == 0 && !this.state.isLoadedInfographic && !isDisplayEmptyMessage) {
@@ -487,7 +500,7 @@ const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
   return {
     addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
     fetchTrip: (tripId, cancelToken) => dispatch(fetchTrip(tripId, cancelToken)),
-    loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId) => dispatch(loginUsingFacebookAccessToken(userId, accessToken, loggedUserId)),
+    loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId, facebookUserEmail) => dispatch(loginUsingFacebookAccessToken(userId, accessToken, loggedUserId, facebookUserEmail)),
   };
 };
 

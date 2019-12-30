@@ -43,12 +43,13 @@ export function loginUsingUserPass(email: string, password: string): ThunkResult
 }
 
 export function loginUsingFacebookAccessToken(
-  facebookUserId: string, accessToken: string, userId: string): ThunkResultBase {
+  facebookUserId: string, accessToken: string, userId: string, facebookUserEmail: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     var loginUser = {
       access_token: accessToken,
       user_id: facebookUserId,
-      logged_user_id: userId
+      logged_user_id: userId,
+      facebook_user_email: facebookUserEmail
     };
 
     return extraArguments.loginApiService.post("facebook/verify", { data: loginUser })

@@ -76,15 +76,11 @@ class LocationDetail extends React.Component<Props, State> {
         };
     };
 
-    componentWillMount() {
-        this._changeThisTitle(this.props.name);
-    }
-
-
     componentDidMount() {
         let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
         this._cancelToken = cancelToken;
-        this._cancelRequest = cancelRequest;        
+        this._cancelRequest = cancelRequest;    
+        this._changeThisTitle(this.props.name);    
     }
 
     componentWillUnmount() {
