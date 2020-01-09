@@ -360,6 +360,17 @@ export function addLocationImage(tripId: string, dateIdx: number, locationId: st
   };
 }
 
+export function updateInfographicStatus(tripId: string, infographicId: string): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {        
+    return extraArguments.tripApiService.patch(`/trips/${tripId}/infographics/${infographicId}/share`)
+    .then((res) => {      
+    })
+    .catch((err) => {
+      console.log('error update infographic status: ', err);
+    });
+  };
+}
+
 
 /**
  * this method is only used in testing upload image generically
@@ -450,4 +461,5 @@ export function uploadLocationImage(
     });
 
   };
+  
 }
