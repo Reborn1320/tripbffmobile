@@ -16,6 +16,7 @@ import SearchBarComponent from "../../../_atoms/SearchBarComponent";
 import ActionModal from "../../../_molecules/ActionModal";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import { withNamespaces } from "react-i18next";
+import Flurry from 'react-native-flurry-sdk';
 
 class SelectedFeelingItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -266,6 +267,14 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
     }
   }
 
+  componentDidMount() {
+    Flurry.logEvent('Trip Details/Edit - Add Feeling', null, true);
+  }
+
+  componentWillUnmount() {
+    Flurry.endTimedEvent('Trip Details/Edit - Add Feeling');
+  }
+
   _onModalShow = () => {
     if (!this.props.preDefinedFeelings) {
       this.props.getAllFeelings();
@@ -297,6 +306,7 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
   }  
 
   _onSave = () => {
+    Flurry.logEvent('Trip Details/Edit - Added Feeling');
     this.props.confirmHandler(this.props.locationId, this.state.selectedItem);
   }
 

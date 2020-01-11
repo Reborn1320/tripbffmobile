@@ -16,6 +16,7 @@ import  NBColor from "../../theme/variables/commonColor.js";
 import { createLabelLocales } from "../../_function/commonFunc";
 import { PropsBase } from "../../screens/_shared/LayoutContainer";
 import { withNamespaces } from "react-i18next";
+import Flurry from 'react-native-flurry-sdk';
 
 class SelectedHighlightItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -332,11 +333,17 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
   }
 
   componentDidMount() {
+    Flurry.logEvent('Location Details - Add Like/Dislike', null, true);
+
     if (this.props.likeItems && this.props.likeItems.length > 0) {
       this.setState({
         selectedHighlights: [...this.props.likeItems]
       });
     }
+  }
+
+  componentWillUnmount() {
+    Flurry.endTimedEvent('Location Details - Add Like/Dislike');
   }
 
   _onModalWillShow = () => {
@@ -361,6 +368,7 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
   };
 
   _onSave = () => {
+    Flurry.logEvent('Location Details - Added Like/Dislike');
     this.props.confirmHandler(this.state.selectedHighlights);
   }
 

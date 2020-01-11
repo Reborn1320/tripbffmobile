@@ -362,6 +362,8 @@ export function addLocationImage(tripId: string, dateIdx: number, locationId: st
 
 export function updateInfographicStatus(tripId: string, infographicId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {        
+    console.log('tripId: ' + tripId);
+    console.log('infographicId: ' + infographicId);
     return extraArguments.tripApiService.patch(`/trips/${tripId}/infographics/${infographicId}/share`)
     .then((res) => {      
     })

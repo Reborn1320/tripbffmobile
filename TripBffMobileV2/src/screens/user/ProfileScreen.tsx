@@ -18,6 +18,7 @@ import ConfirmationModal from "../../_molecules/ConfirmationModal";
 import TripsEmptyComponent from "../../_organisms/Trips/TripsList/TripsEmptyComponent";
 import { withNamespaces } from "react-i18next";
 import { PropsBase } from "../_shared/LayoutContainer";
+import Flurry from 'react-native-flurry-sdk';
 
 interface IMapDispatchToProps extends PropsBase {
   fetchTrips: (cancelToken: any) => Promise<any>;
@@ -79,6 +80,7 @@ class ProfileScreen extends Component<Props, State> {
   });
 
   componentDidMount() {
+    Flurry.logEvent('Profile', null, true);
     let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
     this._cancelToken = cancelToken;
     this._cancelRequest = cancelRequest;
@@ -91,6 +93,7 @@ class ProfileScreen extends Component<Props, State> {
 
   componentWillUnmount() {
     this._cancelRequest("Operation canceled by the user.");
+    Flurry.endTimedEvent('Profile');
   }
 
   private _editUserSettings = () => {

@@ -6,6 +6,7 @@ import ActionModal from "../../_molecules/ActionModal";
 import { mixins } from "../../_utils";
 import { PropsBase } from "../../screens/_shared/LayoutContainer";
 import { withNamespaces } from "react-i18next";
+import Flurry from 'react-native-flurry-sdk';
 
 export interface Props extends PropsBase {
   isVisible: boolean;
@@ -27,6 +28,14 @@ class UpdateLocationDescriptionComponent extends React.PureComponent<Props, Stat
     }
   }
 
+  componentDidMount() {
+    Flurry.logEvent('Location Details - Add Description', null, true);
+  }
+
+  componentWillUnmount() {
+    Flurry.endTimedEvent('Location Details - Add Description');
+  }
+
   _updateLocationDescription = (description) => {
     this.setState({
         description: description
@@ -38,6 +47,7 @@ class UpdateLocationDescriptionComponent extends React.PureComponent<Props, Stat
   };
 
   _onSave = () => {
+    Flurry.logEvent('Location Details - Updated Description');
     Keyboard.dismiss();
     this.props.confirmHandler(this.state.description);
   }

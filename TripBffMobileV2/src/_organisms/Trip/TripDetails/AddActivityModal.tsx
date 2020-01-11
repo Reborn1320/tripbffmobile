@@ -15,6 +15,7 @@ import ActionModal from "../../../_molecules/ActionModal";
 import { createLabelLocales } from "../../../_function/commonFunc";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import { withNamespaces } from "react-i18next";
+import Flurry from 'react-native-flurry-sdk';
 
 class SelectedActivityItem extends React.PureComponent<any> {
   _onPress = () => {
@@ -265,6 +266,14 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
     }
   }
 
+  componentDidMount() {
+    Flurry.logEvent('Trip Details/Edit - Add Activity', null, true);
+  }
+
+  componentWillUnmount() {
+    Flurry.endTimedEvent('Trip Details/Edit - Add Activity');
+  }
+
   _onModalShow = () => {
     if (!this.props.preDefinedActivities) {
       this.props.getAllActivities();
@@ -294,6 +303,7 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
   }
 
   _onConfirm = (activity) => { 
+    Flurry.logEvent('Trip Details/Edit - Added Activity');
     this.props.confirmHandler(this.props.locationId, activity);
   }
 

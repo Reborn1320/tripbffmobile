@@ -23,6 +23,7 @@ import { mixins } from "../../../_utils";
 import { withNamespaces } from "react-i18next";
 import { getTopNearerLocationsByCoordinate } from "../../../store/DataSource/operations";
 import  LocationSuggestionModal from "./components/ImportImageSuggestionsModal";
+import Flurry from 'react-native-flurry-sdk';
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -105,6 +106,7 @@ class TripImportation extends Component<Props, State> {
     }    
 
     async componentDidMount() {       
+        Flurry.logEvent('Trip Import', null, true);
         await checkAndRequestPhotoPermissionAsync();
 
         console.log("from date: " + this.state.fromDate.format());
@@ -176,6 +178,10 @@ class TripImportation extends Component<Props, State> {
         });
 
         this.setState({ locations: adapterResult, isLoading: false, isHideFooter: false });
+    }
+
+    componentWillUnmount() {
+        Flurry.endTimedEvent('Trip Import');
     }
 
     private _importImageSelectUnselectImage = (locationIdx: number, imageIdx: number) => {

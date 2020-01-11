@@ -9,6 +9,7 @@ import Footer2Buttons from "./Footer2Buttons";
 import { mixins } from "../_utils";
 import { PropsBase } from "../screens/_shared/LayoutContainer";
 import { withNamespaces } from "react-i18next";
+import Flurry from 'react-native-flurry-sdk';
 
 export interface Props extends PropsBase {
   isVisible: boolean;
@@ -40,6 +41,14 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
       containerWidth: width - 10 * 2,
       isLoading: true
     }
+  }
+
+  componentDidMount() {
+    Flurry.logEvent('Location Details - Upload Images', null, true);
+  }
+
+  componentWillUnmount() {
+    Flurry.endTimedEvent('Location Details - Upload Images');
   }
 
   componentDidUpdate() {
@@ -75,6 +84,8 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
   };
 
   private _onSave = () => {
+    Flurry.logEvent('Location Details - Uploaded Image');
+    
     this.setState({
       isUploadingImages: true
     });
