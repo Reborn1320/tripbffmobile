@@ -13,6 +13,7 @@ import 'moment/locale/vi';
 import ActionModal from "../../../_molecules/ActionModal";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import { withNamespaces } from "react-i18next";
+import Flurry from 'react-native-flurry-sdk';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 MapboxGL.setAccessToken('pk.eyJ1IjoidHJpcGJmZiIsImEiOiJjanFtZHA3b2cxNXhmNDJvMm5tNHR4bTFpIn0.QKKFlCG0G5sEHIss1n-A8g');
 
@@ -53,6 +54,14 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
     };    
   }
 
+  componentDidMount() {
+    Flurry.logEvent('Trip Details/Edit - Add Location', null, true);
+  }
+
+  componentWillUnmount() {
+    Flurry.endTimedEvent('Trip Details/Edit - Add Location');
+  }
+
   _onCancel = () => {
     if (this.props.cancelHandler) {
       this.props.cancelHandler();
@@ -61,6 +70,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
 
   _onConfirm = () => {
     if (this.state.query) {
+      Flurry.logEvent('Trip Details/Edit - Added Location');
       var selectedTime = this.state.selectedTime;
 
       if (selectedTime == null) {

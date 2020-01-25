@@ -11,6 +11,7 @@ import {
 } from "../../../store/Trip/operations";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import { withNamespaces } from "react-i18next";
+import Flurry from 'react-native-flurry-sdk';
 
 export interface Props extends IMapDispatchToProps, PropsBase {
   user: StoreData.UserVM;
@@ -38,6 +39,16 @@ class TripCreation extends Component<Props, State> {
       title: screenProps.t("create:screen_header_title"),
     };
   };
+
+  componentDidMount() {
+    Flurry.logEvent('Trip Creation', null, true);
+    Flurry.logEvent('Trip Creation - Export Infographic', null, true);
+  }
+  
+
+  componentWillUnmount() {
+    Flurry.endTimedEvent('Trip Creation');
+  }
 
   private _onCreatedOrUpdatedHandler = (tripId, tripName) => {
     this.props.navigation.navigate(NavigationConstants.Screens.TripImport, {

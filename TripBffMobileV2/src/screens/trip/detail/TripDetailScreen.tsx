@@ -11,6 +11,7 @@ import ActionButton from 'react-native-action-button';
 import NBTheme from "../../../theme/variables/commonColor.js";
 import Loading from "../../../_atoms/Loading/Loading";
 import { getCancelToken } from "../../../_function/commonFunc";
+import Flurry from 'react-native-flurry-sdk';
 
 export interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void;
@@ -51,9 +52,11 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
 
     componentWillUnmount() {
         this._cancelRequest('Operation canceled by the user.');
+        Flurry.endTimedEvent('Trip Details');
     }
 
     componentDidMount() {
+        Flurry.logEvent('Trip Details', null, true);
         this.props.navigation.setParams({ _goProfile: this._handleBackPress });
         this.props.navigation.setParams({ _goEditBasicTrip: this._onPopupMenuSelect });
 

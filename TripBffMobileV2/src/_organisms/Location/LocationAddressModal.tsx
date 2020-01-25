@@ -8,6 +8,7 @@ import SearchLocation from '../../_molecules/Trip/SearchLocationComponent';
 import ActionModal from "../../_molecules/ActionModal";
 import { PropsBase } from "../../screens/_shared/LayoutContainer";
 import { withNamespaces } from "react-i18next";
+import Flurry from 'react-native-flurry-sdk';
 
 export interface Props extends PropsBase {
   isVisible: boolean;
@@ -36,6 +37,14 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
       lat: this.props.lat,
       isLoading: true
     }
+  }
+
+  componentDidMount() {
+    Flurry.logEvent('Location Details - Update Address', null, true);
+  }
+
+  componentWillUnmount() {
+    Flurry.endTimedEvent('Location Details - Update Address');
   }
 
   private _selectedLocationHandler = (name, address, long, lat) => {
@@ -72,6 +81,8 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
   };
 
   private _onConfirm = () => {
+    Flurry.logEvent('Location Details - Updated Address');
+
     if (this.state.name) {
       this.props.confirmHandler(this.state.name, this.state.address, this.state.long, this.state.lat);
     }   
