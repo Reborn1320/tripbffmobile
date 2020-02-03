@@ -40,9 +40,7 @@ export interface Props extends PropsBase {
   dates: Array<StoreData.DateVM> 
 }
 
-class TripCreationFormComponent extends PureComponent<Props, any> {
-  _textInput;
-  _didFocusListener;
+class TripCreationFormComponent extends PureComponent<Props, any> {  
 
   constructor(props) {
     super(props);
@@ -60,24 +58,7 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
       beforeConfirmToDate: null,
       removedDatesHasLocation: ''
     };
-  }
-
-  componentDidMount() {
-    this._didFocusListener = this.props.navigation.addListener(
-      "didFocus",
-      () => {
-        this._textInput.blur();
-
-        setTimeout(() => {
-          this._textInput.focus();
-        }, 100);
-      }
-    );
-  }
-
-  componentWillUnmount() {
-    if (this._didFocusListener) this._didFocusListener.remove();
-  }
+  }  
 
   private _onClickCreateTrip = () => {
     let tripId = this.state.tripId,
@@ -226,28 +207,10 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
     return (
       <View>
         <View style={styles.formContainer}>
-          <Input
-            label={t("create:trip_name")}
-            labelStyle={styles.formLabel}
-            leftIcon={{ type: "font-awesome", name: "globe", size: 20 }}
-            value={this.state.tripName}
-            onChangeText={tripName => this.setState({ tripName })}
-            inputStyle={[styles.formInput, styles.formInputTripName]}
-            inputContainerStyle={[
-              styles.formInputContainer,
-              nameInputContainerStyle,
-            ]}
-            onFocus={this._onNameFieldFocus}
-            onBlur={this._onNameFieldFocus}
-            ref={input => {
-              this._textInput = input;
-            }}
-          />
           <TouchableOpacity
-            onPress={this._openDateRangePickerModal}
-            activeOpacity={1}
-            style={styles.formDateContainer}
-          >
+              onPress={this._openDateRangePickerModal}
+              activeOpacity={1}              
+            >
             <View pointerEvents="box-only">
               <Input
                 label={t("create:date")}
@@ -263,6 +226,23 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
               />
             </View>            
           </TouchableOpacity>
+
+          <View style={styles.formNameContainer}>
+            <Input
+              label={t("create:trip_name")}
+              labelStyle={styles.formLabel}
+              leftIcon={{ type: "font-awesome", name: "globe", size: 20 }}
+              value={this.state.tripName}
+              onChangeText={tripName => this.setState({ tripName })}
+              inputStyle={[styles.formInput, styles.formInputTripName]}
+              inputContainerStyle={[
+                styles.formInputContainer,
+                nameInputContainerStyle
+              ]}
+              onFocus={this._onNameFieldFocus}
+              onBlur={this._onNameFieldFocus}            
+            />       
+          </View>             
         </View>
 
         <View style={styles.buttonContainer}>{this.renderImportBtn()}</View>
@@ -310,7 +290,7 @@ interface Style {
   formInputContainer: ViewStyle;
   formInputFocusedContainer: ViewStyle;
   formInputUnFocusedContainer: ViewStyle;
-  formDateContainer: ViewStyle;
+  formNameContainer: ViewStyle;
   buttonContainer: ViewStyle;
   button: ViewStyle;
   buttonDisabled: ViewStyle;
@@ -355,7 +335,7 @@ const styles = StyleSheet.create<Style>({
   formInputUnFocusedContainer: {
     borderColor: "#A1A1A1",
   },
-  formDateContainer: {
+  formNameContainer: {
     marginTop: 24
   },
   buttonContainer: {
