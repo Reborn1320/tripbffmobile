@@ -18,6 +18,7 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import { StoreData } from "../../../store/Interfaces";
 import ConfirmationUpdateDateRangeModal from "../../../_molecules/ConfirmationUpdateDateRangeModal";
 import { connect } from "react-redux";
+import Tooltip from 'react-native-walkthrough-tooltip';
 
 export interface Props extends PropsBase {
   createTrip?: (
@@ -37,7 +38,8 @@ export interface Props extends PropsBase {
   tripFromDate?: moment.Moment;
   tripToDate?: moment.Moment;
   titleButton: string;
-  dates: Array<StoreData.DateVM> 
+  dates: Array<StoreData.DateVM> ,
+  hasTrip: boolean
 }
 
 class TripCreationFormComponent extends PureComponent<Props, any> {  
@@ -56,7 +58,8 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
       isOpenUpdateDateRangeConfirm: false,
       beforeConfirmFromDate: null,
       beforeConfirmToDate: null,
-      removedDatesHasLocation: ''
+      removedDatesHasLocation: '',
+      toolTipVisible: !this.props.hasTrip
     };
   }  
 
@@ -207,12 +210,20 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
     return (
       <View>
         <View style={styles.formContainer}>
+        <Tooltip
+          isVisible={this.state.toolTipVisible}          
+          showChildInTooltip={false}    
+          contentStyle={{flex: 0}}      
+          content={<Text>{t("create:date_field_hint")}</Text>}
+          placement="bottom"
+          onClose={() => this.setState({ toolTipVisible: false })}
+        >
           <TouchableOpacity
-              onPress={this._openDateRangePickerModal}
+              onPress={this._openDateRangePickerModal}              
               activeOpacity={1}              
             >
-            <View pointerEvents="box-only">
-              <Input
+            <View pointerEvents="box-only">            
+                <Input
                 label={t("create:date")}
                 labelStyle={styles.formLabel}
                 leftIcon={{ type: "font-awesome", name: "calendar", size: 20 }}
@@ -224,8 +235,10 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
                   dateInputContainerStyle,
                 ]}
               />
+              
             </View>            
           </TouchableOpacity>
+        </Tooltip>         
 
           <View style={styles.formNameContainer}>
             <Input
@@ -245,7 +258,7 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
           </View>             
         </View>
 
-        <View style={styles.buttonContainer}>{this.renderImportBtn()}</View>
+        <View style={styles.buttonContainer}>{this.renderImportBtn()}</View>        
 
         <DateRangePicker
           isVisible={this.state.isOpenDateRangePickerModal}
@@ -268,9 +281,11 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   var trip = storeState.currentTrip;
+  var hasTrip = storeState.trips.length;
 
   return {
-    dates: trip != null ? trip.dates : null
+    dates: trip != null ? trip.dates : null,
+    hasTrip: hasTrip
   };
 };
 

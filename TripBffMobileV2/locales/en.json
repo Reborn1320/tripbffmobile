@@ -36,7 +36,8 @@
         "create_button": "Create",
         "next_month_label": "Next",
         "prev_month_label": "Previous",
-        "update_date_range_confirm_message": "Data in {{date}} will be removed. Are you sure you want to update ?"
+        "update_date_range_confirm_message": "Data in {{date}} will be removed. Are you sure you want to update ?",
+        "date_field_hint": "Get timeline of trip generated automatically by choose the date range that you went on a trip!"
     },
     "import": {
         "skip_button": "Skip",
