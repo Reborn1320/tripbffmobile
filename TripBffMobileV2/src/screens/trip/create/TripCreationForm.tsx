@@ -281,11 +281,11 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   var trip = storeState.currentTrip;
-  var hasTrip = storeState.trips.length;
+  var hasTrip = storeState.trips.length > 0;
 
   return {
     dates: trip != null ? trip.dates : null,
-    hasTrip: hasTrip
+    hasTrip: hasTrip || trip != null
   };
 };
 
