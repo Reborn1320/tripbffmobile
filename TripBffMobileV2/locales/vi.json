@@ -36,7 +36,8 @@
         "create_button": "Tạo",
         "next_month_label": "Kế tiếp",
         "prev_month_label": "Trước",
-        "update_date_range_confirm_message": "Dữ liệu ở ngày {{date}} sẽ bị xóa. Bạn có chắc là bạn muốn cập nhật ?"
+        "update_date_range_confirm_message": "Dữ liệu ở ngày {{date}} sẽ bị xóa. Bạn có chắc là bạn muốn cập nhật ?",
+        "date_field_hint": "Tạo lịch trình chuyến đi tự động bằng cách chọn khoảng ngày bạn đã đi du lịch!"
     },
     "import": {
         "skip_button": "Bỏ qua",
