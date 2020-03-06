@@ -17,7 +17,8 @@ export const NavigationConstants = {
     TripEditBasic: "TripEditBasic",
     UserSettingsScreen: "UserSettings",
     LanguageSelection: "LanguageSelection",
-    UserFeedback: "UserFeedback"
+    UserFeedback: "UserFeedback",
+    OnBoarding: "OnBoarding"
   }
 };
 
