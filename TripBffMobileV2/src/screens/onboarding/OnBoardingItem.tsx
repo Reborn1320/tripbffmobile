@@ -70,7 +70,8 @@ const styles = StyleSheet.create<Style>({
     },
     primaryMessage: {
         position: "absolute",
-        left: "26%",
+        left: "13%",
+        right: "13%",
         top: "62%",
         alignItems: "center",
         textAlign: "center",
