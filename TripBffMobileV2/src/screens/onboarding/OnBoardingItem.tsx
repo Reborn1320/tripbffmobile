@@ -63,7 +63,7 @@ const styles = StyleSheet.create<Style>({
     pictureContainer: {
         flex: 1,
         position: "absolute",
-        top: "15%"
+        top: "5%"
     },
     messageContainer: {
         flex: 1

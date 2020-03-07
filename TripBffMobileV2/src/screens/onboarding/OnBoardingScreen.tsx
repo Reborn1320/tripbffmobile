@@ -1,34 +1,40 @@
 import React from 'react'
 import { Text, Icon } from 'native-base';
-import { connect } from 'react-redux';
 import _ from "lodash";
-import { View, TouchableOpacity, ViewStyle, StyleSheet, TextStyle, SafeAreaView, Image } from 'react-native';
+import { View, TouchableOpacity, ViewStyle, StyleSheet, TextStyle, SafeAreaView, Image, Alert } from 'react-native';
 import OnBoardingItem from './OnBoardingItem';
 import Swiper from 'react-native-swiper'
+import { PropsBase } from '../_shared/LayoutContainer';
+import { NavigationConstants } from '../_shared/ScreenConstants';
+import { NavigationScreenProp } from 'react-navigation';
+import { mixins } from "../../_utils";
+import NBColor from "../../theme/variables/material.js";
 
-interface IMapDispatchToProps {
-   
+interface Props extends PropsBase {    
+    navigation: NavigationScreenProp<any, any>;
 }
 
-export interface Props {
-    
+interface State {    
 }
 
-interface State {
-    
-}
-
-class OnBoardingScreen extends React.Component<Props & IMapDispatchToProps, State> {
+class OnBoardingScreen extends React.Component<Props, State> {
 
     constructor(props) {
         super(props);        
     }
 
+    private _skip = () => {
+        this.props.navigation.navigate(NavigationConstants.Screens.Profile);
+    }
+
     render() {       
 
         return (
-            <View style={{ flex: 1}}>    
-                <Swiper showsButtons={false} loop={false}>
+            <View style={{ flex: 1, flexDirection: "column"}}>    
+                <TouchableOpacity onPress={this._skip} style={styles.skipButton}>
+                        <Text style={styles.skipLabel}>Skip</Text>
+                </TouchableOpacity>
+                <Swiper showsButtons={false} loop={false} >
                     <OnBoardingItem 
                         imageUri = {"image1"}
                         primaryMessage = "Welcome to TripBFF" 
@@ -45,7 +51,7 @@ class OnBoardingScreen extends React.Component<Props & IMapDispatchToProps, Stat
                         imageUri = {"image4"}
                         primaryMessage = "Export meaningful infographic" 
                         secondaryMessage = "Visualize your trip as infographic and share it to community" />                    
-                </Swiper>  
+                </Swiper>                
             </View>                  
         )
     }
@@ -54,9 +60,20 @@ class OnBoardingScreen extends React.Component<Props & IMapDispatchToProps, Stat
 export default OnBoardingScreen;
 
 interface Style {
-    
-  }
+    skipButton: ViewStyle,
+    skipLabel: TextStyle,
+}
   
-  const styles = StyleSheet.create<Style>({
-    
-  })
+const styles = StyleSheet.create<Style>({    
+    skipButton: {
+        marginLeft: "80%",
+        marginRight: "10%",
+        marginTop: "7%"
+    },
+    skipLabel: {
+        color: NBColor.brandPrimary,
+        fontSize: 14,
+        ...mixins.themes.fontNormal,
+        lineHeight: 24
+    }    
+})
