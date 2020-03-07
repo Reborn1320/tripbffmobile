@@ -70,22 +70,21 @@ const styles = StyleSheet.create<Style>({
     },
     primaryMessage: {
         position: "absolute",
-        left: "13%",
-        right: "13%",
-        top: "62%",
+        left: "10%",
+        right: "10%",
+        top: "66%",
         alignItems: "center",
         textAlign: "center",
         color: NBColor.brandPrimary,
         fontSize: 18,
         ...mixins.themes.fontBold,
         lineHeight: 24
-
     },
     secondaryMessage: {
         position: "absolute",       
         left: "10%",
         right: "10%",
-        top: "68%",   
+        top: "72%",   
         textAlign: "center",
         color: "#383838",
         fontSize: 14,
