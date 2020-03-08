@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, Button } from 'native-base';
 import _ from "lodash";
-import { View, ViewStyle, StyleSheet, TextStyle, SafeAreaView } from 'react-native';
+import { View, ViewStyle, StyleSheet, TextStyle, SafeAreaView, TouchableOpacity, Platform } from 'react-native';
 import OnBoardingItem from './OnBoardingItem';
 import Swiper from 'react-native-swiper'
 import { PropsBase } from '../_shared/LayoutContainer';
@@ -10,7 +10,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { mixins } from "../../_utils";
 import NBColor from "../../theme/variables/material.js";
 import { withNamespaces } from "react-i18next";
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity as TouchableOpacityGesture} from 'react-native-gesture-handler';
 
 interface Props extends PropsBase {    
     navigation: NavigationScreenProp<any, any>;
@@ -50,10 +50,19 @@ class OnBoardingScreen extends React.Component<Props, State> {
         var { stepIndex } = this.state;
 
         return (
-            <SafeAreaView style={styles.container}>    
-                <TouchableOpacity onPress={this._skip} style={styles.skipButton}>
-                    <Text style={styles.skipLabel}>{t("action:skip")}</Text>
-                </TouchableOpacity>
+            <SafeAreaView style={styles.container}>   
+                {
+                    Platform.OS == "android" && 
+                    <TouchableOpacity onPress={this._skip} style={styles.skipButton}>
+                        <Text style={styles.skipLabel}>{t("action:skip")}</Text>
+                    </TouchableOpacity>
+                } 
+                {
+                    Platform.OS == 'ios' && 
+                    <TouchableOpacityGesture onPress={this._skip} style={styles.skipButton}>
+                        <Text style={styles.skipLabel}>{t("action:skip")}</Text>
+                    </TouchableOpacityGesture>
+                }
                 <Swiper ref='swiper'
                         showsButtons={false}
                         loop={false} 
