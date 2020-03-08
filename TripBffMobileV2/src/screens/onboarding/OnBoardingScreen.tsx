@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, Button } from 'native-base';
 import _ from "lodash";
-import { View, TouchableOpacity, ViewStyle, StyleSheet, TextStyle, SafeAreaView } from 'react-native';
+import { View, ViewStyle, StyleSheet, TextStyle, SafeAreaView } from 'react-native';
 import OnBoardingItem from './OnBoardingItem';
 import Swiper from 'react-native-swiper'
 import { PropsBase } from '../_shared/LayoutContainer';
@@ -10,6 +10,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { mixins } from "../../_utils";
 import NBColor from "../../theme/variables/material.js";
 import { withNamespaces } from "react-i18next";
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 interface Props extends PropsBase {    
     navigation: NavigationScreenProp<any, any>;
@@ -56,7 +57,8 @@ class OnBoardingScreen extends React.Component<Props, State> {
                 <Swiper ref='swiper'
                         showsButtons={false}
                         loop={false} 
-                        index={stepIndex}
+                        index={stepIndex}  
+                        containerStyle={{flex: 4}}                     
                         paginationStyle={styles.paginationStyle}                 
                         activeDotColor={NBColor.brandPrimary}
                         onIndexChanged={this._onIndexChanged}
@@ -125,7 +127,7 @@ interface Style {
 const styles = StyleSheet.create<Style>({    
     container: {
         flex: 1,
-        flexDirection: "column"
+        justifyContent: "space-between"
     },
     skipButton: {
         marginLeft: "80%",
@@ -139,12 +141,10 @@ const styles = StyleSheet.create<Style>({
         lineHeight: 24
     },
     paginationStyle: {
-        marginBottom: 14
+        bottom: '3.75%'
     },
     buttonContainer: {
-        marginBottom: 64,
-        justifyContent: "center",
-        alignItems: "center"
+        flex: 1
     },
     button: {
         width: 160,

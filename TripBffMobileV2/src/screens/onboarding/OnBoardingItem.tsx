@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text } from 'native-base';
 import _ from "lodash";
-import { View, ViewStyle, StyleSheet, TextStyle, Image } from 'react-native';
+import { View, ViewStyle, StyleSheet, TextStyle, Image, Dimensions } from 'react-native';
 import onBoardingImages from './OnBoardingImages';
 import { mixins } from "../../_utils";
 import NBColor from "../../theme/variables/material.js";
@@ -28,11 +28,14 @@ class OnBoardingItem extends React.Component<Props & IMapDispatchToProps, State>
 
     render() {       
         const { primaryMessage, secondaryMessage, imageUri }  = this.props;
+        const windowHeight = Dimensions.get('window').height;
+        const imgHeight = windowHeight * 0.4;
 
         return (
             <View style={styles.itemContainer}>    
                 <View style={styles.pictureContainer}>
                     <Image
+                    style={{height: imgHeight}}
                         source={onBoardingImages[imageUri]}>
                     </Image>  
                 </View>            
@@ -58,21 +61,20 @@ interface Style {
   
 const styles = StyleSheet.create<Style>({
     itemContainer: {
-        flex: 1
-    },
-    pictureContainer: {
         flex: 1,
         position: "absolute",
-        top: "5%"
+        top: "7%",
+        left: "7%",
+        right: "7%",
+        alignItems: "center"
+    },
+    pictureContainer: {     
     },
     messageContainer: {
         flex: 1
     },
     primaryMessage: {
-        position: "absolute",
-        left: "10%",
-        right: "10%",
-        top: "66%",
+        marginTop: "10%",
         alignItems: "center",
         textAlign: "center",
         color: NBColor.brandPrimary,
@@ -81,10 +83,7 @@ const styles = StyleSheet.create<Style>({
         lineHeight: 24
     },
     secondaryMessage: {
-        position: "absolute",       
-        left: "10%",
-        right: "10%",
-        top: "72%",   
+        marginTop: "4%",
         textAlign: "center",
         color: "#383838",
         fontSize: 14,
