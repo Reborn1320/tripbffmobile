@@ -133,7 +133,6 @@ class TripImportation extends Component<Props, State> {
                 id: idx.toString(),
                 name: nearestLocation ? nearestLocation.title : "Location Unknown",
                 location: {
-                    name: nearestLocation ? nearestLocation.title : "Location Unknown",
                     lat: element[0].location.latitude,
                     long: element[0].location.longitude,
                     address: nearestLocation ? getAddressFromLocation(nearestLocation) : "Location Unknown"
