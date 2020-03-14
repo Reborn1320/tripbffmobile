@@ -224,7 +224,11 @@ class TripImportation extends Component<Props, State> {
             if (isLocationSelected) {
                 var locationVM: IImportLocation = {
                     name: element.name,
-                    location: element.location,
+                    location: {
+                        lat: element.location.lat,
+                        long: element.location.long,
+                        address: element.location.address
+                    },                    
                     fromTime: toDateUtcFunc(element.fromTime.clone()),
                     toTime: toDateUtcFunc(element.toTime.clone()),
                     images: element.images.filter((img) => img.isSelected)

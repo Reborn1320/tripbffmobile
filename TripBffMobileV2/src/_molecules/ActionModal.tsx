@@ -81,7 +81,7 @@ const styles = StyleSheet.create<Style>({
   },
   cancelButtonContainer: {
     marginTop: 15,
-    marginLeft: 20
+    marginLeft: 15
   },
   cancelButtonIcon: {
     fontSize: 26
@@ -111,6 +111,7 @@ const styles = StyleSheet.create<Style>({
     flex: 1
   }
 })
+
   
 const ActionModal = connectStyle<typeof ActionModalComponent>('NativeBase.Modal', styles)(ActionModalComponent);
 export default ActionModal;

@@ -75,7 +75,7 @@ export class TripCarouselComponent extends React.Component<Props, State> {
     let entries: IEntry[] = trip.locationImages.map((locImg, locImgIdx) => ({
       title: locImg.name,
       subtitle: locImg.description,
-      illustration: locImg.imageUrl,
+      illustration: locImg.imageUrl ?? "",
     }));
     let tripEntry: ITripEntry = {
         tripId: trip.tripId,

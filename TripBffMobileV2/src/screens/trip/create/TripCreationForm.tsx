@@ -56,8 +56,6 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
       isNameFieldFocused: false,
       isDateFieldFocused: false,
       isOpenUpdateDateRangeConfirm: false,
-      beforeConfirmFromDate: null,
-      beforeConfirmToDate: null,
       removedDatesHasLocation: '',
       toolTipVisible: !this.props.hasTrip
     };
@@ -70,9 +68,36 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
       toDate = moment(this.state.toDate).endOf("day");
 
     if (tripId) {
-      this.props.updateTrip(tripId, tripName, fromDate, toDate).then(() => {
-        this.props.onTripCreatedUpdatedHandler(tripId, tripName);
-      });
+      const { dates, t } = this.props;
+      let isExistedLocations = dates != null ? dates.some(this._checkTripHasAnyLocations) : false;
+
+      if (isExistedLocations) {
+        let removedDates = dates.filter(d => d.date < fromDate || d.date > toDate);
+        let removedDatesHasLocation: string[] = [];
+
+        removedDates.forEach((date, index) => {
+          if (date.locations && date.locations.length > 0) {
+            removedDatesHasLocation.push(t("common:date_format", { date: date.date }));
+          }
+        });      
+
+        if (removedDatesHasLocation.length > 0) {
+          this.setState({
+            isOpenUpdateDateRangeConfirm: true,
+            removedDatesHasLocation: removedDatesHasLocation.join(', ')
+          });
+        }
+        else {
+          this.props.updateTrip(tripId, tripName, fromDate, toDate).then(() => {
+            this.props.onTripCreatedUpdatedHandler(tripId, tripName);
+          });
+        }
+      }
+      else {
+        this.props.updateTrip(tripId, tripName, fromDate, toDate).then(() => {
+          this.props.onTripCreatedUpdatedHandler(tripId, tripName);
+        });
+      }
     } else {
       this.props.createTrip(tripName, fromDate, toDate).then(tripId => {
         this.setState({ tripId: tripId });
@@ -92,47 +117,14 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
 
   private _checkTripHasAnyLocations = (date: StoreData.DateVM) => date.locations && date.locations.length > 0;
 
-  private _confirmHandler = (fromDate: Moment, toDate: Moment) => {    
-    const { tripId, dates, t } = this.props;
-    let isExistedLocations = dates != null ? dates.some(this._checkTripHasAnyLocations) : false;
-
-    if (tripId && isExistedLocations) {
-      let removedDates = dates.filter(d => d.date < fromDate || d.date > toDate);
-      let removedDatesHasLocation: string[] = [];
-
-      removedDates.forEach((date, index) => {
-        if (date.locations && date.locations.length > 0) {
-          removedDatesHasLocation.push(t("common:date_format", { date: date.date }));
-        }
-      });      
-
-      if (removedDatesHasLocation.length > 0) {
-        this.setState({
-          isOpenUpdateDateRangeConfirm: true,
-          beforeConfirmFromDate: fromDate,
-          beforeConfirmToDate: toDate,
-          removedDatesHasLocation: removedDatesHasLocation.join(', ')
-        });
-      }
-      else {
-        this.setState({
-          isOpenDateRangePickerModal: false,
-          fromDate: fromDate,
-          toDate: toDate,
-          isNameFieldFocused: false,
-          isDateFieldFocused: false,
-        });
-      }
-    }
-    else {
-      this.setState({
-        isOpenDateRangePickerModal: false,
-        fromDate: fromDate,
-        toDate: toDate,
-        isNameFieldFocused: false,
-        isDateFieldFocused: false,
-      });
-    }    
+  private _confirmHandler = (fromDate: Moment, toDate: Moment) => {  
+    this.setState({
+      isOpenDateRangePickerModal: false,
+      fromDate: fromDate,
+      toDate: toDate,
+      isNameFieldFocused: false,
+      isDateFieldFocused: false,
+    });
   };
 
   private _cancelHandler = () => {
@@ -152,9 +144,7 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
 
   private _cancelUpdateDateRangeHandler = () => {
     this.setState({      
-      isOpenUpdateDateRangeConfirm: false,
-      beforeConfirmFromDate: null,
-      beforeConfirmToDate: null
+      isOpenUpdateDateRangeConfirm: false
     });
   }
 
@@ -163,9 +153,16 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
       isOpenDateRangePickerModal: false,
       isOpenUpdateDateRangeConfirm: false,
       isNameFieldFocused: false,
-      isDateFieldFocused: false,
-      fromDate: this.state.beforeConfirmFromDate,
-      toDate: this.state.beforeConfirmToDate
+      isDateFieldFocused: false
+    });
+    
+    let tripId = this.state.tripId,
+      tripName = this.state.tripName,
+      fromDate = moment(this.state.fromDate).startOf("day"),
+      toDate = moment(this.state.toDate).endOf("day");
+
+    this.props.updateTrip(tripId, tripName, fromDate, toDate).then(() => {
+      this.props.onTripCreatedUpdatedHandler(tripId, tripName);
     });
   }
 
