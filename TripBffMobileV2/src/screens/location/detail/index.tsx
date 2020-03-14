@@ -14,6 +14,7 @@ import { NavigationConstants } from '../../_shared/ScreenConstants';
 import moment, { Moment } from 'moment';
 import { checkAndRequestPhotoPermissionAsync, runPromiseSeries, getCancelToken } from "../../../_function/commonFunc";
 import { AnyAction } from 'redux';
+import Flurry from 'react-native-flurry-sdk';
 
 interface IMapDispatchToProps {
     updateLocationAddress: (tripId: string, dateIdx: number, locationId: string, location: RawJsonData.LocationAddressVM, cancelToken: any) => Promise<void>
@@ -77,6 +78,7 @@ class LocationDetail extends React.Component<Props, State> {
     };
 
     componentDidMount() {
+        Flurry.logEvent('Location Details', null, true);
         let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
         this._cancelToken = cancelToken;
         this._cancelRequest = cancelRequest;    
@@ -85,6 +87,7 @@ class LocationDetail extends React.Component<Props, State> {
 
     componentWillUnmount() {
         this._cancelRequest('Operation canceled by the user.');
+        Flurry.endTimedEvent('Location Details');
     }
 
     private _changeThisTitle = (titleText) => {

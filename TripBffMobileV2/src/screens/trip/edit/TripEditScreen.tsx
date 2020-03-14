@@ -14,6 +14,7 @@ import Loading from "../../../_atoms/Loading/Loading";
 import NBTheme from "../../../theme/variables/material.js";
 import NBColor from "../../../theme/variables/commonColor.js";
 import { getCancelToken } from "../../../_function/commonFunc";
+import Flurry from 'react-native-flurry-sdk';
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
@@ -53,6 +54,7 @@ export class TripEditScreen extends Component<Props, State> {
      });
 
     componentDidMount() {
+        Flurry.logEvent('Trip Edit', null, true);
         this.props.navigation.setParams({ _goBack: this._goBackAndRefreshTripLists });
         this.props.navigation.setParams({ _goEditBasicTrip: this._onPopupMenuSelect });
         
@@ -67,6 +69,7 @@ export class TripEditScreen extends Component<Props, State> {
 
     componentWillUnmount() {
         this._cancelRequest('Operation canceled by the user.');
+        Flurry.endTimedEvent('Trip Edit');
     }
 
     private _refreshTrip = () => {

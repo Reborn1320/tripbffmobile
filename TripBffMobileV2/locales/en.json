@@ -15,7 +15,9 @@
         "okay": "Okay",
         "next": "Next",
         "loading": "Loading",
-        "submit": "Submit"
+        "submit": "Submit",
+        "letStart": "Let's Start",
+        "skip": "Skip"
     },
     "message": {
         "add_location": "Click to add location(s)",
@@ -36,7 +38,8 @@
         "create_button": "Create",
         "next_month_label": "Next",
         "prev_month_label": "Previous",
-        "update_date_range_confirm_message": "Data in {{date}} will be removed. Are you sure you want to update ?"
+        "update_date_range_confirm_message": "Data in {{date}} will be removed. Are you sure you want to update ?",
+        "date_field_hint": "Get timeline of trip generated automatically by choose the date range that you went on a trip!"
     },
     "import": {
         "skip_button": "Skip",
@@ -114,5 +117,15 @@
         "date_format": "{{date, dateFormat, en}}",
         "time_format": "{{date, timeFormat, en}}",
         "confirm_modal_title": "Confirm"
-    }      
+    },
+    "onboarding": {
+        "step1_primary_msg": "Welcome to TripBFF",
+        "step1_secondary_msg": "Visualize all your past trips in one place, instantly reachable and shareable",
+        "step2_primary_msg": "Auto generate timeline",
+        "step2_secondary_msg": "Timeline of trip will be generated automatically based on your photos",
+        "step3_primary_msg": "Easy to describe location",
+        "step3_secondary_msg": "We provide more and more common feelings, activities, likes and dislikes",
+        "step4_primary_msg": "Export meaningful infographic",
+        "step4_secondary_msg": "Visualize your trip as infographic and share it to community"
+    } 
 }

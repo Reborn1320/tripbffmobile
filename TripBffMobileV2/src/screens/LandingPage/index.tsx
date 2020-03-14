@@ -58,7 +58,7 @@ class LandingPageComponent extends Component<any, any> {
     this.props
       .loginUsingDeviceId(locale)
       .then(() => {
-        this.props.navigation.navigate(NavigationConstants.Screens.Profile);
+        this.props.navigation.navigate(NavigationConstants.Screens.OnBoarding);
       })
       .catch(() => {
         Toast.show({

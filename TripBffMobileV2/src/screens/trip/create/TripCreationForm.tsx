@@ -18,6 +18,7 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import { StoreData } from "../../../store/Interfaces";
 import ConfirmationUpdateDateRangeModal from "../../../_molecules/ConfirmationUpdateDateRangeModal";
 import { connect } from "react-redux";
+import Tooltip from 'react-native-walkthrough-tooltip';
 
 export interface Props extends PropsBase {
   createTrip?: (
@@ -37,12 +38,11 @@ export interface Props extends PropsBase {
   tripFromDate?: moment.Moment;
   tripToDate?: moment.Moment;
   titleButton: string;
-  dates: Array<StoreData.DateVM> 
+  dates: Array<StoreData.DateVM> ,
+  hasTrip: boolean
 }
 
-class TripCreationFormComponent extends PureComponent<Props, any> {
-  _textInput;
-  _didFocusListener;
+class TripCreationFormComponent extends PureComponent<Props, any> {  
 
   constructor(props) {
     super(props);
@@ -56,28 +56,10 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
       isNameFieldFocused: false,
       isDateFieldFocused: false,
       isOpenUpdateDateRangeConfirm: false,
-      beforeConfirmFromDate: null,
-      beforeConfirmToDate: null,
-      removedDatesHasLocation: ''
+      removedDatesHasLocation: '',
+      toolTipVisible: !this.props.hasTrip
     };
-  }
-
-  componentDidMount() {
-    this._didFocusListener = this.props.navigation.addListener(
-      "didFocus",
-      () => {
-        this._textInput.blur();
-
-        setTimeout(() => {
-          this._textInput.focus();
-        }, 100);
-      }
-    );
-  }
-
-  componentWillUnmount() {
-    if (this._didFocusListener) this._didFocusListener.remove();
-  }
+  }  
 
   private _onClickCreateTrip = () => {
     let tripId = this.state.tripId,
@@ -86,9 +68,36 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
       toDate = moment(this.state.toDate).endOf("day");
 
     if (tripId) {
-      this.props.updateTrip(tripId, tripName, fromDate, toDate).then(() => {
-        this.props.onTripCreatedUpdatedHandler(tripId, tripName);
-      });
+      const { dates, t } = this.props;
+      let isExistedLocations = dates != null ? dates.some(this._checkTripHasAnyLocations) : false;
+
+      if (isExistedLocations) {
+        let removedDates = dates.filter(d => d.date < fromDate || d.date > toDate);
+        let removedDatesHasLocation: string[] = [];
+
+        removedDates.forEach((date, index) => {
+          if (date.locations && date.locations.length > 0) {
+            removedDatesHasLocation.push(t("common:date_format", { date: date.date }));
+          }
+        });      
+
+        if (removedDatesHasLocation.length > 0) {
+          this.setState({
+            isOpenUpdateDateRangeConfirm: true,
+            removedDatesHasLocation: removedDatesHasLocation.join(', ')
+          });
+        }
+        else {
+          this.props.updateTrip(tripId, tripName, fromDate, toDate).then(() => {
+            this.props.onTripCreatedUpdatedHandler(tripId, tripName);
+          });
+        }
+      }
+      else {
+        this.props.updateTrip(tripId, tripName, fromDate, toDate).then(() => {
+          this.props.onTripCreatedUpdatedHandler(tripId, tripName);
+        });
+      }
     } else {
       this.props.createTrip(tripName, fromDate, toDate).then(tripId => {
         this.setState({ tripId: tripId });
@@ -108,47 +117,14 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
 
   private _checkTripHasAnyLocations = (date: StoreData.DateVM) => date.locations && date.locations.length > 0;
 
-  private _confirmHandler = (fromDate: Moment, toDate: Moment) => {    
-    const { tripId, dates, t } = this.props;
-    let isExistedLocations = dates != null ? dates.some(this._checkTripHasAnyLocations) : false;
-
-    if (tripId && isExistedLocations) {
-      let removedDates = dates.filter(d => d.date < fromDate || d.date > toDate);
-      let removedDatesHasLocation: string[] = [];
-
-      removedDates.forEach((date, index) => {
-        if (date.locations && date.locations.length > 0) {
-          removedDatesHasLocation.push(t("common:date_format", { date: date.date }));
-        }
-      });      
-
-      if (removedDatesHasLocation.length > 0) {
-        this.setState({
-          isOpenUpdateDateRangeConfirm: true,
-          beforeConfirmFromDate: fromDate,
-          beforeConfirmToDate: toDate,
-          removedDatesHasLocation: removedDatesHasLocation.join(', ')
-        });
-      }
-      else {
-        this.setState({
-          isOpenDateRangePickerModal: false,
-          fromDate: fromDate,
-          toDate: toDate,
-          isNameFieldFocused: false,
-          isDateFieldFocused: false,
-        });
-      }
-    }
-    else {
-      this.setState({
-        isOpenDateRangePickerModal: false,
-        fromDate: fromDate,
-        toDate: toDate,
-        isNameFieldFocused: false,
-        isDateFieldFocused: false,
-      });
-    }    
+  private _confirmHandler = (fromDate: Moment, toDate: Moment) => {  
+    this.setState({
+      isOpenDateRangePickerModal: false,
+      fromDate: fromDate,
+      toDate: toDate,
+      isNameFieldFocused: false,
+      isDateFieldFocused: false,
+    });
   };
 
   private _cancelHandler = () => {
@@ -168,9 +144,7 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
 
   private _cancelUpdateDateRangeHandler = () => {
     this.setState({      
-      isOpenUpdateDateRangeConfirm: false,
-      beforeConfirmFromDate: null,
-      beforeConfirmToDate: null
+      isOpenUpdateDateRangeConfirm: false
     });
   }
 
@@ -179,9 +153,16 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
       isOpenDateRangePickerModal: false,
       isOpenUpdateDateRangeConfirm: false,
       isNameFieldFocused: false,
-      isDateFieldFocused: false,
-      fromDate: this.state.beforeConfirmFromDate,
-      toDate: this.state.beforeConfirmToDate
+      isDateFieldFocused: false
+    });
+    
+    let tripId = this.state.tripId,
+      tripName = this.state.tripName,
+      fromDate = moment(this.state.fromDate).startOf("day"),
+      toDate = moment(this.state.toDate).endOf("day");
+
+    this.props.updateTrip(tripId, tripName, fromDate, toDate).then(() => {
+      this.props.onTripCreatedUpdatedHandler(tripId, tripName);
     });
   }
 
@@ -226,30 +207,20 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
     return (
       <View>
         <View style={styles.formContainer}>
-          <Input
-            label={t("create:trip_name")}
-            labelStyle={styles.formLabel}
-            leftIcon={{ type: "font-awesome", name: "globe", size: 20 }}
-            value={this.state.tripName}
-            onChangeText={tripName => this.setState({ tripName })}
-            inputStyle={[styles.formInput, styles.formInputTripName]}
-            inputContainerStyle={[
-              styles.formInputContainer,
-              nameInputContainerStyle,
-            ]}
-            onFocus={this._onNameFieldFocus}
-            onBlur={this._onNameFieldFocus}
-            ref={input => {
-              this._textInput = input;
-            }}
-          />
+        <Tooltip
+          isVisible={this.state.toolTipVisible}          
+          showChildInTooltip={false}    
+          contentStyle={{flex: 0}}      
+          content={<Text>{t("create:date_field_hint")}</Text>}
+          placement="bottom"
+          onClose={() => this.setState({ toolTipVisible: false })}
+        >
           <TouchableOpacity
-            onPress={this._openDateRangePickerModal}
-            activeOpacity={1}
-            style={styles.formDateContainer}
-          >
-            <View pointerEvents="box-only">
-              <Input
+              onPress={this._openDateRangePickerModal}              
+              activeOpacity={1}              
+            >
+            <View pointerEvents="box-only">            
+                <Input
                 label={t("create:date")}
                 labelStyle={styles.formLabel}
                 leftIcon={{ type: "font-awesome", name: "calendar", size: 20 }}
@@ -261,11 +232,30 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
                   dateInputContainerStyle,
                 ]}
               />
+              
             </View>            
           </TouchableOpacity>
+        </Tooltip>         
+
+          <View style={styles.formNameContainer}>
+            <Input
+              label={t("create:trip_name")}
+              labelStyle={styles.formLabel}
+              leftIcon={{ type: "font-awesome", name: "globe", size: 20 }}
+              value={this.state.tripName}
+              onChangeText={tripName => this.setState({ tripName })}
+              inputStyle={[styles.formInput, styles.formInputTripName]}
+              inputContainerStyle={[
+                styles.formInputContainer,
+                nameInputContainerStyle
+              ]}
+              onFocus={this._onNameFieldFocus}
+              onBlur={this._onNameFieldFocus}            
+            />       
+          </View>             
         </View>
 
-        <View style={styles.buttonContainer}>{this.renderImportBtn()}</View>
+        <View style={styles.buttonContainer}>{this.renderImportBtn()}</View>        
 
         <DateRangePicker
           isVisible={this.state.isOpenDateRangePickerModal}
@@ -288,9 +278,11 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   var trip = storeState.currentTrip;
+  var hasTrip = storeState.trips.length > 0;
 
   return {
-    dates: trip != null ? trip.dates : null
+    dates: trip != null ? trip.dates : null,
+    hasTrip: hasTrip || trip != null
   };
 };
 
@@ -310,7 +302,7 @@ interface Style {
   formInputContainer: ViewStyle;
   formInputFocusedContainer: ViewStyle;
   formInputUnFocusedContainer: ViewStyle;
-  formDateContainer: ViewStyle;
+  formNameContainer: ViewStyle;
   buttonContainer: ViewStyle;
   button: ViewStyle;
   buttonDisabled: ViewStyle;
@@ -355,7 +347,7 @@ const styles = StyleSheet.create<Style>({
   formInputUnFocusedContainer: {
     borderColor: "#A1A1A1",
   },
-  formDateContainer: {
+  formNameContainer: {
     marginTop: 24
   },
   buttonContainer: {

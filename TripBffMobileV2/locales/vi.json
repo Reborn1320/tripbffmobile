@@ -15,7 +15,9 @@
         "okay": "Đồng ý",
         "next": "Tiếp theo",
         "loading": "Đang tải",
-        "submit": "Gửi"
+        "submit": "Gửi",
+        "letStart": "Hãy Bắt Đầu",
+        "skip": "Bỏ qua"
     },
     "message": {
         "add_location": "Nhấp để thêm địa điểm",
@@ -36,7 +38,8 @@
         "create_button": "Tạo",
         "next_month_label": "Kế tiếp",
         "prev_month_label": "Trước",
-        "update_date_range_confirm_message": "Dữ liệu ở ngày {{date}} sẽ bị xóa. Bạn có chắc là bạn muốn cập nhật ?"
+        "update_date_range_confirm_message": "Dữ liệu ở ngày {{date}} sẽ bị xóa. Bạn có chắc là bạn muốn cập nhật ?",
+        "date_field_hint": "Tạo lịch trình chuyến đi tự động bằng cách chọn khoảng ngày bạn đã đi du lịch!"
     },
     "import": {
         "skip_button": "Bỏ qua",
@@ -114,5 +117,15 @@
         "date_format": "{{date, dateFormat, vi}}",
         "time_format": "{{date, timeFormat, vi}}",
         "confirm_modal_title": "Xác nhận"
+    },
+    "onboarding": {
+        "step1_primary_msg": "Chào mừng bạn đến với TripBFF",
+        "step1_secondary_msg": "Lưu trữ các chuyến đi trong quá khứ, dễ dàng xem lại và chia sẻ",
+        "step2_primary_msg": "Tạo lịch trình chuyến đi tự động",
+        "step2_secondary_msg": "Dòng thời gian của chuyến đi sẽ được tạo tự động dựa trên hình ảnh của bạn",
+        "step3_primary_msg": "Dễ dàng mô tả địa điểm",
+        "step3_secondary_msg": "Chúng tôi cung cấp ngày càng nhiều các cảm xúc, hoạt động, ấn tượng phổ biến",
+        "step4_primary_msg": "Xuất infographic có ý nghĩa",
+        "step4_secondary_msg": "Mô phỏng chuyến đi của bạn dưới dạng infographic và chia sẻ cho cộng đồng"
     }          
 }

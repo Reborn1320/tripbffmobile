@@ -19,6 +19,7 @@ import { withNamespaces } from "react-i18next";
 import { PropsBase } from "../_shared/LayoutContainer";
 import { StoreData } from "../../store/Interfaces";
 import axios from "axios";
+import Flurry from 'react-native-flurry-sdk';
 
 export interface Props extends PropsBase {
   locale: string,
@@ -32,6 +33,7 @@ interface IMapDispatchToProps {
 
 class Login extends Component<Props & IMapDispatchToProps, any> {
   private _loginFacebook = () => {
+    Flurry.logEvent('Login Facebook');
     var tmp = this;
 
     LoginManager.logInWithPermissions(["public_profile", "email"]).then(

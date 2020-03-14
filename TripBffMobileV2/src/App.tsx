@@ -34,6 +34,7 @@ import { withNamespaces } from "react-i18next";
 import UserFeedback from "./_organisms/User/UserFeedback";
 import NavigationService from './store/NavigationService';
 import NBColor from "./theme/variables/commonColor.js";
+import OnBoardingScreen from "./screens/onboarding/OnBoardingScreen";
 
 var extraThunk: ThunkExtraArgumentsBase = {
   uploadApi: uploadFileApi,
@@ -195,6 +196,7 @@ const TabNavigator = createBottomTabNavigator(
 const AppNavigator = createSwitchNavigator(
   {
     LandingPage: { screen: LandingPageScreen },
+    OnBoarding: { screen: OnBoardingScreen },
     Login: { screen: LoginScreen },
     TripDetails: TripDetailsNavigator,
     TabMenu: TabNavigator,

@@ -33,12 +33,13 @@ import { addInfographicId } from "../../../store/Trip/actions";
 import PreviewInfographicComponent from "./PreviewInfographic";
 import PreviewImages from "./PreviewImage";
 import NBTheme from "../../../theme/variables/commonColor.js";
-import { fetchTrip } from "../../../store/Trip/operations";
+import { fetchTrip, updateInfographicStatus } from "../../../store/Trip/operations";
 import { loginUsingFacebookAccessToken } from "../../../store/User/operations";
 import { mixins } from "../../../_utils";
 import TabBarComponent from "../../../_atoms/TabBar";
 import { withNamespaces } from "react-i18next";
 import axios from "axios";
+import Flurry from 'react-native-flurry-sdk';
 
 export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
   dispatch: ThunkDispatch<any, null, any>;
@@ -55,7 +56,8 @@ export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
 interface IMapDispatchToProps {    
   addInfographicId: (tripId: string, infographicId: string) => void;
   fetchTrip: (tripId: string, cancelToken: any) => Promise<StoreData.TripVM>;
-  loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId, facebookUserEmail) => Promise<void>
+  loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId, facebookUserEmail) => Promise<void>;
+  updateInfographicStatus: (tripId: string, infographicId: string) => void;
 }
 
 interface State {
@@ -107,7 +109,10 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
     };
   };
 
-  componentDidMount() { 
+  componentDidMount() {
+    Flurry.logEvent('Export Infographic', null, true);
+    Flurry.endTimedEvent('Trip Creation - Export Infographic');
+    
     this.props.navigation.setParams({ _handleBackPress: this._handleBackPress });
 
     let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
@@ -134,6 +139,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
   componentWillUnmount() {
     this._cancelRequest('Operation canceled by the user.');
     deleteFilesInFolder(`${this.props.tripId}`);
+    Flurry.endTimedEvent('Export Infographic');
   }
 
   private _handleBackPress = () => {
@@ -259,6 +265,9 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
                           console.log("Share cancelled");
                         } else {
                           console.log("Share success");
+                          Flurry.logEvent('Shared Infographic');
+                          //update status of infographic to Shared
+                          tmp.props.updateInfographicStatus(tmp.props.tripId, tmp.props.infographicId);
                           tmp._navigateToProfile();
                         }
                       },
@@ -501,6 +510,7 @@ const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
     fetchTrip: (tripId, cancelToken) => dispatch(fetchTrip(tripId, cancelToken)),
     loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId, facebookUserEmail) => dispatch(loginUsingFacebookAccessToken(userId, accessToken, loggedUserId, facebookUserEmail)),
+    updateInfographicStatus: (tripId, infographicId) => dispatch(updateInfographicStatus(tripId, infographicId))
   };
 };
 
