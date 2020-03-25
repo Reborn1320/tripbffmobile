@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { FlatList, View, StyleSheet, ViewStyle } from "react-native";
-import { Container, Content, Button, Text, Footer, Toast, Root } from 'native-base';
+import { FlatList, View, StyleSheet, ViewStyle, TextStyle } from "react-native";
+import { Container, Content, Button, Text, Icon, Toast, Root } from 'native-base';
 import { StoreData } from "../../../store/Interfaces";
 import _ from "lodash";
 import { connect } from "react-redux";
@@ -24,6 +24,7 @@ import { withNamespaces } from "react-i18next";
 import { getTopNearerLocationsByCoordinate } from "../../../store/DataSource/operations";
 import  LocationSuggestionModal from "./components/ImportImageSuggestionsModal";
 import Flurry from 'react-native-flurry-sdk';
+import NBColor from "../../../theme/variables/commonColor.js";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
@@ -163,19 +164,21 @@ class TripImportation extends Component<Props, State> {
         }
 
         // console.log(adapterResult)
-        Toast.show({
-            text: this.props.t("import:location_information_text"),
-            buttonText: this.props.t("action:okay"),
-            textStyle: {
-                ...mixins.themes.fontNormal
-              },
-              buttonTextStyle: {
-                ...mixins.themes.fontNormal
-              },
-            position: "top",
-            type: "success",
-            duration: 5000
-        });
+        if (groupedPhotos.length > 0) {
+            Toast.show({
+                text: this.props.t("import:location_information_text"),
+                buttonText: this.props.t("action:okay"),
+                textStyle: {
+                    ...mixins.themes.fontNormal
+                  },
+                  buttonTextStyle: {
+                    ...mixins.themes.fontNormal
+                  },
+                position: "top",
+                type: "success",
+                duration: 5000
+            });
+        }        
 
         this.setState({ locations: adapterResult, isLoading: false, isHideFooter: false });
     }
@@ -292,6 +295,7 @@ class TripImportation extends Component<Props, State> {
 
         return (
             <ImportImageLocationItem
+                navigation={this.props.navigation}
                 locationIdx={locIdx}
                 location={location}
                 handleSelectAll={(locationIdx) => this._importImageSelectUnselectAllImages(locationIdx)}
@@ -381,20 +385,43 @@ class TripImportation extends Component<Props, State> {
     render() {
         console.log('trip import screen render');
         const { tripId, locations, isLoading, loadingMessage, isHideFooter } = this.state
+        const { t } = this.props
+
         return (
             <Root>
             <Container> 
                 <Content>
 
                         {isLoading && <Loading message={loadingMessage} />}
-                        {!isLoading &&
+                        {
+                            !isLoading && locations.length > 0 &&
                             <FlatList style={{ borderBottomWidth: 0 }}
                                 data={locations}
                                 renderItem={this._renderItem}
                                 keyExtractor={(item, index) => String(index)}
                                 removeClippedSubviews={false}
                             />
-                        }    
+                        }   
+                        {
+                            !isLoading && locations.length == 0 &&
+                            <View style={styles.emptyTimelineContainer}>
+                                <Text style={styles.emptyTimelineMsg}>
+                                    <Icon name="md-alert" type="Ionicons" style={styles.warningMsgIcon}></Icon>
+                                    {t("import:warning_empty_timeline_message")}                                   
+                                </Text>
+                                <View style={styles.buttonContainer}>
+                                    <Button
+                                        bordered
+                                        style={[styles.button]}
+                                        // onPress={this._onClickCreateTrip}
+                                    >
+                                        <Text style={[styles.buttonTitle]}>
+                                        {t("import:update_date_button")}   
+                                        </Text>
+                                    </Button>
+                                </View>                                
+                            </View>
+                        } 
                         <View>
                             <LocationSuggestionModal 
                                 isVisible={this.state.isOpenOtherSuggestionsModal}
@@ -423,6 +450,12 @@ class TripImportation extends Component<Props, State> {
 
 interface Style {
     footerButton: ViewStyle;
+    emptyTimelineContainer: ViewStyle;
+    emptyTimelineMsg: TextStyle;
+    warningMsgIcon: TextStyle;
+    buttonContainer: ViewStyle;
+    button: ViewStyle;
+    buttonTitle: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -433,6 +466,38 @@ const styles = StyleSheet.create<Style>({
         flexGrow: 1,
         justifyContent: "center",
         shadowColor: null,
+    },
+    emptyTimelineContainer: {
+        marginTop: '15%',
+        textAlign: 'center'
+    },
+    emptyTimelineMsg: {
+        ...mixins.themes.fontNormal,
+        fontSize: 17,
+        lineHeight: 22,
+        marginLeft: '15%',
+        marginRight: '15%'
+    },
+    warningMsgIcon: {
+        fontSize: 18,
+        color: NBColor.brandWarning,
+        marginRight: 10
+    },
+    buttonContainer: {
+        marginTop: 20,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    button: {
+        width: 200,
+        alignSelf: "center",
+        justifyContent: "center"
+    },
+    buttonTitle: {
+        ...mixins.themes.fontSemiBold,
+        textTransform: "capitalize",
+        fontSize: 17,
+        lineHeight: 22
     }
 })
 
