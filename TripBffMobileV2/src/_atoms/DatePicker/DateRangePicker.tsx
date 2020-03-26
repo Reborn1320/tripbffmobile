@@ -98,9 +98,7 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
       <Modal
           isVisible={isVisible}
           style={styles.bottomModal}
-          swipeDirection="down"
           onBackButtonPress={this._onCancel}
-          onSwipeComplete={this._onCancel}
         >
           <SafeAreaView style={styles.content}>
               <View>
@@ -117,7 +115,8 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
                     weekdays={weekdays}
                     previousTitle={t("create:prev_month_label")}
                     nextTitle={t("create:next_month_label")}
-                    onDateChange={this.onDateChange}                    
+                    onDateChange={this.onDateChange}    
+                    enableSwipe={true}                
                 />
               </View>                
               <View style={styles.buttons}>
