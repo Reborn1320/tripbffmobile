@@ -8,7 +8,7 @@ import { cloneDeep } from 'lodash';
 
 // import checkAndRequestPhotoPermissionAsync from "../../shared/photo/PhotoPermission";
 import loadPhotosWithinAsync from "../../shared/photo/PhotosLoader";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import GroupPhotosIntoLocations from "../../shared/photo/PhotosGrouping";
 import ImportImageLocationItem from "./components/ImportImageLocationItem";
 import Loading from "../../../_atoms/Loading/Loading";
@@ -25,12 +25,20 @@ import { getTopNearerLocationsByCoordinate } from "../../../store/DataSource/ope
 import  LocationSuggestionModal from "./components/ImportImageSuggestionsModal";
 import Flurry from 'react-native-flurry-sdk';
 import NBColor from "../../../theme/variables/commonColor.js";
+import DateRangePicker from "../../../_atoms/DatePicker/DateRangePicker";
+import { updateTrip } from "../../../store/Trip/operations";
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     trip: StoreData.TripVM
 }
 
 interface IMapDispatchToProps {
+    updateTrip: (
+        tripId: string,
+        name: string,
+        fromDate: Moment,
+        toDate: Moment
+      ) => Promise<any>;
     addLocations: (tripId: string, locations: IImportLocation[]) => Promise<void>;
     uploadLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, imageUrl: string, mimeType: StoreData.IMimeTypeImage) => Promise<void>;
 }
@@ -47,7 +55,8 @@ interface State {
     UIState: UIState,
     isHideFooter: boolean,
     isOpenOtherSuggestionsModal: boolean,
-    selectedLocation: TripImportLocationVM
+    selectedLocation: TripImportLocationVM,
+    isOpenDateRangePickerModal: boolean
 }
 
 type UIState = "select image" | "import images" | "uploading image" 
@@ -67,7 +76,8 @@ class TripImportation extends Component<Props, State> {
             UIState: "select image",
             isHideFooter: true,
             isOpenOtherSuggestionsModal: false,
-            selectedLocation: null
+            selectedLocation: null,
+            isOpenDateRangePickerModal: false
         }
 
         console.log("constructor")
@@ -114,7 +124,16 @@ class TripImportation extends Component<Props, State> {
         console.log("to date: " + this.state.toDate.format());
 
         console.log("request photo permission completed");
-        var photos = await loadPhotosWithinAsync(this.state.fromDate.unix(), this.state.toDate.unix())
+        var locations = await this._getLocations(this.state.fromDate, this.state.toDate);     
+        this.setState({ locations: locations, isLoading: false, isHideFooter: false });   
+    }
+
+    componentWillUnmount() {
+        Flurry.endTimedEvent('Trip Import');
+    }
+
+    private _getLocations = async (fromDate: Moment, toDate: Moment) => {
+        var photos = await loadPhotosWithinAsync(fromDate.unix(), toDate.unix())
         console.log(`photos result = ${photos.length} photos`);
 
         var groupedPhotos = GroupPhotosIntoLocations(photos);
@@ -178,15 +197,11 @@ class TripImportation extends Component<Props, State> {
                 type: "success",
                 duration: 5000
             });
-        }        
-
-        this.setState({ locations: adapterResult, isLoading: false, isHideFooter: false });
+        }  
+        
+        return adapterResult;
     }
-
-    componentWillUnmount() {
-        Flurry.endTimedEvent('Trip Import');
-    }
-
+    
     private _importImageSelectUnselectImage = (locationIdx: number, imageIdx: number) => {
 
         var newLocations = cloneDeep(this.state.locations)
@@ -381,6 +396,39 @@ class TripImportation extends Component<Props, State> {
     private _onCancelImport = () => {
         this.props.navigation.navigate(NavigationConstants.Screens.TripDetail, { tripId: this.state.tripId });
     }
+
+    private _openDateRangePickerModal = () => {
+        this.setState({
+            isOpenDateRangePickerModal: true
+        });
+    }
+
+    private _confirmHandler = async (fromDate: Moment, toDate: Moment) => {  
+        this.setState({
+            isOpenDateRangePickerModal: false,            
+            isLoading: true,
+            isHideFooter: true   
+        });
+
+        var locations = await this._getLocations(fromDate, toDate);  
+
+        this.props.updateTrip(this.props.trip.tripId, this.props.trip.name, fromDate, toDate)
+         .then(() => {                 
+            this.setState({            
+                locations: locations, 
+                isLoading: false,
+                isHideFooter: false,
+                fromDate: fromDate,
+                toDate: toDate  
+            });
+         }); 
+      };
+    
+      private _cancelHandler = () => {
+        this.setState({
+          isOpenDateRangePickerModal: false
+        });
+      };
     
     render() {
         console.log('trip import screen render');
@@ -413,7 +461,7 @@ class TripImportation extends Component<Props, State> {
                                     <Button
                                         bordered
                                         style={[styles.button]}
-                                        // onPress={this._onClickCreateTrip}
+                                        onPress={this._openDateRangePickerModal}
                                     >
                                         <Text style={[styles.buttonTitle]}>
                                         {t("import:update_date_button")}   
@@ -428,6 +476,13 @@ class TripImportation extends Component<Props, State> {
                                 location={this.state.selectedLocation}
                                 confirmHandler={this._confirmUpdateLocation}
                                 cancelHandler={this._handleCloseOtherSuggestionsModal}></LocationSuggestionModal>
+                                <DateRangePicker
+                                    isVisible={this.state.isOpenDateRangePickerModal}
+                                    fromDate={this.state.fromDate}
+                                    toDate={this.state.toDate}
+                                    cancelHandler={this._cancelHandler}
+                                    confirmHandler={this._confirmHandler}
+                                    />
                         </View>
                 </Content>
                 {
@@ -475,8 +530,8 @@ const styles = StyleSheet.create<Style>({
         ...mixins.themes.fontNormal,
         fontSize: 17,
         lineHeight: 22,
-        marginLeft: '15%',
-        marginRight: '15%'
+        marginLeft: '10%',
+        marginRight: '10%'
     },
     warningMsgIcon: {
         fontSize: 18,
@@ -511,6 +566,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     return {
         // dispatch, //https://stackoverflow.com/questions/36850988/this-props-dispatch-not-a-function-react-redux
+        updateTrip: (tripId, name, fromDate, toDate) =>
+            dispatch(updateTrip(tripId, name, fromDate, toDate)),
         addLocations: (tripId, selectedLocations) => dispatch(addLocations(tripId, selectedLocations)),
         uploadLocationImage: (tripId, dateIdx, locationId, imageId, imgUrl, mimeType) => dispatch(uploadLocationImage(tripId, dateIdx, locationId, imageId, imgUrl, mimeType)),
     }

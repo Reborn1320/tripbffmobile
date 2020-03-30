@@ -51,7 +51,7 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
       tripId: this.props.tripId,
       tripName: this.props.tripName,
       isOpenDateRangePickerModal: false,
-      fromDate: this.props.tripFromDate ? this.props.tripFromDate : moment(),
+      fromDate: this.props.tripFromDate ? this.props.tripFromDate : moment().subtract(2, "days"),
       toDate: this.props.tripToDate ? this.props.tripToDate : moment(),
       isNameFieldFocused: false,
       isDateFieldFocused: false,
