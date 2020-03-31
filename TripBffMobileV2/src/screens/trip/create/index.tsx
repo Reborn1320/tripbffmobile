@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Container, Content } from "native-base";
 import { StoreData } from "../../../store/Interfaces";
 import { connect } from "react-redux";
-import { Moment } from "moment";
+import moment, { Moment } from "moment";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import TripCreationForm from "./TripCreationForm";
 import {
@@ -15,6 +15,8 @@ import Flurry from 'react-native-flurry-sdk';
 
 export interface Props extends IMapDispatchToProps, PropsBase {
   user: StoreData.UserVM;
+  tripFromDate?: moment.Moment;
+  tripToDate?: moment.Moment;
 }
 
 interface IMapDispatchToProps {
@@ -67,12 +69,23 @@ class TripCreation extends Component<Props, State> {
             onTripCreatedUpdatedHandler={this._onCreatedOrUpdatedHandler}
             titleButton={"action:next"}
             navigation={this.props.navigation}
+            tripFromDate={this.props.tripFromDate}
+            tripToDate={this.props.tripToDate}
           />
         </Content>
       </Container>
     );
   }
 }
+
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
+  var trip = storeState.currentTrip;
+
+  return {
+    tripFromDate: trip != null ? trip.fromDate : null,
+    tripToDate: trip != null ? trip.toDate : null
+  };
+};
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -84,7 +97,7 @@ const mapDispatchToProps = dispatch => {
 };
 
 const TripCreationScreen = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(TripCreation);
 

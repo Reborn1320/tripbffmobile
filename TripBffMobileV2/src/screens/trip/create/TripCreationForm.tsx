@@ -57,7 +57,8 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
       isDateFieldFocused: false,
       isOpenUpdateDateRangeConfirm: false,
       removedDatesHasLocation: '',
-      toolTipVisible: !this.props.hasTrip
+      toolTipVisible: !this.props.hasTrip,
+      isUpdatedDateRange: false
     };
   }  
 
@@ -66,6 +67,12 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
       tripName = this.state.tripName,
       fromDate = moment(this.state.fromDate).startOf("day"),
       toDate = moment(this.state.toDate).endOf("day");
+
+    if (this.props.tripFromDate && this.props.tripToDate && 
+        (this.props.tripFromDate != fromDate || this.props.tripToDate != toDate) && !this.state.isUpdatedDateRange) {      
+      fromDate = this.props.tripFromDate;
+      toDate = this.props.tripToDate;
+    }
 
     if (tripId) {
       const { dates, t } = this.props;
@@ -90,18 +97,20 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
         else {
           this.props.updateTrip(tripId, tripName, fromDate, toDate).then(() => {
             this.props.onTripCreatedUpdatedHandler(tripId, tripName);
+            this.setState({ isUpdatedDateRange : false});
           });
         }
       }
       else {
         this.props.updateTrip(tripId, tripName, fromDate, toDate).then(() => {
           this.props.onTripCreatedUpdatedHandler(tripId, tripName);
+          this.setState({ isUpdatedDateRange : false});
         });
       }
     } else {
-      this.props.createTrip(tripName, fromDate, toDate).then(tripId => {
-        this.setState({ tripId: tripId });
+      this.props.createTrip(tripName, fromDate, toDate).then(tripId => {        
         this.props.onTripCreatedUpdatedHandler(tripId, tripName);
+        this.setState({ tripId: tripId, isUpdatedDateRange : false});
       });
     }
   };
@@ -124,6 +133,7 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
       toDate: toDate,
       isNameFieldFocused: false,
       isDateFieldFocused: false,
+      isUpdatedDateRange: true
     });
   };
 
@@ -190,8 +200,13 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
   }
 
   render() {
-    const { t } = this.props;
-    const { fromDate, toDate, removedDatesHasLocation } = this.state;
+    var { t, tripFromDate, tripToDate } = this.props;
+    var { fromDate, toDate, removedDatesHasLocation, isUpdatedDateRange } = this.state;
+
+    if (tripFromDate && tripToDate && (tripFromDate != fromDate || tripToDate != toDate) && !isUpdatedDateRange) {      
+      fromDate = tripFromDate;
+      toDate = tripToDate;
+    }
 
     var date =
       t("common:date_format", { date: fromDate }) +
@@ -259,8 +274,8 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
 
         <DateRangePicker
           isVisible={this.state.isOpenDateRangePickerModal}
-          fromDate={this.state.fromDate}
-          toDate={this.state.toDate}
+          fromDate={fromDate}
+          toDate={toDate}
           cancelHandler={this._cancelHandler}
           confirmHandler={this._confirmHandler}
         />

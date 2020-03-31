@@ -56,7 +56,8 @@ interface State {
     isHideFooter: boolean,
     isOpenOtherSuggestionsModal: boolean,
     selectedLocation: TripImportLocationVM,
-    isOpenDateRangePickerModal: boolean
+    isOpenDateRangePickerModal: boolean,
+    isUpdatedDateRange: boolean
 }
 
 type UIState = "select image" | "import images" | "uploading image" 
@@ -77,7 +78,8 @@ class TripImportation extends Component<Props, State> {
             isHideFooter: true,
             isOpenOtherSuggestionsModal: false,
             selectedLocation: null,
-            isOpenDateRangePickerModal: false
+            isOpenDateRangePickerModal: false,
+            isUpdatedDateRange: false
         }
 
         console.log("constructor")
@@ -398,12 +400,14 @@ class TripImportation extends Component<Props, State> {
     }
 
     private _openDateRangePickerModal = () => {
+        Flurry.logEvent('Trip Import - Open Date Range modal');
         this.setState({
             isOpenDateRangePickerModal: true
         });
     }
 
     private _confirmHandler = async (fromDate: Moment, toDate: Moment) => {  
+        Flurry.logEvent('Trip Import - Updated Date Range');
         this.setState({
             isOpenDateRangePickerModal: false,            
             isLoading: true,
@@ -419,7 +423,8 @@ class TripImportation extends Component<Props, State> {
                 isLoading: false,
                 isHideFooter: false,
                 fromDate: fromDate,
-                toDate: toDate  
+                toDate: toDate,
+                isUpdatedDateRange: true
             });
          }); 
       };
@@ -431,10 +436,9 @@ class TripImportation extends Component<Props, State> {
       };
     
     render() {
-        console.log('trip import screen render');
-        const { tripId, locations, isLoading, loadingMessage, isHideFooter } = this.state
-        const { t } = this.props
-
+        let { tripId, locations, isLoading, loadingMessage, isHideFooter, fromDate, toDate, isUpdatedDateRange } = this.state
+        const { t } = this.props    
+        
         return (
             <Root>
             <Container> 
@@ -478,8 +482,8 @@ class TripImportation extends Component<Props, State> {
                                 cancelHandler={this._handleCloseOtherSuggestionsModal}></LocationSuggestionModal>
                                 <DateRangePicker
                                     isVisible={this.state.isOpenDateRangePickerModal}
-                                    fromDate={this.state.fromDate}
-                                    toDate={this.state.toDate}
+                                    fromDate={fromDate}
+                                    toDate={toDate}
                                     cancelHandler={this._cancelHandler}
                                     confirmHandler={this._confirmHandler}
                                     />
