@@ -40,6 +40,7 @@ export function fetchTrip(tripId: string, cancelToken: any): ThunkResultBase {
           toDate: moment(rawTrip.toDate).local(),
           rawLocations: rawTrip.locations,
           infographicId: rawTrip.infographicId,
+          createdById: rawTrip.createdById
         };
         //console.log('current trip: ' + JSON.stringify(trip));
         dispatch(replaceTrip(trip));

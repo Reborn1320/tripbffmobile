@@ -72,7 +72,8 @@ export module StoreData {
         dates?: Array<DateVM>     
         infographicId?: string,
         rawLocations?: Array<LocationVM>,
-        isDeleted?: boolean  
+        isDeleted?: boolean,
+        createdById?: string
     }
 
 
@@ -87,7 +88,8 @@ export module StoreData {
             description: string,
             imageUrl: string,
         }[],
-        isDeleted?: boolean
+        isDeleted?: boolean,
+        createdById: string
     }
 
     export interface UserVM {
@@ -155,7 +157,8 @@ export namespace RawJsonData {
         fromDate: string
         toDate: string
         locations: Array<StoreData.LocationVM>,
-        infographicId: string
+        infographicId: string,
+        createdById: string
     }
 
     export interface MinimizedTripVM {
@@ -169,7 +172,8 @@ export namespace RawJsonData {
             description: string,
             imageUrl: string,
         }[],
-        isDeleted: boolean
+        isDeleted: boolean,
+        createdById: string
     }
 
     export interface LocationVM {

@@ -18,7 +18,8 @@ export const NavigationConstants = {
     UserSettingsScreen: "UserSettings",
     LanguageSelection: "LanguageSelection",
     UserFeedback: "UserFeedback",
-    OnBoarding: "OnBoarding"
+    OnBoarding: "OnBoarding",
+    NewsFeed: "NewsFeed"
   }
 };
 
