@@ -102,15 +102,12 @@ class NewsFeedScreen extends Component<Props, State> {
 
   private _handleUpdatedTripGoBack = tripId => {
     this.props.getCurrentMinimizedTrip(tripId);
-  };
+  };  
 
-  private _handleCreateBtnClick = () => {
-    this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
-  };
-
-  private _handleTripItemClick = (tripId: string) => {
+  private _handleTripItemClick = (tripId: string, canContribute: boolean) => {
     this.props.navigation.navigate(NavigationConstants.Screens.TripEdit, {
       tripId: tripId,
+      canContribute: canContribute,
       onGoBackProfile: this._handleUpdatedTripGoBack,
     });
   };

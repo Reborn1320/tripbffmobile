@@ -23,7 +23,8 @@ export function fetchTrips(cancelToken: CancelToken): ThunkResultBase {
           toDate: moment(rawTrip.toDate).local(),
           locationImages: rawTrip.locationImages,
           isDeleted: rawTrip.isDeleted,
-          createdById: rawTrip.createdById
+          createdById: rawTrip.createdById,
+          canContribute: rawTrip.canContribute
         }));
         //console.log('first trip: ' + JSON.stringify(trips[0]));
         return trips;
@@ -53,11 +54,6 @@ export function getCurrentMinimizedTrip(tripId: string): ThunkResultBase {
     return extraArguments.tripApiService.get(`/trips/minimized/${tripId}`)
       .then(res => {
         var rawTripsVM: RawJsonData.MinimizedTripVM = res.data;
-        var trip = {
-          ...rawTripsVM,
-          fromDate: moment(rawTripsVM.fromDate).local(),
-          toDate: moment(rawTripsVM.fromDate).local(),
-        }
         dispatch(getCurrentMinimizedTripAction(res.data));
       })
       .catch(error => {

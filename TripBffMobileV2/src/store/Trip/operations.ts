@@ -40,7 +40,8 @@ export function fetchTrip(tripId: string, cancelToken: any): ThunkResultBase {
           toDate: moment(rawTrip.toDate).local(),
           rawLocations: rawTrip.locations,
           infographicId: rawTrip.infographicId,
-          createdById: rawTrip.createdById
+          createdById: rawTrip.createdById,
+          canContribute: rawTrip.canContribute
         };
         //console.log('current trip: ' + JSON.stringify(trip));
         dispatch(replaceTrip(trip));
@@ -182,7 +183,9 @@ export function createTrip(name: string, fromDate: Moment, toDate: Moment): Thun
         tripId: tripId,
         name: name,
         fromDate: fromDate,
-        toDate: toDate
+        toDate: toDate,
+        createdById: "", //TODO: should equal userId
+        canContribute: true
       };
       dispatch(createTripAction(trip));
       return tripId;

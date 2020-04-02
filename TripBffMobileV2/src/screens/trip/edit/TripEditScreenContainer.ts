@@ -10,6 +10,7 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   return {
       tripId,
       trip: storeState.currentTrip && storeState.currentTrip.tripId == tripId ? storeState.currentTrip : undefined,
+      userId: storeState.user.id
   };
 };
 

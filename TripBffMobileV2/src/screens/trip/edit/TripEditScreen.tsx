@@ -25,6 +25,7 @@ export interface Props extends IMapDispatchToProps, PropsBase {
     tripId: string,
     trip: StoreData.TripVM,
     navigation: RNa.NavigationScreenProp<any, any>;
+    userId: string;
 }
 
 interface State {
@@ -47,7 +48,7 @@ export class TripEditScreen extends Component<Props, State> {
 
     static navigationOptions = ({ navigation }) => ({
         headerLeft:  <RNa.HeaderBackButton tintColor={NBColor.colorBackBlack} onPress={navigation.getParam('_goBack')} />,
-        headerRight:  (<TouchableOpacity style={styles.settingButtonContainer}
+        headerRight:   (navigation.getParam('canContribute') && <TouchableOpacity style={styles.settingButtonContainer}
                                 onPress={navigation.getParam('_goEditBasicTrip')}>
                             <Icon style={styles.editIcon} name='pencil-alt' type="FontAwesome5" />
                      </TouchableOpacity>)
@@ -111,19 +112,24 @@ export class TripEditScreen extends Component<Props, State> {
     }
 
     render() {
-        const { trip, navigation } = this.props;
+        const { trip, navigation, userId } = this.props;
         const { isDisplayLoading } = this.state;
         return (
             <Container>
-                <AndroidBackHandler onBackPress={this._goBackAndRefreshTripLists} />
+                {
+                    trip && trip.createdById == userId && 
+                    <AndroidBackHandler onBackPress={this._goBackAndRefreshTripLists} />
+                }
+                
                 <Content refreshControl={<RefreshControl refreshing={this.state.refreshing}
                                         onRefresh={this._onRefresh} />}>
                     {isDisplayLoading &&  <Loading message={''}/> }
                     {trip &&
                         <TripDetailScreenContent tripId={trip.tripId} navigation={navigation} />}                   
                 </Content>
+
                 {
-                    trip && 
+                    trip && trip.canContribute &&
                     <ActionButton
                         buttonColor={NBTheme.colorRosy}
                         position="center"

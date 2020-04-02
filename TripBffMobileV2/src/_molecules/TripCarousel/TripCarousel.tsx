@@ -28,7 +28,7 @@ export type ITripEntry = {
 
 export interface Props extends PropsBase {
   trip: StoreData.MinimizedTripVM,
-  handleClick: (tripId: string) => void;
+  handleClick: (tripId: string, canContribute: boolean) => void;
   handleShareClick: (tripId: string) => void;
   handleDeleteTrip: (tripId: string) => void;
   currentMinimizedTrip?: StoreData.MinimizedTripVM
@@ -113,11 +113,12 @@ export class TripCarouselComponent extends React.Component<Props, State> {
   }
 
   private _handleClickTrip = () => {
-    this.props.handleClick(this.props.trip.tripId);
+    this.props.handleClick(this.props.trip.tripId, this.props.trip.canContribute);
   }
 
   render() {
     const { currentMinimizedTrip, trip, t } = this.props;
+
     let tripEntry = currentMinimizedTrip ? this._normalizeTripEntry(currentMinimizedTrip) :this._normalizeTripEntry(trip);
     const { title, subtitle } = tripEntry;
     let android9Style = Platform.OS === 'android' && Platform.Version === 28 ? styles.containerAndroid9 : {};
@@ -133,30 +134,36 @@ export class TripCarouselComponent extends React.Component<Props, State> {
                     </Text>  
                   </TouchableOpacity>
                 </View>   
-                <View style={{marginTop: 13, marginRight: 10}}>
-                  <TouchableOpacity
-                      onPress={this._handleShareClick}>
-                      <Icon type="Ionicons" name="md-share-alt" style={{color:"#cccccc", fontSize: 24}}/>
-                  </TouchableOpacity>                
-                </View>
-                <View style={{marginTop: 10}}>
-                  <Menu>
-                      <MenuTrigger>
-                        <Icon type="Ionicons" name="md-more" style={styles.moreMenu} />
-                      </MenuTrigger>
-                      <MenuOptions customStyles={
-                            {
-                              optionsContainer: menuOptionStyles.optionsContainer,
-                              optionWrapper: menuOptionStyles.optionWrapper,
-                              optionText: menuOptionStyles.optionText,
-                            }
-                          }>
-                        <MenuOption onSelect={this._handleDeleteTrip} >
-                          <Text style={styles.deleteLabel}>{t("profile:delete_trip_menu")}</Text>
-                        </MenuOption>
-                      </MenuOptions>
-                    </Menu>
-                </View>      
+                {
+                  trip.canContribute &&
+                  <View style={{marginTop: 13, marginRight: 10}}>
+                    <TouchableOpacity
+                        onPress={this._handleShareClick}>
+                        <Icon type="Ionicons" name="md-share-alt" style={{color:"#cccccc", fontSize: 24}}/>
+                    </TouchableOpacity>                
+                  </View>
+                }
+                {
+                  trip.canContribute &&
+                  <View style={{marginTop: 10}}>
+                    <Menu>
+                        <MenuTrigger>
+                          <Icon type="Ionicons" name="md-more" style={styles.moreMenu} />
+                        </MenuTrigger>
+                        <MenuOptions customStyles={
+                              {
+                                optionsContainer: menuOptionStyles.optionsContainer,
+                                optionWrapper: menuOptionStyles.optionWrapper,
+                                optionText: menuOptionStyles.optionText,
+                              }
+                            }>
+                          <MenuOption onSelect={this._handleDeleteTrip} >
+                            <Text style={styles.deleteLabel}>{t("profile:delete_trip_menu")}</Text>
+                          </MenuOption>
+                        </MenuOptions>
+                      </Menu>
+                  </View>   
+                }                   
               </View>
               <View style={{marginTop: 4}}>
                 <Text style={styles.subtitle}>{subtitle}</Text>

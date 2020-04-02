@@ -12,7 +12,7 @@ interface IMapDispatchToProps {
 }
 
 export interface Props extends IMapDispatchToProps {
-  handleClick: (tripId: string) => void;
+  handleClick: (tripId: string, canContribute: boolean) => void;
   trips: StoreData.MinimizedTripVM[];
   handleShareClick: (tripId: string) => void;
   handleDeleteTrip: (tripId:string) => void;
