@@ -55,14 +55,14 @@ export class TripCarouselComponent extends React.Component<Props, State> {
   EMPTY_TRIP_ENTRIES: IEntry[] = [
     {
       title: "No Location",
-      subtitle: this.props.t("message:add_location"),
+      subtitle: this.props.trip.canContribute ? this.props.t("message:add_location") : this.props.t("message:no_location"),
       illustration: ""
     }
   ];
   
   EMPTY_LOCATION_ENTRY: IEntry = {
     title: "No Image",
-    subtitle: this.props.t("message:add_image"),
+    subtitle: this.props.trip.canContribute ? this.props.t("message:add_image") : this.props.t("message:no_image"),
     illustration: ""
   }
 
@@ -75,7 +75,7 @@ export class TripCarouselComponent extends React.Component<Props, State> {
     let entries: IEntry[] = trip.locationImages.map((locImg, locImgIdx) => ({
       title: locImg.name,
       subtitle: locImg.description,
-      illustration: locImg.imageUrl ?? "",
+      illustration: locImg.imageUrl ?? ""
     }));
     let tripEntry: ITripEntry = {
         tripId: trip.tripId,
@@ -118,16 +118,18 @@ export class TripCarouselComponent extends React.Component<Props, State> {
 
   render() {
     const { currentMinimizedTrip, trip, t } = this.props;
+    const canContribute = trip.canContribute;
 
     let tripEntry = currentMinimizedTrip ? this._normalizeTripEntry(currentMinimizedTrip) :this._normalizeTripEntry(trip);
     const { title, subtitle } = tripEntry;
     let android9Style = Platform.OS === 'android' && Platform.Version === 28 ? styles.containerAndroid9 : {};
+    let titleContainerStyle = canContribute ? styles.titleContainer : styles.titleReadonlyContainer;
 
     return (      
       <View style={[styles.container, android9Style]}>
           <View style={{marginLeft: 12}}>
             <View style={styles.headerContainer}>              
-                <View style={styles.titleContainer}>
+                <View style={titleContainerStyle}>
                   <TouchableOpacity onPress={this._handleClickTrip}>
                     <Text numberOfLines={2} style={styles.title}>
                         {title}
@@ -171,6 +173,7 @@ export class TripCarouselComponent extends React.Component<Props, State> {
           </View>         
           <View style={{marginVertical: 16}}>
             <StyledCarousel
+              canContribute={canContribute}
               entries={tripEntry.entries}
               clickHandler={this._handleClickTrip}
             />
@@ -199,6 +202,7 @@ interface Style {
   containerAndroid9: ViewStyle;
   headerContainer: ViewStyle;
   titleContainer: ViewStyle;  
+  titleReadonlyContainer: ViewStyle;
   title: TextStyle;
   subtitle: TextStyle;
   titleDark: TextStyle;
@@ -235,6 +239,10 @@ const styles = StyleSheet.create<Style>({
   }, 
   titleContainer: {
     width: "80%",
+    marginTop: 16
+  },
+  titleReadonlyContainer: {
+    width: "100%",
     marginTop: 16
   },
   title: {

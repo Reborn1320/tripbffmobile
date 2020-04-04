@@ -77,13 +77,7 @@ class NewsFeedScreen extends Component<Props, State> {
   componentWillUnmount() {
     this._cancelRequest("Operation canceled by the user.");
     Flurry.endTimedEvent('Profile');
-  }
-
-  private _editUserSettings = () => {
-    this.props.navigation.navigate(
-      NavigationConstants.Screens.UserSettingsScreen
-    );
-  };
+  }  
 
   private _refreshTrips = () => {
     this.props.fetchTrips(this._cancelToken).then(trips => {
@@ -104,7 +98,7 @@ class NewsFeedScreen extends Component<Props, State> {
     this.props.getCurrentMinimizedTrip(tripId);
   };  
 
-  private _handleTripItemClick = (tripId: string, canContribute: boolean) => {    
+  private _handleTripItemClick = (tripId: string, canContribute: boolean) => {   
     this.props.navigation.navigate(NavigationConstants.Screens.TripEdit, {
       tripId: tripId,
       canContribute: canContribute,

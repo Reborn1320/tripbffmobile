@@ -13,6 +13,7 @@ interface IMapDispatchToProps {}
 export interface Props extends IMapDispatchToProps {
   entries: IEntry[];
   clickHandler: () => void;
+  canContribute: boolean;
 }
 
 interface State {}
@@ -27,6 +28,7 @@ export class StyledCarousel extends Component<Props & IStateProps, State> {
   _renderItem = ({ item, index }) => {
     return (
       <SliderEntry
+        canContribute={this.props.canContribute}
         data={item}
         even={(index + 1) % 2 === 0}
         clickHandler={this.props.clickHandler}
@@ -37,6 +39,7 @@ export class StyledCarousel extends Component<Props & IStateProps, State> {
   _renderItemWithParallax = ({ item, index }, parallaxProps) => {
     return (
       <SliderEntry
+        canContribute={this.props.canContribute}
         data={item}
         even={(index + 1) % 2 === 0}
         parallax={true}

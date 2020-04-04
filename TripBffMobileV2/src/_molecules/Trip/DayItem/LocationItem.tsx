@@ -103,13 +103,15 @@ class LocationItem extends Component<Props, State> {
             }));
         } 
 
+        let locationNameStyle = canContribute ? styles.locationName_Name_Contribute : styles.locationName_Name_Readonly;
+
         return (
             <View style={styles.locationContainer}>
                 <View style={styles.locationNameContainer}>
                     <Icon
                         style={styles.locationName_MapIcon}
                         name="map-marker-alt" type="FontAwesome5" />
-                    <TouchableOpacity style={styles.locationName_Name} onPress={this._toLocationDetail}>
+                    <TouchableOpacity style={[styles.locationName_Name, locationNameStyle]} onPress={this._toLocationDetail}>
                         <Text numberOfLines={2}>{location.name}</Text>
                     </TouchableOpacity>
                     {
@@ -123,6 +125,7 @@ class LocationItem extends Component<Props, State> {
                 {
                     locationImageEntries.length > 0 &&              
                      <StyledCarousel
+                        canContribute={canContribute}
                         entries={locationImageEntries}
                         clickHandler={this._toLocationDetail}
                     /> 
@@ -168,6 +171,8 @@ interface Style {
     locationNameContainer: ViewStyle;
     locationName_MapIcon: TextStyle;
     locationName_Name: TextStyle;
+    locationName_Name_Contribute: TextStyle;
+    locationName_Name_Readonly: TextStyle;
     locationName_CloseIcon: TextStyle;
 
     activityContainer: ViewStyle;
@@ -201,9 +206,14 @@ const styles = StyleSheet.create<Style>({
         lineHeight: 18,
         color: "#383838",
         marginLeft: 5,
-        marginRight: 5,
-        maxWidth: "80%",        
+        marginRight: 5,            
         flexGrow: 1
+    },
+    locationName_Name_Contribute : {
+        maxWidth: "80%",   
+    },
+    locationName_Name_Readonly: {
+        maxWidth: "90%",   
     },
     locationName_CloseIcon: {
         fontSize: 16,
