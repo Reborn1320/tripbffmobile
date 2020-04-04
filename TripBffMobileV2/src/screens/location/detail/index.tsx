@@ -148,11 +148,12 @@ class LocationDetail extends React.Component<Props, State> {
     private onSelect = (imageId: string) => {
         if (!this.state.isMassSelection) {
             const { tripId, dateIdx, locationId, images } = this.props;
+            const canContribute = this.props.navigation.getParam('canContribute');
             const img = _.find(images, im => im.imageId == imageId);
             const { isFavorite } = img;
             this.props.navigation.navigate(NavigationConstants.Screens.LocationImageDetails,
                 { 
-                    tripId, dateIdx, locationId, imageId, isFavorite
+                    tripId, dateIdx, locationId, imageId, isFavorite, canContribute
                 });
         }
 
@@ -239,12 +240,16 @@ class LocationDetail extends React.Component<Props, State> {
 
     render() {
         const { isMassSelection } = this.state;
+        const { navigation } = this.props;
+        const canContribute = navigation.getParam('canContribute');
+
         return (
             <Container>
                 <View style={{ flex: 1 }}>
                     <ScrollView keyboardShouldPersistTaps={'handled'}>
                         <LocationContent
                             locale={this.props.locale}
+                            canContribute={canContribute}
                             
                             address={this.props.address}
                             name={this.props.name}

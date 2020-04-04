@@ -6,11 +6,10 @@ import { StoreData } from "../../../store/Interfaces";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 import { NavigationConstants } from "../../../screens/_shared/ScreenConstants";
 import { StyledCarousel, IEntry } from "../../../_atoms/Carousel/StyledCarousel";
-import moment from "moment";
 import { mixins } from "../../../_utils";
 import NBColor from "../../../theme/variables/material.js";
-import EmptyLocationItem from "../../Trip/DayItem/EmptyLocation";
 import { withNamespaces } from "react-i18next";
+import EmptyLocationImageItem from "./EmptyLocationImage";
 
 interface IMapDispatchToProps {
     removeLocationHandler?: (dateIdx: number, locationId: string) => void
@@ -22,7 +21,8 @@ export interface Props extends IMapDispatchToProps, PropsBase {
     tripId: string,
     dateIdx: number,
     location: StoreData.LocationVM,
-    locale: string
+    locale: string,
+    canContribute: boolean
 }
 
 export interface State {
@@ -53,14 +53,14 @@ class LocationItem extends Component<Props, State> {
     }
 
     _toLocationDetail = () => {
-        var { tripId, dateIdx, location: { locationId } } = this.props;
-        this.props.navigation.navigate(NavigationConstants.Screens.LocationDetails, { tripId, locationId, dateIdx })
+        var { tripId, dateIdx, location: { locationId }, canContribute } = this.props;
+        this.props.navigation.navigate(NavigationConstants.Screens.LocationDetails, { tripId, locationId, dateIdx, canContribute })
     }
 
     render() {
 
         var location: StoreData.LocationVM = this.props.location;
-        var { locale, t } = this.props;
+        var { locale, t, canContribute } = this.props;
 
         var feelingLabel = "",
             feelingElement = <Image style={styles.activityIcon} 
@@ -112,9 +112,12 @@ class LocationItem extends Component<Props, State> {
                     <TouchableOpacity style={styles.locationName_Name} onPress={this._toLocationDetail}>
                         <Text numberOfLines={2}>{location.name}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={this._openRemoveLocationModal}>
-                        <Icon style={styles.locationName_CloseIcon} name="times" type="FontAwesome5" />
-                    </TouchableOpacity>
+                    {
+                        canContribute && 
+                        <TouchableOpacity onPress={this._openRemoveLocationModal}>
+                            <Icon style={styles.locationName_CloseIcon} name="times" type="FontAwesome5" />
+                        </TouchableOpacity>
+                    }                    
                 </View>
 
                 {
@@ -126,16 +129,18 @@ class LocationItem extends Component<Props, State> {
                 }
                 {
                     locationImageEntries.length == 0 &&
-                    <EmptyLocationItem
+                    <EmptyLocationImageItem
+                        canContribute={canContribute}
                         viewContainerStyle={styles.emptyImageContainer}
-                        subTitle={t("message:add_image")}
-                        openAddLocationModalHandler={this._toLocationDetail}
+                        subTitle={canContribute ? t("message:add_image") : t("message:no_image")}
+                        action={this._toLocationDetail}
                         >
-                    </EmptyLocationItem>
+                    </EmptyLocationImageItem>
                 }
                   <View style={styles.activityContainer}>
                     <TouchableOpacity
                         style={styles.feelingBtn}
+                        disabled={!canContribute}
                         onPress={this._openUpdateFeelingModal}>
                         {feelingElement}
                         {
@@ -145,6 +150,7 @@ class LocationItem extends Component<Props, State> {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.activityBtn}
+                        disabled={!canContribute}
                         onPress={this._openUpdateActivityModal}>
                         {activityElement}
                         <Text numberOfLines={2} style={styles.activityContent}>{activityLabel}</Text>

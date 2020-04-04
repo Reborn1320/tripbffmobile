@@ -114,10 +114,12 @@ export class TripEditScreen extends Component<Props, State> {
     render() {
         const { trip, navigation, userId } = this.props;
         const { isDisplayLoading } = this.state;
+        const canContribute = navigation.getParam('canContribute');
+
         return (
             <Container>
                 {
-                    trip && trip.createdById == userId && 
+                    canContribute && 
                     <AndroidBackHandler onBackPress={this._goBackAndRefreshTripLists} />
                 }
                 
@@ -125,11 +127,11 @@ export class TripEditScreen extends Component<Props, State> {
                                         onRefresh={this._onRefresh} />}>
                     {isDisplayLoading &&  <Loading message={''}/> }
                     {trip &&
-                        <TripDetailScreenContent tripId={trip.tripId} navigation={navigation} />}                   
+                        <TripDetailScreenContent tripId={trip.tripId} canContribute={canContribute} navigation={navigation} />}                   
                 </Content>
 
                 {
-                    trip && trip.canContribute &&
+                    canContribute &&
                     <ActionButton
                         buttonColor={NBTheme.colorRosy}
                         position="center"

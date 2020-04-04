@@ -13,7 +13,8 @@ interface IMapDispatchToProps {
 
 export interface Props extends IMapDispatchToProps {
     locationName: string,
-    locationAddress: string
+    locationAddress: string,
+    canContribute: boolean
 }
 
 export interface State {
@@ -26,8 +27,10 @@ export default class LocationName extends React.PureComponent<Props, State> {
     }
 
     render() {
+        const { canContribute } = this.props;
+
         return (   
-            <TouchableOpacity onPress={this._openMapLocation}>
+            <TouchableOpacity disabled={!canContribute} onPress={this._openMapLocation}>
                 <View style={styles.container}>                
                     <Icon style={styles.mapIcon} name="map-marker-alt" type="FontAwesome5" />
                     <View style={styles.nameContainer}>
@@ -35,7 +38,7 @@ export default class LocationName extends React.PureComponent<Props, State> {
                             {this.props.locationAddress}
                         </Text>
                     </View>
-                    <Icon style={styles.editIcon} name="pencil-alt" type="FontAwesome5" />
+                    {canContribute && <Icon style={styles.editIcon} name="pencil-alt" type="FontAwesome5" /> }
                 </View>
             </TouchableOpacity>         
         );

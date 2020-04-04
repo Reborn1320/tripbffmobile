@@ -99,6 +99,7 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
         const tripId = this.props.tripId;
         const navigation = this.props.navigation;
         const { isDisplayLoading } = this.state;
+        const canContribute = navigation.getParam('canContribute');
 
         return (
             <Container>
@@ -106,7 +107,7 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
                 <Content refreshControl={<RefreshControl refreshing={this.state.refreshing}
                                         onRefresh={this._onRefresh} />}>
                     {isDisplayLoading &&  <Loading message={''}/> }
-                    <TripDetailScreenContent tripId={tripId} navigation={navigation}/>                    
+                    <TripDetailScreenContent tripId={tripId} navigation={navigation} canContribute={canContribute} />                    
                 </Content>
                 <ActionButton
                     buttonColor={NBTheme.colorRosy}

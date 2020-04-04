@@ -104,7 +104,7 @@ class NewsFeedScreen extends Component<Props, State> {
     this.props.getCurrentMinimizedTrip(tripId);
   };  
 
-  private _handleTripItemClick = (tripId: string, canContribute: boolean) => {
+  private _handleTripItemClick = (tripId: string, canContribute: boolean) => {    
     this.props.navigation.navigate(NavigationConstants.Screens.TripEdit, {
       tripId: tripId,
       canContribute: canContribute,

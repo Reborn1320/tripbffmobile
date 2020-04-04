@@ -6,15 +6,16 @@ export interface Props {
   viewContainerStyle: ViewStyle;
   titleStyle: TextStyle;
   subtitle: string;
+  canContribute: boolean;
 }
 
 export default class NoItemDefault extends Component<Props, any> {
   render() {
-    const { viewContainerStyle, titleStyle, subtitle } = this.props;
+    const { viewContainerStyle, titleStyle, subtitle, canContribute } = this.props;
 
     return (
       <View style={viewContainerStyle}>
-        <Image source={require("../../../assets/PlusIcon.png")} />
+        { canContribute && <Image source={require("../../../assets/PlusIcon.png")} /> }
         <Text style={titleStyle}>{subtitle}</Text>
       </View>
     );

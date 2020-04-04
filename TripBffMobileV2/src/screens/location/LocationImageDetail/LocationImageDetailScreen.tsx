@@ -20,7 +20,8 @@ export interface Props {
     locationId: string,
     imageId: string,
     isFavorite: boolean,
-    images: Array<StoreData.ImportImageVM>
+    images: Array<StoreData.ImportImageVM>,
+    canContribute: boolean
 }
 
 interface State {
@@ -107,7 +108,7 @@ class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, S
         return (
             <View style={[styles.footerContainer, notchStyle]}>
                 <View style={styles.footerActionContainer}>
-                    <TouchableOpacity onPress={this._onFavorite} style={styles.favoriteButton}>
+                    <TouchableOpacity disabled={!this.props.canContribute} onPress={this._onFavorite} style={styles.favoriteButton}>
                         {
                             currentImage.isFavorite &&
                             <Icon type="FontAwesome5" name="heart" active solid 

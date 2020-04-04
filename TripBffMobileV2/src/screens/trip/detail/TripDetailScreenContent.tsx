@@ -24,6 +24,7 @@ export interface IMapDispatchToProps {
 export interface Props {
     tripId: string,
     navigation: RNa.NavigationScreenProp<any, any>;
+    canContribute: boolean;
 }
 
 interface State {
@@ -172,12 +173,13 @@ class TripDetailScreenContentInternal extends Component<Props & IMapDispatchToPr
 
     render() {
         const tripId = this.props.tripId;
-        const navigation = this.props.navigation;
+        const { navigation, canContribute } = this.props;
 
         return (
             <View>
                 <TripDetails tripId={tripId}
                     navigation={navigation}
+                    canContribute={canContribute}
                     openUpdateFeelingModalHandler={this._openUpdateFeelingModal}
                     openUpdateActivityModalHandler={this._openUpdateActivityModal} 
                     openRemoveLocationModalHandler={this._openRemoveLocationModal}
