@@ -68,11 +68,14 @@ export module StoreData {
         tripId: string
         name: string
         fromDate: moment.Moment
-        toDate: moment.Moment   
+        toDate: moment.Moment  
+        isPublic: boolean 
         dates?: Array<DateVM>     
         infographicId?: string,
         rawLocations?: Array<LocationVM>,
-        isDeleted?: boolean  
+        isDeleted?: boolean,
+        createdById: string,
+        canContribute: boolean
     }
 
 
@@ -80,14 +83,17 @@ export module StoreData {
         tripId: string
         name: string
         fromDate: moment.Moment
-        toDate: moment.Moment   
+        toDate: moment.Moment
+        isPublic: boolean
         locationImages: {
             name: string,
             address: string,
             description: string,
             imageUrl: string,
         }[],
-        isDeleted?: boolean
+        isDeleted?: boolean,
+        createdById: string,
+        canContribute: boolean
     }
 
     export interface UserVM {
@@ -141,6 +147,7 @@ export module StoreData {
     export interface BffStoreData {
         user?: UserVM
         trips?: Array<MinimizedTripVM>,
+        publicTrips?: Array<MinimizedTripVM>,
         currentTrip?: TripVM,
         currentMinimizedTrip?: MinimizedTripVM,
         dataSource: DataSourceVM
@@ -154,8 +161,11 @@ export namespace RawJsonData {
         name: string
         fromDate: string
         toDate: string
+        isPublic: boolean
         locations: Array<StoreData.LocationVM>,
-        infographicId: string
+        infographicId: string,
+        createdById: string,
+        canContribute: boolean
     }
 
     export interface MinimizedTripVM {
@@ -163,13 +173,16 @@ export namespace RawJsonData {
         name: string
         fromDate: string
         toDate: string
+        isPublic: boolean
         locationImages: {
             name: string,
             address: string,
             description: string,
             imageUrl: string,
         }[],
-        isDeleted: boolean
+        isDeleted: boolean,
+        createdById: string,
+        canContribute: boolean
     }
 
     export interface LocationVM {

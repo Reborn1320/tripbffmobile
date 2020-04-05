@@ -33,6 +33,7 @@ export default class SliderEntry extends Component {
     if (illustration == "") {
       return (
         <NoItemDefault
+          canContribute={this.props.canContribute}
           viewContainerStyle={styles.imageEmptyContainer}
           titleStyle={styles.subtitle}
           subtitle={subtitle}
@@ -54,18 +55,7 @@ export default class SliderEntry extends Component {
         {...parallaxProps}
       />
     ) : (
-      // <AuthorizedImage
-      //   source={{ uri: illustration }}
-      //   style={Object.assign(
-      //     title
-      //       ? {}
-      //       : {
-      //           borderBottomLeftRadius: 8,
-      //           borderBottomRightRadius: 8,
-      //         },
-      //     styles.image
-      //   )}
-      // />
+      
       <Image
         source={{ uri: illustration }}
         style={Object.assign(

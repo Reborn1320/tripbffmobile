@@ -22,9 +22,8 @@ import Flurry from 'react-native-flurry-sdk';
 import { connect } from "react-redux";
 
 interface IMapDispatchToProps extends PropsBase {
-  fetchTrips: (cancelToken: any) => Promise<any>;
-  addTrips: (trips: Array<StoreData.TripVM>) => void;
-  deleteTrip: (tripId: string) => Promise<boolean>;
+  fetchPublicTrips: (cancelToken: any) => Promise<any>;
+  addPublicTrips: (trips: Array<StoreData.TripVM>) => void;
   getCurrentMinimizedTrip: (tripId: string) => void;
   clearDatasource: () => void;
 }
@@ -36,14 +35,12 @@ export interface Props extends IMapDispatchToProps {
   fullName: string;
 
   trips: StoreData.MinimizedTripVM[];
-  isEmptyTrips: boolean;
 }
 
 interface State {
   isLoaded: boolean;
   loadingMessage: string;
   UIState: UIState;
-  isEmptyTrips: boolean;
   isOpenDeleteConfirmModal: boolean;
   deletedTripId: string;
   refreshing: boolean;
@@ -51,7 +48,7 @@ interface State {
 
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
 
-class ProfileScreenComponent extends Component<Props, State> {
+class NewsFeedScreenComponent extends Component<Props, State> {
   _cancelRequest;
   _cancelToken;
 
@@ -62,56 +59,34 @@ class ProfileScreenComponent extends Component<Props, State> {
       isLoaded: true,
       loadingMessage: this.props.t("profile:loading_trips_message"),
       UIState: "LOADING_TRIP",
-      isEmptyTrips: this.props.isEmptyTrips,
       isOpenDeleteConfirmModal: false,
       deletedTripId: "",
       refreshing: false,
     };
   }
 
-  static navigationOptions = ({ navigation }) => ({
-    headerRight: (
-      <TouchableOpacity
-        style={styles.settingButtonContainer}
-        onPress={navigation.getParam("_editUserSettings")}
-      >
-        <Image source={require("../../../assets/Setting.png")} />
-      </TouchableOpacity>
-    ),
-  });
-
-  componentDidMount() {
+ componentDidMount() {
     Flurry.logEvent('Profile', null, true);
     let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
     this._cancelToken = cancelToken;
     this._cancelRequest = cancelRequest;
 
     this._refreshTrips();
-    this.props.navigation.setParams({
-      _editUserSettings: this._editUserSettings,
-    });
   }
 
   componentWillUnmount() {
     this._cancelRequest("Operation canceled by the user.");
     Flurry.endTimedEvent('Profile');
-  }
-
-  private _editUserSettings = () => {
-    this.props.navigation.navigate(
-      NavigationConstants.Screens.UserSettingsScreen
-    );
-  };
+  }  
 
   private _refreshTrips = () => {
-    this.props.fetchTrips(this._cancelToken).then(trips => {
-      this.props.addTrips(trips);
+    this.props.fetchPublicTrips(this._cancelToken).then(trips => {
+      this.props.addPublicTrips(trips);
 
       if (this.state.refreshing) this.props.clearDatasource();
 
       this.setState({
         isLoaded: false,
-        isEmptyTrips: !trips || trips.length == 0,
         loadingMessage: "",
         UIState: "NORMAL",
         refreshing: false,
@@ -121,54 +96,14 @@ class ProfileScreenComponent extends Component<Props, State> {
 
   private _handleUpdatedTripGoBack = tripId => {
     this.props.getCurrentMinimizedTrip(tripId);
-  };
+  };  
 
-  private _handleCreateBtnClick = () => {
-    this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
-  };
-
-  private _handleTripItemClick = (tripId: string, canContribute: boolean, createdById: string) => {
+  private _handleTripItemClick = (tripId: string, canContribute: boolean, createdById: string) => {   
     this.props.navigation.navigate(NavigationConstants.Screens.TripEdit, {
       tripId: tripId,
       canContribute: canContribute,
       createdById: createdById,
-      onGoBackProfile: this._handleUpdatedTripGoBack,
-    });
-  };
-
-  private _handleShareBtnClick = tripId => {
-    this.props.navigation.navigate(
-      NavigationConstants.Screens.TripsInfographicPreivew,
-      {
-        tripId: tripId,
-        onGoBackProfile: this._refreshTrips,
-        isFromProfile: true,
-      }
-    );
-  };
-
-  private _handleDeleteTrip = tripId => {
-    this.setState({
-      isOpenDeleteConfirmModal: true,
-      deletedTripId: tripId,
-    });
-  };
-
-  private _confirmDeleteTrip = () => {
-    this.props.deleteTrip(this.state.deletedTripId).then(isLastTripDeleted => {
-      this.setState({
-        isOpenDeleteConfirmModal: false,
-        deletedTripId: "",
-        isEmptyTrips: isLastTripDeleted,
-        isLoaded: false,
-      });
-    });
-  };
-
-  private _cancelDeleteModal = () => {
-    this.setState({
-      isOpenDeleteConfirmModal: false,
-      deletedTripId: "",
+      onGoBackProfile: canContribute ? this._handleUpdatedTripGoBack : undefined,
     });
   };
 
@@ -181,7 +116,7 @@ class ProfileScreenComponent extends Component<Props, State> {
   };
 
   render() {
-    const { isLoaded, isEmptyTrips, refreshing } = this.state;
+    const { isLoaded, refreshing } = this.state;
     const { t } = this.props;
 
     return (
@@ -194,31 +129,15 @@ class ProfileScreenComponent extends Component<Props, State> {
             />
           }
         >
-          <View style={{ flex: 1 }}>
-            <UserDetails />
+          <View style={{ flex: 1 }}>            
             {isLoaded && !refreshing && (
               <Loading message={this.state.loadingMessage} />
             )}
-            {!isLoaded && isEmptyTrips && (
-              <TripsEmptyComponent
-                handleCreateClick={this._handleCreateBtnClick}
-              />
-            )}
-            {!isEmptyTrips && (
-              <TripsComponent
+            
+            <TripsComponent
                 trips={this.props.trips}
                 handleClick={this._handleTripItemClick}
-                handleShareClick={this._handleShareBtnClick}
-                handleDeleteTrip={this._handleDeleteTrip}
-              />
-            )}
-            <ConfirmationModal
-              title={t("profile:delete_trip_modal_header")}
-              content={t("profile:delete_trip_modal_content")}
-              confirmHandler={this._confirmDeleteTrip}
-              cancelHandler={this._cancelDeleteModal}
-              isVisible={this.state.isOpenDeleteConfirmModal}
-            />
+              />          
           </View>
         </Content>
       </Container>
@@ -228,16 +147,16 @@ class ProfileScreenComponent extends Component<Props, State> {
 
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   return {
-    trips: storeState.trips
+    trips: storeState.publicTrips
   };
 };
 
-const ProfileScreen = connect(
+const NewsFeedScreen = connect(
   mapStateToProps,
   null
-)(ProfileScreenComponent);
+)(NewsFeedScreenComponent);
 
-export default withNamespaces(["profile"])(ProfileScreen);
+export default withNamespaces(["profile"])(NewsFeedScreen);
 
 const styles = StyleSheet.create({
   actionButtonIcon: {

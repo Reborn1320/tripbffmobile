@@ -37,8 +37,8 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);  
     this.state = {
-        fromDate: this.props.fromDate,
-        toDate: this.props.toDate,
+        fromDate: null,
+        toDate: null,
         isValid: this.props.fromDate != null && this.props.toDate != null
     }
   }  
@@ -50,10 +50,16 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
   private _onSave = () => {
     let { fromDate, toDate } = this.state;
     
+    if (!fromDate && !toDate) {
+      fromDate = this.props.fromDate;
+      toDate = this.props.toDate;
+    }
+
     console.log("on date range save");
     console.log(fromDate.format(), toDate.format());
 
-    this.props.confirmHandler(fromDate, toDate);
+    this.setState({ fromDate: null, toDate: null});
+    this.props.confirmHandler(fromDate, toDate);    
   }  
 
   private onDateChange = (date, type) => {
@@ -73,8 +79,12 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
 
   render() {
     const { isVisible, locale, t } = this.props;
-    let fromDate = this.state.fromDate;
-    const toDate = this.state.toDate;
+    let { fromDate, toDate } = this.state;
+
+    if (!fromDate && !toDate) {
+      fromDate = this.props.fromDate;
+      toDate = this.props.toDate;
+    }
 
     let mlist = LIST_MONTHS_EN;
     let weekdays = LIST_WEEKDAYS_EN;
@@ -98,9 +108,7 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
       <Modal
           isVisible={isVisible}
           style={styles.bottomModal}
-          swipeDirection="down"
           onBackButtonPress={this._onCancel}
-          onSwipeComplete={this._onCancel}
         >
           <SafeAreaView style={styles.content}>
               <View>
@@ -117,7 +125,8 @@ class DateRangePickerModalComponent extends React.Component<Props, State> {
                     weekdays={weekdays}
                     previousTitle={t("create:prev_month_label")}
                     nextTitle={t("create:next_month_label")}
-                    onDateChange={this.onDateChange}                    
+                    onDateChange={this.onDateChange}    
+                    enableSwipe={true}                
                 />
               </View>                
               <View style={styles.buttons}>

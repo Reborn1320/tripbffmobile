@@ -21,7 +21,9 @@
     },
     "message": {
         "add_location": "Click to add location(s)",
-        "add_image": "Click to add image(s)"
+        "add_image": "Click to add photo(s)",
+        "no_location": "No location",
+        "no_image": "No photo"
     },
     "login": {
         "welcome_title": "Welcome to TripBFF",
@@ -34,7 +36,7 @@
         "trip_name": "Trip Name",
         "from_date": "From Date",
         "end_date": "End Date",
-        "date": "Date",
+        "date": "From Date - To Date",
         "create_button": "Create",
         "next_month_label": "Next",
         "prev_month_label": "Previous",
@@ -45,8 +47,10 @@
         "skip_button": "Skip",
         "import_button": "Import",
         "location_information_text": "Location might not accurate, you can change it later!",
-        "image_uploading_message": "uploading images",
-        "loading_image_from_gallery_message": "Loading images from your gallery"
+        "image_uploading_message": "uploading photos",
+        "loading_image_from_gallery_message": "Loading photos from your gallery",
+        "warning_empty_timeline_message": "No photos are found on the dates of your trip",
+        "update_date_button": "Update Trip Dates"
     },
     "trip_detail": {
         "edit_trip_name_menu_label": "Edit trip name",
@@ -75,17 +79,17 @@
         "description_view_more": "View more",
         "description_view_less": "View less",
         "media_section_label": "Photos & Videos",
-        "image_uploading_message": "Uploading images. Please wait!",
+        "image_uploading_message": "Uploading photos. Please wait!",
         "update_address_title": "Edit Location",
         "update_highlight_title": "Like/Dislike",
         "update_description_title": "Description"
     },
     "export": {
         "infographic_tab_label": "Infographic",
-        "images_tab_label": "Images",
-        "images_selection_warning": "Please select maximum 5 most favorite images to share!",
-        "no_infographic": "Please add locations and upload images to export infographic!",
-        "nothing_to_share_message": "Please add locations and upload images to share on Facebook!",
+        "images_tab_label": "Photos",
+        "images_selection_warning": "Please select maximum 5 most favorite photos to share!",
+        "no_infographic": "Please add locations and upload photos to export infographic!",
+        "nothing_to_share_message": "Please add locations and upload photos to share on Facebook!",
         "title": "Preview & Share",
         "loading_infographic": "Generating infographic. Please wait!",
         "error_message_infographic": "Something wrong when generate infographic. Please try again later!"

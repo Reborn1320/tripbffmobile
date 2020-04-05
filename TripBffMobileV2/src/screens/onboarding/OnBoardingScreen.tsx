@@ -31,12 +31,12 @@ class OnBoardingScreen extends React.Component<Props, State> {
     }
 
     private _skip = () => {
-        this.props.navigation.navigate(NavigationConstants.Screens.Profile);
+        this.props.navigation.navigate(NavigationConstants.Screens.NewsFeed);
     }
 
     private _goNextStep = () => {
         if (this.state.stepIndex === 3) 
-            this.props.navigation.navigate(NavigationConstants.Screens.Profile);
+            this.props.navigation.navigate(NavigationConstants.Screens.NewsFeed);
         else 
             (this.refs.swiper as any).scrollBy(1);
     }

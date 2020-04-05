@@ -17,6 +17,8 @@ export interface Props {
 
   isFirstRow: boolean
   isFirstItemInRow: boolean
+
+  canContribute: boolean
 }
 
 export interface State {
@@ -47,7 +49,7 @@ export class ImageFavorable extends React.Component<Props, State> {
   }
 
   render() {
-    const { width, isChecked, isFirstRow, isFirstItemInRow } = this.props;
+    const { width, isChecked, isFirstRow, isFirstItemInRow, canContribute } = this.props;
     return (
       <View style={{
         marginTop: isFirstRow ? 0 : 2,
@@ -55,7 +57,7 @@ export class ImageFavorable extends React.Component<Props, State> {
       }}>
       <TouchableHighlight
         onPress={() => this.props.onPress ? this.props.onPress() : true }
-        onLongPress={() => this.props.onLongPress ? this.props.onLongPress() : true}
+        onLongPress={() => canContribute && this.props.onLongPress ? this.props.onLongPress() : true}
       >
         <View style={{
           position: "relative"
@@ -68,6 +70,7 @@ export class ImageFavorable extends React.Component<Props, State> {
             style={styles.container}
           >
             <TouchableOpacity
+              disabled={!canContribute}
               onPress={() => this.props.onPressedOnFavoriteIcon ? this.props.onPressedOnFavoriteIcon() : true }
             >
               <View>

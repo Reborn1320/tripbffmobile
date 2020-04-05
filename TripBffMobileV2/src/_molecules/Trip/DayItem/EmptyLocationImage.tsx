@@ -5,7 +5,7 @@ import NoItemDefault from "../../../_atoms/Carousel/NoItemDefault";
 import { mixins } from "../../../_utils";
 
 interface IMapDispatchToProps {
-    openAddLocationModalHandler: () => void;
+    action: () => void;
 }
 
 export interface Props extends IMapDispatchToProps {
@@ -17,15 +17,14 @@ export interface Props extends IMapDispatchToProps {
 export interface State {
 }
 
-export default class EmptyLocationItem extends Component<Props, State> {
+export default class EmptyLocationImageItem extends Component<Props, State> {
 
     render() {        
         const { canContribute } = this.props;
 
         return (
-            canContribute ?
             <TouchableOpacity
-                onPress={this.props.openAddLocationModalHandler}>
+                onPress={this.props.action}>
                 <NoItemDefault 
                     canContribute={canContribute}
                     viewContainerStyle={this.props.viewContainerStyle}
@@ -33,16 +32,7 @@ export default class EmptyLocationItem extends Component<Props, State> {
                     subtitle={this.props.subTitle}
                     >
                 </NoItemDefault>
-            </TouchableOpacity> :
-                                                         
-            <NoItemDefault 
-                canContribute={canContribute}
-                viewContainerStyle={this.props.viewContainerStyle}
-                titleStyle={styles.titleStyle}
-                subtitle={this.props.subTitle}
-                >
-            </NoItemDefault>
-            
+            </TouchableOpacity>             
         );
     }
 }

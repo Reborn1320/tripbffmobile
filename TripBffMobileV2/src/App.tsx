@@ -35,6 +35,7 @@ import UserFeedback from "./_organisms/User/UserFeedback";
 import NavigationService from './store/NavigationService';
 import NBColor from "./theme/variables/commonColor.js";
 import OnBoardingScreen from "./screens/onboarding/OnBoardingScreen";
+import NewsFeedScreenContainer from "./screens/newsFeed/NewsFeedContainer";
 
 var extraThunk: ThunkExtraArgumentsBase = {
   uploadApi: uploadFileApi,
@@ -67,6 +68,28 @@ const stackConfigs = {
     headerBackTitle: null
   },
 } as any;
+
+const NewsFeedNavigator = createStackNavigator(
+  {
+    NewsFeed: { screen: NewsFeedScreenContainer },
+    TripEdition: { screen: TripEditScreenContainer },
+    LocationDetail: { screen: LocationDetailScreen },
+    LocationImageDetail: { screen: LocationImageDetailScreen },
+    TripEditBasic: { screen: TripEditBasicScreen }
+  },
+  stackConfigs
+);
+
+NewsFeedNavigator.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
 
 const TripCreationNavigator = createStackNavigator(
   {
@@ -150,6 +173,9 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
   } else if (routeName === "Me") {
     iconName = "md-contact";
   }
+  else if (routeName === "NewsFeed") {
+    iconName = "md-home";
+  }
 
   return (
     <Icon
@@ -162,6 +188,9 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
 
 const TabNavigator = createBottomTabNavigator(
   {
+    NewsFeed: {
+      screen: NewsFeedNavigator,
+    },
     Create: {
       screen: TripCreationNavigator,
     },
@@ -170,7 +199,7 @@ const TabNavigator = createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: "Me",
+    initialRouteName: "NewsFeed",
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, tintColor }) =>
         getTabBarIcon(navigation, focused, tintColor),
@@ -178,17 +207,7 @@ const TabNavigator = createBottomTabNavigator(
     tabBarOptions: {
       activeTintColor: NBTheme.brandPrimary,
       inactiveTintColor: "gray",
-      showLabel: false,
-      // labelStyle: {
-      //   fontSize: 10,
-      //   ...mixins.themes.fontSemiBold,
-      //   lineHeight: 13,
-      //   fontStyle: "normal",
-      //   marginBottom: 12
-      // },
-      // tabStyle: {
-      //   height: 57
-      // }
+      showLabel: false
     },
   }
 );

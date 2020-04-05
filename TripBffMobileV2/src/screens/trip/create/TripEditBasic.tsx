@@ -14,6 +14,7 @@ export interface Props extends IMapDispatchToProps, PropsBase {
   tripName: string;
   tripFromDate?: moment.Moment;
   tripToDate?: moment.Moment;
+  isTripPublic: boolean;
 }
 
 interface IMapDispatchToProps {
@@ -21,7 +22,8 @@ interface IMapDispatchToProps {
     tripId: string,
     name: string,
     fromDate: Moment,
-    toDate: Moment
+    toDate: Moment,
+    isPublic: boolean
   ) => Promise<any>;
 }
 
@@ -48,6 +50,7 @@ class TripEditBasic extends Component<Props, State> {
             tripName={this.props.tripName}
             tripFromDate={this.props.tripFromDate}
             tripToDate={this.props.tripToDate}
+            isTripPublic={this.props.isTripPublic}
             updateTrip={this.props.updateTrip}
             onTripCreatedUpdatedHandler={this._onCreatedOrUpdatedHandler}
             titleButton={"action:save"}
@@ -67,13 +70,14 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
     tripName: trip.name,
     tripFromDate: trip.fromDate,
     tripToDate: trip.toDate,
+    isTripPublic: trip.isPublic
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    updateTrip: (tripId, name, fromDate, toDate) =>
-      dispatch(updateTrip(tripId, name, fromDate, toDate)),
+    updateTrip: (tripId, name, fromDate, toDate, isPublic) =>
+      dispatch(updateTrip(tripId, name, fromDate, toDate, isPublic)),
   };
 };
 

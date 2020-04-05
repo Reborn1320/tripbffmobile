@@ -22,8 +22,42 @@ export function fetchTrips(cancelToken: CancelToken): ThunkResultBase {
           fromDate: moment(rawTrip.fromDate).local(),
           toDate: moment(rawTrip.toDate).local(),
           locationImages: rawTrip.locationImages,
-          isDeleted: rawTrip.isDeleted
+          isDeleted: rawTrip.isDeleted,
+          createdById: rawTrip.createdById,
+          isPublic: rawTrip.isPublic,
+          canContribute: rawTrip.canContribute,
         }));
+        return trips;
+      })
+      .catch(error => {
+        console.log("fetch trips error", error);
+      });
+  };
+}
+
+export function fetchPublicTrips(cancelToken: CancelToken): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {
+    var args = {
+      data: {
+        cancelToken: cancelToken
+      }
+    }
+
+    return extraArguments.tripApiService.get("/newsFeed/trips", args)
+      .then(res => {
+        var rawTripsVM: Array<RawJsonData.MinimizedTripVM> = res.data;
+        var trips: Array<StoreData.MinimizedTripVM> = rawTripsVM.map(rawTrip => ({
+          tripId: rawTrip.tripId,
+          name: rawTrip.name,
+          fromDate: moment(rawTrip.fromDate).local(),
+          toDate: moment(rawTrip.toDate).local(),
+          locationImages: rawTrip.locationImages,
+          isDeleted: rawTrip.isDeleted,
+          createdById: rawTrip.createdById,
+          isPublic: rawTrip.isPublic,
+          canContribute: rawTrip.canContribute,
+        }));
+        //console.log('public trips: ' + JSON.stringify(trips));
         return trips;
       })
       .catch(error => {
@@ -51,11 +85,6 @@ export function getCurrentMinimizedTrip(tripId: string): ThunkResultBase {
     return extraArguments.tripApiService.get(`/trips/minimized/${tripId}`)
       .then(res => {
         var rawTripsVM: RawJsonData.MinimizedTripVM = res.data;
-        var trip = {
-          ...rawTripsVM,
-          fromDate: moment(rawTripsVM.fromDate).local(),
-          toDate: moment(rawTripsVM.fromDate).local(),
-        }
         dispatch(getCurrentMinimizedTripAction(res.data));
       })
       .catch(error => {

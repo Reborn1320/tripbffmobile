@@ -68,6 +68,7 @@ type UpdateBasicTrip = {
     name: string,
     fromDate: Moment,
     toDate: Moment,
+    isPublic: boolean,
     locations: StoreData.LocationVM[]
 }
 
@@ -96,9 +97,9 @@ export function addLocation(tripId: string, dateIdx: number, location: StoreData
     }
 }
 
-export function updateTrip(tripId: string, name: string, fromDate: moment.Moment, toDate: moment.Moment, locations: StoreData.LocationVM[]) : UpdateBasicTrip {
+export function updateTrip(tripId: string, name: string, fromDate: moment.Moment, toDate: moment.Moment, locations: StoreData.LocationVM[], isPublic: boolean) : UpdateBasicTrip {
     return {
-        type: TRIP_UPDATE, tripId, name, fromDate, toDate, locations
+        type: TRIP_UPDATE, tripId, name, fromDate, toDate, locations, isPublic
     }
 }
 

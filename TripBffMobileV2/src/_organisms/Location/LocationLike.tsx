@@ -11,6 +11,7 @@ import { withNamespaces } from "react-i18next";
 export interface Props extends PropsBase {
     locale: string,
     likeItems: Array<StoreData.LocationLikeItemVM>,
+    canContribute: boolean,
     openUpdateLocationHighlightModalHanlder: () => void
 }
 
@@ -28,16 +29,17 @@ class LocationLike extends React.PureComponent<Props, State> {
     }
 
     render() {
-        const { t } = this.props;
+        const { t, canContribute } = this.props;
 
         return (
             <View style={styles.container}>
                 <TouchableOpacity
+                    disabled={!canContribute}
                     onPress={this._openUpdateHighlightModal}
                 >
                     <View style={styles.header}>
                         <Text style={styles.nameText}>{t("location_detail:like_dislike_section_label")}</Text>
-                        <Icon style={styles.editIcon} name="pencil-alt" type="FontAwesome5" />
+                        { canContribute && <Icon style={styles.editIcon} name="pencil-alt" type="FontAwesome5" /> }
                     </View>
                 </TouchableOpacity>
                 {

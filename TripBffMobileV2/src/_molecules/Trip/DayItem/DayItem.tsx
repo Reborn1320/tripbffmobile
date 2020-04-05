@@ -27,7 +27,8 @@ export interface Props extends IMapDispatchToProps, PropsBase {
     dateIdx: number
     date?: moment.Moment
     dateVm?: StoreData.DateVM,
-    locale?: string
+    locale?: string,
+    canContribute: boolean
 }
 
 export interface State {
@@ -40,7 +41,7 @@ export class DayItemComponent extends Component<Props, State> {
     }
 
     render() {
-        const { dateIdx, dateVm, t } = this.props;
+        const { dateIdx, dateVm, t, canContribute } = this.props;
         let android9Style = Platform.OS === 'android' && Platform.Version === 28 ? styles.dayItemContainerAndroid9 : {};
 
         return (
@@ -50,7 +51,7 @@ export class DayItemComponent extends Component<Props, State> {
                         {t("trip_detail:day_label")} {dateIdx} - {t("common:date_format", { date: this.props.date })}
                     </Text>
                     {
-                        this.props.locationIds.length > 0 &&
+                        canContribute && this.props.locationIds.length > 0 &&
                         <TouchableOpacity onPress= {this._openAddLocationModal}>
                              <Image
                                 style={styles.addLocationIcon}
@@ -62,6 +63,7 @@ export class DayItemComponent extends Component<Props, State> {
 
                 {this.props.locationIds.length > 0 && this.props.locationIds.map(e => 
                     <LocationItem tripId={this.props.tripId} dateIdx={dateIdx} key={e}
+                        canContribute={canContribute}
                         location={_.find(dateVm.locations, (item) => item.locationId == e)}
                         navigation={this.props.navigation}
                         locale={this.props.locale}
@@ -75,8 +77,9 @@ export class DayItemComponent extends Component<Props, State> {
                     this.props.locationIds.length == 0 &&
                     (
                         <EmptyLocationItem
+                            canContribute={canContribute}
                             viewContainerStyle={styles.emptyContainer}
-                            subTitle={t("message:add_location")}
+                            subTitle={canContribute ? t("message:add_location") : t("message:no_location")}
                             openAddLocationModalHandler={this._openAddLocationModal}
                             >
                         </EmptyLocationItem>

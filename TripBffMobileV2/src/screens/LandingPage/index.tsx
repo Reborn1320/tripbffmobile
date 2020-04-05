@@ -34,7 +34,7 @@ class LandingPageComponent extends Component<any, any> {
             let appLocale = tmp.props.locale;
 
             if (isLoggedIn) {
-                this.props.navigation.navigate(NavigationConstants.Screens.Profile);
+                this.props.navigation.navigate(NavigationConstants.Screens.NewsFeed);
             }
             else {
               let locales = RNLocalize.getLocales();

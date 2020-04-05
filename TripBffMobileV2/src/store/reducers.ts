@@ -19,7 +19,7 @@ import {
     TRIP_UPDATE
 } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight, DataSource_ClearAll } from './DataSource/actions';
-import { TRIPS_GET_CURRENT_MINIMIZED } from "./Trips/actions";
+import { TRIPS_GET_CURRENT_MINIMIZED, TRIPS_PUBLIC_ADD } from "./Trips/actions";
 import { DEFAULT_LOCALE } from "../screens/_services/SystemConstants";
 
 const userInitState: StoreData.UserVM = {
@@ -255,6 +255,7 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
                 name: action.name,
                 fromDate: action.fromDate,
                 toDate: action.toDate,
+                isPublic: action.isPublic,
                 dates: getDatesProperty(action.fromDate, action.toDate, action.locations)
             };
         default:
@@ -326,6 +327,15 @@ function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
     }
 }
 
+function newsFeedReducer(state: Array<StoreData.MinimizedTripVM>, action) {
+    switch (action.type) {
+        case TRIPS_PUBLIC_ADD:
+            return [...action.trips]
+        default:
+            return state;
+    }
+}
+
 function currentMinimizedTrip(state: StoreData.MinimizedTripVM, action) {
     switch(action.type) {
         case TRIPS_GET_CURRENT_MINIMIZED:
@@ -349,7 +359,8 @@ export default function bffApp(state: StoreData.BffStoreData = initState, action
         currentMinimizedTrip: currentMinimizedTrip(state.currentMinimizedTrip, action),
         //todo trips shouldn't handle too much things in here!!!!!
         //todo: should it be trip, location, in respect to each page ?
-        dataSource: dataSourceReducer(state.dataSource, action)
+        dataSource: dataSourceReducer(state.dataSource, action),
+        publicTrips: newsFeedReducer(state.publicTrips, action)
     }
 
     // console.info(`executed ${moment.duration(moment().diff(now)).asMilliseconds()} milliseconds`);

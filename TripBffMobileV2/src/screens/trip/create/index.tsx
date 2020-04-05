@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Container, Content } from "native-base";
 import { StoreData } from "../../../store/Interfaces";
 import { connect } from "react-redux";
-import { Moment } from "moment";
+import moment, { Moment } from "moment";
 import { PropsBase } from "../../_shared/LayoutContainer";
 import TripCreationForm from "./TripCreationForm";
 import {
@@ -14,20 +14,25 @@ import { withNamespaces } from "react-i18next";
 import Flurry from 'react-native-flurry-sdk';
 
 export interface Props extends IMapDispatchToProps, PropsBase {
-  user: StoreData.UserVM;
+  tripFromDate?: moment.Moment;
+  tripToDate?: moment.Moment;
+  userId: string;
 }
 
 interface IMapDispatchToProps {
   createTripAsync: (
     name: string,
     fromDate: Moment,
-    toDate: Moment
+    toDate: Moment,
+    isPublic: boolean,
+    userId: string
   ) => Promise<string>;
   updateTrip: (
     tripId: string,
     name: string,
     fromDate: Moment,
-    toDate: Moment
+    toDate: Moment,
+    isPublic: boolean
   ) => Promise<any>;
 }
 
@@ -57,16 +62,22 @@ class TripCreation extends Component<Props, State> {
     });
   };
 
+  private _createTrip = (name, fromDate, toDate, isPublic) => {
+    return this.props.createTripAsync(name, fromDate, toDate, isPublic, this.props.userId);
+  }
+
   render() {
     return (
       <Container>
         <Content>
           <TripCreationForm
-            createTrip={this.props.createTripAsync}
+            createTrip={this._createTrip}
             updateTrip={this.props.updateTrip}
             onTripCreatedUpdatedHandler={this._onCreatedOrUpdatedHandler}
             titleButton={"action:next"}
             navigation={this.props.navigation}
+            tripFromDate={this.props.tripFromDate}
+            tripToDate={this.props.tripToDate}
           />
         </Content>
       </Container>
@@ -74,17 +85,27 @@ class TripCreation extends Component<Props, State> {
   }
 }
 
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
+  var trip = storeState.currentTrip;
+
+  return {
+    tripFromDate: trip != null ? trip.fromDate : null,
+    tripToDate: trip != null ? trip.toDate : null,
+    userId: storeState.user.id
+  };
+};
+
 const mapDispatchToProps = dispatch => {
   return {
-    createTripAsync: (name, fromDate, toDate) =>
-      dispatch(createTripAsync(name, fromDate, toDate)),
-    updateTrip: (tripId, name, fromDate, toDate) =>
-      dispatch(updateTrip(tripId, name, fromDate, toDate)),
+    createTripAsync: (name, fromDate, toDate, isPublic, userId) =>
+      dispatch(createTripAsync(name, fromDate, toDate, isPublic, userId)),
+    updateTrip: (tripId, name, fromDate, toDate, isPublic) =>
+      dispatch(updateTrip(tripId, name, fromDate, toDate, isPublic)),
   };
 };
 
 const TripCreationScreen = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(TripCreation);
 
