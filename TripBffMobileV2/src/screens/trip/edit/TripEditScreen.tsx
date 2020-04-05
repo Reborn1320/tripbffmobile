@@ -16,6 +16,7 @@ import NBColor from "../../../theme/variables/commonColor.js";
 import { getCancelToken } from "../../../_function/commonFunc";
 import Flurry from 'react-native-flurry-sdk';
 import Swiper from "react-native-swiper";
+import TripInfographicComponent from "../../../_organisms/Trip/TripDetails/TripInfographic";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
@@ -64,7 +65,11 @@ export class TripEditScreen extends Component<Props, State> {
         
         let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
         this._cancelToken = cancelToken;
-        this._cancelRequest = cancelRequest;        
+        this._cancelRequest = cancelRequest;  
+        
+        if (!this.props.trip) {
+            this._refreshTrip();
+        }
     }
 
     componentWillUnmount() {
@@ -113,9 +118,9 @@ export class TripEditScreen extends Component<Props, State> {
     }
 
     private _onIndexChanged = (index) => {
-        if (index == 1 && !this.props.trip) {
-            this._refreshTrip();
-        }
+        // if (index == 1 && !this.props.trip) {
+        //     this._refreshTrip();
+        // }
 
         this.setState({ stepIndex: index });
     }
@@ -124,7 +129,7 @@ export class TripEditScreen extends Component<Props, State> {
         const { trip, navigation } = this.props;
         const { isDisplayLoading, stepIndex } = this.state;
         const canContribute = navigation.getParam('canContribute');
-        const createdById = navigation.getParam('createdById');
+        let infographicExternalId = trip ? trip.latestExportedExternalStorageId : "";      
 
         return (
             <SafeAreaView style={styles.container}>
@@ -140,14 +145,15 @@ export class TripEditScreen extends Component<Props, State> {
                         activeDotColor={NBColor.brandPrimary}
                         onIndexChanged={this._onIndexChanged}
                     >
-                        <View>                            
-                            {/* {isDisplayLoading &&  <Loading message={''}/> } */}
-                            <Text>Test</Text></View>
+                        <View style={{ flex: 1 }}>                            
+                            { isDisplayLoading &&  <Loading message={''}/> }
+                            { trip && <TripInfographicComponent tripId={trip.tripId} infographicExternalId={infographicExternalId} /> }
+                        </View>
                         <ScrollView 
                             refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}
                         >
-                            {isDisplayLoading &&  <Loading message={''}/> }
-                            {trip &&
+                            { isDisplayLoading &&  <Loading message={''}/> }
+                            { trip &&
                                 <TripDetailScreenContent tripId={trip.tripId} canContribute={canContribute} navigation={navigation} />} 
                         </ScrollView>                                       
                     </Swiper>  
@@ -173,7 +179,8 @@ const styles = StyleSheet.create({
         flex: 1
     },    
     paginationStyle: {
-        marginBottom: '3.75%'
+        position: "absolute",
+        bottom: "1%"
     },
     actionButtonIcon: {
       fontSize: 20,
