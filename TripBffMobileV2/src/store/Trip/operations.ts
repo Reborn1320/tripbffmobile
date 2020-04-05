@@ -41,7 +41,8 @@ export function fetchTrip(tripId: string, cancelToken: any): ThunkResultBase {
           rawLocations: rawTrip.locations,
           infographicId: rawTrip.infographicId,
           createdById: rawTrip.createdById,
-          canContribute: rawTrip.canContribute
+          canContribute: rawTrip.canContribute,
+          isPublic: rawTrip.isPublic
         };
         //console.log('current trip: ' + JSON.stringify(trip));
         dispatch(replaceTrip(trip));
@@ -166,14 +167,14 @@ export function addLocation(tripId: string, dateIdx: number, location: StoreData
   };
 }
 
-export function createTrip(name: string, fromDate: Moment, toDate: Moment): ThunkResultBase {
+export function createTrip(name: string, fromDate: Moment, toDate: Moment, isPublic: boolean): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
 
     let fromDateUtc = toDateUtcFunc(fromDate.clone());
     let toDateUtc = toDateUtcFunc(toDate.clone());
 
     var data = {
-      name, fromDate: fromDateUtc, toDate: toDateUtc
+      name, fromDate: fromDateUtc, toDate: toDateUtc, isPublic
     }
     return extraArguments.tripApiService.post('/trips', { data })
     .then((res) => {
@@ -185,6 +186,7 @@ export function createTrip(name: string, fromDate: Moment, toDate: Moment): Thun
         fromDate: fromDate,
         toDate: toDate,
         createdById: "", //TODO: should equal userId
+        isPublic: isPublic,
         canContribute: true
       };
       dispatch(createTripAction(trip));
@@ -196,20 +198,20 @@ export function createTrip(name: string, fromDate: Moment, toDate: Moment): Thun
   };
 }
 
-export function updateTrip(tripId: string,name: string, fromDate: Moment, toDate: Moment): ThunkResultBase {
+export function updateTrip(tripId: string,name: string, fromDate: Moment, toDate: Moment, isPublic: boolean): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
 
     let fromDateUtc = toDateUtcFunc(fromDate.clone());
     let toDateUtc = toDateUtcFunc(toDate.clone());
 
     var data = {
-      name, fromDate: fromDateUtc, toDate: toDateUtc
+      name, fromDate: fromDateUtc, toDate: toDateUtc, isPublic
     }
     return extraArguments.tripApiService.patch('/trips/' + tripId, { data })
     .then((res) => {
        const trip: RawJsonData.TripVM = res.data;
        //todo need a proper conversion
-       dispatch(updateTripAction(tripId, name, fromDate, toDate, trip.locations));
+       dispatch(updateTripAction(tripId, name, fromDate, toDate, trip.locations, isPublic));
     })
     .catch((err) => {
       console.log('error update trip api: ', err);

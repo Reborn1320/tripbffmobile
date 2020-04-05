@@ -52,6 +52,7 @@ export class StyledCarousel extends Component<Props & IStateProps, State> {
   _renderLightItem = ({ item, index }) => {
     return (
       <SliderEntry
+        canContribute={this.props.canContribute}
         data={item}
         index={index}
         numberOfEntries={this.props.entries.length}

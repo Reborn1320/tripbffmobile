@@ -24,8 +24,8 @@ export function fetchTrips(cancelToken: CancelToken): ThunkResultBase {
           locationImages: rawTrip.locationImages,
           isDeleted: rawTrip.isDeleted,
           createdById: rawTrip.createdById,
-          canContribute: false
-          // canContribute: rawTrip.canContribute
+          isPublic: rawTrip.isPublic,
+          canContribute: rawTrip.canContribute,
         }));
         return trips;
       })

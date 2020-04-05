@@ -12,7 +12,7 @@ export interface Props {
 export default class NoItemDefault extends Component<Props, any> {
   render() {
     const { viewContainerStyle, titleStyle, subtitle, canContribute } = this.props;
-
+    
     return (
       <View style={viewContainerStyle}>
         { canContribute && <Image source={require("../../../assets/PlusIcon.png")} /> }

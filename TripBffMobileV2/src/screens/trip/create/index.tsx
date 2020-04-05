@@ -23,13 +23,15 @@ interface IMapDispatchToProps {
   createTripAsync: (
     name: string,
     fromDate: Moment,
-    toDate: Moment
+    toDate: Moment,
+    isPublic: boolean
   ) => Promise<string>;
   updateTrip: (
     tripId: string,
     name: string,
     fromDate: Moment,
-    toDate: Moment
+    toDate: Moment,
+    isPublic: boolean
   ) => Promise<any>;
 }
 
@@ -89,10 +91,10 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    createTripAsync: (name, fromDate, toDate) =>
-      dispatch(createTripAsync(name, fromDate, toDate)),
-    updateTrip: (tripId, name, fromDate, toDate) =>
-      dispatch(updateTrip(tripId, name, fromDate, toDate)),
+    createTripAsync: (name, fromDate, toDate, isPublic) =>
+      dispatch(createTripAsync(name, fromDate, toDate, isPublic)),
+    updateTrip: (tripId, name, fromDate, toDate, isPublic) =>
+      dispatch(updateTrip(tripId, name, fromDate, toDate, isPublic)),
   };
 };
 

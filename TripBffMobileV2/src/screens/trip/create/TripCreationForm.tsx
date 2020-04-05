@@ -1,5 +1,5 @@
-import React, { PureComponent, Component } from "react";
-import { Button, Text } from "native-base";
+import { PureComponent, Component } from "react";
+import { Button, Text, Content, Item, Icon, Container, Form, Label, ListItem, Left, Right, Switch, Body } from "native-base";
 import moment, { Moment } from "moment";
 import DateRangePicker from "../../../_atoms/DatePicker/DateRangePicker";
 import NBColor from "../../../theme/variables/commonColor.js";
@@ -19,24 +19,28 @@ import { StoreData } from "../../../store/Interfaces";
 import ConfirmationUpdateDateRangeModal from "../../../_molecules/ConfirmationUpdateDateRangeModal";
 import { connect } from "react-redux";
 import Tooltip from 'react-native-walkthrough-tooltip';
+import React from "react";
 
 export interface Props extends PropsBase {
   createTrip?: (
     name: string,
     fromDate: Moment,
-    toDate: Moment
+    toDate: Moment,
+    isPublic: boolean
   ) => Promise<string>;
   onTripCreatedUpdatedHandler?: (tripId: string, name: string) => void;
   updateTrip: (
     tripId: string,
     name: string,
     fromDate: Moment,
-    toDate: Moment
+    toDate: Moment,
+    isPublic: boolean
   ) => Promise<any>;
   tripId?: string;
   tripName?: string;
   tripFromDate?: moment.Moment;
   tripToDate?: moment.Moment;
+  isTripPublic?: boolean;
   titleButton: string;
   dates: Array<StoreData.DateVM> ,
   hasTrip: boolean
@@ -53,6 +57,7 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
       isOpenDateRangePickerModal: false,
       fromDate: this.props.tripFromDate ? this.props.tripFromDate : moment().subtract(2, "days"),
       toDate: this.props.tripToDate ? this.props.tripToDate : moment(),
+      isPublic: this.props.isTripPublic ?? true,
       isNameFieldFocused: false,
       isDateFieldFocused: false,
       isOpenUpdateDateRangeConfirm: false,
@@ -66,7 +71,8 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
     let tripId = this.state.tripId,
       tripName = this.state.tripName,
       fromDate = moment(this.state.fromDate).startOf("day"),
-      toDate = moment(this.state.toDate).endOf("day");
+      toDate = moment(this.state.toDate).endOf("day"),
+      isPublic = this.state.isPublic;
 
     if (this.props.tripFromDate && this.props.tripToDate && 
         (this.props.tripFromDate != fromDate || this.props.tripToDate != toDate) && !this.state.isUpdatedDateRange) {      
@@ -95,20 +101,20 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
           });
         }
         else {
-          this.props.updateTrip(tripId, tripName, fromDate, toDate).then(() => {
+          this.props.updateTrip(tripId, tripName, fromDate, toDate, isPublic).then(() => {
             this.props.onTripCreatedUpdatedHandler(tripId, tripName);
             this.setState({ isUpdatedDateRange : false});
           });
         }
       }
       else {
-        this.props.updateTrip(tripId, tripName, fromDate, toDate).then(() => {
+        this.props.updateTrip(tripId, tripName, fromDate, toDate, isPublic).then(() => {
           this.props.onTripCreatedUpdatedHandler(tripId, tripName);
           this.setState({ isUpdatedDateRange : false});
         });
       }
     } else {
-      this.props.createTrip(tripName, fromDate, toDate).then(tripId => {        
+      this.props.createTrip(tripName, fromDate, toDate, isPublic).then(tripId => {        
         this.props.onTripCreatedUpdatedHandler(tripId, tripName);
         this.setState({ tripId: tripId, isUpdatedDateRange : false});
       });
@@ -168,12 +174,17 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
     
     let tripId = this.state.tripId,
       tripName = this.state.tripName,
+      isPublic = this.state.isPublic,
       fromDate = moment(this.state.fromDate).startOf("day"),
       toDate = moment(this.state.toDate).endOf("day");
 
-    this.props.updateTrip(tripId, tripName, fromDate, toDate).then(() => {
+    this.props.updateTrip(tripId, tripName, fromDate, toDate, isPublic).then(() => {
       this.props.onTripCreatedUpdatedHandler(tripId, tripName);
     });
+  }
+
+  private _onValuePublicChange = (value) => {
+    this.setState({ isPublic: value });
   }
 
   renderImportBtn() {
@@ -200,8 +211,8 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
   }
 
   render() {
-    var { t, tripFromDate, tripToDate } = this.props;
-    var { fromDate, toDate, removedDatesHasLocation, isUpdatedDateRange } = this.state;
+    var { t, tripFromDate, tripToDate, isTripPublic } = this.props;
+    var { fromDate, toDate, removedDatesHasLocation, isUpdatedDateRange, isPublic } = this.state;
 
     if (tripFromDate && tripToDate && (tripFromDate != fromDate || tripToDate != toDate) && !isUpdatedDateRange) {      
       fromDate = tripFromDate;
@@ -219,57 +230,64 @@ class TripCreationFormComponent extends PureComponent<Props, any> {
       ? styles.formInputFocusedContainer
       : styles.formInputUnFocusedContainer;
 
-    return (
-      <View>
-        <View style={styles.formContainer}>
-        <Tooltip
-          isVisible={this.state.toolTipVisible}          
-          showChildInTooltip={false}    
-          contentStyle={{flex: 0}}      
-          content={<Text>{t("create:date_field_hint")}</Text>}
-          placement="bottom"
-          onClose={() => this.setState({ toolTipVisible: false })}
-        >
-          <TouchableOpacity
-              onPress={this._openDateRangePickerModal}              
-              activeOpacity={1}              
+    return (     
+       <View>
+         <View style={styles.formContainer}>
+            <Tooltip
+              isVisible={this.state.toolTipVisible}          
+              showChildInTooltip={false}    
+              contentStyle={{flex: 0}}      
+              content={<Text>{t("create:date_field_hint")}</Text>}
+              placement="bottom"
+              onClose={() => this.setState({ toolTipVisible: false })}
             >
-            <View pointerEvents="box-only">            
-                <Input
-                label={t("create:date")}
+              <TouchableOpacity
+                  onPress={this._openDateRangePickerModal}              
+                  activeOpacity={1}              
+                >
+                <View pointerEvents="box-only">            
+                    <Input
+                    label={t("create:date")}
+                    labelStyle={styles.formLabel}
+                    leftIcon={{ type: "font-awesome", name: "calendar", size: 20 }}
+                    value={date}
+                    editable={false}
+                    inputStyle={[styles.formInput, styles.formInputDateRange]}
+                    inputContainerStyle={[
+                      styles.formInputContainer,
+                      dateInputContainerStyle,
+                    ]}
+                  />
+                  
+                </View>            
+              </TouchableOpacity>
+            </Tooltip>         
+
+            <View style={styles.formNameContainer}>
+              <Input
+                label={t("create:trip_name")}
                 labelStyle={styles.formLabel}
-                leftIcon={{ type: "font-awesome", name: "calendar", size: 20 }}
-                value={date}
-                editable={false}
-                inputStyle={[styles.formInput, styles.formInputDateRange]}
+                leftIcon={{ type: "font-awesome", name: "globe", size: 20 }}
+                value={this.state.tripName}
+                onChangeText={tripName => this.setState({ tripName })}
+                inputStyle={[styles.formInput, styles.formInputTripName]}
                 inputContainerStyle={[
                   styles.formInputContainer,
-                  dateInputContainerStyle,
+                  nameInputContainerStyle
                 ]}
-              />
-              
+                onFocus={this._onNameFieldFocus}
+                onBlur={this._onNameFieldFocus}            
+              />       
+            </View>
+
+            <View style={{ marginTop: 10 }}>
+              <ListItem style={{ borderBottomWidth: 0, marginLeft: 12}}>
+                <Text style={[styles.formLabel, { fontWeight: "bold"}]}>Public</Text>
+                <Switch thumbColor={NBColor.brandPrimary} value={isPublic} onValueChange={this._onValuePublicChange} style={{ marginLeft: 15}} />
+              </ListItem>              
             </View>            
-          </TouchableOpacity>
-        </Tooltip>         
-
-          <View style={styles.formNameContainer}>
-            <Input
-              label={t("create:trip_name")}
-              labelStyle={styles.formLabel}
-              leftIcon={{ type: "font-awesome", name: "globe", size: 20 }}
-              value={this.state.tripName}
-              onChangeText={tripName => this.setState({ tripName })}
-              inputStyle={[styles.formInput, styles.formInputTripName]}
-              inputContainerStyle={[
-                styles.formInputContainer,
-                nameInputContainerStyle
-              ]}
-              onFocus={this._onNameFieldFocus}
-              onBlur={this._onNameFieldFocus}            
-            />       
-          </View>             
         </View>
-
+       
         <View style={styles.buttonContainer}>{this.renderImportBtn()}</View>        
 
         <DateRangePicker

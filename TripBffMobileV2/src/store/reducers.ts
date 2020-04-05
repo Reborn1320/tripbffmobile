@@ -255,6 +255,7 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
                 name: action.name,
                 fromDate: action.fromDate,
                 toDate: action.toDate,
+                isPublic: action.isPublic,
                 dates: getDatesProperty(action.fromDate, action.toDate, action.locations)
             };
         default:

@@ -126,9 +126,10 @@ class ProfileScreen extends Component<Props, State> {
     this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
   };
 
-  private _handleTripItemClick = (tripId: string) => {
+  private _handleTripItemClick = (tripId: string, canContribute: boolean) => {
     this.props.navigation.navigate(NavigationConstants.Screens.TripEdit, {
       tripId: tripId,
+      canContribute: canContribute,
       onGoBackProfile: this._handleUpdatedTripGoBack,
     });
   };

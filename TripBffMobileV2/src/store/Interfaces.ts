@@ -68,7 +68,8 @@ export module StoreData {
         tripId: string
         name: string
         fromDate: moment.Moment
-        toDate: moment.Moment   
+        toDate: moment.Moment  
+        isPublic: boolean 
         dates?: Array<DateVM>     
         infographicId?: string,
         rawLocations?: Array<LocationVM>,
@@ -82,7 +83,8 @@ export module StoreData {
         tripId: string
         name: string
         fromDate: moment.Moment
-        toDate: moment.Moment   
+        toDate: moment.Moment
+        isPublic: boolean
         locationImages: {
             name: string,
             address: string,
@@ -158,6 +160,7 @@ export namespace RawJsonData {
         name: string
         fromDate: string
         toDate: string
+        isPublic: boolean
         locations: Array<StoreData.LocationVM>,
         infographicId: string,
         createdById: string,
@@ -169,6 +172,7 @@ export namespace RawJsonData {
         name: string
         fromDate: string
         toDate: string
+        isPublic: boolean
         locationImages: {
             name: string,
             address: string,

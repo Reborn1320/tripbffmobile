@@ -118,9 +118,18 @@ export class TripCarouselComponent extends React.Component<Props, State> {
 
   render() {
     const { currentMinimizedTrip, trip, t } = this.props;
-    const canContribute = trip.canContribute;
+    let canContribute = false;
+    let tripEntry = null;
 
-    let tripEntry = currentMinimizedTrip ? this._normalizeTripEntry(currentMinimizedTrip) :this._normalizeTripEntry(trip);
+    if(currentMinimizedTrip) {
+      tripEntry = this._normalizeTripEntry(currentMinimizedTrip);
+      canContribute = currentMinimizedTrip.canContribute;
+    }
+    else {
+      tripEntry = this._normalizeTripEntry(trip);
+      canContribute = trip.canContribute;
+    }
+
     const { title, subtitle } = tripEntry;
     let android9Style = Platform.OS === 'android' && Platform.Version === 28 ? styles.containerAndroid9 : {};
     let titleContainerStyle = canContribute ? styles.titleContainer : styles.titleReadonlyContainer;
