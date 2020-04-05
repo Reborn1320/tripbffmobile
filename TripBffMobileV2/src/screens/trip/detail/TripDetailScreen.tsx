@@ -15,7 +15,7 @@ import Flurry from 'react-native-flurry-sdk';
 
 export interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void;
-    fetchTrip: (tripId: string, cancelToken: any) => Promise<void>
+    fetchTrip: (tripId: string, cancelToken: any, createdById: string) => Promise<void>
 }
 
 export interface Props {
@@ -80,7 +80,9 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
     }
 
     private _refreshTrip = () => {
-        this.props.fetchTrip(this.props.tripId, this._cancelToken)
+        const createdById = this.props.navigation.getParam('createdById');
+
+        this.props.fetchTrip(this.props.tripId, this._cancelToken, createdById)
             .then(() => this.setState({
                 isDisplayLoading: false,
                 refreshing: false

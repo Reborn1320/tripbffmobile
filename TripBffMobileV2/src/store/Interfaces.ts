@@ -147,6 +147,7 @@ export module StoreData {
     export interface BffStoreData {
         user?: UserVM
         trips?: Array<MinimizedTripVM>,
+        publicTrips?: Array<MinimizedTripVM>,
         currentTrip?: TripVM,
         currentMinimizedTrip?: MinimizedTripVM,
         dataSource: DataSourceVM

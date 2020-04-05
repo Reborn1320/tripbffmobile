@@ -28,7 +28,7 @@ export type ITripEntry = {
 
 export interface Props extends PropsBase {
   trip: StoreData.MinimizedTripVM,
-  handleClick: (tripId: string, canContribute: boolean) => void;
+  handleClick: (tripId: string, canContribute: boolean, createdById: string) => void;
   handleShareClick: (tripId: string) => void;
   handleDeleteTrip: (tripId: string) => void;
   currentMinimizedTrip?: StoreData.MinimizedTripVM
@@ -112,8 +112,8 @@ export class TripCarouselComponent extends React.Component<Props, State> {
     this.props.handleDeleteTrip(this.props.trip.tripId);
   }
 
-  private _handleClickTrip = () => {
-    this.props.handleClick(this.props.trip.tripId, this.props.trip.canContribute);
+  private _handleClickTrip = () => {    
+    this.props.handleClick(this.props.trip.tripId, this.props.trip.canContribute, this.props.trip.createdById);
   }
 
   render() {

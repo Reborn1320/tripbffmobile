@@ -19,11 +19,11 @@ import TripsEmptyComponent from "../../_organisms/Trips/TripsList/TripsEmptyComp
 import { withNamespaces } from "react-i18next";
 import { PropsBase } from "../_shared/LayoutContainer";
 import Flurry from 'react-native-flurry-sdk';
+import { connect } from "react-redux";
 
 interface IMapDispatchToProps extends PropsBase {
-  fetchTrips: (cancelToken: any) => Promise<any>;
-  addTrips: (trips: Array<StoreData.TripVM>) => void;
-  deleteTrip: (tripId: string) => Promise<boolean>;
+  fetchPublicTrips: (cancelToken: any) => Promise<any>;
+  addPublicTrips: (trips: Array<StoreData.TripVM>) => void;
   getCurrentMinimizedTrip: (tripId: string) => void;
   clearDatasource: () => void;
 }
@@ -48,7 +48,7 @@ interface State {
 
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
 
-class NewsFeedScreen extends Component<Props, State> {
+class NewsFeedScreenComponent extends Component<Props, State> {
   _cancelRequest;
   _cancelToken;
 
@@ -80,8 +80,8 @@ class NewsFeedScreen extends Component<Props, State> {
   }  
 
   private _refreshTrips = () => {
-    this.props.fetchTrips(this._cancelToken).then(trips => {
-      this.props.addTrips(trips);
+    this.props.fetchPublicTrips(this._cancelToken).then(trips => {
+      this.props.addPublicTrips(trips);
 
       if (this.state.refreshing) this.props.clearDatasource();
 
@@ -98,29 +98,12 @@ class NewsFeedScreen extends Component<Props, State> {
     this.props.getCurrentMinimizedTrip(tripId);
   };  
 
-  private _handleTripItemClick = (tripId: string, canContribute: boolean) => {   
+  private _handleTripItemClick = (tripId: string, canContribute: boolean, createdById: string) => {   
     this.props.navigation.navigate(NavigationConstants.Screens.TripEdit, {
       tripId: tripId,
       canContribute: canContribute,
-      onGoBackProfile: this._handleUpdatedTripGoBack,
-    });
-  };
-
-  private _handleShareBtnClick = tripId => {
-    this.props.navigation.navigate(
-      NavigationConstants.Screens.TripsInfographicPreivew,
-      {
-        tripId: tripId,
-        onGoBackProfile: this._refreshTrips,
-        isFromProfile: true,
-      }
-    );
-  };
-
-  private _handleDeleteTrip = tripId => {
-    this.setState({
-      isOpenDeleteConfirmModal: true,
-      deletedTripId: tripId,
+      createdById: createdById,
+      onGoBackProfile: canContribute ? this._handleUpdatedTripGoBack : undefined,
     });
   };
 
@@ -152,9 +135,8 @@ class NewsFeedScreen extends Component<Props, State> {
             )}
             
             <TripsComponent
+                trips={this.props.trips}
                 handleClick={this._handleTripItemClick}
-                handleShareClick={this._handleShareBtnClick}
-                handleDeleteTrip={this._handleDeleteTrip}
               />          
           </View>
         </Content>
@@ -162,6 +144,17 @@ class NewsFeedScreen extends Component<Props, State> {
     );
   }
 }
+
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
+  return {
+    trips: storeState.publicTrips
+  };
+};
+
+const NewsFeedScreen = connect(
+  mapStateToProps,
+  null
+)(NewsFeedScreenComponent);
 
 export default withNamespaces(["profile"])(NewsFeedScreen);
 

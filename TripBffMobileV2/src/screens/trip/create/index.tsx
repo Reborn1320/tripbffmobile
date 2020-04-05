@@ -14,9 +14,9 @@ import { withNamespaces } from "react-i18next";
 import Flurry from 'react-native-flurry-sdk';
 
 export interface Props extends IMapDispatchToProps, PropsBase {
-  user: StoreData.UserVM;
   tripFromDate?: moment.Moment;
   tripToDate?: moment.Moment;
+  userId: string;
 }
 
 interface IMapDispatchToProps {
@@ -24,7 +24,8 @@ interface IMapDispatchToProps {
     name: string,
     fromDate: Moment,
     toDate: Moment,
-    isPublic: boolean
+    isPublic: boolean,
+    userId: string
   ) => Promise<string>;
   updateTrip: (
     tripId: string,
@@ -61,12 +62,16 @@ class TripCreation extends Component<Props, State> {
     });
   };
 
+  private _createTrip = (name, fromDate, toDate, isPublic) => {
+    return this.props.createTripAsync(name, fromDate, toDate, isPublic, this.props.userId);
+  }
+
   render() {
     return (
       <Container>
         <Content>
           <TripCreationForm
-            createTrip={this.props.createTripAsync}
+            createTrip={this._createTrip}
             updateTrip={this.props.updateTrip}
             onTripCreatedUpdatedHandler={this._onCreatedOrUpdatedHandler}
             titleButton={"action:next"}
@@ -85,14 +90,15 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
 
   return {
     tripFromDate: trip != null ? trip.fromDate : null,
-    tripToDate: trip != null ? trip.toDate : null
+    tripToDate: trip != null ? trip.toDate : null,
+    userId: storeState.user.id
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    createTripAsync: (name, fromDate, toDate, isPublic) =>
-      dispatch(createTripAsync(name, fromDate, toDate, isPublic)),
+    createTripAsync: (name, fromDate, toDate, isPublic, userId) =>
+      dispatch(createTripAsync(name, fromDate, toDate, isPublic, userId)),
     updateTrip: (tripId, name, fromDate, toDate, isPublic) =>
       dispatch(updateTrip(tripId, name, fromDate, toDate, isPublic)),
   };

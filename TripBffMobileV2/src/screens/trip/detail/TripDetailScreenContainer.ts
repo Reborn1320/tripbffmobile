@@ -8,7 +8,7 @@ import { fetchTrip } from "../../../store/Trip/operations";
 
 const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
   return {
-    fetchTrip: (tripId, cancelToken) => dispatch(fetchTrip(tripId, cancelToken)),
+    fetchTrip: (tripId, cancelToken, createdById) => dispatch(fetchTrip(tripId, cancelToken, createdById)),
     addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
   };
 };

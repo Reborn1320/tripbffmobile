@@ -19,6 +19,7 @@ import TripsEmptyComponent from "../../_organisms/Trips/TripsList/TripsEmptyComp
 import { withNamespaces } from "react-i18next";
 import { PropsBase } from "../_shared/LayoutContainer";
 import Flurry from 'react-native-flurry-sdk';
+import { connect } from "react-redux";
 
 interface IMapDispatchToProps extends PropsBase {
   fetchTrips: (cancelToken: any) => Promise<any>;
@@ -50,7 +51,7 @@ interface State {
 
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
 
-class ProfileScreen extends Component<Props, State> {
+class ProfileScreenComponent extends Component<Props, State> {
   _cancelRequest;
   _cancelToken;
 
@@ -126,10 +127,11 @@ class ProfileScreen extends Component<Props, State> {
     this.props.navigation.navigate(NavigationConstants.Screens.TripCreation);
   };
 
-  private _handleTripItemClick = (tripId: string, canContribute: boolean) => {
+  private _handleTripItemClick = (tripId: string, canContribute: boolean, createdById: string) => {
     this.props.navigation.navigate(NavigationConstants.Screens.TripEdit, {
       tripId: tripId,
       canContribute: canContribute,
+      createdById: createdById,
       onGoBackProfile: this._handleUpdatedTripGoBack,
     });
   };
@@ -204,6 +206,7 @@ class ProfileScreen extends Component<Props, State> {
             )}
             {!isEmptyTrips && (
               <TripsComponent
+                trips={this.props.trips}
                 handleClick={this._handleTripItemClick}
                 handleShareClick={this._handleShareBtnClick}
                 handleDeleteTrip={this._handleDeleteTrip}
@@ -222,6 +225,17 @@ class ProfileScreen extends Component<Props, State> {
     );
   }
 }
+
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
+  return {
+    trips: storeState.trips
+  };
+};
+
+const ProfileScreen = connect(
+  mapStateToProps,
+  null
+)(ProfileScreenComponent);
 
 export default withNamespaces(["profile"])(ProfileScreen);
 

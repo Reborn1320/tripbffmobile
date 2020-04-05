@@ -22,10 +22,13 @@ import moment from "moment";
 import { uploadImageXmlHttpRequestAsync } from "../../screens/_services/Uploader/BlobUploader";
 import { toDateUtc as toDateUtcFunc } from "../../_function/dateFuncs";
 
-export function fetchTrip(tripId: string, cancelToken: any): ThunkResultBase {
-  return async function (dispatch, getState, extraArguments): Promise<any> {
+export function fetchTrip(tripId: string, cancelToken: any, createdById: string): ThunkResultBase {
+  return async function (dispatch, getState, extraArguments): Promise<any> {    
     var args = {
-      data: {
+      config: {
+        params: {
+          createdById
+        },
         cancelToken: cancelToken
       }
     }
@@ -167,9 +170,9 @@ export function addLocation(tripId: string, dateIdx: number, location: StoreData
   };
 }
 
-export function createTrip(name: string, fromDate: Moment, toDate: Moment, isPublic: boolean): ThunkResultBase {
+export function createTrip(name: string, fromDate: Moment, toDate: Moment, isPublic: boolean, userId: string): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
-
+    console.log('userId: ' + userId);
     let fromDateUtc = toDateUtcFunc(fromDate.clone());
     let toDateUtc = toDateUtcFunc(toDate.clone());
 
@@ -185,7 +188,7 @@ export function createTrip(name: string, fromDate: Moment, toDate: Moment, isPub
         name: name,
         fromDate: fromDate,
         toDate: toDate,
-        createdById: "", //TODO: should equal userId
+        createdById: userId,
         isPublic: isPublic,
         canContribute: true
       };

@@ -19,14 +19,14 @@ import Swiper from "react-native-swiper";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
-    fetchTrip: (tripId: string, cancelToken: any) => Promise<void>
+    fetchTrip: (tripId: string, cancelToken: any, createdById: string) => Promise<void>
 }
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     tripId: string,
     trip: StoreData.TripVM,
     navigation: RNa.NavigationScreenProp<any, any>;
-    userId: string;
+    createdById: string;
 }
 
 interface State {
@@ -73,7 +73,9 @@ export class TripEditScreen extends Component<Props, State> {
     }
 
     private _refreshTrip = () => {
-        this.props.fetchTrip(this.props.tripId, this._cancelToken)
+        const createdById = this.props.navigation.getParam('createdById');
+
+        this.props.fetchTrip(this.props.tripId, this._cancelToken, createdById)
             .then(() => this.setState({
                 isDisplayLoading: false,
                 refreshing: false
@@ -119,9 +121,10 @@ export class TripEditScreen extends Component<Props, State> {
     }
 
     render() {
-        const { trip, navigation, userId } = this.props;
+        const { trip, navigation } = this.props;
         const { isDisplayLoading, stepIndex } = this.state;
         const canContribute = navigation.getParam('canContribute');
+        const createdById = navigation.getParam('createdById');
 
         return (
             <SafeAreaView style={styles.container}>

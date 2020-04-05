@@ -1,12 +1,19 @@
 import { StoreData } from "../Interfaces";
 
 export const TRIPS_ADD = "TRIPS_ADD"
+export const TRIPS_PUBLIC_ADD = "TRIPS_PUBLIC_ADD"
 export const TRIPS_DELETE = "TRIPS_DELETE"
 export const TRIPS_GET_CURRENT_MINIMIZED = "TRIPS_GET_CURRENT_MINIMIZED"
 
 export function addTrips(trips: Array<StoreData.TripVM>) {
     return {
         type: TRIPS_ADD, trips
+    }
+}
+
+export function addPublicTrips(trips: Array<StoreData.MinimizedTripVM>) {
+    return {
+        type: TRIPS_PUBLIC_ADD, trips
     }
 }
 
