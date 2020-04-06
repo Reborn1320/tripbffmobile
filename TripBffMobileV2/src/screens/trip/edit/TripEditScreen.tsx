@@ -117,10 +117,6 @@ export class TripEditScreen extends Component<Props, State> {
         this._refreshTrip();
     }   
 
-    private _goTripEditTimeline = () => {
-        (this.refs.swiper as any).scrollBy(1);
-    }
-
     render() {
         const { trip, navigation } = this.props;
         let { isDisplayLoading, stepIndex } = this.state;
@@ -146,8 +142,7 @@ export class TripEditScreen extends Component<Props, State> {
                             { isDisplayLoading &&  <Loading message={''}/> }
                             { trip && <TripInfographicComponent 
                                             tripId={trip.tripId} 
-                                            infographicExternalId={infographicExternalId} 
-                                            goTripEditTimeline={this._goTripEditTimeline} /> }
+                                            infographicExternalId={infographicExternalId}  /> }
                         </ScrollView>                        
                         <ScrollView 
                             refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}

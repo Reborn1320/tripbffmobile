@@ -8,6 +8,7 @@ import { mixins } from "../../../_utils";
 import NBColor from "../../../theme/variables/commonColor.js";
 import { Icon } from "native-base";
 import { withNamespaces } from "react-i18next";
+import Flurry from 'react-native-flurry-sdk';
 
 class TripInfographicComponent extends PureComponent<any, any> {
 
@@ -24,6 +25,7 @@ class TripInfographicComponent extends PureComponent<any, any> {
     }    
 
     componentDidMount() {
+      Flurry.logEvent('Trip Infographic', null, true);
       let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
       this._cancelToken = cancelToken;
       this._cancelRequest = cancelRequest;
@@ -31,12 +33,10 @@ class TripInfographicComponent extends PureComponent<any, any> {
       if (this.props.infographicExternalId) {
         this._getInfographic();
       }
-      else {
-        this.props.goTripEditTimeline();
-      }
     }     
 
     componentWillUnmount() {
+      Flurry.endTimedEvent('Trip Infographic');
       this._cancelRequest('Operation canceled by the user.');
     }
 
