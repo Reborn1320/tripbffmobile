@@ -35,6 +35,11 @@ class TripInfographicComponent extends PureComponent<any, any> {
       }
     }     
 
+    componentDidUpdate(prevProps) {
+      if (prevProps.infographicExternalId != this.props.infographicExternalId)
+        this._getInfographic();
+    }
+
     componentWillUnmount() {
       Flurry.endTimedEvent('Trip Infographic');
       this._cancelRequest('Operation canceled by the user.');
@@ -49,9 +54,6 @@ class TripInfographicComponent extends PureComponent<any, any> {
           var signedUrl = res.request.responseURL;
           console.log("signedUrl", signedUrl)
           this.setState({ imageUri: signedUrl, hasInfographic: !signedUrl });
-
-          if (!signedUrl)
-            this.props.goTripEditTimeline();
         })
         .catch(error => {            
             console.log("error: " + JSON.stringify(error));
@@ -60,7 +62,7 @@ class TripInfographicComponent extends PureComponent<any, any> {
 
     render() {  
       const { t } = this.props;
-
+      console.log('trip infographic re-rendered');
       return (           
         this.state.imageUri ?
         <Gallery
@@ -85,7 +87,7 @@ class TripInfographicComponent extends PureComponent<any, any> {
     }
   }
 
-  export default withNamespaces(['message'])(TripInfographicComponent);
+export default withNamespaces(['message'])(TripInfographicComponent);
 
 interface Style {
   container: ViewStyle;
