@@ -37,7 +37,8 @@ interface IMapDispatchToProps {
         tripId: string,
         name: string,
         fromDate: Moment,
-        toDate: Moment
+        toDate: Moment,
+        isPublic: boolean
       ) => Promise<any>;
     addLocations: (tripId: string, locations: IImportLocation[]) => Promise<void>;
     uploadLocationImage: (tripId: string, dateIdx: number, locationId: string, imageId: string, imageUrl: string, mimeType: StoreData.IMimeTypeImage) => Promise<void>;
@@ -416,7 +417,7 @@ class TripImportation extends Component<Props, State> {
 
         var locations = await this._getLocations(fromDate, toDate);  
 
-        this.props.updateTrip(this.props.trip.tripId, this.props.trip.name, fromDate, toDate)
+        this.props.updateTrip(this.props.trip.tripId, this.props.trip.name, fromDate, toDate, this.props.trip.isPublic)
          .then(() => {                 
             this.setState({            
                 locations: locations, 
@@ -570,8 +571,8 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) =>
 const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     return {
         // dispatch, //https://stackoverflow.com/questions/36850988/this-props-dispatch-not-a-function-react-redux
-        updateTrip: (tripId, name, fromDate, toDate) =>
-            dispatch(updateTrip(tripId, name, fromDate, toDate)),
+        updateTrip: (tripId, name, fromDate, toDate, isPublic) =>
+            dispatch(updateTrip(tripId, name, fromDate, toDate, isPublic)),
         addLocations: (tripId, selectedLocations) => dispatch(addLocations(tripId, selectedLocations)),
         uploadLocationImage: (tripId, dateIdx, locationId, imageId, imgUrl, mimeType) => dispatch(uploadLocationImage(tripId, dateIdx, locationId, imageId, imgUrl, mimeType)),
     }

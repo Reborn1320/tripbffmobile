@@ -115,21 +115,17 @@ export class TripEditScreen extends Component<Props, State> {
             isDisplayLoading: true
         });
         this._refreshTrip();
-    }
+    }   
 
-    private _onIndexChanged = (index) => {
-        // if (index == 1 && !this.props.trip) {
-        //     this._refreshTrip();
-        // }
-
-        this.setState({ stepIndex: index });
+    private _goTripEditTimeline = () => {
+        (this.refs.swiper as any).scrollBy(1);
     }
 
     render() {
         const { trip, navigation } = this.props;
-        const { isDisplayLoading, stepIndex } = this.state;
+        let { isDisplayLoading, stepIndex } = this.state;
         const canContribute = navigation.getParam('canContribute');
-        let infographicExternalId = trip ? trip.latestExportedExternalStorageId : "";      
+        let infographicExternalId = trip ? trip.latestExportedExternalStorageId : "";  
 
         return (
             <SafeAreaView style={styles.container}>
@@ -143,12 +139,16 @@ export class TripEditScreen extends Component<Props, State> {
                         index={stepIndex} 
                         paginationStyle={styles.paginationStyle}                  
                         activeDotColor={NBColor.brandPrimary}
-                        onIndexChanged={this._onIndexChanged}
                     >
-                        <View style={{ flex: 1 }}>                            
+                        <ScrollView style={{ flex: 1 }}
+                            refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}
+                        >
                             { isDisplayLoading &&  <Loading message={''}/> }
-                            { trip && <TripInfographicComponent tripId={trip.tripId} infographicExternalId={infographicExternalId} /> }
-                        </View>
+                            { trip && <TripInfographicComponent 
+                                            tripId={trip.tripId} 
+                                            infographicExternalId={infographicExternalId} 
+                                            goTripEditTimeline={this._goTripEditTimeline} /> }
+                        </ScrollView>                        
                         <ScrollView 
                             refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}
                         >

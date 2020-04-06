@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import {
-  TouchableOpacity,
-  Image,
   StyleSheet,
   RefreshControl,
 } from "react-native";
@@ -12,10 +10,7 @@ import TripsComponent from "../../_organisms/Trips/TripsList/TripsComponent";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import { StoreData } from "../../store/Interfaces";
 import { NavigationScreenProp } from "react-navigation";
-import UserDetails from "../../_organisms/User/UserDetails";
 import { getCancelToken } from "../../_function/commonFunc";
-import ConfirmationModal from "../../_molecules/ConfirmationModal";
-import TripsEmptyComponent from "../../_organisms/Trips/TripsList/TripsEmptyComponent";
 import { withNamespaces } from "react-i18next";
 import { PropsBase } from "../_shared/LayoutContainer";
 import Flurry from 'react-native-flurry-sdk';

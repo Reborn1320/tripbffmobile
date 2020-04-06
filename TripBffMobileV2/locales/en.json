@@ -23,7 +23,8 @@
         "add_location": "Click to add location(s)",
         "add_image": "Click to add photo(s)",
         "no_location": "No location",
-        "no_image": "No photo"
+        "no_image": "No photo",
+        "no_infographic": "No infographic"
     },
     "login": {
         "welcome_title": "Welcome to TripBFF",
