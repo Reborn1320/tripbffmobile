@@ -17,7 +17,7 @@ import Flurry from 'react-native-flurry-sdk';
 import { connect } from "react-redux";
 
 interface IMapDispatchToProps extends PropsBase {
-  fetchPublicTrips: (cancelToken: any) => Promise<any>;
+  fetchPublicTrips: (page: number, cancelToken: any) => Promise<any>;
   addPublicTrips: (trips: Array<StoreData.TripVM>) => void;
   getCurrentMinimizedTrip: (tripId: string) => void;
   clearDatasource: () => void;
@@ -75,7 +75,7 @@ class NewsFeedScreenComponent extends Component<Props, State> {
   }  
 
   private _refreshTrips = () => {
-    this.props.fetchPublicTrips(this._cancelToken).then(trips => {
+    this.props.fetchPublicTrips(0, this._cancelToken).then(trips => {
       this.props.addPublicTrips(trips);
 
       if (this.state.refreshing) this.props.clearDatasource();

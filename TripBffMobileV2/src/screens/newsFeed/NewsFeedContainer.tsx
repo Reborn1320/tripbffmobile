@@ -10,7 +10,7 @@ import { clearAllDatasource } from "../../store/DataSource/actions";
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchPublicTrips: (cancelToken: any) => dispatch(fetchPublicTrips(cancelToken)),
+    fetchPublicTrips: (page: number, cancelToken: any) => dispatch(fetchPublicTrips(page, cancelToken)),
     addPublicTrips: trips => dispatch(addPublicTrips(trips)),
     getCurrentMinimizedTrip: tripId =>
       dispatch(getCurrentMinimizedTrip(tripId)),

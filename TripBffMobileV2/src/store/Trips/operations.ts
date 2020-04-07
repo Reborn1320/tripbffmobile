@@ -35,10 +35,13 @@ export function fetchTrips(cancelToken: CancelToken): ThunkResultBase {
   };
 }
 
-export function fetchPublicTrips(cancelToken: CancelToken): ThunkResultBase {
+export function fetchPublicTrips(page: number, cancelToken: CancelToken): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     var args = {
       data: {
+        params: {
+          page: page
+        },        
         cancelToken: cancelToken
       }
     }
