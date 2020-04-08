@@ -1,7 +1,7 @@
 import { StoreData, RawJsonData } from "../Interfaces";
 import moment from "moment";
 import { ThunkResultBase } from "..";
-import { deleteTrip as deleteTripAction } from "./actions";
+import { deleteTrip as deleteTripAction, addPublicTrips } from "./actions";
 import {  CancelToken } from "axios";
 import { getCurrentMinimizedTrip as getCurrentMinimizedTripAction } from "./actions";
 
@@ -38,7 +38,7 @@ export function fetchTrips(cancelToken: CancelToken): ThunkResultBase {
 export function fetchPublicTrips(page: number, cancelToken: CancelToken): ThunkResultBase {
   return async function (dispatch, getState, extraArguments): Promise<any> {
     var args = {
-      data: {
+      config: {
         params: {
           page: page
         },        
@@ -60,8 +60,8 @@ export function fetchPublicTrips(page: number, cancelToken: CancelToken): ThunkR
           isPublic: rawTrip.isPublic,
           canContribute: rawTrip.canContribute,
         }));
-        //console.log('public trips: ' + JSON.stringify(trips));
-        return trips;
+        console.log('public trips: ' + JSON.stringify(trips));
+        dispatch(addPublicTrips(trips));
       })
       .catch(error => {
         console.log("fetch trips error", error);

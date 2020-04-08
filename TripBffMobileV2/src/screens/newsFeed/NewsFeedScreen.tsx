@@ -18,7 +18,7 @@ import { connect } from "react-redux";
 
 interface IMapDispatchToProps extends PropsBase {
   fetchPublicTrips: (page: number, cancelToken: any) => Promise<any>;
-  addPublicTrips: (trips: Array<StoreData.TripVM>) => void;
+  clearPublicTrips: () => void;
   getCurrentMinimizedTrip: (tripId: string) => void;
   clearDatasource: () => void;
 }
@@ -39,6 +39,7 @@ interface State {
   isOpenDeleteConfirmModal: boolean;
   deletedTripId: string;
   refreshing: boolean;
+  page: number;
 }
 
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
@@ -57,6 +58,7 @@ class NewsFeedScreenComponent extends Component<Props, State> {
       isOpenDeleteConfirmModal: false,
       deletedTripId: "",
       refreshing: false,
+      page: 0
     };
   }
 
@@ -65,8 +67,8 @@ class NewsFeedScreenComponent extends Component<Props, State> {
     let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
     this._cancelToken = cancelToken;
     this._cancelRequest = cancelRequest;
-
-    this._refreshTrips();
+    console.log('componnet did mount');
+    this._refreshTrips(0);
   }
 
   componentWillUnmount() {
@@ -74,17 +76,15 @@ class NewsFeedScreenComponent extends Component<Props, State> {
     Flurry.endTimedEvent('NewsFeed');
   }  
 
-  private _refreshTrips = () => {
-    this.props.fetchPublicTrips(0, this._cancelToken).then(trips => {
-      this.props.addPublicTrips(trips);
-
-      if (this.state.refreshing) this.props.clearDatasource();
-
+  private _refreshTrips = (page) => {
+    console.log('come to refresh trip');
+    
+    this.props.fetchPublicTrips(page, this._cancelToken).then(() => {  
       this.setState({
         isLoaded: false,
         loadingMessage: "",
         UIState: "NORMAL",
-        refreshing: false,
+        refreshing: false
       });
     });
   };
@@ -106,12 +106,23 @@ class NewsFeedScreenComponent extends Component<Props, State> {
     this.setState({
       refreshing: true,
       isLoaded: true,
+      page: 0
     });
-    this._refreshTrips();
+
+    this.props.clearPublicTrips();
+    this.props.clearDatasource();    
+    this._refreshTrips(0);
   };
 
+  private _loadMoreTrips = (page) => {
+    this.setState({
+      page: page
+    });
+    this._refreshTrips(page);
+  }
+
   render() {
-    const { isLoaded, refreshing } = this.state;
+    const { isLoaded, refreshing, page } = this.state;
     const { t } = this.props;
 
     return (
@@ -131,7 +142,9 @@ class NewsFeedScreenComponent extends Component<Props, State> {
             
             <TripsComponent
                 trips={this.props.trips}
+                page={page}
                 handleClick={this._handleTripItemClick}
+                loadMoreTrips={this._loadMoreTrips}
               />          
           </View>
         </Content>

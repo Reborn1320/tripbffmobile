@@ -19,7 +19,7 @@ import {
     TRIP_UPDATE
 } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight, DataSource_ClearAll } from './DataSource/actions';
-import { TRIPS_GET_CURRENT_MINIMIZED, TRIPS_PUBLIC_ADD } from "./Trips/actions";
+import { TRIPS_GET_CURRENT_MINIMIZED, TRIPS_PUBLIC_ADD, TripsActions, TRIPS_PUBLIC_CLEAR } from "./Trips/actions";
 import { DEFAULT_LOCALE } from "../screens/_services/SystemConstants";
 
 const userInitState: StoreData.UserVM = {
@@ -327,10 +327,12 @@ function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
     }
 }
 
-function newsFeedReducer(state: Array<StoreData.MinimizedTripVM>, action) {
+function newsFeedReducer(state: Array<StoreData.MinimizedTripVM>, action: TripsActions) {
     switch (action.type) {
         case TRIPS_PUBLIC_ADD:
-            return [...action.trips]
+            return state ?  [...state,...action.trips] : action.trips;
+        case TRIPS_PUBLIC_CLEAR:
+            return [];
         default:
             return state;
     }

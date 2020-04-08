@@ -4,14 +4,14 @@ import {
   fetchPublicTrips,
   getCurrentMinimizedTrip,
 } from "../../store/Trips/operations";
-import { addPublicTrips } from "../../store/Trips/actions";
 import NewsFeedScreen from "./NewsFeedScreen";
 import { clearAllDatasource } from "../../store/DataSource/actions";
+import { clearPublicTrips } from "../../store/Trips/actions";
 
 const mapDispatchToProps = dispatch => {
   return {
     fetchPublicTrips: (page: number, cancelToken: any) => dispatch(fetchPublicTrips(page, cancelToken)),
-    addPublicTrips: trips => dispatch(addPublicTrips(trips)),
+    clearPublicTrips: () => dispatch(clearPublicTrips()),
     getCurrentMinimizedTrip: tripId =>
       dispatch(getCurrentMinimizedTrip(tripId)),
     clearDatasource: () => dispatch(clearAllDatasource()),
