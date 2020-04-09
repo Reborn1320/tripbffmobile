@@ -3,8 +3,7 @@ import { View } from "native-base";
 import _ from "lodash";
 import { StoreData } from "../../../store/Interfaces";
 import  TripCarousel from "../../../_molecules/TripCarousel/TripCarousel";
-import { connect } from "react-redux";
-import { FlatList } from "react-native";
+import { FlatList, RefreshControl } from "react-native";
 
 export interface IStateProps {
 }
@@ -19,6 +18,8 @@ export interface Props extends IMapDispatchToProps {
   handleShareClick?: (tripId: string) => void;
   handleDeleteTrip?: (tripId:string) => void;
   loadMoreTrips?: (page: number) => void;
+  refreshing: boolean;
+  onRefresh?: () => void; 
 }
 
 interface State {
@@ -63,18 +64,25 @@ class TripsComponent extends PureComponent<Props & IStateProps, State> {
   }
 
   render() {
-    const { trips } = this.props;    
+    const { trips, refreshing } = this.props;    
 
     return (
       <View style={{flex: 1}}>
          { trips && 
          <FlatList   
+            refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={this.props.onRefresh}
+            />
+          }
           data={trips}
           renderItem={this._renderItem}
           keyExtractor={(item, index) => String(index)}
           onEndReached={this._endReached}
-          onEndReachedThreshold={0.01}
-         /> }        
+          onEndReachedThreshold={0.5}
+          showsHorizontalScrollIndicator={false}
+         /> }              
       </View>
     );
   }

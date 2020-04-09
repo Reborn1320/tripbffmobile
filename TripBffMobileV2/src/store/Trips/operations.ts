@@ -60,7 +60,7 @@ export function fetchPublicTrips(page: number, cancelToken: CancelToken): ThunkR
           isPublic: rawTrip.isPublic,
           canContribute: rawTrip.canContribute,
         }));
-        console.log('public trips: ' + JSON.stringify(trips));
+        //console.log('public trips: ' + JSON.stringify(trips));
         dispatch(addPublicTrips(trips));
       })
       .catch(error => {

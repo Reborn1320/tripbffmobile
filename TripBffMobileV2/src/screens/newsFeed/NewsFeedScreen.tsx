@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import {
   StyleSheet,
-  RefreshControl,
+  SafeAreaView
 } from "react-native";
-import { Container, Content, View } from "native-base";
 import _ from "lodash";
 import Loading from "../../_atoms/Loading/Loading";
 import TripsComponent from "../../_organisms/Trips/TripsList/TripsComponent";
@@ -67,7 +66,6 @@ class NewsFeedScreenComponent extends Component<Props, State> {
     let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
     this._cancelToken = cancelToken;
     this._cancelRequest = cancelRequest;
-    console.log('componnet did mount');
     this._refreshTrips(0);
   }
 
@@ -76,9 +74,7 @@ class NewsFeedScreenComponent extends Component<Props, State> {
     Flurry.endTimedEvent('NewsFeed');
   }  
 
-  private _refreshTrips = (page) => {
-    console.log('come to refresh trip');
-    
+  private _refreshTrips = (page) => {    
     this.props.fetchPublicTrips(page, this._cancelToken).then(() => {  
       this.setState({
         isLoaded: false,
@@ -123,19 +119,9 @@ class NewsFeedScreenComponent extends Component<Props, State> {
 
   render() {
     const { isLoaded, refreshing, page } = this.state;
-    const { t } = this.props;
 
     return (
-      <Container>
-        <Content
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={this._onRefresh}
-            />
-          }
-        >
-          <View style={{ flex: 1 }}>            
+        <SafeAreaView style={{ flex: 1 }}>            
             {isLoaded && !refreshing && (
               <Loading message={this.state.loadingMessage} />
             )}
@@ -145,10 +131,11 @@ class NewsFeedScreenComponent extends Component<Props, State> {
                 page={page}
                 handleClick={this._handleTripItemClick}
                 loadMoreTrips={this._loadMoreTrips}
+                onRefresh={this._onRefresh}
+                refreshing={refreshing}
               />          
-          </View>
-        </Content>
-      </Container>
+        </SafeAreaView>
+      
     );
   }
 }
