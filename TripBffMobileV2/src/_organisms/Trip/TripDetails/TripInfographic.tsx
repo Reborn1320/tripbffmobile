@@ -1,11 +1,16 @@
 import React, { PureComponent } from "react";
 import { tripApi  } from "../../../screens/_services/apis";
-var RNFS = require('react-native-fs');
 import _, { } from "lodash";
 import { getCancelToken } from "../../../_function/commonFunc";
 import Gallery from 'react-native-image-gallery';
+import { View, Text, ViewStyle, TextStyle, StyleSheet } from "react-native";
+import { mixins } from "../../../_utils";
+import NBColor from "../../../theme/variables/commonColor.js";
+import { Icon } from "native-base";
+import { withNamespaces } from "react-i18next";
+import Flurry from 'react-native-flurry-sdk';
 
-export default class TripInfographicComponent extends PureComponent<any, any> {
+class TripInfographicComponent extends PureComponent<any, any> {
 
     _cancelRequest;
     _cancelToken;
@@ -14,77 +19,104 @@ export default class TripInfographicComponent extends PureComponent<any, any> {
       super(props);
 
       this.state = { 
-        imageUri: ""
+        imageUri: "",
+        hasInfographic: this.props.infographicExternalId != null
       };
     }    
 
     componentDidMount() {
+      Flurry.logEvent('Trip Infographic', null, true);
       let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
       this._cancelToken = cancelToken;
       this._cancelRequest = cancelRequest;
+
+      if (this.props.infographicExternalId) {
+        this._getInfographic();
+      }
+    }     
+
+    componentDidUpdate(prevProps) {
+      if (prevProps.infographicExternalId != this.props.infographicExternalId)
+        this._getInfographic();
     }
 
-    async componentDidUpdate() {
-      if (this.props.infographicId && !this.state.imageUri) {
-        await this._getInfographic();
-      }
-    }   
-
     componentWillUnmount() {
+      Flurry.endTimedEvent('Trip Infographic');
       this._cancelRequest('Operation canceled by the user.');
     }
 
     private _getInfographic = async () => {
         tripApi
-        .get(`/trips/${this.props.tripId}/infographics/${this.props.infographicId}`, {
+        .get(`/trips/${this.props.tripId}/infographics/${this.props.infographicExternalId}/view`, {
           cancelToken: this._cancelToken
         })
         .then(res => {
-          // console.log(res.request);
           var signedUrl = res.request.responseURL;
           console.log("signedUrl", signedUrl)
-
-          const tripFolderPath = RNFS.DocumentDirectoryPath + `/${this.props.tripId}`;
-
-          RNFS.mkdir(tripFolderPath)
-          .then(async () => {
-            var path = RNFS.DocumentDirectoryPath + `/${this.props.tripId}/${this.props.infographicId}.png`;
-
-            return RNFS.downloadFile({
-              fromUrl: signedUrl,
-              toFile: path
-            }).promise.then(response => {
-              console.log("download infographic image done!", path);
-              console.log("response download file", response);
-              const photoUri = "file://" + path;
-              console.log("photoUri", photoUri);
-              this.setState({ imageUri: photoUri });     
-
-              this.props.updateShareInfographicUrl(photoUri);
-            }).catch((error) => {
-                console.log('download infographic image failed.: ' + JSON.stringify(error));
-            });
-          })
-          .catch((err) => {
-            console.log(err.message, err.code);
-            throw err;
-          });;          
-
+          this.setState({ imageUri: signedUrl, hasInfographic: !signedUrl });
         })
-        .catch(error => {
-            this.props.updateShareInfographicUrl(""); 
+        .catch(error => {            
             console.log("error: " + JSON.stringify(error));
         });
     }
 
-    render() {        
+    render() {  
+      const { t } = this.props;
+      console.log('trip infographic re-rendered');
       return (           
-         <Gallery
+        this.state.imageUri ?
+        <Gallery
             flatListProps={{showsHorizontalScrollIndicator: false}}
             style={{ flex: 1}}
             initialPage={0}
-            images={[{source: { uri: this.state.imageUri }}]}
-        /> 
+            images={[{source: { uri: this.state.imageUri }, dimensions: { width: 150, height: 150 }}]}
+        /> :
+        (!this.state.hasInfographic ?           
+          <View style={styles.container}>
+            <View style={styles.emptyMsgContainer}>
+                <Text numberOfLines={2} style={styles.emptyMsg}>
+                  <Icon name="md-alert" type="Ionicons" style={styles.warningMsgIcon}></Icon>
+                    {t("message:no_infographic")}
+                </Text>
+            </View>
+          </View>
+          : 
+          <View>            
+          </View>)
       );
     }
   }
+
+export default withNamespaces(['message'])(TripInfographicComponent);
+
+interface Style {
+  container: ViewStyle;
+  emptyMsgContainer: ViewStyle;
+  emptyMsg: TextStyle;
+  warningMsgIcon: TextStyle;
+}
+
+const styles = StyleSheet.create<Style>({
+  container: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center"
+  },
+  emptyMsgContainer: {
+      maxWidth: "80%",
+      marginTop: "20%",
+      height: 120
+  },
+  emptyMsg: {
+      ...mixins.themes.fontNormal,
+      fontSize: 18,
+      textAlign: "center",
+      color: "#383838"
+  },
+  warningMsgIcon: {
+      fontSize: 18,
+      color: NBColor.brandWarning,
+      marginRight: 10
+  },
+})

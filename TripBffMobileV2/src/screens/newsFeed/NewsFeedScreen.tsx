@@ -1,29 +1,23 @@
 import React, { Component } from "react";
 import {
-  TouchableOpacity,
-  Image,
   StyleSheet,
-  RefreshControl,
+  SafeAreaView
 } from "react-native";
-import { Container, Content, View } from "native-base";
 import _ from "lodash";
 import Loading from "../../_atoms/Loading/Loading";
 import TripsComponent from "../../_organisms/Trips/TripsList/TripsComponent";
 import { NavigationConstants } from "../_shared/ScreenConstants";
 import { StoreData } from "../../store/Interfaces";
 import { NavigationScreenProp } from "react-navigation";
-import UserDetails from "../../_organisms/User/UserDetails";
 import { getCancelToken } from "../../_function/commonFunc";
-import ConfirmationModal from "../../_molecules/ConfirmationModal";
-import TripsEmptyComponent from "../../_organisms/Trips/TripsList/TripsEmptyComponent";
 import { withNamespaces } from "react-i18next";
 import { PropsBase } from "../_shared/LayoutContainer";
 import Flurry from 'react-native-flurry-sdk';
 import { connect } from "react-redux";
 
 interface IMapDispatchToProps extends PropsBase {
-  fetchPublicTrips: (cancelToken: any) => Promise<any>;
-  addPublicTrips: (trips: Array<StoreData.TripVM>) => void;
+  fetchPublicTrips: (page: number, cancelToken: any) => Promise<any>;
+  clearPublicTrips: () => void;
   getCurrentMinimizedTrip: (tripId: string) => void;
   clearDatasource: () => void;
 }
@@ -44,6 +38,7 @@ interface State {
   isOpenDeleteConfirmModal: boolean;
   deletedTripId: string;
   refreshing: boolean;
+  page: number;
 }
 
 type UIState = "LOGIN" | "LOADING_TRIP" | "NORMAL";
@@ -62,34 +57,30 @@ class NewsFeedScreenComponent extends Component<Props, State> {
       isOpenDeleteConfirmModal: false,
       deletedTripId: "",
       refreshing: false,
+      page: 0
     };
   }
 
  componentDidMount() {
-    Flurry.logEvent('Profile', null, true);
+    Flurry.logEvent('NewsFeed', null, true);
     let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
     this._cancelToken = cancelToken;
     this._cancelRequest = cancelRequest;
-
-    this._refreshTrips();
+    this._refreshTrips(0);
   }
 
   componentWillUnmount() {
     this._cancelRequest("Operation canceled by the user.");
-    Flurry.endTimedEvent('Profile');
+    Flurry.endTimedEvent('NewsFeed');
   }  
 
-  private _refreshTrips = () => {
-    this.props.fetchPublicTrips(this._cancelToken).then(trips => {
-      this.props.addPublicTrips(trips);
-
-      if (this.state.refreshing) this.props.clearDatasource();
-
+  private _refreshTrips = (page) => {    
+    this.props.fetchPublicTrips(page, this._cancelToken).then(() => {  
       this.setState({
         isLoaded: false,
         loadingMessage: "",
         UIState: "NORMAL",
-        refreshing: false,
+        refreshing: false
       });
     });
   };
@@ -111,36 +102,41 @@ class NewsFeedScreenComponent extends Component<Props, State> {
     this.setState({
       refreshing: true,
       isLoaded: true,
+      page: 0
     });
-    this._refreshTrips();
+
+    this.props.clearPublicTrips();
+    this.props.clearDatasource();    
+    this._refreshTrips(0);
   };
 
+  private _loadMoreTrips = (page) => {
+    this.setState({
+      page: page
+    });
+    this._refreshTrips(page);
+  }
+
   render() {
-    const { isLoaded, refreshing } = this.state;
-    const { t } = this.props;
+    const { isLoaded, refreshing, page } = this.state;
 
     return (
-      <Container>
-        <Content
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={this._onRefresh}
-            />
-          }
-        >
-          <View style={{ flex: 1 }}>            
+        <SafeAreaView style={{ flex: 1 }}>            
             {isLoaded && !refreshing && (
               <Loading message={this.state.loadingMessage} />
             )}
             
             <TripsComponent
                 trips={this.props.trips}
+                page={page}
                 handleClick={this._handleTripItemClick}
+                loadMoreTrips={this._loadMoreTrips}
+                onRefresh={this._onRefresh}
+                refreshing={refreshing}
+                type={"NewsFeed"}
               />          
-          </View>
-        </Content>
-      </Container>
+        </SafeAreaView>
+      
     );
   }
 }

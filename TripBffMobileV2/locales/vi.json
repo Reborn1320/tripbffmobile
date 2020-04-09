@@ -23,7 +23,8 @@
         "add_location": "Nhấp để thêm địa điểm",
         "add_image": "Nhấp để thêm hình",
         "no_location": "Không có địa điểm",
-        "no_image": "Không có hình ảnh"
+        "no_image": "Không có hình ảnh",
+        "no_infographic": "Không có infographic"
     },
     "login": {
         "welcome_title": "Chào mừng bạn đến với TripBFF",

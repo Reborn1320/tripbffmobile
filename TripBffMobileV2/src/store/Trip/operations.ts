@@ -45,7 +45,8 @@ export function fetchTrip(tripId: string, cancelToken: any, createdById: string)
           infographicId: rawTrip.infographicId,
           createdById: rawTrip.createdById,
           canContribute: rawTrip.canContribute,
-          isPublic: rawTrip.isPublic
+          isPublic: rawTrip.isPublic,
+          latestExportedExternalStorageId: rawTrip.latestExportedExternalStorageId
         };
         //console.log('current trip: ' + JSON.stringify(trip));
         dispatch(replaceTrip(trip));
@@ -190,7 +191,8 @@ export function createTrip(name: string, fromDate: Moment, toDate: Moment, isPub
         toDate: toDate,
         createdById: userId,
         isPublic: isPublic,
-        canContribute: true
+        canContribute: true,
+        latestExportedExternalStorageId: ""
       };
       dispatch(createTripAction(trip));
       return tripId;

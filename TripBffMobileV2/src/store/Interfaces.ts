@@ -63,7 +63,7 @@ export module StoreData {
         locations: Array<LocationVM>, 
         locationIds: Array<string>,    
     }
-   
+
     export interface TripVM {
         tripId: string
         name: string
@@ -72,6 +72,7 @@ export module StoreData {
         isPublic: boolean 
         dates?: Array<DateVM>     
         infographicId?: string,
+        latestExportedExternalStorageId: string,
         rawLocations?: Array<LocationVM>,
         isDeleted?: boolean,
         createdById: string,
@@ -165,7 +166,8 @@ export namespace RawJsonData {
         locations: Array<StoreData.LocationVM>,
         infographicId: string,
         createdById: string,
-        canContribute: boolean
+        canContribute: boolean,
+        latestExportedExternalStorageId: string
     }
 
     export interface MinimizedTripVM {

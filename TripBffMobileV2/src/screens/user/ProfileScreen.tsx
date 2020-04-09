@@ -210,6 +210,7 @@ class ProfileScreenComponent extends Component<Props, State> {
                 handleClick={this._handleTripItemClick}
                 handleShareClick={this._handleShareBtnClick}
                 handleDeleteTrip={this._handleDeleteTrip}
+                type={"Profile"}
               />
             )}
             <ConfirmationModal
