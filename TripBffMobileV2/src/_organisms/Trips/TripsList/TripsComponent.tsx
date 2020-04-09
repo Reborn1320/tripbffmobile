@@ -14,11 +14,12 @@ interface IMapDispatchToProps {
 export interface Props extends IMapDispatchToProps {
   handleClick: (tripId: string, canContribute: boolean, createdById: string) => void;
   trips: StoreData.MinimizedTripVM[];
-  page: number;
+  type: string;
+  page?: number;
   handleShareClick?: (tripId: string) => void;
   handleDeleteTrip?: (tripId:string) => void;
   loadMoreTrips?: (page: number) => void;
-  refreshing: boolean;
+  refreshing?: boolean;
   onRefresh?: () => void; 
 }
 
@@ -64,11 +65,11 @@ class TripsComponent extends PureComponent<Props & IStateProps, State> {
   }
 
   render() {
-    const { trips, refreshing } = this.props;    
+    const { trips, refreshing, type } = this.props;    
 
     return (
       <View style={{flex: 1}}>
-         { trips && 
+         { trips && type === 'NewsFeed' && 
          <FlatList   
             refreshControl={
             <RefreshControl
@@ -80,9 +81,15 @@ class TripsComponent extends PureComponent<Props & IStateProps, State> {
           renderItem={this._renderItem}
           keyExtractor={(item, index) => String(index)}
           onEndReached={this._endReached}
-          onEndReachedThreshold={0.5}
+          onEndReachedThreshold={0.4}
           showsHorizontalScrollIndicator={false}
-         /> }              
+         /> }  
+         { trips && type === 'Profile' && 
+         <FlatList  
+            data={trips}
+            renderItem={this._renderItem}
+            keyExtractor={(item, index) => String(index)}
+          /> }              
       </View>
     );
   }

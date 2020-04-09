@@ -133,6 +133,7 @@ class NewsFeedScreenComponent extends Component<Props, State> {
                 loadMoreTrips={this._loadMoreTrips}
                 onRefresh={this._onRefresh}
                 refreshing={refreshing}
+                type={"NewsFeed"}
               />          
         </SafeAreaView>
       
