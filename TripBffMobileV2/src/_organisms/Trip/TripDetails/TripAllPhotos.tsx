@@ -46,7 +46,6 @@ class TripAllPhotosComponent extends React.PureComponent<Props & PropsBase, Stat
     };
   };
 
-
   private _onSelect = (imageId: string) => {
     const { tripId, photos, canContribute } = this.props;
     const img = _.find(photos, im => im.imageId == imageId);
@@ -141,6 +140,7 @@ const styles = StyleSheet.create<Style>({
     borderRadius: NBTheme.borderRadiusBase / 2,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
+    padding: 15,
 
   },
   headerText: {

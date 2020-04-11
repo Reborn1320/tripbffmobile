@@ -3,7 +3,7 @@ import { tripApi  } from "../../../screens/_services/apis";
 import _, { } from "lodash";
 import { getCancelToken } from "../../../_function/commonFunc";
 import Gallery from 'react-native-image-gallery';
-import { View, ViewStyle, TextStyle, StyleSheet, Image, Dimensions } from "react-native";
+import { View, ViewStyle, TextStyle, StyleSheet, Image, Dimensions, ImageStyle } from "react-native";
 import { mixins } from "../../../_utils";
 import NBColor from "../../../theme/variables/commonColor.js";
 import { Icon, Text, Button } from "native-base";
@@ -29,7 +29,7 @@ class TripInfographicComponent extends PureComponent<Props, any> {
         imageUri: "",
         hasInfographic: this.props.infographicExternalId != null
       };
-    }    
+    }   
 
     componentDidMount() {
       Flurry.logEvent('Trip Infographic', null, true);
@@ -81,10 +81,7 @@ class TripInfographicComponent extends PureComponent<Props, any> {
         this.state.imageUri ?        
         <View>
           <Image        
-            style={{ 
-              width: Dimensions.get('window').width,
-              height: Dimensions.get('window').height * 0.6
-            }}
+            style={styles.infographic}
             source={{
               uri: this.state.imageUri,
             }}
@@ -117,6 +114,7 @@ export default withNamespaces(['message, action'])(TripInfographicComponent);
 
 interface Style {
   container: ViewStyle;
+  infographic: ImageStyle;
   emptyMsgContainer: ViewStyle;
   emptyMsg: TextStyle;
   warningMsgIcon: TextStyle;
@@ -130,6 +128,11 @@ const styles = StyleSheet.create<Style>({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center"
+  },
+  infographic: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height * 0.6,
+    marginTop: 12
   },
   emptyMsgContainer: {
       maxWidth: "80%",
