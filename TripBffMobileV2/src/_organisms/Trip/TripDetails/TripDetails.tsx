@@ -79,14 +79,8 @@ export class TripDetailsComponent extends Component<Props, State> {
 
         return (
             <View>
-                <View style={{
-                    margin: 12
-                }}>
-                   <TripName tripId={this.props.tripId}/>
-                </View>
 
                 <FlatList
-                    // styles={styles.container}
                     data={dayVMs}
                     renderItem={this._renderItem}
                     keyExtractor={(item, index) => String(index)}

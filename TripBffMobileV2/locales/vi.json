@@ -17,7 +17,8 @@
         "loading": "Đang tải",
         "submit": "Gửi",
         "letStart": "Hãy Bắt Đầu",
-        "skip": "Bỏ qua"
+        "skip": "Bỏ qua",
+        "viewAllPhotos": "Tất cả hình ảnh"
     },
     "message": {
         "add_location": "Nhấp để thêm địa điểm",
@@ -132,5 +133,8 @@
         "step3_secondary_msg": "Chúng tôi cung cấp ngày càng nhiều các cảm xúc, hoạt động, ấn tượng phổ biến",
         "step4_primary_msg": "Xuất infographic có ý nghĩa",
         "step4_secondary_msg": "Mô phỏng chuyến đi của bạn dưới dạng infographic và chia sẻ cho cộng đồng"
-    }          
+    },
+    "trip_all_photos": {
+        "screen_header_title": "Tất cả hình ảnh"
+    }         
 }

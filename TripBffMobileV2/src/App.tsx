@@ -36,6 +36,7 @@ import NavigationService from './store/NavigationService';
 import NBColor from "./theme/variables/commonColor.js";
 import OnBoardingScreen from "./screens/onboarding/OnBoardingScreen";
 import NewsFeedScreenContainer from "./screens/newsFeed/NewsFeedContainer";
+import TripAllPhotos from "./_organisms/Trip/TripDetails/TripAllPhotos";
 
 var extraThunk: ThunkExtraArgumentsBase = {
   uploadApi: uploadFileApi,
@@ -75,7 +76,8 @@ const NewsFeedNavigator = createStackNavigator(
     TripEdition: { screen: TripEditScreenContainer },
     LocationDetail: { screen: LocationDetailScreen },
     LocationImageDetail: { screen: LocationImageDetailScreen },
-    TripEditBasic: { screen: TripEditBasicScreen }
+    TripEditBasic: { screen: TripEditBasicScreen },
+    TripAllPhotos: { screen: TripAllPhotos }
   },
   stackConfigs
 );
@@ -126,6 +128,7 @@ const ProfileNavigator = createStackNavigator(
     Profile: { screen: ProfileScreenContainer },
     UserSettings: { screen: UserSettingsScreen },
     TripEdition: { screen: TripEditScreenContainer },
+    TripAllPhotos: { screen: TripAllPhotos },
     LocationDetail: { screen: LocationDetailScreen },
     LocationImageDetail: { screen: LocationImageDetailScreen },
     InfographicPreview: { screen: InfographicPreviewScreen },

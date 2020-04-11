@@ -12,14 +12,18 @@ import NBTheme from "../../../theme/variables/commonColor.js";
 import Loading from "../../../_atoms/Loading/Loading";
 import { getCancelToken } from "../../../_function/commonFunc";
 import Flurry from 'react-native-flurry-sdk';
+import { StoreData } from "../../../store/Interfaces";
+import { connect } from "react-redux";
 
-export interface IMapDispatchToProps {
+interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void;
     fetchTrip: (tripId: string, cancelToken: any, createdById: string) => Promise<void>
 }
 
-export interface Props {
+interface Props {
     tripId: string,
+    tripName: string,
+    createdById: string,
     navigation: RNa.NavigationScreenProp<any, any>;
 }
 
@@ -28,7 +32,7 @@ interface State {
     refreshing: boolean
 }
 
-export class TripDetailScreen extends Component<Props & IMapDispatchToProps, State> {
+class TripDetailScreenComponent extends Component<Props & IMapDispatchToProps, State> {
 
     _cancelToken;
     _cancelRequest;
@@ -44,6 +48,7 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
 
     static navigationOptions = ({ navigation }) => ({
         headerLeft:  <RNa.HeaderBackButton tintColor={NBTheme.colorBackBlack} onPress={navigation.getParam('_goProfile')}/>,
+        title: navigation.getParam('title'),
         headerRight:  (<TouchableOpacity style={styles.settingButtonContainer}
                                 onPress={navigation.getParam('_goEditBasicTrip')}>
                             <Icon style={styles.editIcon} name='pencil-alt' type="FontAwesome5" />
@@ -59,10 +64,21 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
         Flurry.logEvent('Trip Details', null, true);
         this.props.navigation.setParams({ _goProfile: this._handleBackPress });
         this.props.navigation.setParams({ _goEditBasicTrip: this._onPopupMenuSelect });
+        this._changeThisTitle(this.props.tripName);
 
         let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
         this._cancelToken = cancelToken;
         this._cancelRequest = cancelRequest;
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.tripName != this.props.tripName)
+            this._changeThisTitle(this.props.tripName);
+    }
+
+    private _changeThisTitle = (titleText) => {
+        const {setParams} = this.props.navigation;
+        setParams({ title: titleText })
     }
 
     private _onPopupMenuSelect = () => {
@@ -80,7 +96,7 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
     }
 
     private _refreshTrip = () => {
-        const createdById = this.props.navigation.getParam('createdById');
+        const createdById = this.props.createdById;
 
         this.props.fetchTrip(this.props.tripId, this._cancelToken, createdById)
             .then(() => this.setState({
@@ -124,6 +140,20 @@ export class TripDetailScreen extends Component<Props & IMapDispatchToProps, Sta
         );
     }
 }
+
+const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
+    var trip = storeState.currentTrip;
+    
+    return {
+        tripName: trip.name,
+        createdById: trip.createdById
+    };
+};
+
+export const TripDetailScreen = connect(
+    mapStateToProps,
+    null
+)(TripDetailScreenComponent);
 
 const styles = StyleSheet.create({
     actionButtonIcon: {

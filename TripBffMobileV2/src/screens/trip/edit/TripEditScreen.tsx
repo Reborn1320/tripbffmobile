@@ -52,11 +52,13 @@ export class TripEditScreen extends Component<Props, State> {
 
     static navigationOptions = ({ navigation }) => ({
         headerLeft:  <RNa.HeaderBackButton tintColor={NBColor.colorBackBlack} onPress={navigation.getParam('_goBack')} />,
-        headerRight:   (navigation.getParam('canContribute') && <TouchableOpacity style={styles.settingButtonContainer}
+        title: navigation.getParam('title'),
+        headerRight:   (navigation.getParam('canContribute') ? <TouchableOpacity style={styles.settingButtonContainer}
                                 onPress={navigation.getParam('_goEditBasicTrip')}>
                             <Icon style={styles.editIcon} name='pencil-alt' type="FontAwesome5" />
-                     </TouchableOpacity>)
+                     </TouchableOpacity> : <View></View>)
      });
+     
 
     componentDidMount() {
         Flurry.logEvent('Trip Edit', null, true);
@@ -65,11 +67,12 @@ export class TripEditScreen extends Component<Props, State> {
         
         let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
         this._cancelToken = cancelToken;
-        this._cancelRequest = cancelRequest;  
-        
-        if (!this.props.trip) {
+        this._cancelRequest = cancelRequest;        
+            
+        if (!this.props.trip) 
             this._refreshTrip();
-        }
+        else 
+            this._changeThisTitle(this.props.trip.name);
     }
 
     componentWillUnmount() {
@@ -77,14 +80,26 @@ export class TripEditScreen extends Component<Props, State> {
         Flurry.endTimedEvent('Trip Edit');
     }
 
+    componentDidUpdate(prevProps) {
+        if (!prevProps.trip && this.props.trip || prevProps.trip.name != this.props.trip.name)
+            this._changeThisTitle(this.props.trip.name);
+    }
+
+    private _changeThisTitle = (titleText) => {
+        const {setParams} = this.props.navigation;
+        setParams({ title: titleText })
+    }
+
     private _refreshTrip = () => {
         const createdById = this.props.navigation.getParam('createdById');
 
         this.props.fetchTrip(this.props.tripId, this._cancelToken, createdById)
-            .then(() => this.setState({
-                isDisplayLoading: false,
-                refreshing: false
-            }));
+            .then(() =>  {
+                this.setState({
+                    isDisplayLoading: false,
+                    refreshing: false
+                })
+            });
     }
 
     private _onPopupMenuSelect = () => {
@@ -142,7 +157,8 @@ export class TripEditScreen extends Component<Props, State> {
                             { isDisplayLoading &&  <Loading message={''}/> }
                             { trip && <TripInfographicComponent 
                                             tripId={trip.tripId} 
-                                            infographicExternalId={infographicExternalId}  /> }
+                                            infographicExternalId={infographicExternalId} 
+                                            navigation={navigation} /> }
                         </ScrollView>                        
                         <ScrollView 
                             refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}

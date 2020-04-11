@@ -84,6 +84,7 @@ class LocationMedia extends React.PureComponent<Props & PropsBase, State> {
         isChecked={this.props.massSelection ? !!this.props.selectedImageIds.find(imgId => imgId == img.imageId) : undefined}
         onPress={() => this.props.onSelect(img.imageId)}
         onLongPress={this.props.onMassSelection}
+        
       />
     )
   }
