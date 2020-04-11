@@ -17,7 +17,8 @@
         "loading": "Loading",
         "submit": "Submit",
         "letStart": "Let's Start",
-        "skip": "Skip"
+        "skip": "Skip",
+        "viewAllPhotos": "All Photos"
     },
     "message": {
         "add_location": "Click to add location(s)",
@@ -132,5 +133,8 @@
         "step3_secondary_msg": "We provide more and more common feelings, activities, likes and dislikes",
         "step4_primary_msg": "Export meaningful infographic",
         "step4_secondary_msg": "Visualize your trip as infographic and share it to community"
-    } 
+    },
+    "trip_all_photos": {
+        "screen_header_title": "All Photos"
+    }
 }

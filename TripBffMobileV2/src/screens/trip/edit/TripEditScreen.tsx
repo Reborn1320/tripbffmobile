@@ -142,7 +142,8 @@ export class TripEditScreen extends Component<Props, State> {
                             { isDisplayLoading &&  <Loading message={''}/> }
                             { trip && <TripInfographicComponent 
                                             tripId={trip.tripId} 
-                                            infographicExternalId={infographicExternalId}  /> }
+                                            infographicExternalId={infographicExternalId} 
+                                            navigation={navigation} /> }
                         </ScrollView>                        
                         <ScrollView 
                             refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}

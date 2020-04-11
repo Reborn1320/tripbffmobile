@@ -19,7 +19,8 @@ export const NavigationConstants = {
     LanguageSelection: "LanguageSelection",
     UserFeedback: "UserFeedback",
     OnBoarding: "OnBoarding",
-    NewsFeed: "NewsFeed"
+    NewsFeed: "NewsFeed",
+    TripAllPhotos: "TripAllPhotos"
   }
 };
 

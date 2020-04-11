@@ -3,14 +3,21 @@ import { tripApi  } from "../../../screens/_services/apis";
 import _, { } from "lodash";
 import { getCancelToken } from "../../../_function/commonFunc";
 import Gallery from 'react-native-image-gallery';
-import { View, Text, ViewStyle, TextStyle, StyleSheet } from "react-native";
+import { View, ViewStyle, TextStyle, StyleSheet, Image, Dimensions } from "react-native";
 import { mixins } from "../../../_utils";
 import NBColor from "../../../theme/variables/commonColor.js";
-import { Icon } from "native-base";
+import { Icon, Text, Button } from "native-base";
 import { withNamespaces } from "react-i18next";
 import Flurry from 'react-native-flurry-sdk';
+import { NavigationConstants } from "../../../screens/_shared/ScreenConstants";
+import { PropsBase } from "../../../screens/_shared/LayoutContainer";
 
-class TripInfographicComponent extends PureComponent<any, any> {
+export interface Props extends PropsBase {
+  tripId: string,
+  infographicExternalId: string;
+}
+
+class TripInfographicComponent extends PureComponent<Props, any> {
 
     _cancelRequest;
     _cancelToken;
@@ -52,25 +59,44 @@ class TripInfographicComponent extends PureComponent<any, any> {
         })
         .then(res => {
           var signedUrl = res.request.responseURL;
-          console.log("signedUrl", signedUrl)
-          this.setState({ imageUri: signedUrl, hasInfographic: !signedUrl });
+          console.log("signedUrl", signedUrl);          
+          this.setState({ imageUri: signedUrl, hasInfographic: !signedUrl });     
         })
         .catch(error => {            
             console.log("error: " + JSON.stringify(error));
         });
     }
 
+    private _viewAllPhotos = () => {
+      this.props.navigation.navigate(NavigationConstants.Screens.TripAllPhotos, {
+        tripId: this.props.tripId,
+        canContribute: false
+      });
+    }
+
     render() {  
       const { t } = this.props;
       console.log('trip infographic re-rendered');
       return (           
-        this.state.imageUri ?
-        <Gallery
-            flatListProps={{showsHorizontalScrollIndicator: false}}
-            style={{ flex: 1}}
-            initialPage={0}
-            images={[{source: { uri: this.state.imageUri }, dimensions: { width: 150, height: 150 }}]}
-        /> :
+        this.state.imageUri ?        
+        <View>
+          <Image        
+            style={{ 
+              width: Dimensions.get('window').width,
+              height: Dimensions.get('window').height * 0.6
+            }}
+            source={{
+              uri: this.state.imageUri,
+            }}
+          /> 
+          <Button iconLeft light 
+              style={styles.button} 
+              onPress={this._viewAllPhotos}>
+            <Icon name='md-images' type="Ionicons" />
+            <Text style={styles.buttonTitle}>{t("action:viewAllPhotos")}</Text>
+          </Button>
+        </View>
+        :
         (!this.state.hasInfographic ?           
           <View style={styles.container}>
             <View style={styles.emptyMsgContainer}>
@@ -87,13 +113,15 @@ class TripInfographicComponent extends PureComponent<any, any> {
     }
   }
 
-export default withNamespaces(['message'])(TripInfographicComponent);
+export default withNamespaces(['message, action'])(TripInfographicComponent);
 
 interface Style {
   container: ViewStyle;
   emptyMsgContainer: ViewStyle;
   emptyMsg: TextStyle;
   warningMsgIcon: TextStyle;
+  button: ViewStyle;
+  buttonTitle: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -118,5 +146,15 @@ const styles = StyleSheet.create<Style>({
       fontSize: 18,
       color: NBColor.brandWarning,
       marginRight: 10
+  },
+  button: {
+    marginTop: 20,
+    marginLeft: 10
+  },
+  buttonTitle: {
+    ...mixins.themes.fontSemiBold,
+    textTransform: "capitalize",
+    fontSize: 17,
+    lineHeight: 22,
   },
 })

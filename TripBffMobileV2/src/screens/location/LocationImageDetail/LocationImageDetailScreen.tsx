@@ -16,12 +16,11 @@ interface IMapDispatchToProps {
 export interface Props {
     navigation: NavigationScreenProp<any, any>
     tripId: string,
-    dateIdx: number,
-    locationId: string,
+    dateIdx?: number,
+    locationId?: string,
     imageId: string,
     isFavorite: boolean,
-    images: Array<StoreData.ImportImageVM>,
-    canContribute: boolean
+    images: Array<StoreData.ImportImageVM>
 }
 
 interface State {
@@ -104,11 +103,12 @@ class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, S
     setFavorite() {
         var { currentImage, hasNotch } = this.state;
         let notchStyle = hasNotch ? styles.bottomNotch : styles.bottomWithoutNotch;
+        const canContribute = this.props.navigation.getParam('canContribute');
 
         return (
             <View style={[styles.footerContainer, notchStyle]}>
                 <View style={styles.footerActionContainer}>
-                    <TouchableOpacity disabled={!this.props.canContribute} onPress={this._onFavorite} style={styles.favoriteButton}>
+                    <TouchableOpacity disabled={!canContribute} onPress={this._onFavorite} style={styles.favoriteButton}>
                         {
                             currentImage.isFavorite &&
                             <Icon type="FontAwesome5" name="heart" active solid 
@@ -154,15 +154,24 @@ class LocationImageDetail extends React.Component<Props & IMapDispatchToProps, S
 const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps: Props) => {
     const { tripId, dateIdx, locationId, imageId, isFavorite } = ownProps.navigation.state.params;
     var trip = storeState.currentTrip;
-    var images = Array<StoreData.ImportImageVM>();
+    var images : Array<StoreData.ImportImageVM> = [];
 
     if (trip) {
-        var dateVM = trip.dates.find(date => date.dateIdx == dateIdx);
+        if (dateIdx && locationId) {
+            var dateVM = trip.dates.find(date => date.dateIdx == dateIdx);
 
-        if (dateVM) {
-            var location = dateVM.locations.find(item => item.locationId == locationId);
-            images = location ? location.images : images;
-        }        
+            if (dateVM) {
+                var location = dateVM.locations.find(item => item.locationId == locationId);
+                images = location ? location.images : images;
+            }  
+        }  
+        else {
+            trip.dates.forEach(date => {
+                date.locations.forEach(location => {
+                    images = [...images,...location.images];
+                });
+            });
+        }            
     }
 
     return {
