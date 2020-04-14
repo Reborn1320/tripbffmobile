@@ -27,7 +27,7 @@ class TripInfographicComponent extends PureComponent<Props, any> {
 
       this.state = { 
         imageUri: "",
-        hasInfographic: this.props.infographicExternalId != null
+        hasInfographic: this.props.infographicExternalId
       };
     }   
 
@@ -42,8 +42,8 @@ class TripInfographicComponent extends PureComponent<Props, any> {
       }
     }     
 
-    componentDidUpdate(prevProps) {
-      if (prevProps && prevProps.infographicExternalId != this.props.infographicExternalId)
+    componentDidUpdate(prevProps) {      
+      if (this.props.infographicExternalId && prevProps.infographicExternalId != this.props.infographicExternalId)
         this._getInfographic();
     }
 
@@ -76,7 +76,7 @@ class TripInfographicComponent extends PureComponent<Props, any> {
 
     render() {  
       const { t } = this.props;
-      console.log('trip infographic re-rendered');
+      console.log('trip infographic re-rendered: ' + this.state.hasInfographic);
       return (           
         this.state.imageUri ?        
         <View>

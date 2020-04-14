@@ -38,7 +38,7 @@ class TripsComponent extends PureComponent<Props & IStateProps, State> {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps && prevProps.page != this.props.page && this.props.page == 0) {
+    if (prevProps.page != this.props.page && this.props.page == 0) {
       this.setState({ page: 0 });
     }
   }

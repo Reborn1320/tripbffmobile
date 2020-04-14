@@ -26,6 +26,7 @@ export function fetchTrips(cancelToken: CancelToken): ThunkResultBase {
           createdById: rawTrip.createdById,
           isPublic: rawTrip.isPublic,
           canContribute: rawTrip.canContribute,
+          createdDate: rawTrip.createdDate ? moment(rawTrip.createdDate).local() : null
         }));
         return trips;
       })
@@ -59,6 +60,7 @@ export function fetchPublicTrips(page: number, cancelToken: CancelToken): ThunkR
           createdById: rawTrip.createdById,
           isPublic: rawTrip.isPublic,
           canContribute: rawTrip.canContribute,
+          createdDate: rawTrip.createdDate ? moment(rawTrip.createdDate).local() : null
         }));
         //console.log('public trips: ' + JSON.stringify(trips));
         dispatch(addPublicTrips(trips));

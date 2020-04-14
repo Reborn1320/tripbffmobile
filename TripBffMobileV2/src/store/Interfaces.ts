@@ -94,7 +94,8 @@ export module StoreData {
         }[],
         isDeleted?: boolean,
         createdById: string,
-        canContribute: boolean
+        canContribute: boolean,
+        createdDate?: moment.Moment
     }
 
     export interface UserVM {
@@ -184,7 +185,8 @@ export namespace RawJsonData {
         }[],
         isDeleted: boolean,
         createdById: string,
-        canContribute: boolean
+        canContribute: boolean,
+        createdDate?: string
     }
 
     export interface LocationVM {
