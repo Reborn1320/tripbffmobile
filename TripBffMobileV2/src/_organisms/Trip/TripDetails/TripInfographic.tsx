@@ -43,7 +43,7 @@ class TripInfographicComponent extends PureComponent<Props, any> {
     }     
 
     componentDidUpdate(prevProps) {
-      if (prevProps.infographicExternalId != this.props.infographicExternalId)
+      if (prevProps && prevProps.infographicExternalId != this.props.infographicExternalId)
         this._getInfographic();
     }
 

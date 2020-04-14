@@ -72,7 +72,7 @@ class TripDetailScreenComponent extends Component<Props & IMapDispatchToProps, S
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.tripName != this.props.tripName)
+        if (prevProps && prevProps.tripName != this.props.tripName)
             this._changeThisTitle(this.props.tripName);
     }
 
