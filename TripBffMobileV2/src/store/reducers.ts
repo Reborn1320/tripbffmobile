@@ -16,7 +16,8 @@ import {
     ADD_INFOGRAPHIC_ID,
     IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS,
     ImageActions,
-    TRIP_UPDATE
+    TRIP_UPDATE,
+    ADD_EXTERNAL_INFOGRAPHIC_ID
 } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight, DataSource_ClearAll } from './DataSource/actions';
 import { TRIPS_GET_CURRENT_MINIMIZED, TRIPS_PUBLIC_ADD, TripsActions, TRIPS_PUBLIC_CLEAR } from "./Trips/actions";
@@ -231,6 +232,11 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
             return {
                 ...state,
                 infographicId: action.infographicId
+            };
+        case ADD_EXTERNAL_INFOGRAPHIC_ID:
+            return {
+                ...state,
+                latestExportedExternalStorageId: action.externalId
             };
         case IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS:
             const { locations } = action;
