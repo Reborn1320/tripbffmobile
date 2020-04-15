@@ -81,7 +81,7 @@ export class TripEditScreen extends Component<Props, State> {
     }
 
     componentDidUpdate(prevProps) {
-        if (!prevProps.trip && this.props.trip || prevProps.trip.name != this.props.trip.name)
+        if (!prevProps.trip && this.props.trip || prevProps.trip && prevProps.trip.name != this.props.trip.name)
             this._changeThisTitle(this.props.trip.name);
     }
 

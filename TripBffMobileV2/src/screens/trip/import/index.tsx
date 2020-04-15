@@ -268,7 +268,7 @@ class TripImportation extends Component<Props, State> {
     }
 
     private _skip = () => {
-        this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId })
+        this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId, canContribute: true })
     }
 
     private _import = () => {
@@ -367,7 +367,7 @@ class TripImportation extends Component<Props, State> {
             if (uploadedImages == totalImages) {
                 isStartUploadImage = false;
                 //navigate to next page
-                this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId })
+                this.props.navigation.navigate("TripDetail", { tripId: this.state.tripId, canContribute: true })
             }
     
             // console.log("check status");
@@ -397,7 +397,7 @@ class TripImportation extends Component<Props, State> {
     }
 
     private _onCancelImport = () => {
-        this.props.navigation.navigate(NavigationConstants.Screens.TripDetail, { tripId: this.state.tripId });
+        this.props.navigation.navigate(NavigationConstants.Screens.TripDetail, { tripId: this.state.tripId, canContribute: true });
     }
 
     private _openDateRangePickerModal = () => {

@@ -29,7 +29,7 @@ import { TabView, TabBar } from 'react-native-tab-view';
 import ActionButton from 'react-native-action-button';
 import { runPromiseSeries, deleteFilesInFolder, getCancelToken } from "../../../_function/commonFunc";
 import Loading from "../../../_atoms/Loading/Loading";
-import { addInfographicId } from "../../../store/Trip/actions";
+import { addInfographicId, addExternalInfographicId } from "../../../store/Trip/actions";
 import PreviewInfographicComponent from "./PreviewInfographic";
 import PreviewImages from "./PreviewImage";
 import NBTheme from "../../../theme/variables/commonColor.js";
@@ -58,6 +58,7 @@ interface IMapDispatchToProps {
   fetchTrip: (tripId: string, cancelToken: any, createdById: string) => Promise<StoreData.TripVM>;
   loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId, facebookUserEmail) => Promise<void>;
   updateInfographicStatus: (tripId: string, infographicId: string) => void;
+  addExternalInfographicId: (tripId: string, externalId: string) => void;
 }
 
 interface State {
@@ -395,6 +396,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
             :
               <PreviewInfographicComponent tripId={this.props.tripId}
                   infographicId={this.props.infographicId}
+                  addExternalInfographicId={this.props.addExternalInfographicId}
                   updateShareInfographicUrl={this._updateShareInfographicUrl}>
               </PreviewInfographicComponent> 
           ) 
@@ -511,7 +513,8 @@ const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
     addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
     fetchTrip: (tripId, cancelToken, createdById) => dispatch(fetchTrip(tripId, cancelToken, createdById)),
     loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId, facebookUserEmail) => dispatch(loginUsingFacebookAccessToken(userId, accessToken, loggedUserId, facebookUserEmail)),
-    updateInfographicStatus: (tripId, infographicId) => dispatch(updateInfographicStatus(tripId, infographicId))
+    updateInfographicStatus: (tripId, infographicId) => dispatch(updateInfographicStatus(tripId, infographicId)),
+    addExternalInfographicId: (tripId, externalId) => dispatch(addExternalInfographicId(tripId, externalId)),
   };
 };
 

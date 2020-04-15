@@ -9,6 +9,7 @@ export const TRIP_UPDATE_DATE_RANGE = "TRIP_UPDATE_DATE_RANGE"
 export const TRIP_UPDATE_TRIP_NAME = "TRIP_UPDATE_TRIP_NAME"
 export const IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS = "TRIP/IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS"
 export const ADD_INFOGRAPHIC_ID = "TRIP/ADD_INFOGRAPHIC_ID"
+export const ADD_EXTERNAL_INFOGRAPHIC_ID = "TRIP/ADD_EXTERNAL_INFOGRAPHIC_ID"
 export const TRIP_UPDATE = "TRIP_UPDATE"
 
 export const LOCATION_UPDATE_ADDRESS = "TRIP_LOCATION_UPDATE_ADDRESS"
@@ -29,6 +30,7 @@ export type TripActions = {
 | AddInfographicId
 | ImportSelectedLocations
 | UpdateBasicTrip
+| AddExternalInfographicId
 ;
 
 
@@ -60,6 +62,12 @@ type AddInfographicId = {
     type: "TRIP/ADD_INFOGRAPHIC_ID",
     tripId: string,
     infographicId: string
+}
+
+type AddExternalInfographicId = {
+    type: "TRIP/ADD_EXTERNAL_INFOGRAPHIC_ID",
+    tripId: string,
+    externalId: string
 }
 
 type UpdateBasicTrip = {
@@ -129,6 +137,12 @@ export function importSelectedLocations(tripId: string, locations: IImportLocati
 export function addInfographicId(tripId: string, infographicId: string): AddInfographicId {
     return {
         type: ADD_INFOGRAPHIC_ID, tripId, infographicId
+    }
+}
+
+export function addExternalInfographicId(tripId: string, externalId: string): AddExternalInfographicId {
+    return {
+        type: ADD_EXTERNAL_INFOGRAPHIC_ID, tripId, externalId
     }
 }
 

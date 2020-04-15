@@ -39,11 +39,11 @@ export default class PreviewInfographicComponent extends PureComponent<any, any>
         .get(`/trips/${this.props.tripId}/infographics/${this.props.infographicId}`, {
           cancelToken: this._cancelToken
         })
-        .then(res => {
-          // console.log(res.request);
-          var signedUrl = res.request.responseURL;
-          console.log("signedUrl", signedUrl)
+        .then(res => {          
+          var externalId = res.data.externalId;
+          this.props.addExternalInfographicId(this.props.tripId, externalId);
 
+          var signedUrl = res.data.signedUrl;
           const tripFolderPath = RNFS.DocumentDirectoryPath + `/${this.props.tripId}`;
 
           RNFS.mkdir(tripFolderPath)
