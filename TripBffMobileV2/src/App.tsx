@@ -37,6 +37,7 @@ import NBColor from "./theme/variables/commonColor.js";
 import OnBoardingScreen from "./screens/onboarding/OnBoardingScreen";
 import NewsFeedScreenContainer from "./screens/newsFeed/NewsFeedContainer";
 import TripAllPhotos from "./_organisms/Trip/TripDetails/TripAllPhotos";
+import TripInfograhicImage from "./_organisms/Trip/TripDetails/TripInfograhicImage";
 
 var extraThunk: ThunkExtraArgumentsBase = {
   uploadApi: uploadFileApi,
@@ -77,7 +78,8 @@ const NewsFeedNavigator = createStackNavigator(
     LocationDetail: { screen: LocationDetailScreen },
     LocationImageDetail: { screen: LocationImageDetailScreen },
     TripEditBasic: { screen: TripEditBasicScreen },
-    TripAllPhotos: { screen: TripAllPhotos }
+    TripAllPhotos: { screen: TripAllPhotos },
+    TripInfograhicImage: { screen: TripInfograhicImage }
   },
   stackConfigs
 );
@@ -118,7 +120,7 @@ const TripDetailsNavigator = createStackNavigator(
     LocationDetail: { screen: LocationDetailScreen },
     LocationImageDetail: { screen: LocationImageDetailScreen },
     InfographicPreview: { screen: InfographicPreviewScreen },
-    TripEditBasic: { screen: TripEditBasicScreen },
+    TripEditBasic: { screen: TripEditBasicScreen }
   },
   stackConfigs
 );
@@ -129,6 +131,7 @@ const ProfileNavigator = createStackNavigator(
     UserSettings: { screen: UserSettingsScreen },
     TripEdition: { screen: TripEditScreenContainer },
     TripAllPhotos: { screen: TripAllPhotos },
+    TripInfograhicImage: { screen: TripInfograhicImage },
     LocationDetail: { screen: LocationDetailScreen },
     LocationImageDetail: { screen: LocationImageDetailScreen },
     InfographicPreview: { screen: InfographicPreviewScreen },
