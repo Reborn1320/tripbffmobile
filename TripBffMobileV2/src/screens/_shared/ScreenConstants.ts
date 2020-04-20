@@ -20,7 +20,8 @@ export const NavigationConstants = {
     UserFeedback: "UserFeedback",
     OnBoarding: "OnBoarding",
     NewsFeed: "NewsFeed",
-    TripAllPhotos: "TripAllPhotos"
+    TripAllPhotos: "TripAllPhotos",
+    TripInfograhicImage: "TripInfograhicImage"
   }
 };
 

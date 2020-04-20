@@ -2,8 +2,7 @@ import React, { PureComponent } from "react";
 import { tripApi  } from "../../../screens/_services/apis";
 import _, { } from "lodash";
 import { getCancelToken } from "../../../_function/commonFunc";
-import Gallery from 'react-native-image-gallery';
-import { View, ViewStyle, TextStyle, StyleSheet, Image, Dimensions, ImageStyle } from "react-native";
+import { View, ViewStyle, TextStyle, StyleSheet, Image, Dimensions, ImageStyle, TouchableHighlight } from "react-native";
 import { mixins } from "../../../_utils";
 import NBColor from "../../../theme/variables/commonColor.js";
 import { Icon, Text, Button } from "native-base";
@@ -11,6 +10,8 @@ import { withNamespaces } from "react-i18next";
 import Flurry from 'react-native-flurry-sdk';
 import { NavigationConstants } from "../../../screens/_shared/ScreenConstants";
 import { PropsBase } from "../../../screens/_shared/LayoutContainer";
+
+var RNFS = require('react-native-fs');
 
 export interface Props extends PropsBase {
   tripId: string,
@@ -59,8 +60,30 @@ class TripInfographicComponent extends PureComponent<Props, any> {
         })
         .then(res => {
           var signedUrl = res.request.responseURL;
-          console.log("signedUrl", signedUrl);          
-          this.setState({ imageUri: signedUrl, hasInfographic: !signedUrl });     
+          //console.log("signedUrl", signedUrl);        
+          const tripFolderPath = RNFS.DocumentDirectoryPath + `/${this.props.tripId}`;
+
+          RNFS.mkdir(tripFolderPath)
+          .then(async () => {
+            var path = RNFS.DocumentDirectoryPath + `/${this.props.tripId}/${this.props.infographicExternalId}.png`;
+
+            return RNFS.downloadFile({
+              fromUrl: signedUrl,
+              toFile: path
+            }).promise.then(response => {
+              //console.log("download infographic image done!", path);
+              //console.log("response download file", response);
+              const photoUri = "file://" + path;
+              //console.log("photoUri", photoUri);
+              this.setState({ imageUri: photoUri, hasInfographic: !photoUri});   
+            }).catch((error) => {
+                console.log('download infographic image failed.: ' + JSON.stringify(error));
+            });
+          })
+          .catch((err) => {
+            console.log(err.message, err.code);
+            throw err;
+          }); 
         })
         .catch(error => {            
             console.log("error: " + JSON.stringify(error));
@@ -74,18 +97,27 @@ class TripInfographicComponent extends PureComponent<Props, any> {
       });
     }
 
+    private _viewInfographic = () => {
+      this.props.navigation.navigate(NavigationConstants.Screens.TripInfograhicImage, {
+        photoUri: this.state.imageUri
+      });
+    }
+
     render() {  
       const { t } = this.props;
-      console.log('trip infographic re-rendered: ' + this.state.hasInfographic);
+
       return (           
         this.state.imageUri ?        
         <View>
-          <Image        
-            style={styles.infographic}
-            source={{
-              uri: this.state.imageUri,
-            }}
-          /> 
+          <TouchableHighlight onPress={this._viewInfographic}>
+            <Image        
+              style={styles.infographic}
+              resizeMode='contain'
+              source={{
+                uri: this.state.imageUri,
+              }}
+            /> 
+          </TouchableHighlight>          
           <Button iconLeft light 
               style={styles.button} 
               onPress={this._viewAllPhotos}>
