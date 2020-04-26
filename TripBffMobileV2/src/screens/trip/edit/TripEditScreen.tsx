@@ -6,7 +6,7 @@ import { PropsBase } from "../../_shared/LayoutContainer";
 import * as RNa from "react-navigation";
 import { mixins } from "../../../_utils";
 import TripDetailScreenContent from "../detail/TripDetailScreenContent";
-import { StyleSheet, TouchableOpacity, Image, RefreshControl } from "react-native";
+import { StyleSheet, TouchableOpacity, Image, RefreshControl, Text, ScrollView, SafeAreaView } from "react-native";
 import { AndroidBackHandler } from "react-navigation-backhandler";
 import { NavigationConstants } from "../../_shared/ScreenConstants";
 import ActionButton from 'react-native-action-button';
@@ -15,21 +15,25 @@ import NBTheme from "../../../theme/variables/material.js";
 import NBColor from "../../../theme/variables/commonColor.js";
 import { getCancelToken } from "../../../_function/commonFunc";
 import Flurry from 'react-native-flurry-sdk';
+import Swiper from "react-native-swiper";
+import TripInfographicComponent from "../../../_organisms/Trip/TripDetails/TripInfographic";
 
 interface IMapDispatchToProps {
     addInfographicId: (tripId: string, infographicId: string) => void
-    fetchTrip: (tripId: string, cancelToken: any) => Promise<void>
+    fetchTrip: (tripId: string, cancelToken: any, createdById: string) => Promise<void>
 }
 
 export interface Props extends IMapDispatchToProps, PropsBase {
     tripId: string,
     trip: StoreData.TripVM,
     navigation: RNa.NavigationScreenProp<any, any>;
+    createdById: string;
 }
 
 interface State {
     isDisplayLoading: boolean,
-    refreshing: boolean
+    refreshing: boolean,
+    stepIndex: number   
 }
 
 export class TripEditScreen extends Component<Props, State> {
@@ -41,17 +45,20 @@ export class TripEditScreen extends Component<Props, State> {
         super(props)
         this.state = {
             isDisplayLoading: !this.props.trip,
-            refreshing: false
+            refreshing: false,
+            stepIndex: 0
         }
     }
 
     static navigationOptions = ({ navigation }) => ({
         headerLeft:  <RNa.HeaderBackButton tintColor={NBColor.colorBackBlack} onPress={navigation.getParam('_goBack')} />,
-        headerRight:  (<TouchableOpacity style={styles.settingButtonContainer}
+        title: navigation.getParam('title'),
+        headerRight:   (navigation.getParam('canContribute') ? <TouchableOpacity style={styles.settingButtonContainer}
                                 onPress={navigation.getParam('_goEditBasicTrip')}>
                             <Icon style={styles.editIcon} name='pencil-alt' type="FontAwesome5" />
-                     </TouchableOpacity>)
+                     </TouchableOpacity> : <View></View>)
      });
+     
 
     componentDidMount() {
         Flurry.logEvent('Trip Edit', null, true);
@@ -60,24 +67,39 @@ export class TripEditScreen extends Component<Props, State> {
         
         let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
         this._cancelToken = cancelToken;
-        this._cancelRequest = cancelRequest;
-
-        if (!this.props.trip) {
+        this._cancelRequest = cancelRequest;        
+            
+        if (!this.props.trip) 
             this._refreshTrip();
-        } 
-    }z
+        else 
+            this._changeThisTitle(this.props.trip.name);
+    }
 
     componentWillUnmount() {
         this._cancelRequest('Operation canceled by the user.');
         Flurry.endTimedEvent('Trip Edit');
     }
 
+    componentDidUpdate(prevProps) {
+        if (!prevProps.trip && this.props.trip || prevProps.trip && prevProps.trip.name != this.props.trip.name)
+            this._changeThisTitle(this.props.trip.name);
+    }
+
+    private _changeThisTitle = (titleText) => {
+        const {setParams} = this.props.navigation;
+        setParams({ title: titleText })
+    }
+
     private _refreshTrip = () => {
-        this.props.fetchTrip(this.props.tripId, this._cancelToken)
-            .then(() => this.setState({
-                isDisplayLoading: false,
-                refreshing: false
-            }));
+        const createdById = this.props.navigation.getParam('createdById');
+
+        this.props.fetchTrip(this.props.tripId, this._cancelToken, createdById)
+            .then(() =>  {
+                this.setState({
+                    isDisplayLoading: false,
+                    refreshing: false
+                })
+            });
     }
 
     private _onPopupMenuSelect = () => {
@@ -108,22 +130,46 @@ export class TripEditScreen extends Component<Props, State> {
             isDisplayLoading: true
         });
         this._refreshTrip();
-    }
+    }   
 
     render() {
         const { trip, navigation } = this.props;
-        const { isDisplayLoading } = this.state;
+        let { isDisplayLoading, stepIndex } = this.state;
+        const canContribute = navigation.getParam('canContribute');
+        let infographicExternalId = trip ? trip.latestExportedExternalStorageId : "";  
+
         return (
-            <Container>
-                <AndroidBackHandler onBackPress={this._goBackAndRefreshTripLists} />
-                <Content refreshControl={<RefreshControl refreshing={this.state.refreshing}
-                                        onRefresh={this._onRefresh} />}>
-                    {isDisplayLoading &&  <Loading message={''}/> }
-                    {trip &&
-                        <TripDetailScreenContent tripId={trip.tripId} navigation={navigation} />}                   
-                </Content>
+            <SafeAreaView style={styles.container}>
                 {
-                    trip && 
+                    canContribute && 
+                    <AndroidBackHandler onBackPress={this._goBackAndRefreshTripLists} />
+                } 
+                    <Swiper ref='swiper'
+                        showsButtons={false}
+                        loop={false} 
+                        index={stepIndex} 
+                        paginationStyle={styles.paginationStyle}                  
+                        activeDotColor={NBColor.brandPrimary}
+                    >
+                        <ScrollView style={{ flex: 1 }}
+                            refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}
+                        >
+                            { isDisplayLoading &&  <Loading message={''}/> }
+                            { trip && <TripInfographicComponent 
+                                            tripId={trip.tripId} 
+                                            infographicExternalId={infographicExternalId} 
+                                            navigation={navigation} /> }
+                        </ScrollView>                        
+                        <ScrollView 
+                            refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}
+                        >
+                            { isDisplayLoading &&  <Loading message={''}/> }
+                            { trip &&
+                                <TripDetailScreenContent tripId={trip.tripId} canContribute={canContribute} navigation={navigation} />} 
+                        </ScrollView>                                       
+                    </Swiper>  
+                {
+                    canContribute &&
                     <ActionButton
                         buttonColor={NBTheme.colorRosy}
                         position="center"
@@ -134,12 +180,19 @@ export class TripEditScreen extends Component<Props, State> {
                             </View> }
                     />   
                 }                
-            </Container>
+            </SafeAreaView>            
         );
     }
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },    
+    paginationStyle: {
+        position: "absolute",
+        bottom: "1%"
+    },
     actionButtonIcon: {
       fontSize: 20,
       height: 22,

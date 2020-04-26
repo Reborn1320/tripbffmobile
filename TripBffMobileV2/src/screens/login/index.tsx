@@ -74,7 +74,7 @@ class Login extends Component<Props & IMapDispatchToProps, any> {
       .loginUsingFacebookAccessToken(facebookUserId, accessToken, this.props.userId, email)
       .then(() => {
         if (isMoveToCreate) {
-          this.props.navigation.navigate(NavigationConstants.Screens.Profile);
+          this.props.navigation.navigate(NavigationConstants.Screens.NewsFeed);
         }
       })
       .catch(() => {
@@ -88,7 +88,7 @@ class Login extends Component<Props & IMapDispatchToProps, any> {
     this.props
       .loginUsingDeviceId(this.props.locale)
       .then(() => {
-        this.props.navigation.navigate(NavigationConstants.Screens.Profile);
+        this.props.navigation.navigate(NavigationConstants.Screens.NewsFeed);
       })
       .catch(() => {
         Toast.show({

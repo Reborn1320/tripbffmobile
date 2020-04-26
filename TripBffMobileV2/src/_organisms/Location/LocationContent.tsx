@@ -22,6 +22,7 @@ export interface Props extends IMapDispatchToProps {
     likeItems: Array<StoreData.LocationLikeItemVM>,
     description: string,
     images: Array<StoreData.ImportImageVM>
+    canContribute: boolean
 
     isMassSelection: boolean;
     selectedImageIds: string[]
@@ -36,23 +37,26 @@ interface State {
 
 export default class LocationContent extends React.PureComponent<Props, State> {
     render() {
-        const { isMassSelection, selectedImageIds } = this.props;
+        const { isMassSelection, selectedImageIds, canContribute } = this.props;
         return (
             <View style={styles.container}>
                 <LocationName
                     locationName={this.props.name}
                     locationAddress={this.props.address}
+                    canContribute={canContribute}
                     openUpdateLocationAddressModalHanlder={this.props.openUpdateLocationAddressModalHanlder}>
                 </LocationName>
 
                 <LocationLike
                     locale={this.props.locale}
                     likeItems={this.props.likeItems}
+                    canContribute={canContribute}
                     openUpdateLocationHighlightModalHanlder={this.props.openUpdateLocationHighlightModalHanlder}>
                 </LocationLike>
 
                 <LocationDescription
                     description={this.props.description}
+                    canContribute={canContribute}
                     openUpdateLocationDescriptionModalHandler={this.props.openUpdateLocationDescriptionModalHandler}>
                 </LocationDescription>
 
@@ -69,6 +73,8 @@ export default class LocationContent extends React.PureComponent<Props, State> {
                     selectedImageIds={selectedImageIds}
 
                     onAddingImages={this.props.onAddingImages}
+
+                    canContribute={canContribute}
                 >
                 </LocationMedia>
             </View>

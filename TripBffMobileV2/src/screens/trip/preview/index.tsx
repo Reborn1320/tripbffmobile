@@ -29,7 +29,7 @@ import { TabView, TabBar } from 'react-native-tab-view';
 import ActionButton from 'react-native-action-button';
 import { runPromiseSeries, deleteFilesInFolder, getCancelToken } from "../../../_function/commonFunc";
 import Loading from "../../../_atoms/Loading/Loading";
-import { addInfographicId } from "../../../store/Trip/actions";
+import { addInfographicId, addExternalInfographicId } from "../../../store/Trip/actions";
 import PreviewInfographicComponent from "./PreviewInfographic";
 import PreviewImages from "./PreviewImage";
 import NBTheme from "../../../theme/variables/commonColor.js";
@@ -55,9 +55,10 @@ export interface Props extends IMapDispatchToProps, DispatchProp, PropsBase {
 
 interface IMapDispatchToProps {    
   addInfographicId: (tripId: string, infographicId: string) => void;
-  fetchTrip: (tripId: string, cancelToken: any) => Promise<StoreData.TripVM>;
+  fetchTrip: (tripId: string, cancelToken: any, createdById: string) => Promise<StoreData.TripVM>;
   loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId, facebookUserEmail) => Promise<void>;
   updateInfographicStatus: (tripId: string, infographicId: string) => void;
+  addExternalInfographicId: (tripId: string, externalId: string) => void;
 }
 
 interface State {
@@ -119,9 +120,10 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
     this._cancelRequest = cancelRequest;
     
     let tripId = this.props.tripId;
+    let userId = this.props.userId;
 
     if(!this.props.isExistedCurrentTrip) {
-      this.props.fetchTrip(tripId, cancelToken).then((trip: StoreData.TripVM) => {
+      this.props.fetchTrip(tripId, cancelToken, userId).then((trip: StoreData.TripVM) => {
           var numberOfLocations = trip.rawLocations ? trip.rawLocations.length : 0;
 
           if(numberOfLocations > 0) 
@@ -394,6 +396,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
             :
               <PreviewInfographicComponent tripId={this.props.tripId}
                   infographicId={this.props.infographicId}
+                  addExternalInfographicId={this.props.addExternalInfographicId}
                   updateShareInfographicUrl={this._updateShareInfographicUrl}>
               </PreviewInfographicComponent> 
           ) 
@@ -508,9 +511,10 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
 const mapDispatchToProps = (dispatch) : IMapDispatchToProps => {
   return {
     addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
-    fetchTrip: (tripId, cancelToken) => dispatch(fetchTrip(tripId, cancelToken)),
+    fetchTrip: (tripId, cancelToken, createdById) => dispatch(fetchTrip(tripId, cancelToken, createdById)),
     loginUsingFacebookAccessToken: (userId, accessToken, loggedUserId, facebookUserEmail) => dispatch(loginUsingFacebookAccessToken(userId, accessToken, loggedUserId, facebookUserEmail)),
-    updateInfographicStatus: (tripId, infographicId) => dispatch(updateInfographicStatus(tripId, infographicId))
+    updateInfographicStatus: (tripId, infographicId) => dispatch(updateInfographicStatus(tripId, infographicId)),
+    addExternalInfographicId: (tripId, externalId) => dispatch(addExternalInfographicId(tripId, externalId)),
   };
 };
 

@@ -35,6 +35,9 @@ import UserFeedback from "./_organisms/User/UserFeedback";
 import NavigationService from './store/NavigationService';
 import NBColor from "./theme/variables/commonColor.js";
 import OnBoardingScreen from "./screens/onboarding/OnBoardingScreen";
+import NewsFeedScreenContainer from "./screens/newsFeed/NewsFeedContainer";
+import TripAllPhotos from "./_organisms/Trip/TripDetails/TripAllPhotos";
+import TripInfograhicImage from "./_organisms/Trip/TripDetails/TripInfograhicImage";
 
 var extraThunk: ThunkExtraArgumentsBase = {
   uploadApi: uploadFileApi,
@@ -68,6 +71,30 @@ const stackConfigs = {
   },
 } as any;
 
+const NewsFeedNavigator = createStackNavigator(
+  {
+    NewsFeed: { screen: NewsFeedScreenContainer },
+    TripEdition: { screen: TripEditScreenContainer },
+    LocationDetail: { screen: LocationDetailScreen },
+    LocationImageDetail: { screen: LocationImageDetailScreen },
+    TripEditBasic: { screen: TripEditBasicScreen },
+    TripAllPhotos: { screen: TripAllPhotos },
+    TripInfograhicImage: { screen: TripInfograhicImage }
+  },
+  stackConfigs
+);
+
+NewsFeedNavigator.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
+
 const TripCreationNavigator = createStackNavigator(
   {
     TripCreation: { screen: TripCreation },
@@ -93,7 +120,7 @@ const TripDetailsNavigator = createStackNavigator(
     LocationDetail: { screen: LocationDetailScreen },
     LocationImageDetail: { screen: LocationImageDetailScreen },
     InfographicPreview: { screen: InfographicPreviewScreen },
-    TripEditBasic: { screen: TripEditBasicScreen },
+    TripEditBasic: { screen: TripEditBasicScreen }
   },
   stackConfigs
 );
@@ -103,6 +130,8 @@ const ProfileNavigator = createStackNavigator(
     Profile: { screen: ProfileScreenContainer },
     UserSettings: { screen: UserSettingsScreen },
     TripEdition: { screen: TripEditScreenContainer },
+    TripAllPhotos: { screen: TripAllPhotos },
+    TripInfograhicImage: { screen: TripInfograhicImage },
     LocationDetail: { screen: LocationDetailScreen },
     LocationImageDetail: { screen: LocationImageDetailScreen },
     InfographicPreview: { screen: InfographicPreviewScreen },
@@ -150,6 +179,9 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
   } else if (routeName === "Me") {
     iconName = "md-contact";
   }
+  else if (routeName === "NewsFeed") {
+    iconName = "md-home";
+  }
 
   return (
     <Icon
@@ -162,6 +194,9 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
 
 const TabNavigator = createBottomTabNavigator(
   {
+    NewsFeed: {
+      screen: NewsFeedNavigator,
+    },
     Create: {
       screen: TripCreationNavigator,
     },
@@ -170,7 +205,7 @@ const TabNavigator = createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: "Me",
+    initialRouteName: "NewsFeed",
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, tintColor }) =>
         getTabBarIcon(navigation, focused, tintColor),
@@ -178,17 +213,7 @@ const TabNavigator = createBottomTabNavigator(
     tabBarOptions: {
       activeTintColor: NBTheme.brandPrimary,
       inactiveTintColor: "gray",
-      showLabel: false,
-      // labelStyle: {
-      //   fontSize: 10,
-      //   ...mixins.themes.fontSemiBold,
-      //   lineHeight: 13,
-      //   fontStyle: "normal",
-      //   marginBottom: 12
-      // },
-      // tabStyle: {
-      //   height: 57
-      // }
+      showLabel: false
     },
   }
 );

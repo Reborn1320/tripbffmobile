@@ -21,6 +21,8 @@ export interface Props {
   massSelection: boolean
 
   onAddingImages: () => void
+
+  canContribute: boolean
 }
 
 export interface State {
@@ -53,7 +55,7 @@ class LocationMedia extends React.PureComponent<Props & PropsBase, State> {
     if (massSelection == false) {
       if (itemInfo.index === 0) {
         return (
-          <AddLocationImageTile key={itemInfo.index} width={itemWidth} onPress={this.props.onAddingImages} />
+         this.props.canContribute && <AddLocationImageTile key={itemInfo.index} width={itemWidth} onPress={this.props.onAddingImages} />
         );
       }
       return (
@@ -67,6 +69,8 @@ class LocationMedia extends React.PureComponent<Props & PropsBase, State> {
           onPressedOnFavoriteIcon={() => this.props.onFavorite(img.imageId)}
           onPress={() => this.props.onSelect(img.imageId)}
           onLongPress={this.props.onMassSelection}
+          
+          canContribute={this.props.canContribute}
         />
       )
     }
@@ -80,6 +84,7 @@ class LocationMedia extends React.PureComponent<Props & PropsBase, State> {
         isChecked={this.props.massSelection ? !!this.props.selectedImageIds.find(imgId => imgId == img.imageId) : undefined}
         onPress={() => this.props.onSelect(img.imageId)}
         onLongPress={this.props.onMassSelection}
+        
       />
     )
   }

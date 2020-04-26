@@ -23,6 +23,7 @@ export interface Props extends IMapDispatchToProps, PropsBase {
     tripName?: string
     tripFromDate?: moment.Moment
     tripToDate?: moment.Moment
+    canContribute: boolean
 }
 
 interface State {
@@ -57,6 +58,7 @@ export class TripDetailsComponent extends Component<Props, State> {
         const day: DayVM = itemInfo.item;
         return (
             <DayItem tripId={this.props.tripId} dateIdx={day.idx} navigation={this.props.navigation}
+                canContribute={this.props.canContribute}
                 openUpdateFeelingModalHandler={this.props.openUpdateFeelingModalHandler}
                 openUpdateActivityModalHandler={this.props.openUpdateActivityModalHandler} 
                 openRemoveLocationModalHandler={this.props.openRemoveLocationModalHandler}
@@ -77,14 +79,8 @@ export class TripDetailsComponent extends Component<Props, State> {
 
         return (
             <View>
-                <View style={{
-                    margin: 12
-                }}>
-                   <TripName tripId={this.props.tripId}/>
-                </View>
 
                 <FlatList
-                    // styles={styles.container}
                     data={dayVMs}
                     renderItem={this._renderItem}
                     keyExtractor={(item, index) => String(index)}

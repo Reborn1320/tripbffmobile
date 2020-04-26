@@ -17,11 +17,15 @@
         "loading": "Đang tải",
         "submit": "Gửi",
         "letStart": "Hãy Bắt Đầu",
-        "skip": "Bỏ qua"
+        "skip": "Bỏ qua",
+        "viewAllPhotos": "Tất cả hình ảnh"
     },
     "message": {
         "add_location": "Nhấp để thêm địa điểm",
-        "add_image": "Nhấp để thêm hình"
+        "add_image": "Nhấp để thêm hình",
+        "no_location": "Không có địa điểm",
+        "no_image": "Không có hình ảnh",
+        "no_infographic": "Không có infographic"
     },
     "login": {
         "welcome_title": "Chào mừng bạn đến với TripBFF",
@@ -34,7 +38,7 @@
         "trip_name": "Tên chuyến đi",
         "from_date": "Ngày khởi hành",
         "end_date": "Ngày kết thúc",
-        "date": "Ngày",
+        "date": "Ngày khởi hành - Ngày kết thúc",
         "create_button": "Tạo",
         "next_month_label": "Kế tiếp",
         "prev_month_label": "Trước",
@@ -46,7 +50,9 @@
         "import_button": "Nhập",
         "location_information_text": "Địa điểm có thể không chính xác. Bạn có thể chỉnh sửa ở trang sau!",        
         "image_uploading_message": "Đang tải lên hình ảnh",
-        "loading_image_from_gallery_message": "Đang tải hình từ máy của bạn"
+        "loading_image_from_gallery_message": "Đang tải hình từ máy của bạn",
+        "warning_empty_timeline_message": "Không tìm thấy hình ảnh của chuyến đi",
+        "update_date_button": "Cập nhật ngày đi"
     },
     "trip_detail": {
         "edit_trip_name_menu_label": "Chỉnh sửa tên chuyến đi",
@@ -127,5 +133,8 @@
         "step3_secondary_msg": "Chúng tôi cung cấp ngày càng nhiều các cảm xúc, hoạt động, ấn tượng phổ biến",
         "step4_primary_msg": "Xuất infographic có ý nghĩa",
         "step4_secondary_msg": "Mô phỏng chuyến đi của bạn dưới dạng infographic và chia sẻ cho cộng đồng"
-    }          
+    },
+    "trip_all_photos": {
+        "screen_header_title": "Tất cả hình ảnh"
+    }         
 }

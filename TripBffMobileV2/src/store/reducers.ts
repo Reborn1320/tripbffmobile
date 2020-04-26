@@ -16,10 +16,11 @@ import {
     ADD_INFOGRAPHIC_ID,
     IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS,
     ImageActions,
-    TRIP_UPDATE
+    TRIP_UPDATE,
+    ADD_EXTERNAL_INFOGRAPHIC_ID
 } from './Trip/actions';
 import { DataSource_GetAllFeeling, DataSource_GetAllActivity, DataSource_GetAllHighlight, DataSource_ClearAll } from './DataSource/actions';
-import { TRIPS_GET_CURRENT_MINIMIZED } from "./Trips/actions";
+import { TRIPS_GET_CURRENT_MINIMIZED, TRIPS_PUBLIC_ADD, TripsActions, TRIPS_PUBLIC_CLEAR } from "./Trips/actions";
 import { DEFAULT_LOCALE } from "../screens/_services/SystemConstants";
 
 const userInitState: StoreData.UserVM = {
@@ -232,6 +233,11 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
                 ...state,
                 infographicId: action.infographicId
             };
+        case ADD_EXTERNAL_INFOGRAPHIC_ID:
+            return {
+                ...state,
+                latestExportedExternalStorageId: action.externalId
+            };
         case IMPORT_IMAGE_IMPORT_SELECTED_LOCATIONS:
             const { locations } = action;
             const mappedLocations: any = locations.map(loc => ({
@@ -255,6 +261,7 @@ function tripReducer(state: StoreData.TripVM, action: TripActions) {
                 name: action.name,
                 fromDate: action.fromDate,
                 toDate: action.toDate,
+                isPublic: action.isPublic,
                 dates: getDatesProperty(action.fromDate, action.toDate, action.locations)
             };
         default:
@@ -326,6 +333,17 @@ function dataSourceReducer(state: StoreData.DataSourceVM = {}, action) {
     }
 }
 
+function newsFeedReducer(state: Array<StoreData.MinimizedTripVM>, action: TripsActions) {
+    switch (action.type) {
+        case TRIPS_PUBLIC_ADD:
+            return state ?  [...state,...action.trips] : action.trips;
+        case TRIPS_PUBLIC_CLEAR:
+            return [];
+        default:
+            return state;
+    }
+}
+
 function currentMinimizedTrip(state: StoreData.MinimizedTripVM, action) {
     switch(action.type) {
         case TRIPS_GET_CURRENT_MINIMIZED:
@@ -349,7 +367,8 @@ export default function bffApp(state: StoreData.BffStoreData = initState, action
         currentMinimizedTrip: currentMinimizedTrip(state.currentMinimizedTrip, action),
         //todo trips shouldn't handle too much things in here!!!!!
         //todo: should it be trip, location, in respect to each page ?
-        dataSource: dataSourceReducer(state.dataSource, action)
+        dataSource: dataSourceReducer(state.dataSource, action),
+        publicTrips: newsFeedReducer(state.publicTrips, action)
     }
 
     // console.info(`executed ${moment.duration(moment().diff(now)).asMilliseconds()} milliseconds`);

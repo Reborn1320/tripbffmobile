@@ -12,6 +12,7 @@ import { getLabel } from "../../../i18n";
 
 export interface Props {
     description: string,
+    canContribute: boolean,
     openUpdateLocationDescriptionModalHandler: () => void
 }
 
@@ -40,15 +41,16 @@ class LocationDescriptionComponent1 extends React.PureComponent<Props & PropsBas
     }
 
     render() {
-        const { t } = this.props;
+        const { t, canContribute } = this.props;
 
         return (
             <View style={styles.container}>
                 <TouchableOpacity
+                    disabled={!canContribute}
                     onPress={this._openUpdateLocationDescriptionModal}>
                     <View style={styles.header}>
                         <Text style={styles.nameText}>{t("location_detail:description_section_label")}</Text>
-                        <Icon style={styles.editIcon} name='pencil-alt' type="FontAwesome5" />
+                        { canContribute && <Icon style={styles.editIcon} name='pencil-alt' type="FontAwesome5" /> }
                     </View>
                 </TouchableOpacity>
                 <View style={styles.textInputContainer}>

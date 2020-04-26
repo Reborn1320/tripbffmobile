@@ -10,12 +10,13 @@ const mapStateToProps = (storeState: StoreData.BffStoreData, ownProps) => {
   return {
       tripId,
       trip: storeState.currentTrip && storeState.currentTrip.tripId == tripId ? storeState.currentTrip : undefined,
+      userId: storeState.user.id
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchTrip: (tripId, cancelToken) => dispatch(fetchTrip(tripId, cancelToken)),
+    fetchTrip: (tripId, cancelToken, createdById) => dispatch(fetchTrip(tripId, cancelToken, createdById)),
     addInfographicId: (tripId, infographicId) => dispatch(addInfographicId(tripId, infographicId)),
   };
 };
