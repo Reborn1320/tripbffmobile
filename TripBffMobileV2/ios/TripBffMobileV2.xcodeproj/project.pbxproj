@@ -1376,7 +1376,7 @@
 			baseConfigurationReference = 7FAF0420DF888EAE0A01E468 /* Pods-TripBffMobileV2.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 15;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = B46223P3HS;
 				HEADER_SEARCH_PATHS = (
@@ -1385,7 +1385,7 @@
 				);
 				INFOPLIST_FILE = TripBffMobileV2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1.6;
+				MARKETING_VERSION = 1.1.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1402,7 +1402,7 @@
 			baseConfigurationReference = B2FA123E086A75F3213DABAD /* Pods-TripBffMobileV2.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_TEAM = B46223P3HS;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1410,7 +1410,7 @@
 				);
 				INFOPLIST_FILE = TripBffMobileV2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1.6;
+				MARKETING_VERSION = 1.1.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
