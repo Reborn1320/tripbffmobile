@@ -131,8 +131,8 @@ android {
         applicationId "com.tripbff.android"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 17
-        versionName "1.1.5"
+        versionCode 18
+        versionName "1.1.6"
         multiDexEnabled true
     }
     splits {
