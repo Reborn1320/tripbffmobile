@@ -20,7 +20,7 @@
                  withLogLevel:FlurryLogLevelAll]
                  withCrashReporting:YES]
                  withSessionContinueSeconds:10]
-                 withAppVersion:@"1.1.7"];
+                 withAppVersion:@"1.1.8"];
   
   [Flurry startSession:@"GV9CB8N9YRTKGXJ9JQW7" withSessionBuilder:builder];
   
