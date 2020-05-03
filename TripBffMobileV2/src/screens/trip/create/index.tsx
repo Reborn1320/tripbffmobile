@@ -46,13 +46,8 @@ class TripCreation extends Component<Props, State> {
   };
 
   componentDidMount() {
-    Flurry.logEvent('Trip Creation', null, true);
+    Flurry.logEvent('Trip Creation');
     Flurry.logEvent('Trip Creation - Export Infographic', null, true);
-  }
-  
-
-  componentWillUnmount() {
-    Flurry.endTimedEvent('Trip Creation');
   }
 
   private _onCreatedOrUpdatedHandler = (tripId, tripName) => {

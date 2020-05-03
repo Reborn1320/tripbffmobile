@@ -81,7 +81,7 @@ class ProfileScreenComponent extends Component<Props, State> {
   });
 
   componentDidMount() {
-    Flurry.logEvent('Profile', null, true);
+    Flurry.logEvent('Profile');
     let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
     this._cancelToken = cancelToken;
     this._cancelRequest = cancelRequest;
@@ -94,7 +94,6 @@ class ProfileScreenComponent extends Component<Props, State> {
 
   componentWillUnmount() {
     this._cancelRequest("Operation canceled by the user.");
-    Flurry.endTimedEvent('Profile');
   }
 
   private _editUserSettings = () => {

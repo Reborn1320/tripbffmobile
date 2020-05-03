@@ -26,14 +26,10 @@ class UpdateLocationDescriptionComponent extends React.PureComponent<Props, Stat
     this.state = {
       description: this.props.description
     }
-  }
+  }  
 
-  componentDidMount() {
-    Flurry.logEvent('Location Details - Add Description', null, true);
-  }
-
-  componentWillUnmount() {
-    Flurry.endTimedEvent('Location Details - Add Description');
+  private _onModalShow = () => {
+    Flurry.logEvent('Location Details - Add Description');
   }
 
   _updateLocationDescription = (description) => {
@@ -73,6 +69,7 @@ class UpdateLocationDescriptionComponent extends React.PureComponent<Props, Stat
         <ActionModal
           title={t("location_detail:update_description_title")}
           isVisible={isVisible}
+          onModalShowHandler={this._onModalShow}
           onCancelHandler={this._onCancel}
           onConfirmHandler={this._onSave}>
           {contentElement}

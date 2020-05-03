@@ -11,6 +11,7 @@ import { mixins } from "../../_utils";
 import NBColor from "../../theme/variables/material.js";
 import { withNamespaces } from "react-i18next";
 import { TouchableOpacity as TouchableOpacityGesture} from 'react-native-gesture-handler';
+import Flurry from 'react-native-flurry-sdk';
 
 interface Props extends PropsBase {    
     navigation: NavigationScreenProp<any, any>;
@@ -28,6 +29,10 @@ class OnBoardingScreen extends React.Component<Props, State> {
         this.state = {
             stepIndex: 0
         }
+    }
+
+    componentDidMount() {
+        Flurry.logEvent('On Boarding');
     }
 
     private _skip = () => {

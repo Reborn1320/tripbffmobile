@@ -57,11 +57,10 @@ class TripDetailScreenComponent extends Component<Props & IMapDispatchToProps, S
 
     componentWillUnmount() {
         this._cancelRequest('Operation canceled by the user.');
-        Flurry.endTimedEvent('Trip Details');
     }
 
     componentDidMount() {
-        Flurry.logEvent('Trip Details', null, true);
+        Flurry.logEvent('Trip Details');
         this.props.navigation.setParams({ _goProfile: this._handleBackPress });
         this.props.navigation.setParams({ _goEditBasicTrip: this._onPopupMenuSelect });
         this._changeThisTitle(this.props.tripName);

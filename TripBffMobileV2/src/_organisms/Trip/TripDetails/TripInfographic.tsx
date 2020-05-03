@@ -33,7 +33,7 @@ class TripInfographicComponent extends PureComponent<Props, any> {
     }   
 
     componentDidMount() {
-      Flurry.logEvent('Trip Infographic', null, true);
+      Flurry.logEvent('Trip Infographic');
       let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
       this._cancelToken = cancelToken;
       this._cancelRequest = cancelRequest;
@@ -49,7 +49,6 @@ class TripInfographicComponent extends PureComponent<Props, any> {
     }
 
     componentWillUnmount() {
-      Flurry.endTimedEvent('Trip Infographic');
       this._cancelRequest('Operation canceled by the user.');
     }
 

@@ -37,15 +37,7 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
       lat: this.props.lat,
       isLoading: true
     }
-  }
-
-  componentDidMount() {
-    Flurry.logEvent('Location Details - Update Address', null, true);
-  }
-
-  componentWillUnmount() {
-    Flurry.endTimedEvent('Location Details - Update Address');
-  }
+  }  
 
   private _selectedLocationHandler = (name, address, long, lat) => {
     this.setState({
@@ -65,6 +57,8 @@ class LocationAddressModalComponent extends React.Component<Props, State> {
   }
 
   private _onModalShow = () => {
+    Flurry.logEvent('Location Details - Update Address');
+    
     this.setState({
       isLoading: false
     })

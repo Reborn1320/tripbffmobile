@@ -52,15 +52,7 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
       selectedTime: null,
       isLoading: true
     };    
-  }
-
-  componentDidMount() {
-    Flurry.logEvent('Trip Details/Edit - Add Location', null, true);
-  }
-
-  componentWillUnmount() {
-    Flurry.endTimedEvent('Trip Details/Edit - Add Location');
-  }
+  }  
 
   _onCancel = () => {
     if (this.props.cancelHandler) {
@@ -106,6 +98,8 @@ class AddLocationModalComponent extends React.PureComponent<Props, State> {
   };
 
   private _onModalShow = () => {
+    Flurry.logEvent('Trip Details/Edit - Add Location');
+
     this.setState({
       isLoading: false
     })

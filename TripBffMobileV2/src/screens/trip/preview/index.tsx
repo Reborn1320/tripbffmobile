@@ -111,7 +111,7 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
   };
 
   componentDidMount() {
-    Flurry.logEvent('Export Infographic', null, true);
+    Flurry.logEvent('Export Infographic');
     Flurry.endTimedEvent('Trip Creation - Export Infographic');
     
     this.props.navigation.setParams({ _handleBackPress: this._handleBackPress });
@@ -141,7 +141,6 @@ class InfographicPreview extends React.PureComponent<Props & PropsBase, State> {
   componentWillUnmount() {
     this._cancelRequest('Operation canceled by the user.');
     deleteFilesInFolder(`${this.props.tripId}`);
-    Flurry.endTimedEvent('Export Infographic');
   }
 
   private _handleBackPress = () => {

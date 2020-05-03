@@ -62,7 +62,7 @@ class NewsFeedScreenComponent extends Component<Props, State> {
   }
 
  componentDidMount() {
-    Flurry.logEvent('NewsFeed', null, true);
+    Flurry.logEvent('NewsFeed');
     let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
     this._cancelToken = cancelToken;
     this._cancelRequest = cancelRequest;
@@ -71,7 +71,6 @@ class NewsFeedScreenComponent extends Component<Props, State> {
 
   componentWillUnmount() {
     this._cancelRequest("Operation canceled by the user.");
-    Flurry.endTimedEvent('NewsFeed');
   }  
 
   private _refreshTrips = (page) => {    

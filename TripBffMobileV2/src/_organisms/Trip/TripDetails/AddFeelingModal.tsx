@@ -265,17 +265,11 @@ class AddFeelingModalComponent extends React.Component<Props & IMapDispatchToPro
       selectedItem: this.props.selectedFeeling,
       isLoadedData: false
     }
-  }
-
-  componentDidMount() {
-    Flurry.logEvent('Trip Details/Edit - Add Feeling', null, true);
-  }
-
-  componentWillUnmount() {
-    Flurry.endTimedEvent('Trip Details/Edit - Add Feeling');
-  }
+  }  
 
   _onModalShow = () => {
+    Flurry.logEvent('Trip Details/Edit - Add Feeling');
+    
     if (!this.props.preDefinedFeelings) {
       this.props.getAllFeelings();
     }

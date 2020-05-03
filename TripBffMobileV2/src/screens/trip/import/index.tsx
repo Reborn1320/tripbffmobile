@@ -120,7 +120,7 @@ class TripImportation extends Component<Props, State> {
     }    
 
     async componentDidMount() {       
-        Flurry.logEvent('Trip Import', null, true);
+        Flurry.logEvent('Trip Import');
         await checkAndRequestPhotoPermissionAsync();
 
         console.log("from date: " + this.state.fromDate.format());
@@ -129,11 +129,7 @@ class TripImportation extends Component<Props, State> {
         console.log("request photo permission completed");
         var locations = await this._getLocations(this.state.fromDate, this.state.toDate);     
         this.setState({ locations: locations, isLoading: false, isHideFooter: false });   
-    }
-
-    componentWillUnmount() {
-        Flurry.endTimedEvent('Trip Import');
-    }
+    }    
 
     private _getLocations = async (fromDate: Moment, toDate: Moment) => {
         var photos = await loadPhotosWithinAsync(fromDate.unix(), toDate.unix())

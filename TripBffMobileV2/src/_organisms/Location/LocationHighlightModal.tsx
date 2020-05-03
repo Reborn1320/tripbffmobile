@@ -332,9 +332,7 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
     }
   }
 
-  componentDidMount() {
-    Flurry.logEvent('Location Details - Add Like/Dislike', null, true);
-
+  componentDidMount() {  
     if (this.props.likeItems && this.props.likeItems.length > 0) {
       this.setState({
         selectedHighlights: [...this.props.likeItems]
@@ -342,11 +340,9 @@ class AddHighlightModalComponent extends React.PureComponent<Props & IMapDispatc
     }
   }
 
-  componentWillUnmount() {
-    Flurry.endTimedEvent('Location Details - Add Like/Dislike');
-  }
-
   _onModalWillShow = () => {
+    Flurry.logEvent('Location Details - Add Like/Dislike');
+    
     if (!this.props.preDefinedHighlights) {
       this.props.getAllHighlights();
     }

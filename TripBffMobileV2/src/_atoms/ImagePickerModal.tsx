@@ -43,14 +43,6 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
     }
   }
 
-  componentDidMount() {
-    Flurry.logEvent('Location Details - Upload Images', null, true);
-  }
-
-  componentWillUnmount() {
-    Flurry.endTimedEvent('Location Details - Upload Images');
-  }
-
   componentDidUpdate() {
     let { selectedImages, num, numUploaded, numCount, isUploadingImages } = this.state;
 
@@ -101,6 +93,8 @@ class ImagePickerModalComponent extends React.PureComponent<Props, State> {
   }
 
   _onModalShow = () => {
+    Flurry.logEvent('Location Details - Upload Images');
+    
     this.setState({
       isLoading: false
     })

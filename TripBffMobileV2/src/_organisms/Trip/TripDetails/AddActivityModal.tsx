@@ -264,17 +264,11 @@ class AddActivityModalComponent extends React.PureComponent<Props & IMapDispatch
       selectedItem: this.props.selectedActivity,
       isLoadedData: false
     }
-  }
-
-  componentDidMount() {
-    Flurry.logEvent('Trip Details/Edit - Add Activity', null, true);
-  }
-
-  componentWillUnmount() {
-    Flurry.endTimedEvent('Trip Details/Edit - Add Activity');
-  }
+  }  
 
   _onModalShow = () => {
+    Flurry.logEvent('Trip Details/Edit - Add Activity');
+
     if (!this.props.preDefinedActivities) {
       this.props.getAllActivities();
     }

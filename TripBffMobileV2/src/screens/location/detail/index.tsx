@@ -78,7 +78,7 @@ class LocationDetail extends React.Component<Props, State> {
     };
 
     componentDidMount() {
-        Flurry.logEvent('Location Details', null, true);
+        Flurry.logEvent('Location Details');
         let { cancelToken, cancelRequest } = getCancelToken(this._cancelRequest);
         this._cancelToken = cancelToken;
         this._cancelRequest = cancelRequest;    
@@ -87,7 +87,6 @@ class LocationDetail extends React.Component<Props, State> {
 
     componentWillUnmount() {
         this._cancelRequest('Operation canceled by the user.');
-        Flurry.endTimedEvent('Location Details');
     }
 
     private _changeThisTitle = (titleText) => {

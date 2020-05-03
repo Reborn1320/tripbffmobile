@@ -61,7 +61,7 @@ export class TripEditScreen extends Component<Props, State> {
      
 
     componentDidMount() {
-        Flurry.logEvent('Trip Edit', null, true);
+        Flurry.logEvent('Trip Edit');
         this.props.navigation.setParams({ _goBack: this._goBackAndRefreshTripLists });
         this.props.navigation.setParams({ _goEditBasicTrip: this._onPopupMenuSelect });
         
@@ -77,7 +77,6 @@ export class TripEditScreen extends Component<Props, State> {
 
     componentWillUnmount() {
         this._cancelRequest('Operation canceled by the user.');
-        Flurry.endTimedEvent('Trip Edit');
     }
 
     componentDidUpdate(prevProps) {
