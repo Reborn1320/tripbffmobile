@@ -5,6 +5,7 @@ import NBTheme from "../../theme/variables/material.js";
 import { mixins } from "../../_utils";
 // import { mixins } from "../../_utils.js";
 import FastImage from 'react-native-fast-image';
+import Flurry from 'react-native-flurry-sdk';
 
 export interface Props {
   imageUrl: string
@@ -31,6 +32,11 @@ export class ImageFavorable extends React.Component<Props, State> {
     this.state = {
     }
   }
+
+  componentDidMount() {
+    Flurry.logEvent('View Photo');
+  }
+
   shouldComponentUpdate(nextProps: Props, nextState) {
     return this.props.isChecked != nextProps.isChecked
     || this.props.imageUrl != nextProps.imageUrl;

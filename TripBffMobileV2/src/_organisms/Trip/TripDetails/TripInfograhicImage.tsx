@@ -5,6 +5,7 @@ import { View, TouchableOpacity, ViewStyle, StyleSheet, TextStyle, SafeAreaView 
 import Gallery from 'react-native-image-gallery';
 import DeviceInfo from "react-native-device-info";
 import { PropsBase } from '../../../screens/_shared/LayoutContainer';
+import Flurry from 'react-native-flurry-sdk';
 
 interface Props extends PropsBase {  
 }
@@ -37,6 +38,7 @@ class TripInfograhicImage extends React.Component<Props, State> {
         DeviceInfo.hasNotch().then(hasNotch => {
             this.setState({hasNotch: hasNotch});
         });
+        Flurry.logEvent('View Infographic');
     }   
 
     private _onCancel = () => {

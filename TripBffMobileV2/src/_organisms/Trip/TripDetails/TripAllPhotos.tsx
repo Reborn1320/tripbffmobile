@@ -11,6 +11,7 @@ import { withNamespaces } from "react-i18next";
 import { StoreData } from "../../../store/Interfaces";
 import { connect } from "react-redux";
 import { NavigationConstants } from "../../../screens/_shared/ScreenConstants";
+import Flurry from 'react-native-flurry-sdk';
 
 export interface Props {
   tripId: string,
@@ -45,6 +46,10 @@ class TripAllPhotosComponent extends React.PureComponent<Props & PropsBase, Stat
       headerRight: (<View></View>)
     };
   };
+
+  componentDidMount() {
+    Flurry.logEvent('View All Photos');
+  }
 
   private _onSelect = (imageId: string) => {
     const { tripId, photos, canContribute } = this.props;
